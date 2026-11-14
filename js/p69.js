@@ -38,3 +38,27 @@ function kEau(){const C=(K.col||[]).map(x=>T[x.i]).filter(Boolean);return C.some
  const S0=kSoc();b.textContent=S0.ames+' âmes · mangent '+(Math.round(S0.ames*.1*10)/10)+' vivres/an'}catch(e){}return r}}
 // les anciennes silhouettes de groupe (cylindres, très grandes) ne réapparaissent plus jamais, même si un personnage tarde à charger
 {const b0=bat;bat=function(k){try{b0(k)}catch(e){console.warn("bat",e.message)}try{if(typeof grp!=='undefined'&&grp)grp.visible=false;if(typeof chas!=='undefined'&&chas)chas.visible=false;(typeof GRPM!=='undefined'?GRPM:[]).forEach(m=>{if(m.isMesh&&m.geometry&&!/Ring/.test(m.geometry.type))m.visible=false})}catch(e){}}}
+
+// ----- les accessoires (caisse sur la tête, bâton, kayamb…) ne restent plus affichés d'une animation à l'autre -----
+// (une animation qui montre un objet le laisse à taille 1 ; la suivante, qui n'en parle pas, ne le cachait pas)
+function p3Range(root){const u=root.userData;if(!u.props){u.props=[];root.traverse(o=>{if(o.isBone&&P3OBJ.includes(o.name))u.props.push(o)})}u.props.forEach(b=>b.scale.set(0,0,0))}
+{const mj=mfJouer;mfJouer=function(f,clip){if(f&&f.o&&f.mx&&f.clip!==clip)try{p3Range(f.o)}catch(e){}return mj.apply(this,arguments)}}
+
+// ----- Survie : on peut envoyer ou retirer une personne à la fois (−1 / +1), et le jeu dit pourquoi il en met moins que demandé -----
+function kPlusMoinsUn(box,t,refaire){box.querySelectorAll('[data-tp]').forEach(p=>{if(p.dataset.un)return;p.dataset.un=1;const k=p.dataset.tp,i=t?t.i:+p.dataset.tp.split('|')[0];
+  const plus=document.createElement('button');plus.className='bt sec';plus.textContent='+1';plus.title='Envoyer une personne';plus.onclick=e=>{e.stopPropagation();kMettre(t.i,k,1);kSauve();kRendu();refaire()};p.after(plus);
+  const row=p.parentElement,moins=row&&row.querySelector('[data-tm="'+k+'"]');if(moins){const m1=document.createElement('button');m1.className='bt sec';m1.textContent='−1';m1.title='Retirer une personne';m1.onclick=e=>{e.stopPropagation();kMettre(t.i,k,-1);kSauve();kRendu();refaire()};moins.after(m1)}})}
+{const kb=kBulle;kBulle=function(t,x,y){const q=$('kQui');if(q)q.remove();const r=kb.apply(this,arguments);try{const b=$('kBul');if(b&&!b.hidden)kPlusMoinsUn(b,t,()=>setTimeout(()=>kBulle(t,x,y),60))}catch(e){}return r}}
+{const km=kMettre;kMettre=function(i,act,d){const av=((K.trav||{})[i]||{})[act]||0;const r=km.apply(this,arguments);try{const ap=((K.trav||{})[i]||{})[act]||0,fait=ap-av;
+ if(d>0&&fait>0&&fait<d)toast('Seulement '+fait+' personne'+(fait>1?'s':'')+' de libre pour cette tâche : '+fait+' envoyée'+(fait>1?'s':'')+' au lieu de '+d+'.');
+ if(d<0&&-fait>0&&-fait<-d)toast('Il n’y avait que '+(-fait)+' personne'+(-fait>1?'s':'')+' ici : tout le monde est revenu.')}catch(e){}return r}}
+// ----- une seule fenêtre à la fois : la bulle, la liste « Qui travaille où », le guide se cèdent la place -----
+{const kq=kQui;kQui=function(){if(typeof kBulleFerme==='function')kBulleFerme();return kq.apply(this,arguments)}}
+addEventListener('pointerup',e=>{try{const d=$('kons');if(!d||d.hidden||e.target.tagName!=='CANVAS'||!d.contains(e.target))return;setTimeout(()=>{if(KVUE.sel==null)kBulleFerme()},60)}catch(_){}},true);
+setInterval(()=>{const b=$('kQuiB');if(b&&!b.dataset.p69){b.dataset.p69=1;b.onclick=()=>kQui()}},500);
+{const kd=kQuiDess;kQuiDess=function(){const r=kd.apply(this,arguments);try{const q=$('kQui');if(!q)return r;q.querySelectorAll('[data-qp]').forEach(p=>{const [i,k]=p.dataset.qp.split('|');const b=document.createElement('button');b.className='bt sec';b.textContent='+1';b.onclick=()=>{kMettre(+i,k,1);kSauve();kRendu();kQuiDess()};p.after(b)});
+ q.querySelectorAll('[data-qm]').forEach(m=>{const [i,k]=m.dataset.qm.split('|');const b=document.createElement('button');b.className='bt sec';b.textContent='−1';b.onclick=()=>{kMettre(+i,k,-1);kSauve();kRendu();kQuiDess()};m.after(b)})}catch(e){}return r}}
+// ----- « Préparer une sortie » : en tête de la fiche, aller au camp (pour former des gens) ou annuler, sans descendre toute la liste -----
+{const ep=expPlan;expPlan=function(c,pre){const r=ep.apply(this,arguments);try{const box=$('expP'),pj=box&&box.querySelector('.pjb'),h=pj&&pj.querySelector('h2');if(h&&!pj.querySelector('.expTete')){const d=document.createElement('div');d.className='expTete';d.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 8px;position:sticky;top:-1px;background:inherit;padding:4px 0;z-index:2';
+ d.innerHTML='<button class="bt sec" id="expCamp">'+(S.voieC?'🏠 Aller à l’habitation':'🔥 Aller au camp')+'</button><button class="bt sec" id="expAnn">✕ Annuler</button>';h.after(d);
+ $('expCamp').onclick=()=>{box.remove();if(typeof cvOuvrir==='function')cvOuvrir(c)};$('expAnn').onclick=()=>{const n=$('expN');if(n)n.click();else box.remove()}}}catch(e){}return r}}

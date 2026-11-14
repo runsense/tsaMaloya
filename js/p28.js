@@ -8,9 +8,12 @@ const gensC=ci=>(S.pp||[]).filter(p=>campDe(p)===ci&&!enGrp(p));
 const qui=p=>p.n.split(' ')[0]+' <small>('+(typeof tacheTxt==='function'?tacheTxt(p):'')+')</small>';
 function besoinMenu(n,X,Y){const ci=CV.camp,P=gensC(ci),A=P.filter(adulte),L=[];
  if(n==='Manger'){const ch=A.filter(p=>tacheDe(p)==='chasse'),cu=A.filter(p=>tacheDe(p)==='cueil'),pe=A.filter(p=>tacheDe(p)==='peche');L.push(['Aujourd’hui : '+ch.length+' à la chasse, '+cu.length+' à la cueillette'+(TACHES.peche?', '+pe.length+' à la pêche':''),()=>{}]);
-  L.push(['🏹 Préparer un groupe de chasse…',()=>{window.EXPS=window.EXPS||{coche:{},prov:2,but:'chasse'};EXPS.but='chasse';expPlan(ci,null)}]);
+  L.push(['🏹 Préparer un groupe de chasse (loin du camp, plusieurs jours)…',()=>{window.EXPS=window.EXPS||{coche:{},prov:2,but:'chasse'};EXPS.but='chasse';expPlan(ci,null)}]);
+  // chasser près du camp, à la journée : seulement ceux qui sont formés à la chasse ; les autres peuvent cueillir ou pêcher
+  A.filter(p=>p.id!==S.garde&&p.role==='cha'&&tacheDe(p)!=='chasse').slice(0,4).forEach(p=>L.push(['🏹 '+p.n.split(' ')[0]+' va chasser autour du camp (au lieu de : '+tacheTxt(p)+')',()=>fait1(p,'chasse')]));
+  if(!A.some(p=>p.role==='cha'))L.push(['ℹ️ Personne n’est formé à la chasse : sans chasseur, on mange ce qu’on cueille et ce qu’on pêche. Formez quelqu’un au camp.',()=>{}]);
   const lib=A.filter(p=>p.id!==S.garde&&['repos','bois','paille','eau','pierre'].includes(tacheDe(p))).sort((a,b)=>(a.fat||0)-(b.fat||0));
-  lib.slice(0,4).forEach(p=>{L.push(['🌿 '+p.n.split(' ')[0]+' va cueillir (au lieu de : '+tacheTxt(p)+')',()=>fait1(p,'cueil')]);if(TACHES.peche&&T.some(t=>t.riv&&hd(t,T[ci])<=2))L.push(['🐟 '+p.n.split(' ')[0]+' va pêcher',()=>fait1(p,'peche')])})}
+  lib.slice(0,4).forEach(p=>{L.push(['🌿 '+p.n.split(' ')[0]+' va cueillir à la journée (au lieu de : '+tacheTxt(p)+')',()=>fait1(p,'cueil')]);if(TACHES.peche&&T.some(t=>t.riv&&hd(t,T[ci])<=2))L.push(['🐟 '+p.n.split(' ')[0]+' va pêcher',()=>fait1(p,'peche')])})}
  else if(n==='Repos'){const F=A.filter(p=>(p.fat||0)>50).sort((a,b)=>(b.fat||0)-(a.fat||0));
   if(S.alerteCamp)L.push(['⚠️ Le camp est attaqué : tout le monde debout !',()=>{A.forEach(p=>{if(tacheDe(p)==='repos')p.tache=null});S.alerteCamp=0;sauve();cvListe();toast('Tout le monde est debout.')}]);
   F.slice(0,6).forEach(p=>L.push(['😴 Envoyer dormir '+p.n.split(' ')[0]+' — fatigue '+Math.round(p.fat)+' %, '+tacheTxt(p),()=>fait1(p,'repos')]));

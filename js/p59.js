@@ -2,13 +2,13 @@
 // Histoire : la vue la plus globale, des personnages petits. Jeu : centré sur les acteurs, on zoome de près,
 // mais le dézoom s'arrête à une vue moyenne (on peut toujours se déplacer pour tout voir).
 // Construction : on zoome jusqu'à une vue moyenne, pas plus près. Partout : dézoomer au-delà sort de la ville ou du camp.
-const CADRE={hist:{min:3.5,max:86,fig:.7},jeu:{min:3.5,max:34,fig:1},k3min:6,k3max:22,camp:70};
+const CADRE={hist:{min:3.5,max:86,fig:.7},jeu:{min:3.5,max:16,fig:1},k3min:6,k3max:22,camp:70};
 const cadre=()=>(typeof modeHist==='function'&&modeHist())?CADRE.hist:CADRE.jeu;
 {const zv=zoomVers;zoomVers=function(px,py,f){const C=cadre(),nd=Math.max(C.min,Math.min(C.max,dist*f));return zv.call(this,px,py,nd/dist)}}
 // en Jeu, une vue d'avant (ou un film) qui laisse la caméra trop haute redescend doucement à la vue moyenne
 {const b0=bat;bat=function(k){b0(k);try{if(!S||S.fin)return;const C=cadre();if(!modeHist()&&dist>C.max&&!camGo&&!(typeof CINE!=='undefined'&&CINE))dist+=(C.max-dist)*.06;
  // la taille des personnages sur la carte : petits en Histoire, à pleine taille en Jeu ; ceux d'un lieu ouvert gardent la leur
- const lg=new Set(((typeof LG!=='undefined'&&LG.L)||[]).map(g=>g.cle));for(const c in MF.L){const f=MF.L[c];if(!f.o||lg.has(c))continue;if(Math.abs(f.o.scale.x-C.fig)>1e-3)f.o.scale.setScalar(C.fig)}}catch(e){}}}
+ const lg=new Set(((typeof LG!=='undefined'&&LG.L)||[]).map(g=>g.cle));for(const c in MF.L){const f=MF.L[c];if(!f.o||lg.has(c))continue;const e=modeHist()?C.fig:C.fig*Math.max(1,Math.min(2.2,dist/7));if(Math.abs(f.o.scale.x-e)>1e-3)f.o.scale.setScalar(e)}}catch(e){}}}
 // le camp en 3D : dézoomer au-delà de la vue d'ensemble ramène à la carte
 setInterval(()=>{try{if(typeof P3==='undefined'||!P3.zoom||P3.zoom.p59)return;const z=P3.zoom;P3.zoom=function(e){const c=P3.cam;if(e.deltaY>0&&c){const d=Math.hypot(c.x-c.tx,c.y-c.ty,c.z-c.tz);if(d>CADRE.camp){e.preventDefault();if(typeof cvFermer==='function')cvFermer();return}}return z.apply(this,arguments)};P3.zoom.p59=1}catch(e){}},1000);
 // la ville de la Construction : pas plus près qu'une vue moyenne ; dézoomer au plus loin sort sur l'île
