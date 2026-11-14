@@ -75,4 +75,4 @@ const FILMQ={q:5,p:false};
 {const cs=cineSortie;cineSortie=function(){const force=SORT.dern===0;if(FILMQ.q<=0&&!force)return;const avant=SORT.dern;cs.apply(this,arguments);if(!force&&SORT.dern!==avant)FILMQ.q--}}
 setInterval(()=>{try{if(!S||S.fin)return;const enPause=modeHist()?!autoD():!!window.PAUSEJ;if(FILMQ.p&&!enPause)FILMQ.q=Math.max(FILMQ.q,2);FILMQ.p=enPause}catch(e){}},300);
 // le conte se lit un peu plus lentement
-{const le=lecture;lecture=function(){return Math.round(le.apply(this,arguments)*1.35)}}
+{const le=lecture;lecture=function(){return Math.round(le.apply(this,arguments)*1.6)}}

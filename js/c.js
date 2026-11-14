@@ -838,7 +838,7 @@ function pasAuto0(){if(!S||S.fin||!$('ecran').hidden)return;
   if(c&&agir(c[0],c[1])){if(c[1]==='explorer'&&!traceE&&!danger(c[0]))traceE={last:c[0].i,n:3};sel=c[0];sauve();peindre();panneau();rafraichir();return}}
  {const v=vraieVoie(),q=S.vo||(S.vo={m:40,c:0,e:0}),s=q.m+q.c+q.e||1;for(const x of ['m','c','e'])q[x]=Math.max(0,q[x]+(v[x]*s/100-q[x])*.15)}
  S.gardeP=S.year;S.garde=S.year;conteVoir(null);tuto(vusT.has('fin')?'Saison suivante.':'Tous les bras sont au travail : il finit la saison. Vous, vous cliqueriez « Fin de saison », en bas à droite.');vusT.add('fin');saison();rafraichir()}
-setInterval(()=>{const d=autoD();if(!d||!peutConter()){proch=0;autoBtn();return}const now=performance.now();if(!proch){lecT=lecture();proch=now+lecT;return}if(now>=proch){pasAuto();lecT=contePick?4200:lecture();if((S.autoN||0)<10)lecT=Math.max(lecT,5200);proch=performance.now()+lecT}autoBtn()},250);
+setInterval(()=>{const d=autoD();if(!d||!peutConter()){proch=0;autoBtn();return}const now=performance.now();if(!proch){lecT=lecture();proch=now+lecT;return}if(now>=proch){pasAuto();lecT=contePick?7000:lecture();lecT=Math.max(lecT,(S.autoN||0)<10?8000:5500);proch=performance.now()+lecT}autoBtn()},250);
 // ---- Combat naval : simple et stratégique (distance, vent, bordée, abordage, mystique de la sirène)
 let N=null;
 function navOuvrir(){const v=S.voile||{nat:'anglais',type:'marchand'},E={marchand:{n:'Navire marchand',c:8,k:2,q:8},negrier:{n:'Navire négrier',c:9,k:3,q:10},fregate:{n:'Frégate de guerre',c:15,k:8,q:18}}[v.type];
@@ -1867,7 +1867,7 @@ let GRPI=null,GRPR=null;
  GRPI.count=n;GRPR.count=n;GRPI.instanceMatrix.needsUpdate=true;GRPR.instanceMatrix.needsUpdate=true;if(GRPR.instanceColor)GRPR.instanceColor.needsUpdate=true;if(GRPI.instanceColor)GRPI.instanceColor.needsUpdate=true}catch(e){window.__grpErr=e.message}}}
 
 // ===== Au lancement : Histoire, ou le Jeu. Plus d'Expert, plus de rythme à choisir =====
-choixDif=function(){const e=$('ecran');e.innerHTML='<div class="bloc"><h1>Comment jouer ?</h1><button class="op dif" id="d-histoire"><b>Histoire</b><small>Le vrai passé, raconté. Le conte joue seul et suit l’histoire si vous ne touchez à rien ; vos choix l’infléchissent, jusqu’aux utopies.</small></button><button class="op dif" id="d-normal"><b>Jeu</b><small>Votre camp vit en temps réel : six mois passent en dix minutes, avec les jours, les nuits et les saisons. Vous formez vos gens, vous les commandez, vous les envoyez dehors. Les faits historiques arrivent comme des nouvelles.</small></button><button class="bt sec" id="retD">← Retour</button></div>';
+choixDif=function(){const e=$('ecran');e.innerHTML='<div class="bloc"><h1>Comment jouer ?</h1><button class="op dif" id="d-histoire"><b>Histoire</b><small>Le vrai passé, raconté. Le conte joue seul et suit l’histoire si vous ne touchez à rien ; vos choix l’infléchissent, jusqu’aux utopies.</small></button><button class="op dif" id="d-normal"><b>Vie</b><small>Votre camp vit en temps réel : six mois passent en dix minutes, avec les jours, les nuits et les saisons. Vous formez vos gens, vous les commandez, vous les envoyez dehors. Les faits historiques arrivent comme des nouvelles.</small></button><button class="bt sec" id="retD">← Retour</button></div>';
  $('d-histoire').onclick=()=>{DIFC='histoire';RYTHME='conte';choixVoie()};$('d-normal').onclick=()=>{DIFC='normal';RYTHME='mixte';choixVoie()};$('retD').onclick=()=>accueil()};
 
 // ===== Le Jeu : chaque journée (une minute) les gens font quelque chose, au camp et autour =====

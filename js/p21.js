@@ -35,7 +35,9 @@ function kCarte(cu){const cv=$('kC');if(!cv)return;const W=cv.clientWidth,H=cv.c
   const nappe=(F,r,fl)=>{tx.clearRect(0,0,W,H);vis.forEach(t=>{const s=F(t);if(!s)return;const [a,b]=P(t);tx.beginPath();tx.arc(a,b,Rh*r,0,7);tx.fillStyle=s;tx.fill()});y.save();y.filter='blur('+Math.max(1,Rh*fl)+'px)';y.drawImage(tc,0,0,W,H);y.restore()};
   // le rivage, puis la terre fondue d'un lieu à l'autre, puis le relief éclairé du nord-ouest
   nappe(t=>'rgba(225,215,170,.55)',1.45,.7);nappe(t=>teinte(t,!vuT(t)),1.18,.55);
-  y.globalCompositeOperation='soft-light';nappe(t=>{const v=kVoisins(t),n=v.find(w=>w.z<t.z&&w.x<t.x)||v[0];const d=n?(t.alt||0)-(n.alt||0):0;return d>0?'rgba(0,0,0,'+Math.min(.5,d/900)+')':'rgba(255,255,255,'+Math.min(.45,-d/900)+')'},1.1,.6);y.globalCompositeOperation='source-over'}
+  y.globalCompositeOperation='soft-light';nappe(t=>{const v=kVoisins(t),n=v.find(w=>w.z<t.z&&w.x<t.x)||v[0];const d=n?(t.alt||0)-(n.alt||0):0;return d>0?'rgba(0,0,0,'+Math.min(.5,d/900)+')':'rgba(255,255,255,'+Math.min(.45,-d/900)+')'},1.1,.6);y.globalCompositeOperation='source-over';
+  // la vraie île vue du ciel (l'image satellite du jeu), nette ; les lieux encore inconnus restent dans l'ombre
+  try{const si=terr.material.uniforms.sat&&terr.material.uniforms.sat.value&&terr.material.uniforms.sat.value.image;if(si){const Wd=(NX-1)*ST,Hd=(NY-1)*ST,[a0,b0]=P({x:-MAR,z:-MAR}),[a1,b1]=P({x:Wd-MAR,z:Hd-MAR});y.save();y.imageSmoothingQuality='high';y.globalAlpha=.95;y.translate(0,b0+b1);y.scale(1,-1);y.drawImage(si,a0,b0,a1-a0,b1-b0);y.restore();nappe(t=>vuT(t)?null:'rgba(8,14,18,.72)',1.25,.45)}}catch(e){}}
  x.drawImage(fd.cv,0,0,W,H);
  const tache=(F,col,r)=>{x.save();x.filter='blur('+Math.max(1,Rh*.5)+'px)';x.beginPath();vis.forEach(t=>{if(!F(t))return;const [a,b]=P(t);x.moveTo(a+Rh*r,b);x.arc(a,b,Rh*r,0,7)});x.fillStyle=col;x.fill();x.restore()};
  const R=kRegions(),hov=KVUE.hreg;

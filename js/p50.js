@@ -60,3 +60,10 @@ const UCH_AIDE={
  vichy:'Pour l’ouvrir : en 1942, côté marron, choisissez de combattre les gendarmes de Vichy.',
  cafe:'Pour l’ouvrir : commencez en 1794 côté colon avec « La fortune du café ».',
  comp:'Pour l’ouvrir : commencez en 1794 côté colon avec « Les comptoirs de l’océan Indien ».'};
+// filet de sécurité : si, au départ de 1794, tout le monde est resté dans le premier lieu, on répartit les familles (une fois)
+setInterval(()=>{try{if(!S||S.fin||S.split94||!S.d94||!S.pp||!S.pp.length)return;const C=camps();if(C.length<2)return;const a=C[0].i;
+ const par={};S.pp.forEach(p=>{const c=campDe(p);par[c]=(par[c]||0)+1});if(Object.keys(par).length>1){S.split94=1;return}
+ const fam={};S.pp.forEach(p=>(fam[p.fa]=fam[p.fa]||[]).push(p));const F=Object.values(fam).sort((x,y)=>y.length-x.length);const cible=Math.round(S.pp.length/3);let n=0;
+ const autres=C.filter(c=>c.i!==a);F.forEach((L,i)=>{if(n>=cible||i===0)return;const dest=autres[i%autres.length];L.forEach(p=>{p.camp=dest.i});n+=L.length});
+ S.split94=1;if(typeof log==='function')log(S.voieC?'Une partie des familles s’installe sur la seconde habitation.':'Une partie des familles s’installe au second camp.');if(typeof sauve==='function')sauve()}catch(e){}},1000);
+{const d=depart1794;depart1794=function(){const r=d.apply(this,arguments);try{S.d94=1}catch(e){}return r}}

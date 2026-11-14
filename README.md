@@ -2,9 +2,9 @@
 
 Un jeu sur l'histoire de La Réunion : le marronnage, la colonie, et une île à bâtir.
 
-- **Histoire** : de 1663 à aujourd'hui, côté marron ou côté colon, un conte sur lequel on joue.
-- **Jeu** : le camp, les sorties, les savoirs ; la version concrète qui suit l'histoire de loin.
-- **Construction** : survie et bâtisse, à la manière de Frostpunk, qui suit l'histoire de loin.
+- **Histoire** : l'histoire de La Réunion de 1663 à aujourd'hui, racontée, côté marrons ou côté colonie.
+- **Vie** : la vie d'un camp ou d'une habitation, au jour le jour.
+- **Survie** : bâtir et tenir face aux cyclones, aux famines et aux bouleversements de l'île.
 
 ## Jouer
 
@@ -25,7 +25,7 @@ Images satellite : Copernicus Sentinel-2 (ESA), données libres. Modèles 3D : g
 
 ## Fait avec Claude
 
-Le code du jeu a été écrit avec **Claude**, l'assistant d'Anthropic, à partir des idées, des choix historiques et des relectures de son auteur : la carte en relief, les modes Histoire, Jeu et Construction, les cinématiques, les petits jeux, l'intégration et l'animation des modèles 3D. L'auteur décide de ce que raconte le jeu ; Claude construit, teste et corrige.
+Le code du jeu a été écrit avec **Claude**, l'assistant d'Anthropic, à partir des idées, des choix historiques et des relectures de son auteur : la carte en relief, les modes Histoire, Vie et Survie, les cinématiques, les petits jeux, l'intégration et l'animation des modèles 3D. L'auteur décide de ce que raconte le jeu ; Claude construit, teste et corrige.
 
 Vous aussi : [claude.ai](https://claude.ai).
 
