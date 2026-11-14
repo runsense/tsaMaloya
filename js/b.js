@@ -26,8 +26,12 @@ const hd=(a,b)=>(Math.abs(a.q-b.q)+Math.abs(a.r-b.r)+Math.abs(a.q+a.r-b.q-b.r))/
 const near=(lon,lat)=>{const[x,z]=xz(lon,lat);let b=T[0],d=1e9;T.forEach(t=>{const e=(t.x-x)**2+(t.z-z)**2;if(e<d){d=e;b=t}});return b};
 const[vx,vz]=xz(55.714,-21.244);
 const[bx,bz]=xz(55.79,-21.235);
+// sous le vent : l'ouest est une savane sèche jusqu'à 700 m environ, de La Possession à Saint-Pierre ;
+// passé Saint-Pierre vers Saint-Joseph, la savane ne garde que les bas (sous 200 m) ; au-dessus, seuls les Hauts sont en forêt
+function sousVent(t){const lon=t.x/DEM.kx+DEM.lo0,lat=DEM.la1-t.z/DEM.ky;let a=Math.atan2(lat+21.12,lon-55.53)*180/Math.PI;if(a<0)a+=360;
+ if(a>=128&&a<257)return t.alt<700;if(a>=257&&a<285)return t.alt<200;return false}
 T.forEach(t=>{const dv=Math.hypot(t.x-vx,t.z-vz),db=Math.hypot(t.x-bx,t.z-bz);
- t.biome=(dv<5.5&&t.alt>1900)||db<4?'Coulées de lave':t.alt>2350?'Scories d’altitude':t.alt>1900?'Fourrés de branles':t.alt>1100?'Forêt de tamarins des Hauts':t.x>33&&t.alt<1100?'Forêt humide du vent':t.x<31&&t.alt<420?'Savane sèche sous le vent':'Bois de couleurs';
+ t.biome=(dv<5.5&&t.alt>1900)||db<4?'Coulées de lave':t.alt>2350?'Scories d’altitude':t.alt>1900?'Fourrés de branles':t.alt>1100?'Forêt de tamarins des Hauts':sousVent(t)?'Savane sèche sous le vent':t.x>33&&t.alt<1100?'Forêt humide du vent':'Bois de couleurs';
  t.bare=/lave|Scories/.test(t.biome);t.forest=!t.bare&&!/Savane/.test(t.biome);
  t.yield=t.bare?0:t.alt>1900?.5:t.alt>1400?.8:/Savane/.test(t.biome)?.8:1.1;t.cold=t.alt>1500;{const q=Math.sin(t.i*37.7)*43758.5;t.zeo=!t.bare&&t.alt>500&&(q-Math.floor(q))>.84;}const bi=t.biome;t.ch=t.bare?0:/Savane/.test(bi)?1.2:/humide/.test(bi)?.7:/tamarins/.test(bi)?1:/branles/.test(bi)?.5:1;t.cu=t.bare?0:/Savane/.test(bi)?.6:/humide/.test(bi)?1.4:/tamarins/.test(bi)?.8:/branles/.test(bi)?.5:1.1});
 const LIEUX=[['Saint-Paul',55.270,-21.010,1],['Saint-Denis',55.450,-20.880,1],['Sainte-Suzanne',55.609,-20.907,1],['Sainte-Marie',55.550,-20.897,1],['Saint-André',55.650,-20.960,1],['Saint-Benoît',55.713,-21.034,1],['Saint-Leu',55.286,-21.170,1],['Saint-Louis',55.411,-21.286,1],['Saint-Pierre',55.478,-21.339,1],

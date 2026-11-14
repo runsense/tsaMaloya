@@ -1,6 +1,6 @@
 // ===== p52 : les bêtes Meshy sur la carte — cochons marrons en forêt, chiens aux camps et derrière les détachements, bœufs aux habitations, papangue posé qui guette =====
 // Chaque bête est un modèle animé (squelette posé à part). Elle marche quand elle avance, broute ou fouille quand elle s'arrête.
-const BETES={cochon:{f:'ani_cochon',h:.075,max:10},chien:{f:'ani_chien',h:.07,max:10},boeuf:{f:'ani_boeuf',h:.12,max:10},papangue:{f:'ani_papangue',h:.06,max:4}};
+const BETES={cochon:{f:'ani_cochon',h:.075,max:16},chien:{f:'ani_chien',h:.07,max:12},boeuf:{f:'ani_boeuf',h:.12,max:16},papangue:{f:'ani_papangue',h:.06,max:4}};
 const BETM={buf:{},att:{},pool:{},tp:performance.now()};
 function aniCharger(k){if(BETM.att[k])return;BETM.att[k]=1;meshyB64(BETES[k].f).then(t=>{const b=atob(t.trim()),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);BETM.buf[k]=u.buffer}).catch(()=>{BETM.buf[k]=false})}
 function aniNouveau(k){const o={pret:false};new THREE.GLTFLoader().parse(BETM.buf[k].slice(0),'',g=>{const r=g.scene;r.traverse(m=>{if(m.isMesh){m.frustumCulled=false;m.castShadow=false}});const box=new THREE.Box3().setFromObject(r),h=box.max.y-box.min.y||1;
@@ -10,10 +10,11 @@ function aniNouveau(k){const o={pret:false};new THREE.GLTFLoader().parse(BETM.bu
 function aniPlaces(k){const L=[];if(!S||S.fin||dist>=16)return L;const R2=dist*.8+3,now=performance.now()/1000;
  T.forEach(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;if(dx*dx+dz*dz>R2*R2)return;const o=S.t[t.i];if(!o||!o.s||t.bare)return;const h=s=>rndH(t.i*7.3+s);
   const tour=(r1,r2,sp,o0)=>{const u=now*sp+o0+.5*Math.sin(now*sp*2.3+o0);return [t.x+Math.cos(u)*r1,t.z+Math.sin(u)*r2,u]};
-  if(k==='cochon'&&t.forest&&t.alt>150&&t.alt<1600&&!o.c&&h(1)<.22){const [x,z]=tour(.4+h(2)*.3,.3+h(3)*.2,.05+h(4)*.04,h(5)*6);L.push({x,z})}
-  if(k==='chien'&&(o.b==='camp'||o.c)&&h(6)<.8){const [x,z]=tour(.35,.25,.12+h(7)*.05,h(8)*6);L.push({x,z})}
-  if(k==='boeuf'&&(o.c||(S.voieC&&o.b==='camp')||(o.vl||[]).some(v=>v.k==='etable'))&&S.year>1680){for(let i=0;i<2;i++){const [x,z]=tour(.5+i*.15,.35,.03+h(9+i)*.02,h(11+i)*6+i*2);L.push({x,z})}}
-  if(k==='papangue'&&t.forest&&t.alt>300&&t.alt<1900&&h(13)<.06)L.push({x:t.x+(h(14)-.5)*.6,z:t.z+(h(15)-.5)*.6,fixe:1,ry:h(16)*6.28,dy:.32})});
+  // une bande de cochons marrons : la laie devant, les autres à la file, les petits plus menus
+  if(k==='cochon'&&t.forest&&t.alt>150&&t.alt<1600&&!o.c&&h(1)<.2*fAb(t)){const n=2+Math.floor(h(17)*3);for(let j=0;j<n;j++){const [x,z]=tour(.42+h(2)*.25+(j%2)*.05,.32+h(3)*.15,.05+h(4)*.03,h(5)*6-j*.22);L.push({x,z,sc:j>1?.65:1})}}
+  if(k==='chien'&&(o.b==='camp'||o.c)&&h(6)<.8){const n=1+(h(18)<.5?1:0);for(let j=0;j<n;j++){const [x,z]=tour(.35+j*.04,.25,.12+h(7)*.05,h(8)*6-j*.35);L.push({x,z,sc:j?.85:1})}}
+  if(k==='boeuf'&&(o.c||(S.voieC&&o.b==='camp')||(o.vl||[]).some(v=>v.k==='etable'))&&S.year>1680){if(h(19)<.4){const n=2+Math.floor(h(21)*3);for(let i=0;i<n;i++){const [x,z]=tour(.5+(i%3)*.06,.35+(i%2)*.05,.03+h(9)*.015,h(11)*6-i*.16);L.push({x,z,sc:.9+h(20+i)*.2})}}}
+  if(k==='papangue'&&t.forest&&t.alt>300&&t.alt<1900&&h(13)<.06*fAb(t))L.push({x:t.x+(h(14)-.5)*.6,z:t.z+(h(15)-.5)*.6,fixe:1,ry:h(16)*6.28,dy:.32})});
  // un chien derrière chaque détachement
  if(k==='chien'&&typeof chas!=='undefined'&&chas){const M=new THREE.Matrix4(),P=new THREE.Vector3();for(let i=0;i<chas.count;i++){chas.getMatrixAt(i,M);P.setFromMatrixPosition(M);L.push({x:P.x-.25,z:P.z+.15})}}
  return L}
@@ -23,7 +24,7 @@ function aniPlaces(k){const L=[];if(!S||S.fin||dist>=16)return L;const R2=dist*.
   P.forEach((o,i)=>{if(!o.pret)return;const p=L[i];if(!p){o.g.visible=false;o.px=null;return}const y=Math.max(0,alt(p.x,p.z))*VX+(p.dy||.004);
    let ry=p.ry||0;if(!p.fixe&&o.px!=null){const dx=p.x-o.px,dz=p.z-o.pz;if(Math.hypot(dx,dz)>1e-5)ry=Math.atan2(-dz,dx);else ry=o.g.rotation.y}
    const d=o.px==null?0:Math.hypot(p.x-o.px,p.z-o.pz)/Math.max(dt,1e-3);o.px=p.x;o.pz=p.z;o.v+=(d-o.v)*Math.min(1,dt*3);
-   o.g.visible=true;o.g.position.set(p.x,y,p.z);o.g.rotation.y=ry;o.g.scale.setScalar(BETES[k].h/o.g.userData.h);
+   o.g.visible=true;o.g.position.set(p.x,y,p.z);o.g.rotation.y=ry;o.g.scale.setScalar(BETES[k].h*(p.sc||1)/o.g.userData.h);
    if(o.A.marche){const pas=BETES[k].h*.6,m=p.fixe?0:Math.min(1,o.v/(pas*.3+1e-5));o.A.marche.setEffectiveWeight(m);o.A.marche.timeScale=Math.max(.4,Math.min(2,o.v/(pas+1e-5)));if(o.A.broute)o.A.broute.setEffectiveWeight(1-m)}
    if(o.A.guet)o.A.guet.setEffectiveWeight(1);if(!fige)o.mx.update(dt)})})}catch(e){}}}
 

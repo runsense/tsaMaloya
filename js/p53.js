@@ -1,4 +1,4 @@
-// ===== p53 : les commandes à la manière de JC Conception (formes et typographie, pas ses couleurs) =====
+// ===== p53 : le style des commandes (formes et typographie, les couleurs restent celles du jeu) =====
 // Trois familles, selon leur rôle :
 //  · très utiles (ce qui engage la partie : boutons principaux, onglets, familles de construction) : cadre net, forme de pilule, Montserrat capitales espacées ;
 //  · ponctuelles (une action qu'on fait et qu'on oublie : secondaires, actions de liste, +/−) : sans cadre, juste le texte, souligné au survol ;

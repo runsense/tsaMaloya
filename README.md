@@ -23,4 +23,10 @@ En local, dans VS Code : ouvrir le dossier, installer l'extension **Live Server*
 
 Images satellite : Copernicus Sentinel-2 (ESA), données libres. Modèles 3D : générés avec Meshy, retravaillés pour le jeu.
 
-© Jean-Christophe Paris — tous droits réservés. Vous pouvez jouer librement ; le code, les modèles et les textes ne peuvent pas être réutilisés sans accord.
+## Fait avec Claude
+
+Le code du jeu a été écrit avec **Claude**, l'assistant d'Anthropic, à partir des idées, des choix historiques et des relectures de son auteur : la carte en relief, les modes Histoire, Jeu et Construction, les cinématiques, les petits jeux, l'intégration et l'animation des modèles 3D. L'auteur décide de ce que raconte le jeu ; Claude construit, teste et corrige.
+
+Vous aussi : [claude.ai](https://claude.ai).
+
+© L'auteur de TsaMaloya — tous droits réservés. Vous pouvez jouer librement ; le code, les modèles et les textes ne peuvent pas être réutilisés sans accord.
