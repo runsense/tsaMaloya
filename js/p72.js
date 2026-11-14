@@ -1,0 +1,115 @@
+// ===== p72 : le son du jeu — tout est synthétisé (Web Audio), aucun fichier à télécharger =====
+// Chaque moment du jeu (alerte, décès, kabar, chaque petit jeu…) joue le son choisi dans la « Table des sons » (SONCH).
+// Les instruments imitent ceux de l'île : roulèr, kayamb, pikèr, bobre (maloya) ; ravanne, triangle, maravanne (séga) ; contretemps et basse (seggae).
+// Les ambiances sont des couches de bruit filtré (mer, vent, pluie, grondement) avec leurs motifs : oiseaux, grillons, gouttes, tambours.
+const SND={ctx:null,on:true,vol:.55,amb:null,ambK:'',lastEv:null};
+try{const v=localStorage.getItem('tsa-son');if(v==='0')SND.on=false}catch(e){}
+function sndCtx(){if(SND.ctx)return SND.ctx;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;SND.ctx=new C();SND.out=SND.ctx.createGain();SND.out.gain.value=SND.on?SND.vol:0;
+ const comp=SND.ctx.createDynamicsCompressor();SND.out.connect(comp);comp.connect(SND.ctx.destination);
+ const n=SND.ctx.sampleRate*2,b=SND.ctx.createBuffer(1,n,SND.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;SND.bruit=b}catch(e){SND.ctx=null}return SND.ctx}
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{const c=sndCtx();if(c&&c.state==='suspended')c.resume()},{passive:true}));
+function sndPret(){const c=SND.ctx;return c&&c.state==='running'&&SND.on?c:null}
+// briques
+function sTon(f,d,o={}){const c=sndPret();if(!c)return;const t=c.currentTime+(o.t||0),g=c.createGain(),s=c.createOscillator();s.type=o.type||'sine';s.frequency.setValueAtTime(f,t);if(o.vers)s.frequency.exponentialRampToValueAtTime(o.vers,t+d);
+ const v=o.v||.3,a=o.a||.006;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0008,t+d);s.connect(g);
+ if(o.fl){const F=c.createBiquadFilter();F.type='lowpass';F.frequency.setValueAtTime(o.fl,t);if(o.flv)F.frequency.exponentialRampToValueAtTime(o.flv,t+d);g.connect(F);F.connect(SND.out)}else g.connect(SND.out);s.start(t);s.stop(t+d+.05)}
+function sBruit(d,o={}){const c=sndPret();if(!c)return;const t=c.currentTime+(o.t||0),s=c.createBufferSource();s.buffer=SND.bruit;s.loop=true;const F=c.createBiquadFilter();F.type=o.ft||'bandpass';F.frequency.value=o.f||1000;F.Q.value=o.q||1;const g=c.createGain(),v=o.v||.2;
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+(o.a||.004));if(o.tenir)g.gain.setValueAtTime(v,t+d-.4);g.gain.exponentialRampToValueAtTime(.0008,t+d);s.connect(F);F.connect(g);g.connect(SND.out);s.start(t,Math.random()*1.5);s.stop(t+d+.05)}
+const ton7=sTon,bruit7=sBruit;
+// ----- les instruments -----
+const I72={
+ rouler:(t,v=.5)=>{ton7(95,.38,{t,v,vers:52});bruit7(.07,{t,f:200,q:.8,v:v*.3})},
+ kayamb:(t,v=.16)=>bruit7(.1,{t,f:5200,q:1.4,v,a:.018}),
+ piker:(t,v=.25)=>bruit7(.035,{t,f:1900,q:9,v}),
+ bobre:(t,f=98)=>{ton7(f,.7,{t,type:'sawtooth',v:.22,fl:1600,flv:300});ton7(f*1.5,.35,{t:t+.02,type:'triangle',v:.05})},
+ ravanne:(t,v=.45)=>{ton7(120,.25,{t,v,vers:80});bruit7(.06,{t,f:900,q:1.2,v:v*.35})},
+ ravSlap:(t,v=.3)=>{bruit7(.05,{t,f:1600,q:2,v});ton7(240,.08,{t,v:v*.4})},
+ triangle:(t,v=.06)=>{ton7(2650,1,{t,v});ton7(3980,.7,{t,v:v*.6})},
+ maravanne:(t,v=.12)=>bruit7(.13,{t,f:4300,q:1.1,v,a:.03}),
+ skank:(t,root=196)=>{[1,1.26,1.5].forEach(m=>ton7(root*m,.12,{t,type:'square',v:.045,fl:2200}))},
+ basse:(t,f=65,d=.4)=>ton7(f,d,{t,type:'triangle',v:.42,fl:500}),
+ grosse:(t,v=.5)=>ton7(60,.3,{t,v,vers:40}),
+ ngoma:(t,v=.4,f=150)=>{ton7(f,.22,{t,v,vers:f*.7});bruit7(.04,{t,f:f*6,q:1.5,v:v*.3})},
+ cloche:(t,f=220,v=.25)=>[1,2.76,5.4].forEach((m,i)=>ton7(f*m,3.2/(i+1),{t,v:v/(i+1)}))};
+// ----- la bibliothèque : les mêmes clés que la Table des sons ; d = durée d'un tour (pour les boucles) -----
+const PRE72={
+ maloya68:{d:3.6,f:()=>{for(let m=0;m<3;m++){const b=m*1.2;for(let i=0;i<6;i++)I72.kayamb(b+i*.2,i%3===2?.16:.08);I72.rouler(b,.5);I72.rouler(b+.6,.32);I72.piker(b+.2);I72.piker(b+.8);I72.piker(b+1)}}},
+ malLent:{d:5.4,f:()=>{for(let m=0;m<3;m++){const b=m*1.8;I72.rouler(b,.45);I72.rouler(b+.9,.3);for(let i=0;i<6;i++)I72.kayamb(b+i*.3,.07)}I72.bobre(.2,87);I72.bobre(2,87);I72.bobre(3.8,78)}},
+ malRapide:{d:2.88,f:()=>{for(let m=0;m<4;m++){const b=m*.72;for(let i=0;i<6;i++)I72.kayamb(b+i*.12,i%3===2?.17:.09);I72.rouler(b,.55);I72.rouler(b+.36,.38);if(m%2)I72.rouler(b+.6,.3);I72.piker(b+.12);I72.piker(b+.48)}}},
+ rouler:{d:1.2,f:()=>{I72.rouler(0);I72.rouler(.35,.35);I72.rouler(.7,.55)}},
+ kayamb:{d:1.7,f:()=>{for(let i=0;i<14;i++)I72.kayamb(i*.12,i%3===2?.14:.07)}},
+ bobre:{d:2.2,f:()=>{I72.bobre(0,98);I72.bobre(.5,110);I72.bobre(1,98);I72.bobre(1.6,87)}},
+ sega:{d:3.6,f:()=>{for(let m=0;m<4;m++){const b=m*.9;I72.ravanne(b);I72.ravSlap(b+.45);for(let i=0;i<6;i++)I72.maravanne(b+i*.15,i%3===0?.14:.07);I72.triangle(b);I72.triangle(b+.45,.04)}}},
+ ravanneRoul:{d:1.8,f:()=>{for(let i=0;i<16;i++)I72.ravanne(i*.09,.12+i*.02);I72.ravanne(1.5,.6)}},
+ triangle:{d:1.2,f:()=>{I72.triangle(0,.08);I72.triangle(.5,.05);I72.triangle(.75,.05);I72.triangle(1,.08)}},
+ seggae:{d:4,f:()=>{const bl=[65,65,73,58];for(let m=0;m<4;m++){const b=m;I72.grosse(b+.5);I72.basse(b,bl[m],.45);I72.basse(b+.5,bl[m]*1.5,.3);I72.skank(b+.25,196);I72.skank(b+.75,196);I72.ravSlap(b+.75,.2);I72.maravanne(b,.06);I72.maravanne(b+.5,.06)}}},
+ skank:{d:3,f:()=>{for(let i=0;i<6;i++)I72.skank(i*.5+.25,i<3?196:175)}},
+ tambMoz:{d:3.6,f:()=>{for(let m=0;m<3;m++){const b=m*1.2;[0,.3,.5,.8,1].forEach((x,i)=>I72.ngoma(b+x,i===0?.5:.28,i%2?210:150));for(let i=0;i<12;i++)I72.piker(b+i*.1,i%3===0?.2:.08)}}},
+ lambi:{d:2.7,f:()=>{ton7(233,.9,{type:'sawtooth',v:.16,a:.12,vers:220,fl:900});ton7(233,1.6,{t:1.05,type:'sawtooth',v:.18,a:.12,vers:207,fl:900})}},
+ cloche:{d:3,f:()=>{I72.cloche(0,196);I72.cloche(1.6,196,.15)}},
+ clocheGrave:{d:3,f:()=>{I72.cloche(0,98,.22);ton7(103,2.4,{v:.08,type:'sawtooth',fl:400})}},
+ coeur:{d:1,f:()=>{ton7(62,.18,{v:.5,vers:45});ton7(58,.2,{t:.28,v:.38,vers:42})}},
+ sec:{d:.4,f:()=>{ton7(180,.09,{type:'square',v:.12,fl:1200});ton7(150,.09,{t:.16,type:'square',v:.12,fl:1200})}},
+ carillon:{d:1.3,f:()=>[784,988,1175,1568].forEach((f,i)=>ton7(f,.9,{t:i*.11,type:'triangle',v:.09}))},
+ plume:{d:1,f:()=>{bruit7(.25,{f:3000,q:.6,v:.06,a:.08});I72.cloche(.1,392,.07)}},
+ conte:{d:2,f:()=>{for(let i=0;i<6;i++)I72.kayamb(i*.09,.06);ton7(523,1.4,{t:.2,type:'triangle',v:.07,a:.3});ton7(659,1.4,{t:.55,type:'triangle',v:.06,a:.3})}},
+ corne:{d:1.5,f:()=>{ton7(147,1.2,{type:'triangle',v:.12,a:.2});ton7(220,1.2,{t:.25,type:'triangle',v:.09,a:.2})}},
+ roulerVote:{d:1.2,f:()=>{I72.rouler(0,.35);I72.rouler(.35,.35);I72.rouler(.7,.5)}},
+ tick:{d:.1,f:()=>ton7(1400,.06,{type:'triangle',v:.06})},
+ tonnerre:{d:2.6,f:()=>{bruit7(2.6,{ft:'lowpass',f:220,q:.4,v:.5,a:.05});ton7(48,2,{v:.3,vers:30})}},
+ gronde:{d:4,f:()=>{bruit7(4,{ft:'lowpass',f:110,q:.5,v:.35,a:.8});ton7(36,4,{v:.25,a:.8,vers:30})}},
+ apotheose:{d:1.6,f:()=>{[392,494,587,784].forEach((f,i)=>ton7(f,1.3,{t:i*.13,type:'triangle',v:.1}));for(let i=0;i<10;i++)I72.kayamb(i*.12,.07);I72.rouler(.55,.4)}},
+ silence:{d:1,f:()=>{}}};
+// les sons « de nature » sont des ambiances en couches, pas des motifs à boucler
+const PROFIL={mer:'carte',grillons:'nuit',vent:'cyclone',tonnerre:'cyclone',volcan:'volcan',gouttes:'galeries',tambGuerre:'bataille',silence:'silence'};
+// ----- les choix de la Table des sons (enregistrés le 14/11/2026 ; « __sample » = un enregistrement déposé, à intégrer) -----
+const SONCH={alerte:'lambi',deces:'cloche',decesDem:'clocheGrave',faim:'coeur',bras:'sec',naissance:'carillon',info:'tick',
+ evArchive:'plume',evConte:'conte',evDecouverte:'carillon',evMonde:'corne',evVote:'roulerVote',kabar:'maloya68',cyclone:'tonnerre',victoire:'sega',
+ ambJour:'mer',ambNuit:'grillons',ambCyclone:'vent',ambSurvie:'mer',genese:'volcan',
+ jGaleries:'gouttes',jBataille:'tambGuerre',jCommando:'grillons',jDuel:'maloya68',jEchecs:'malLent',jDonjon:'gouttes',jMission:'mer',jCourse:'vent',jChasse:'mer'};
+function jouerMoment(k){try{const p=SONCH[k];if(!p||!sndPret())return;if(PRE72[p]){PRE72[p].f();return}if(p==='volcan')PRE72.gronde.f();else if(p==='vent'||p==='tonnerre')PRE72.tonnerre.f()}catch(e){}}
+function sJouer(k){try{if(PRE72[k]&&sndPret())PRE72[k].f()}catch(e){}}
+// ----- ambiances en boucle -----
+function ambCouche(ft,f,q){const c=SND.ctx,s=c.createBufferSource();s.buffer=SND.bruit;s.loop=true;const F=c.createBiquadFilter();F.type=ft;F.frequency.value=f;F.Q.value=q;const g=c.createGain();g.gain.value=0;s.connect(F);F.connect(g);g.connect(SND.out);s.start(0,Math.random()*1.5);return {s,F,g}}
+function ambInit(){if(SND.amb||!SND.ctx)return;SND.amb={mer:ambCouche('lowpass',420,.6),vent:ambCouche('bandpass',520,.7),pluie:ambCouche('highpass',2600,.4),grave:ambCouche('lowpass',90,.6)}}
+const AMB={carte:{mer:.10,vent:.025,ois:1},nuit:{mer:.08,vent:.015,gr:1},cyclone:{mer:.16,vent:.32,pluie:.22,grave:.06},volcan:{mer:.05,vent:.02,grave:.34},cine:{mer:.12,vent:.04},
+ galeries:{vent:.03,grave:.16,gouttes:1},bataille:{vent:.08,grave:.05,tamb:1},foret:{vent:.05,ois:1},doux:{mer:.03,vent:.01},silence:{}};
+// le moment courant : un petit jeu, un kabar, le prologue, le cyclone, la nuit ou le jour
+SND.jeu=null;SND.kabarJ=0;SND.volcanJ=0;
+function momentCourant(){try{const now=performance.now();if(SND.jeu&&window.BTUON)return SND.jeu;if(!window.BTUON)SND.jeu=null;
+ if(now<SND.volcanJ)return 'genese';if(typeof CINE!=='undefined'&&CINE)return 'cine';if(now<SND.kabarJ)return 'kabar';
+ const k=$('kons');if(k&&!k.hidden)return 'ambSurvie';if(typeof S==='undefined'||!S)return 'ambJour';
+ if(typeof CYCV!=='undefined'&&CYCV&&CYCV.I>.2)return 'ambCyclone';
+ const ph=typeof jourPh==='function'?jourPh():.4;return (ph<.08||ph>.7)?'ambNuit':'ambJour'}catch(e){return 'ambJour'}}
+let ambT=0,boucleT=0;setInterval(()=>{const c=sndPret();if(!c)return;ambInit();const m=momentCourant();SND.ambK=m;const p=m==='cine'?'mer':(SONCH[m]||'mer');
+ const musique=!PROFIL[p]&&PRE72[p];const A=musique?AMB.doux:(m==='cine'?AMB.cine:AMB[PROFIL[p]]||AMB.carte),t=c.currentTime;
+ ['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer'||n==='vent')v*=1+.35*Math.sin(t*(n==='mer'?.5:.23)+(n==='vent'?2:0));L.g.gain.setTargetAtTime(v,t,.6)});
+ SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520,t,.4);
+ ambT++;const now=performance.now();
+ if(musique){if(now>=boucleT){PRE72[p].f();boucleT=now+PRE72[p].d*1000-60}return}boucleT=0;if(ambT%4)return;const q=ambT/4;
+ if(A.ois&&Math.random()<.18){const f=2200+Math.random()*1800;for(let i=0;i<2+Math.floor(Math.random()*3);i++)ton7(f,.09,{t:i*.13,vers:f*(1.2+Math.random()*.3),v:.025})}
+ if(A.gr&&q%2===0){for(let i=0;i<4;i++)ton7(4300,.035,{t:i*.07,v:.012,type:'triangle'})}
+ if(A.gouttes&&Math.random()<.4){const f=900+Math.random()*900;ton7(f,.18,{vers:f*.6,v:.05})}
+ if(A.tamb&&q%4===0){I72.rouler(0,.28);I72.rouler(.5,.2);I72.rouler(.75,.28)}
+ if(PROFIL[p]==='volcan'&&Math.random()<.3)bruit7(2.2,{ft:'lowpass',f:110,q:.5,v:.18,a:.8});
+ if(PROFIL[p]==='cyclone'&&m==='ambCyclone'&&Math.random()<.05)PRE72.tonnerre.f();
+},250);
+// ----- les branchements -----
+{const t0=toast;toast=function(m){const r=t0.apply(this,arguments);try{if(/naissance/i.test(m||''))jouerMoment('naissance');else jouerMoment('info')}catch(e){}return r}}
+{const md=modal;modal=function(){const r=md.apply(this,arguments);try{if(!S||!S.evq||!S.evq.length)return r;const id=S.evq[0];if(id===SND.lastEv)return r;SND.lastEv=id;const e=EV[id]||{},tag=e.tag||'',tx=((e.t||'')+' '+(typeof e.b==='string'?e.b:'')).toLowerCase();
+ if(/kabar|maloya|moringue|tambour|tsa mal oya/.test(tx)){SND.kabarJ=performance.now()+14000;boucleT=0}
+ if(/cyclone|ouragan|tempête/.test(tx))jouerMoment('cyclone');
+ else if(tag==='Archive')jouerMoment('evArchive');else if(/Conte|Mythe|Imaginaire|Mystique|Mémoire/.test(tag))jouerMoment('evConte');else if(tag==='Découverte')jouerMoment('evDecouverte');else if(/Monde|Mer|Comptoir/.test(tag))jouerMoment('evMonde');else if(tag==='Vote')jouerMoment('evVote');else jouerMoment('evArchive')}catch(e){}return r}}
+{const al=alerte;alerte=function(){const r=al.apply(this,arguments);try{const n=performance.now();if(!SND.lamb||n-SND.lamb>12000){SND.lamb=n;jouerMoment('alerte')}}catch(e){}return r}}
+{const ld=lettreDeces;lettreDeces=function(titre,txt,dem){const r=ld.apply(this,arguments);jouerMoment(dem?'decesDem':'deces');return r}}
+{const ka=kAlerteBras;kAlerteBras=function(){const r=ka.apply(this,arguments);jouerMoment('bras');return r}}
+setInterval(()=>{try{if(faimNiv()>=3)jouerMoment('faim')}catch(e){}},5000);
+{const cy=cyclone;cyclone=function(){const r=cy.apply(this,arguments);jouerMoment('cyclone');return r}}
+{const g=genese;genese=function(done){SND.volcanJ=performance.now()+60000;jouerMoment('genese');return g.call(this,function(){SND.volcanJ=0;if(done)done.apply(this,arguments)})}}
+{const ap=apotheose;apotheose=function(){jouerMoment('victoire');return ap.apply(this,arguments)}}
+{const ij=introJeu;introJeu=function(o,go){const s=((o&&o.sur)||'')+' '+((o&&o.t)||'');const k=/Labyrinthe/i.test(s)?'jGaleries':/Bataille/i.test(s)?'jBataille':/Commando/i.test(s)?'jCommando':/Duel/i.test(s)?'jDuel':/Échecs/i.test(s)?'jEchecs':/Donjon/i.test(s)?'jDonjon':/Mission/i.test(s)?'jMission':/course|songe/i.test(s)?'jCourse':'jChasse';
+ return ij.call(this,o,function(ok){if(ok){SND.jeu=k;boucleT=0}return go.apply(this,arguments)})}}
+{const j=journal;journal=function(m){const r=j.apply(this,arguments);try{if(/kabar|roulèr|maloya/i.test(m||'')){SND.kabarJ=performance.now()+12000;boucleT=0}if(/naissance/i.test(m||''))jouerMoment('naissance')}catch(e){}return r}}
+// ----- le bouton son, à côté de « Satellite » ; et dans la Survie -----
+function sndBasculer(){SND.on=!SND.on;try{localStorage.setItem('tsa-son',SND.on?'1':'0')}catch(e){}const c=sndCtx();if(c){if(c.state==='suspended')c.resume();SND.out.gain.setTargetAtTime(SND.on?SND.vol:0,c.currentTime,.05)}document.querySelectorAll('.sndP').forEach(b=>b.textContent=SND.on?'🔊 Son':'🔇 Son')}
+setInterval(()=>{try{[$('fc'),document.querySelector('#kons header')].forEach(h=>{if(!h||h.querySelector('.sndP'))return;const s=document.createElement('span');s.className='pill sndP';s.style.cursor='pointer';s.title='Couper ou remettre le son du jeu';s.textContent=SND.on?'🔊 Son':'🔇 Son';s.onclick=e=>{e.stopPropagation();sndBasculer()};h.appendChild(s)})}catch(e){}},800);
