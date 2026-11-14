@@ -1,0 +1,87 @@
+
+// ===== Construction, deuxième forme (comme Frostpunk 2) : l'île en grandes régions, où l'on envoie des expéditions ; la ville vue de près, entourée de ses ressources =====
+// ce fichier redéfinit la carte et le panneau du mode Construction ; le reste (factions, conseil, cyclone, années) ne change pas
+let KREG=null;
+function kRegions(){if(KREG)return KREG;KREG={};T.forEach(t=>{const k=kReg(t);(KREG[k]=KREG[k]||{k,sect:t.sect,pal:t.pal,T:[]}).T.push(t)});
+ Object.values(KREG).forEach(r=>{r.cx=r.T.reduce((s,t)=>s+t.x,0)/r.T.length;r.cz=r.T.reduce((s,t)=>s+t.z,0)/r.T.length;const n=r.T.map(t=>lieuDe(t)).filter(Boolean);r.nom=n[0]||r.sect+', '+r.pal.toLowerCase();
+  r.res={bois:r.T.filter(t=>t.forest).length,pierre:r.T.filter(t=>KACT.pierre.ok(t)).length,gibier:r.T.filter(t=>t.forest).length,culture:r.T.filter(t=>(t.slope||0)<10&&!t.bare).length,peche:r.T.filter(t=>KACT.peche.ok(t)).length}});return KREG}
+// les voisins d'une case, par ses coordonnées de grille
+let KVOIS=null;function kVoisins(t){if(!KVOIS){KVOIS={};T.forEach(u=>KVOIS[u.q+','+u.r]=u)}return [[1,0],[-1,0],[0,1],[0,-1],[1,-1],[-1,1]].map(([a,b])=>KVOIS[(t.q+a)+','+(t.r+b)]).filter(Boolean)}
+function kCol(){return (K.col||[])[K.cur||0]}
+function kAnneau(t,c){c=c||kCol();return c&&hd(T[c.i],t)<=2}
+// mise à niveau des parties commencées avant
+function kPrep(){if(!K)return;if(!K.col){const i=Object.keys(K.b).find(i=>(K.b[i]||[]).some(x=>x.f===K.joueur));K.col=i!=null?[{i:+i,nom:kLieu(T[i])}]:[];K.cur=0}K.vue=K.vue||'ville';K.regVu=K.regVu||{};K.exps=K.exps||[];
+ K.col.forEach(c=>{K.regVu[kReg(T[c.i])]=1;T.forEach(t=>{if(hd(T[c.i],t)<=2)K.vu[t.i]=1})});Object.keys(K.vu).forEach(i=>{if(T[i]&&K.vu[i]&&K.col.some(c=>hd(T[c.i],T[i])<=2))K.regVu[kReg(T[i])]=1})}
+{const kn=kNouveau;kNouveau=function(f,b){kn(f,b);const sp=T.find(t=>lieuDe(t)==='Saint-Paul'),mf=T.find(t=>lieuDe(t)==='Cimendef');const c=f==='c'?sp:mf;K.col=[{i:c.i,nom:f==='c'?'Saint-Paul':'Le camp de Cimendef'}];K.cur=0;K.vue='ville';K.regVu={};K.vu={};K.exps=[];kPrep()}}
+{const ko=kOuvrir;kOuvrir=function(){ko();if(K){kPrep();kRendu()}}}
+// bâtir : seulement dans l'anneau de la ville, et selon l'étage
+function kBatir(t){const f=K.joueur;if(K.vue!=='ville'||!kAnneau(t))return [];return Object.entries(KBAT).filter(([k,b])=>b.f===f&&b.z.includes(t.pal)&&(!b.an||K.an>=b.an)&&!(K.b[t.i]||[]).some(x=>x.k===k)&&(k!=='port'||KACT.peche.ok(t))&&(k!=='ville'||T.filter(u=>hd(u,t)<=2&&(K.b[u.i]||[]).some(x=>x.k==='habitation')).length>=2))}
+function kLoin(t){return (K.col||[]).some(c=>hd(T[c.i],t)<=2)?1:.5}
+// les expéditions : on envoie du monde reconnaître une région ; il revient l'année d'après, avec ce qu'il a vu
+function kExpedier(rk,n){if(kLibres()<n){toast('Pas assez de bras libres.');return}if(K.res.viv<Math.ceil(n/2)){toast('Il faut '+Math.ceil(n/2)+' vivres pour la route.');return}K.res.viv-=Math.ceil(n/2);K.exps.push({rk,n,ret:K.an+1});kLog('Une expédition de '+n+' part vers '+kRegions()[rk].nom+'.');kSauve();kRendu()}
+function kFonder(rk){const R=kRegions()[rk],z=KFAC[K.joueur==='c'?'c':'m'].zone;const L=R.T.filter(t=>z.includes(t.pal)&&!t.bare&&!(K.b[t.i]||[]).length&&!K.col.some(c=>hd(T[c.i],t)<4)).sort((a,b)=>(a.slope||0)-(b.slope||0));if(!L.length){toast('Pas de place pour une ville dans cette région.');return}
+ if(K.res.bois<6||kLibres()<10){toast('Il faut 6 bois et 10 bras libres pour fonder.');return}K.res.bois-=6;const t=L[0];const k=K.joueur==='c'?'habitation':'camp';kPose(t.i,k,K.joueur);K.col.push({i:t.i,nom:kLieu(t)});K.cur=K.col.length-1;K.trav['bat_'+k]=undefined;kMettre(t.i,'bat_'+k,10);T.forEach(u=>{if(hd(t,u)<=2)K.vu[u.i]=1});K.vue='ville';kLog('Fondation : '+kLieu(t)+'.');kSauve();kRendu()}
+{const ka=kAnnee;kAnnee=function(){ka();if(!K.exps)return;const rev=[];K.exps=K.exps.filter(e=>{if(K.an<e.ret)return true;const R=kRegions()[e.rk];K.regVu[e.rk]=1;R.T.forEach(t=>K.vu[t.i]=1);
+ const adv=R.T.some(t=>(K.b[t.i]||[]).some(x=>x.f!==K.joueur));let pertes=0;if(adv&&Math.random()<.35){pertes=Math.max(1,Math.round(e.n*.2));const f=K.fac[kMesFacs()[0]];if(f)f.pop=Math.max(0,f.pop-pertes);K.tension+=5}
+ kLog('Retour d’expédition, '+R.nom+' : '+R.res.bois+' lieux de bois, '+R.res.pierre+' de pierre, '+R.res.culture+' de terres à cultiver'+(R.res.peche?', '+R.res.peche+' de pêche':'')+(adv?'. '+(K.joueur==='c'?'Des camps marrons':'Des habitations')+' y sont':'')+(pertes?'. '+pertes+' ne sont pas revenus':'')+'.');return false});kSauve()}}
+// l'occupation des bras compte aussi ceux partis en expédition
+{const ko=kOccupes;kOccupes=function(){return ko()+((K&&K.exps)||[]).reduce((s,e)=>s+e.n,0)}}
+
+// ----- l'écran -----
+function kRendu(){const d=$('kons');if(!d)return;kPrep();const R=K.res,c=kCol();
+ d.innerHTML='<header><b style="font-size:20px">'+K.an+'</b>'+[['Vivres',R.viv],['Bois',R.bois],['Pierre',R.pierre],['Commerce',R.com],['Savoir',R.sav]].map(([n,v])=>'<span><small>'+n+'</small> <b>'+Math.round(v)+'</b></span>').join('')+'<span><small>Bras libres</small> <b>'+kLibres()+'</b> / '+kBras()+'</span><span><small>Tension</small> <span style="display:inline-block;width:70px;height:7px;background:#3a3226;border-radius:4px;vertical-align:middle"><span style="display:block;height:7px;width:'+Math.min(100,K.tension)+'%;background:#e87b5a;border-radius:4px"></span></span></span><span style="flex:1"></span>'+
+  '<span class="kTabs">'+(K.col||[]).map((x,n)=>'<button class="bt'+(K.vue==='ville'&&n===K.cur?'':' sec')+'" data-v="'+n+'">'+(K.joueur==='c'?'🏠 ':'🔥 ')+x.nom+'</button>').join('')+'<button class="bt'+(K.vue==='ile'?'':' sec')+'" id="kIle">🗺️ L’île</button></span><button class="bt" id="kN">Année suivante ⏎</button><button class="bt sec" id="kQ">Quitter</button></header><div class="kb"><canvas id="kC"></canvas><aside id="kA"></aside></div>';
+ $('kN').onclick=()=>kSuite();$('kQ').onclick=kFermer;$('kIle').onclick=()=>{K.vue='ile';KVUE.sel=null;KVUE.reg=null;kRendu()};d.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{K.vue='ville';K.cur=+b.dataset.v;KVUE.sel=null;kRendu()});kPanneau();kCarte()}
+function kCarte(cu){const cv=$('kC');if(!cv)return;const W=cv.clientWidth,H=cv.clientHeight,dpr=devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;const x=cv.getContext('2d');x.scale(dpr,dpr);x.fillStyle='#173447';x.fillRect(0,0,W,H);
+ const ville=K.vue==='ville'&&kCol(),c=ville?T[kCol().i]:null,L=ville?T.filter(t=>hd(c,t)<=3):T,xs=L.map(t=>t.x),zs=L.map(t=>t.z),x0=Math.min(...xs)-1.5,x1=Math.max(...xs)+1.5,z0=Math.min(...zs)-1.5,z1=Math.max(...zs)+1.5,k=Math.min(W/(x1-x0),H/(z1-z0)),cx=(x0+x1)/2,cz=(z0+z1)/2,P=t=>[W/2+(t.x-cx)*k,H/2+(t.z-cz)*k];
+ const dv=(()=>{const a=T[0],v=kVoisins(a)[0];return v?Math.hypot(v.x-a.x,v.z-a.z):1.73})(),Rh=dv/Math.sqrt(3)*k;KVUE.P=P;KVUE.k=k;
+ const hex=(a,b,r)=>{x.beginPath();for(let i=0;i<6;i++){const an=Math.PI/6+i*Math.PI/3;x.lineTo(a+Math.cos(an)*r,b+Math.sin(an)*r)}x.closePath()};
+ const teinte=(t,sombre)=>{const fo=(K.foret[t.i]||0)/100,al=Math.min(1,(t.alt||0)/2600);let col=t.bare?[90,80,70]:[Math.round(120-60*fo+80*al),Math.round(130+20*fo+40*al),Math.round(70+20*fo+90*al)];if(sombre)col=col.map(v=>Math.round(v*.3));return 'rgb('+col.join(',')+')'};
+ const R=kRegions(),hov=KVUE.hreg;
+ if(!ville){
+  // l'île : les régions, avec leurs frontières ; on ne voit que celles reconnues
+  T.forEach(t=>{const [a,b]=P(t),vu=K.regVu[kReg(t)];hex(a,b,Rh*1.02);x.fillStyle=teinte(t,!vu);x.fill();if(kReg(t)===hov||kReg(t)===KVUE.reg){x.fillStyle=kReg(t)===KVUE.reg?'rgba(255,230,150,.28)':'rgba(255,255,255,.12)';x.fill()}});
+  x.strokeStyle='rgba(20,15,10,.9)';x.lineWidth=2;T.forEach(t=>{const [a,b]=P(t);kVoisins(t).forEach(v=>{if(kReg(v)===kReg(t)||v.i<t.i)return;const [c2,d2]=P(v),mx=(a+c2)/2,my=(b+d2)/2,nx=-(d2-b),ny=c2-a,l=Math.hypot(nx,ny)||1,h=Rh/2;x.beginPath();x.moveTo(mx+nx/l*h,my+ny/l*h);x.lineTo(mx-nx/l*h,my-ny/l*h);x.stroke()})});
+  // les établissements connus, les villes, les expéditions en route
+  T.forEach(t=>{const B=K.b[t.i];if(!B||!B.length||!K.regVu[kReg(t)])return;const [a,b]=P(t);x.font=Math.max(9,Rh*1.2)+'px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText(KBAT[B[B.length-1].k].ic,a,b)});
+  x.textAlign='center';Object.values(R).forEach(r=>{const [a,b]=P({x:r.cx,z:r.cz}),vu=K.regVu[r.k];x.font=(vu?'bold ':'')+'11px system-ui';x.fillStyle=vu?'#f0e6d0':'rgba(240,230,208,.45)';x.fillText(vu?r.nom:'?',a,b);if(K.exps.some(e=>e.rk===r.k)){x.fillText('🧭',a,b+14)}});
+  (K.col||[]).forEach(col=>{const [a,b]=P(T[col.i]);x.font='bold 12px system-ui';x.fillStyle='#ffd36a';x.fillText(col.nom,a,b-Rh*1.6)})}
+ else{
+  // la ville : son anneau de quartiers, et autour, ce qu'on peut exploiter
+  L.forEach(t=>{const [a,b]=P(t),d=hd(c,t),vu=K.vu[t.i];hex(a,b,Rh*.97);x.fillStyle=teinte(t,!vu);x.fill();if(d<=2){x.lineWidth=d===0?3:1.5;x.strokeStyle=d===0?'#ffd36a':'rgba(255,211,106,.45)';x.stroke()}
+   if(!vu)return;const B=K.b[t.i]||[],tr=K.trav[t.i]||{};x.textAlign='center';x.textBaseline='middle';
+   if(B.length){x.font=Math.round(Rh*.8)+'px system-ui';x.fillText(KBAT[B[B.length-1].k].ic,a,b-Rh*.15);x.font='bold '+Math.max(10,Rh*.22)+'px system-ui';x.fillStyle='#f0e6d0';x.fillText(B.map(z=>KBAT[z.k].n).join(' · '),a,b+Rh*.45);if(B.some(z=>z.abime)){x.fillStyle='#e87b5a';x.fillText('abîmé',a,b+Rh*.68)}}
+   else if(d<=2){const A=Object.entries(KACT).filter(([q,A])=>A.ok(t)).map(([q,A])=>A.ic).join('');x.globalAlpha=.75;x.font=Math.round(Rh*.38)+'px system-ui';x.fillText(A,a,b-Rh*.1);x.globalAlpha=1}
+   const n=Object.values(tr).reduce((s,v)=>s+v,0);if(n){x.font='bold '+Math.max(10,Rh*.26)+'px system-ui';x.fillStyle='#fff';x.fillText('👥 '+n,a,b+Rh*.25+(B.length?Rh*.1:0))}
+   if(KVUE.sel===t.i){hex(a,b,Rh*.97);x.lineWidth=3;x.strokeStyle='#fff';x.stroke()}});
+  x.font='bold 15px system-ui';x.fillStyle='#ffd36a';x.textAlign='left';x.fillText(kCol().nom+' et ses environs',12,22);x.font='12px system-ui';x.fillStyle='#f0e6d0';x.fillText('Le cercle doré : ce que la ville peut bâtir et exploiter. Au-delà : ce qu’on voit des environs.',12,40)}
+ // le cyclone de l'année, en passant
+ if(K.cyc&&cu!=null){const cc=K.cyc,px=cc.a.x+(cc.b.x-cc.a.x)*cu,pz=cc.a.z+(cc.b.z-cc.a.z)*cu,[a,b]=P({x:px,z:pz}),r=k*(10+cc.f*3),rot=cu*14;x.save();x.translate(a,b);x.rotate(rot);for(let i=0;i<4;i++){x.beginPath();for(let j=0;j<80;j++){const rr=r*.08+j/80*r,an=i*Math.PI/2+Math.log(rr/(r*.08))*2.1;x.lineTo(Math.cos(an)*rr,Math.sin(an)*rr)}x.strokeStyle='rgba(240,245,250,.55)';x.lineWidth=r*.12;x.stroke()}x.restore()}
+ const tAt=e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;let best=null,bd=1e9;L.forEach(t=>{const [a,b]=P(t),d=Math.hypot(a-mx,b-my);if(d<bd){bd=d;best=t}});return bd<Rh?best:null};
+ cv.onmousemove=e=>{if(ville)return;const t=tAt(e),r=t?kReg(t):null;if(r!==KVUE.hreg){KVUE.hreg=r;kCarte()}};cv.onwheel=null;cv.onpointerdown=cv.onpointermove=cv.onpointerup=null;
+ cv.onclick=e=>{const t=tAt(e);if(!t)return;if(ville){KVUE.sel=t.i}else{KVUE.reg=kReg(t);KVUE.sel=t.i}kPanneau();kCarte()};
+ cv.ondblclick=e=>{if(ville)return;const t=tAt(e);if(!t)return;const n=(K.col||[]).findIndex(c=>kReg(T[c.i])===kReg(t));if(n>=0){K.vue='ville';K.cur=n;kRendu()}}}
+function kPanneau(){const A=$('kA');if(!A)return;let h='';if(K.fin)h+='<div class="pc" style="border-color:#e8be5a"><h4>Fin</h4>'+K.fin+'<br><button class="bt" id="kRe">Recommencer</button></div>';
+ if(K.vue==='ile'){const rk=KVUE.reg,R=rk&&kRegions()[rk];
+  if(R){const vu=K.regVu[rk],adv=R.T.some(t=>(K.b[t.i]||[]).some(x=>x.f!==K.joueur)),moi=(K.col||[]).some(c=>kReg(T[c.i])===rk),enr=K.exps.some(e=>e.rk===rk&&!e.v2);
+   h+='<div class="pc"><h4>'+(vu?R.nom:'Région inconnue')+'</h4><small>'+R.sect+' · '+R.pal+' · '+R.T.length+' lieux</small><br>'+(vu?'<small>Bois '+R.res.bois+' · pierre '+R.res.pierre+' · terres '+R.res.culture+' · gibier '+R.res.gibier+(R.res.peche?' · pêche '+R.res.peche:'')+'</small><br>'+(adv?'<small style="color:#e87b5a">'+(K.joueur==='c'?'Des camps marrons y sont.':'Des habitations y sont.')+'</small><br>':''):'<small>Personne n’y est allé. Une expédition dira ce qu’il y a.</small><br>')+
+    (enr?'<small>🧭 Une expédition y est en route.</small>':'')+(!K.fin&&!enr?'<div style="margin-top:6px"><b>Envoyer une expédition</b> <small>(elle marche sur la carte ; la moitié de son nombre en vivres)</small><br>'+[5,10,20].map(n=>'<button class="bt'+(kLibres()>=n?'':' sec')+'" data-x="'+n+'">'+n+' personnes</button>').join('')+'</div>':'')+
+    (vu&&!moi&&!K.fin?'<div style="margin-top:6px"><button class="bt" id="kFo">Fonder '+(K.joueur==='c'?'une ville':'un camp')+' ici</button> <small>6 bois, 10 personnes s’y installent</small></div>':'')+(moi?'<div style="margin-top:6px"><button class="bt" id="kGo">Voir la ville</button></div>':'')+'</div>'}
+  else h+='<div class="pc"><h4>L’île</h4><small>Touchez une région pour la voir, y envoyer une expédition ou y fonder une '+(K.joueur==='c'?'ville':'camp')+'. Deux fois sur une région où vous êtes : la ville.</small></div>'}
+ else{const t=KVUE.sel!=null?T[KVUE.sel]:null;
+  if(t){const B=K.b[t.i]||[],vu=K.vu[t.i];h+='<div class="pc"><h4>'+kLieu(t)+'</h4><small>'+t.pal+' · '+t.biome+' · '+Math.round(t.alt)+' m · forêt '+Math.round(K.foret[t.i]||0)+' %'+(kAnneau(t)?'':' · hors de portée de la ville')+'</small><br>'+(vu?(B.length?B.map(x=>KBAT[x.k].ic+' '+KBAT[x.k].n+(x.abime?' <small>(abîmé)</small>':'')).join('<br>'):'<small>Rien de bâti.</small>'):'<small>Inconnu.</small>')+
+   (vu&&!K.fin&&kAnneau(t)?'<div style="margin-top:4px">'+kBatir(t).map(([k,b])=>'<button class="bt'+(kPeut(b.c)?'':' sec')+'" data-k="'+k+'" title="'+b.d+'">'+b.ic+' '+b.n+' <small>'+Object.entries(b.c).map(([r,v])=>v+' '+r).join(', ')+'</small></button>').join('')+(B.some(x=>x.abime&&x.f===K.joueur)?'<button class="bt" id="kRep">Réparer (2 bois)</button>':'')+'</div>'+kTravHtml(t):'')+'</div>'}
+  else{const c=kCol();h+='<div class="pc"><h4>'+(c?c.nom:'La ville')+'</h4><small>Touchez un lieu du cercle doré pour y bâtir un quartier, ou y envoyer des bras exploiter ce qu’il offre : bois, pierre, gibier, terres, pêche.</small></div>'}}
+ // échanges, conseil, factions, personnages, chronique
+ h+=(K.res.com>=3&&!K.fin?'<div class="pc"><h4>Les échanges</h4><button class="bt" id="kEch">Échanger 3 commerce contre 4 vivres</button></div>':'');
+ h+='<div class="pc"><h4>Le conseil</h4>'+(K.idees.length?K.idees.map((I,n)=>'<div style="margin:4px 0"><b style="color:'+(KFAC[I.f]||{}).col+'">'+(KFAC[I.f]||{}).n+'</b> proposent : <b>'+I.x[0]+'</b><br><small>'+I.x[1]+(I.x[4]?' · '+I.x[4]:'')+'</small><br>'+(I.choix?'<button class="bt" data-c="'+n+'" data-vv="app">Appliquer (utopie)</button><button class="bt sec" data-c="'+n+'" data-vv="ref">Refuser (histoire vraie)</button><button class="bt sec" data-c="'+n+'" data-vv="souv">Bourbon souveraine (utopie)</button>':'<button class="bt" data-i="'+n+'" data-o="1">Adopter</button><button class="bt sec" data-i="'+n+'" data-o="0">Refuser</button>')+'</div>').join(''):'<small>Rien à décider cette année.</small>')+'</div>';
+ h+='<div class="pc"><h4>Les factions</h4>'+kFacs().map(f=>'<div style="display:flex;gap:6px;align-items:center;margin:2px 0"><b style="width:150px;color:'+KFAC[f].col+'">'+KFAC[f].n+'</b><small style="width:60px">'+K.fac[f].pop+' âmes</small><span style="flex:1;height:6px;background:#3a3226;border-radius:3px"><span style="display:block;height:6px;width:'+K.fac[f].conf+'%;background:'+KFAC[f].col+';border-radius:3px"></span></span><small>'+Math.round(K.fac[f].conf)+'</small></div>').join('')+'<small class="note">La barre : leur confiance en vos décisions.</small></div>';
+ h+='<div class="pc"><h4>Les personnages</h4>'+K.notables.map(p=>'<small><b>'+p.n+'</b> · '+p.r+' · '+(KFAC[p.f]||{}).n+' · '+Object.entries(p.s).map(([k,v])=>k+' '+v).join(', ')+'</small>').join('<br>')+'</div>';
+ h+='<div class="pc"><h4>La chronique</h4>'+K.log.slice(-10).reverse().map(l=>'<small>'+l.y+' · '+l.m+'</small>').join('<br>')+'</div>';
+ A.innerHTML=h;
+ A.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k,B=KBAT[k];if(!kPeut(B.c)){toast('Il manque : '+Object.entries(B.c).filter(([r,v])=>(K.res[r]||0)<v).map(([r])=>r).join(', ')+'.');return}kPaye(B.c);kPose(KVUE.sel,k,K.joueur);if(k==='route'&&T[KVUE.sel].pal!=='Bas')K.tension+=5;kLog(B.n+' à '+kLieu(T[KVUE.sel])+'.');kSauve();kRendu()});
+ A.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>{if(!kLibres()){toast('Plus de bras libres : retirez des gens ailleurs.');return}kMettre(KVUE.sel,b.dataset.tp,5);kSauve();kRendu()});A.querySelectorAll('[data-tm]').forEach(b=>b.onclick=()=>{kMettre(KVUE.sel,b.dataset.tm,-5);kSauve();kRendu()});
+ A.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{kDecide(+b.dataset.i,b.dataset.o==='1');kRendu()});A.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{kDecide(+b.dataset.c,1,b.dataset.vv);kRendu()});
+ A.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>kExpedier(KVUE.reg,+b.dataset.x));const fo=$('kFo');if(fo)fo.onclick=()=>kFonder(KVUE.reg);const go=$('kGo');if(go)go.onclick=()=>{K.vue='ville';K.cur=(K.col||[]).findIndex(c=>kReg(T[c.i])===KVUE.reg);KVUE.sel=null;kRendu()};
+ const rp=$('kRep');if(rp)rp.onclick=()=>{if(K.res.bois<2){toast('Il faut 2 bois.');return}K.res.bois-=2;(K.b[KVUE.sel]||[]).forEach(x=>delete x.abime);kSauve();kRendu()};
+ const ec=$('kEch');if(ec)ec.onclick=()=>{K.res.com-=3;K.res.viv+=4;kSauve();kRendu()};const re=$('kRe');if(re)re.onclick=()=>{K=null;try{localStorage.removeItem(KCLE)}catch(e){}kOuvrir()}}

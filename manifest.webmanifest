@@ -1,0 +1,30 @@
+{
+ "name": "TsaMaloya",
+ "short_name": "TsaMaloya",
+ "description": "Le royaume intérieur : l'histoire de La Réunion par le marronnage.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "fullscreen",
+ "orientation": "landscape",
+ "background_color": "#0b1d26",
+ "theme_color": "#123041",
+ "lang": "fr",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
