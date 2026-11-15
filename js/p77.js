@@ -4,7 +4,7 @@
 // les vivres s'affichent en « emportés / restent au camp ».
 {const st=document.createElement('style');st.textContent='#expP .pjb{background:#1d1a14;border:1px solid rgba(226,189,116,.4);border-radius:10px;padding:18px;color:#efe6d6}#expP .expLst label{margin:0}';document.head.appendChild(st)}
 const EXPC={cueil:'#5fae4c',chasse:'#d24b3a',explorer:'#4a86d0',camp:'#9a6a3a'};
-setInterval(()=>{try{if(typeof terr==='undefined'||!terr||!terr.material.uniforms.grille)return;const v=(!S||modeHist()||window.choixExp)?1:0;if(terr.material.uniforms.grille.value!==v){terr.material.uniforms.grille.value=v;peindre()}}catch(e){}},300);
+setInterval(()=>{try{if(typeof terr==='undefined'||!terr||!terr.material.uniforms.grille)return;const v=(!S||window.choixExp)?1:0;if(terr.material.uniforms.grille.value!==v){terr.material.uniforms.grille.value=v;peindre()}}catch(e){}},300);
 {const pe=peindre;peindre=function(){const r=pe.apply(this,arguments);try{const ce=window.choixExp;if(!S||!ce||modeHist()||typeof stData==='undefined')return r;const c=T[ce.c],por=typeof porteeExp==='function'?porteeExp(ce):expPortee(ce.prov,ce.ids.length);
  T.forEach(t=>{const o=S.t[t.i]||{};if(t.i===ce.c||!o.s||hd(t,c)>por)return;stData[(t.row*COLW+t.col)*4+3]=128});stTex.needsUpdate=true}catch(e){}return r}}
 {const ep=expPlan;expPlan=function(c,pre){const r=ep.apply(this,arguments);try{const box=$('expP');if(!box)return r;const inner=box.querySelector('.pjb'),st=window.EXPS;
