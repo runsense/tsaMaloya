@@ -31,8 +31,8 @@ function vpTuto(i=0){const c=VPCMD[VP&&VP.cmd||'A'];if(i>=VPTUTO.length){try{loc
  const r=t=>t.replace('{dep}',c===VPCMD.A?'ZQSD':'les flèches').replace(/\{(\w+)\}/g,(m,k)=>{const j=VPACT.findIndex(a=>a[0]===k);return j<0?m:c.lab[j]});
  d.innerHTML='<div class="bx"><small>Tutoriel '+(i+1)+'/'+VPTUTO.length+'</small><h3>'+VPTUTO[i][0]+'</h3><div>'+r(VPTUTO[i][1])+'</div><button>'+(i<VPTUTO.length-1?'Suivant':'Compris')+'</button></div>';d.querySelector('button').onclick=()=>{if(i>=VPTUTO.length-1)d.remove();vpTuto(i+1)}}
 // ----- qui part : le chef et ses compagnons -----
-function vpGroupe(ci){const P=(S.pp||[]).filter(p=>adulte(p)&&campDe(p)===ci&&!enGrp(p));let chef=(S.voieC?P.find(p=>estColon(p)&&p.g!=='f'):null)||(typeof chefDe==='function'&&chefDe(ci))||P.find(p=>p.role==='cha')||P[0];if(!chef)return null;
- const C=P.filter(p=>p!==chef&&(!S.voieC||p.st==='esclave'||!estColon(p))).sort((a,b)=>(b.role==='cha')-(a.role==='cha')||((b.sk||{}).cha||0)-((a.sk||{}).cha||0)).slice(0,4);return {chef,C}}
+function vpGroupe(ci){const P=(S.pp||[]).filter(p=>adulte(p)&&campDe(p)===ci&&!enGrp(p));let chef=(S.voieC?P.find(p=>estColon(p)&&p.g!=='f'):null)||(typeof chefDe==='function'&&chefDe(ci))||P.find(p=>p.role==='cha')||P[0];if(!chef)return null;if(chef.id!=null&&typeof ppId==='function'&&ppId(chef.id))chef=ppId(chef.id);
+ const C=P.filter(p=>p.id!==chef.id&&(!S.voieC||p.st==='esclave'||!estColon(p))).sort((a,b)=>(b.role==='cha')-(a.role==='cha')||((b.sk||{}).cha||0)-((a.sk||{}).cha||0)).slice(0,4);return {chef,C}}
 // ----- la scène -----
 function vpOuvrir(){if(VP||!S||modeHist())return;const c=vpCmd();if(!c){vpChoisir(()=>vpOuvrir());return}
  const ci=(CV&&CV.on&&CV.camp!=null)?CV.camp:(camps()[0]||{}).i;const t=T[ci];if(!t){toast('Aucun camp où commencer.');return}const G=vpGroupe(ci);if(!G){toast('Personne pour partir.');return}
@@ -95,7 +95,7 @@ function vpBoucle(){if(!VP)return;const now=performance.now(),dt=Math.min(.05,(n
  const pose=(o,mv,vit)=>{if(!o.root)return;o.root.position.set(o.x,(o.y!=null?o.y:h(o.x,o.z))-(o===ch&&VP.ram?.55:0),o.z);o.root.rotation.y=o.ang;o.root.scale.y=o===ch&&VP.ram?.55:1;if(o.lanceT>0){o.lanceT-=dt}else vpClip(o,mv?(vit>5?'course':(o===ch&&(VP.acc||VP.ram))||o.tra?'chasse_traque':'marche'):(o===ch&&VP.acc?'chasse_traque':'repos_debout'));if(o.mx)o.mx.update(dt)};
  pose(ch,ln>.05,sp);
  // les compagnons
- VP.cp.forEach((o,i)=>{let tx,tz,v=3.4;o.tra=0;
+ VP.cp.forEach((o,i)=>{if(VP.fight&&!VP.fight.fin){pose(o,!!o.mvF,o.rc==='combat'?5:3.4);return}let tx,tz,v=3.4;o.tra=0;
   if(VP.ordre==='suivre'){const a=ch.ang+Math.PI+(i-(VP.cp.length-1)/2)*.55,d=2.2+(i%2)*1.1;tx=ch.x+Math.sin(a)*d;tz=ch.z+Math.cos(a)*d;v=run?6:VP.acc||VP.ram?1.8:3.4;o.tra=VP.acc||VP.ram}
   else if(VP.ordre==='attendre'){tx=o.ax;tz=o.az}
   else{const c2=VP.an.filter(a=>!a.mort).sort((a,b)=>Math.hypot(a.x-o.x,a.z-o.z)-Math.hypot(b.x-o.x,b.z-o.z))[0];if(c2){const d=Math.hypot(c2.x-o.x,c2.z-o.z);if(d>14){tx=c2.x;tz=c2.z;v=d>25?5.5:2;o.tra=d<=25}else{tx=o.x;tz=o.z;o.ang=Math.atan2(c2.x-o.x,c2.z-o.z);o.cd-=dt;if(o.cd<=0){o.cd=3+Math.random()*2;const sk=((o.p.sk||{}).cha||0)+(o.p.role==='cha'?3:0);const vise={x:c2.x+(Math.random()-.5)*(3.5-Math.min(3,sk*.4)),y:h(c2.x,c2.z)+.3,z:c2.z+(Math.random()-.5)*(3.5-Math.min(3,sk*.4))};vpLancer(o,vise,23)}}}else{tx=ch.x;tz=ch.z}}
