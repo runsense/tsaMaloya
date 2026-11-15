@@ -21,7 +21,7 @@ setInterval(()=>{try{if(typeof K!=='undefined'&&K)kEtiquettes();else{const L=$('
 // ----- qui travaille où -----
 function kQui(){let q=$('kQui');if(q){q.remove();return}q=document.createElement('div');q.id='kQui';document.body.appendChild(q);['pointerdown','click'].forEach(ev=>q.addEventListener(ev,e=>e.stopPropagation()));kQuiDess()}
 function kQuiDess(){const q=$('kQui');if(!q)return;const C=KCLS[K.joueur==='c'?'c':'m'],P=kPools(),O=kOccCls();
- q.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b>Qui travaille où</b><button class="bt sec" id="kQuiX">✕</button></div><p class="note" style="margin:4px 0 8px">Pour déplacer des gens : −5 là où ils sont, puis +5 là où vous les voulez. Le nom du lieu ouvre sa bulle.</p>'+
+ q.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b>Qui travaille où</b><button class="bt sec" id="kQuiX">✕</button></div><p class="note" style="margin:4px 0 8px">Pour déplacer des gens : −1 ou −5 là où ils sont, puis +1 ou +5 là où vous les voulez. Le nom du lieu ouvre sa bulle.</p>'+
   Object.entries(K.trav||{}).map(([i,a])=>'<div style="margin:6px 0;border-top:1px solid rgba(232,190,90,.25);padding-top:4px"><a href="#" data-qi="'+i+'" style="color:#e8be5a;font-weight:600">'+(typeof kLieu==='function'?kLieu(T[+i]):'Lieu '+i)+'</a>'+
    Object.entries(a).map(([k,v])=>'<div class="l"><span>'+kActN(k).join(' ')+'</span><button class="bt sec" data-qm="'+i+'|'+k+'">−5</button><b style="min-width:22px;text-align:center">'+v+'</b><button class="bt" data-qp="'+i+'|'+k+'">+5</button></div>').join('')+'</div>').join('')+
   '<div style="margin-top:8px;font-size:12px;opacity:.9">'+Object.keys(C).filter(k=>k!=='maitre').map(k=>C[k].ic+' '+C[k].n+' : <b>'+Math.max(0,(P[k]||0)-(O[k]||0))+'</b> libres / '+(P[k]||0)).join('<br>')+'</div>';
@@ -30,16 +30,16 @@ function kQuiDess(){const q=$('kQui');if(!q)return;const C=KCLS[K.joueur==='c'?'
  q.querySelectorAll('[data-qp]').forEach(b=>b.onclick=()=>{const [i,k]=b.dataset.qp.split('|');kMettre(+i,k,5);kSauve();kRendu();kQuiDess()});
  q.querySelectorAll('[data-qi]').forEach(a=>a.onclick=e=>{e.preventDefault();const i=+a.dataset.qi,t=T[i];KVUE.sel=i;if(typeof KV3!=='undefined')KV3.tg.set(t.x,k3Y(t.x,t.z),t.z);if(typeof kPanneau==='function')kPanneau();const r=a.getBoundingClientRect();setTimeout(()=>kBulle(t,r.left-360,r.top),40)})}
 function kQuiBouton(){const d=$('kons');if(!d||d.hidden)return;let b=$('kQuiB');if(!b){b=document.createElement('button');b.id='kQuiB';b.className='bt';b.style.cssText='position:fixed;right:70px;top:118px;z-index:8400;font-size:12px;padding:5px 12px';b.onclick=kQui;document.body.appendChild(b)}
- b.hidden=false;const tot=Object.values(K.trav||{}).reduce((s,a)=>s+Object.values(a).reduce((x,y)=>x+y,0),0);b.textContent='👥 Qui travaille où · '+tot}
+ b.hidden=false;const tot=Object.values(K.trav||{}).reduce((s,a)=>s+Object.values(a).reduce((x,y)=>x+y,0),0);let pos=0;try{const C=KCLS[K.joueur==='c'?'c':'m'],P=kPools();pos=Object.keys(C).filter(k=>k!=='maitre').reduce((s,k)=>s+(P[k]||0),0)}catch(e){}b.textContent='👥 Qui travaille où · '+tot+(pos?' / '+pos:'');b.title=tot+' personnes au travail sur '+pos+' qui peuvent travailler'}
 setInterval(()=>{try{const d=$('kons');if(!d||d.hidden||typeof K==='undefined'||!K){const b=$('kQuiB');if(b)b.hidden=true;const q=$('kQui');if(q)q.remove();return}kQuiBouton()}catch(e){}},500);
 // ----- le guide -----
 const KGUIDE=[
  {t:'Bienvenue. Ici, vous ne dirigez pas les gens un par un : vous décidez où ils travaillent et ce qu’on bâtit. Le temps est arrêté tant que vous ne l’avez pas lancé.',ok:()=>true,bt:'Commencer'},
  {t:'Cliquez sur votre habitation, au centre de la ville (l’étiquette dorée montre combien de gens y travaillent déjà).',ok:()=>KVUE.sel!=null&&!!$('kBul')&&!$('kBul').hidden,cible:'.kEt'},
  {t:'La bulle montre ce qu’on peut faire ici. Envoyez du monde sur une tâche : « +5 » ou « Remplir ». Une tâche sans personne ne rapporte rien.',ok:s=>JSON.stringify(K.trav)!==s.trav,cible:'#kBul [data-tp]'},
- {t:'Pour déplacer des gens : « −5 » là où ils sont, « +5 » là où vous les voulez. La liste « Qui travaille où », en haut à droite, montre tout d’un coup.',ok:()=>true,bt:'Compris',cible:'#kQuiB'},
+ {t:'Pour déplacer des gens : « −1 » ou « −5 » là où ils sont, « +1 » ou « +5 » là où vous les voulez. La liste « Qui travaille où », en haut à droite, montre tout d’un coup.',ok:()=>true,bt:'Compris',cible:'#kQuiB'},
  {t:'Pour bâtir : la barre en bas (Habiter, Exploiter, Stocker…). Choisissez, puis cliquez un lieu en surbrillance. Un bâtiment sans travailleurs reste vide.',ok:s=>Object.values(K.b).reduce((n,L)=>n+L.length,0)>s.nb,bt:'Plus tard',cible:'#kbp'},
- {t:'Lancez le temps : ▶ en haut. Chaque mois dure 20 secondes. Au centre, la réserve de vivres : sous un an, la tension monte. Le conseil se réunit tous les six mois.',ok:()=>KV.vit>0,cible:'[data-vit="1"]'}];
+ {t:'Lancez le temps : ▶ en haut. Chaque mois dure 27 secondes. Au centre, la réserve de vivres : sous un an, la tension monte. Le conseil se réunit tous les six mois.',ok:()=>KV.vit>0,cible:'[data-vit="1"]'}];
 function kGuide(){if(!K||K.guideF||K.fin)return;const d=$('kons');if(!d||d.hidden||$('kReg')||$('kCoB'))return;K.guideE=K.guideE||0;const E=KGUIDE[K.guideE];if(!E){K.guideF=1;const g=$('kTuto');if(g)g.remove();kSauve();return}
  if(!K.guideS||K.guideS.e!==K.guideE)K.guideS={e:K.guideE,trav:JSON.stringify(K.trav),nb:Object.values(K.b).reduce((n,L)=>n+L.length,0)};if(K.guideE<5&&KV.vit)KV.vit=0;
  let g=$('kTuto');if(!g){g=document.createElement('div');g.id='kTuto';document.body.appendChild(g)}

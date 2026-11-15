@@ -6,7 +6,7 @@ const KCYCH=[...Object.entries(typeof CYR!=='undefined'?CYR:{}).map(([y,f])=>[+y
  [1980,0,2,'Hyacinthe','des pluies sans fin pendant deux semaines, 25 morts'],[1981,0,2,'Florine','rafales de 234 km/h à la Plaine des Cafres'],[1989,0,3,'Firinga','rafales de 216 km/h à Saint-Pierre, 10 morts'],[1993,0,2,'Colina','l’œil frôle l’île'],
  [1994,1,2,'Hollanda','cultures et lignes arrachées'],[2007,1,2,'Gamède','des pluies record mondial sur trois jours'],[2014,0,2,'Bejisa','des cultures perdues à Cilaos et ailleurs'],[2018,3,1,'Fakir','passe à l’est, rafales de 176 km/h'],[2024,0,2,'Belal','l’œil passe sur l’île'],[2025,1,3,'Garance','touche terre : crues et dégâts lourds']];
 const KSAIS=m=>[11,0,1,2,3].includes(m)?(m>=0&&m<=2?'cœur de la saison des cyclones':'saison des cyclones'):[5,6,7].includes(m)?'hiver austral, frais':'saison sèche';
-const KV={vit:1,dur:20000};// un mois de Construction = 20 s à vitesse ×1 (un an en 4 min)
+const KV={vit:1,dur:27000};// un mois de Survie = 27 s à vitesse ×1 (un an en un peu plus de 5 min)
 function kPrep3(){if(!K)return;if(K.mo==null)K.mo=0;if(K.mt==null)K.mt=0;if(K.apres==null)K.apres=0}
 // le cyclone de l'année ne tombe plus au hasard en fin d'année : il vient dans son mois
 kCyclone=function(){};
