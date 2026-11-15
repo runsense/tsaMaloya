@@ -26,3 +26,20 @@ setInterval(()=>{try{if(typeof terr==='undefined'||!terr||!terr.material.uniform
  const c=a.getContext('2d');c.scale(dpr,dpr);c.lineWidth=2.4;c.strokeStyle='#ffd36a';c.fillStyle='rgba(255,211,106,.28)';let n=0;
  vus.forEach(t=>{if(t===home||t.bare||hd(home,t)>pm)return;const x=(t.x-x0)*k,y=(t.z-z0)*k;c.beginPath();for(let i=0;i<6;i++){const g=Math.PI/6+i*Math.PI/3;c.lineTo(x+Math.cos(g)*R,y+Math.sin(g)*R)}c.closePath();c.fill();c.stroke();n++});
  const I=$('ccI');if(I)I.textContent='Les cases qui clignotent sont à portée avec les vivres emportés ('+n+' case'+(n>1?'s':'')+', '+pm+' au plus du camp). Touchez-en une.'}catch(e){}return r}}
+// le choix de destination : toucher une case ouvre sa fiche complète ; « Partir ici » (ou un second toucher) confirme
+function ficheCible(t,home,pm){const o=S.t[t.i]||{},d=hd(home,t),ok=d<=pm&&!t.bare&&t!==home,L=[];
+ const B={camp:'un camp',chasse:'un terrain de chasse',cueil:'un lieu de cueillette',jardin:'un jardin',jf:'un jardin-forêt',guet:'un poste de guet',peche:'une pêcherie'};
+ L.push('<b style="font:700 17px Alegreya,Georgia,serif">'+(lieuDe(t)||lieuProche(t)||t.biome)+'</b>'+(t.cirq?' <small>· cirque de '+t.cirq+'</small>':''));
+ L.push(t.biome+' · '+Math.round(t.alt)+' m · pente '+Math.round(t.slope||0)+'°'+(t.forest?' · forêt':'')+(t.riv?' · rivière':'')+(cotier(t)?' · côte':''));
+ try{const c=climTx(t);if(typeof c==='string')L.push('<small>'+c+'</small>');else if(c){L.push('Pluies '+c.pl);if(c.a.length)L.push('<span style="color:#9fd27a">+ '+c.a.join(' · ')+'</span>');if(c.d.length)L.push('<span style="color:#e8a27a">− '+c.d.join(' · ')+'</span>')}}catch(e){}
+ L.push('Ce que la terre donne : '+(t.yield>=1?'beaucoup':t.yield>=.8?'assez':t.yield>0?'peu':'rien')+(t.cold?' · froid la nuit':'')+(t.zeo?' · des pierres qui brillent':''));
+ if(o.b)L.push('Ici : '+(B[o.b]||o.b)+'.');if(o.c)L.push('<span style="color:#ff8a6a">Terres des colons.</span>');
+ try{if(danger(t))L.push('<span style="color:#ff8a6a">⚠️ Danger : des chasseurs de marrons rôdent près d’ici.</span>')}catch(e){}
+ const ce=window.choixExp;if(ce){const b=EXPB[ce.but]||['Partir'];L.push('Distance : <b>'+d+' case'+(d>1?'s':'')+'</b> du camp · portée avec les vivres : '+pm+' · '+(ok?'<b style="color:#9fd27a">atteignable</b>':'<b style="color:#ff8a6a">trop loin</b>'));L.push('But : '+b[0].toLowerCase()+' ('+ce.ids.length+' personne'+(ce.ids.length>1?'s':'')+', '+ce.prov+' vivres).')}
+ return {html:L.join('<br>'),ok}}
+{const cc=carteConnu;carteConnu=function(o){const r=cc.apply(this,arguments);try{if(!o||o.mode!=='dest'||o.c==null||!o.pick)return r;const cv=$('ccC'),box=$('ccBox'),home=T[o.c],pm=o.pm||0;if(!cv)return r;
+ const vus=T.filter(t=>(S.t[t.i]||{}).s),x0=Math.min(...vus.map(t=>t.x))-2,z0=Math.min(...vus.map(t=>t.z))-2,W=parseFloat(cv.style.width),k=W/(Math.max(...vus.map(t=>t.x))+2-x0),R=k*.95;
+ const tuile=e=>{const q=cv.getBoundingClientRect(),mx=e.clientX-q.left,my=e.clientY-q.top;let best=null,bd=1e9;vus.forEach(t=>{const d=Math.hypot((t.x-x0)*k-mx,(t.z-z0)*k-my);if(d<bd){bd=d;best=t}});return bd<R?best:null};
+ let choisie=null;const L=$('ccL');cv.onclick=e=>{const t=tuile(e);if(!t)return;if(choisie===t){if(o.pick(t)!==false)box.remove();return}choisie=t;const f=ficheCible(t,home,pm);
+  L.innerHTML='<div style="border:1px solid rgba(232,190,90,.35);border-radius:8px;padding:10px 12px;margin-top:6px;line-height:1.5">'+f.html+'<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="bt" id="ccGo"'+(f.ok?'':' disabled')+'>Partir ici</button><small class="note" style="align-self:center">ou touchez la case une seconde fois</small></div></div>';
+  const g=$('ccGo');if(g)g.onclick=()=>{if(o.pick(t)!==false)box.remove()};L.scrollIntoView({block:'nearest'})}}catch(e){}return r}}
