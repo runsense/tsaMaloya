@@ -23,3 +23,5 @@ function vpMiniCarte(){const V=VP;if(!V||!V.el)return;let d=$('mm94');if(!d){d=d
 {const vb=vpBoucle;let t0=0;vpBoucle=function(){vb.apply(this,arguments);try{const n=performance.now();if(VP&&VP.p84&&n-t0>120){t0=n;vpMiniCarte()}}catch(e){}}}
 // Échap au camp : on remonte à la carte principale
 addEventListener('keydown',e=>{try{if(e.key!=='Escape'||VP||!S||modeHist())return;if(document.querySelector('#expP,#cons87,#hb,#m2,#bt,#kCarte')||($('modal')&&!$('modal').hidden))return;if(CV.on){e.preventDefault();cvFermer()}}catch(_){}});
+// les panneaux restent transparents pour laisser voir la scène ; ils redeviennent pleins quand la souris passe dessus
+{const st=document.createElement('style');st.textContent='#vpH,#vpS,#vpV,#vpEsc,#vpMoi,#vpB,#mm94,#vpI,#btBas,#btLog{opacity:.62;transition:opacity .25s}#vpH:hover,#vpS:hover,#vpV:hover,#vpEsc:hover,#vpMoi:hover,#vpB:hover,#vpI:hover,#btBas:hover{opacity:1}#vpH,#vpS,#vpV,#vpEsc{border-image-outset:0}';document.head.appendChild(st)}

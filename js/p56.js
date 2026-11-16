@@ -22,7 +22,7 @@ const SORTA={chasse:['chasse_traque','Les chasseurs partent','sagaies en main, l
 {const ag=agir;agir=function(t,id,l){const r=ag.apply(this,arguments);try{if(!r||!S||S.bac||!SORTA[id])return r;const c=campProche(t);if(!c||c===t)return r;const A=SORTA[id],n=sortieModeles(c.i),d=Math.hypot(t.x-c.x,t.z-c.z);
   sortieAjoute({n,a:{x:c.x,z:c.z},b:{x:t.x,z:t.z},dur:Math.max(6000,d*2600),tile:t.i,act:S.t[t.i]&&S.t[t.i].b||id,clip:A[0]});
   const lieu=nomLieu(t);let t1=A[1]+' '+(lieu.startsWith('vers')?lieu:'vers '+lieu),t2=A[2];
-  if(id==='pecheM'){t1=S.voieC?'La pirogue de l’habitation sort au petit jour':'De nuit, on descend pêcher en mer';t2=S.voieC?'les pêcheurs rament vers le large.':'près des colons, sans lumière.'}
+  if(id==='pecheM'){t1=S.voieC?'La pirogue de l’habitation sort au petit jour':(Math.random()<.5?'Au jour levant, on descend pêcher en mer':'À la nuit, on descend pêcher en mer');t2=S.voieC?'les pêcheurs rament vers le large.':'près des colons, sans se faire voir.'}
   cineSortie(c,t,t1,t2)}catch(e){}return r}}
 // les groupes du mode Jeu : quand un groupe part, le petit film de départ aussi
 if(typeof grpChoisir==='function'){const gc=grpChoisir;grpChoisir=function(t,a,go){return gc.call(this,t,a,()=>{go();try{const c=campProche(t);if(c&&c!==t){const A=SORTA[a&&a.id]||['marche','Le groupe part','vers '+nomLieu(t)];cineSortie(c,t,A[1]+' '+(A[1]?'vers '+nomLieu(t):''),A[2])}}catch(e){}})}}

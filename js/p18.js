@@ -3,7 +3,7 @@
 // les colons tiennent les bas, les marrons les hauts ; les mi-pentes se disputent. On ne commande plus les gens : on décide, on bâtit, on arbitre les idées des factions.
 const KFAC={c:{n:'Colons',col:'#e8be5a',zone:['Bas','Mi-pentes']},m:{n:'Marrons',col:'#7fc36a',zone:['Hauts','Sommets','Mi-pentes']},p:{n:'Propriétaires',col:'#e8be5a'},e:{n:'Esclaves',col:'#c38f6a'},a:{n:'Affranchis et engagés',col:'#7fc3e8'},s:{n:'Créoles de Bourbon souveraine',col:'#c38fe8'}};
 const KBAT={
- habitation:{n:'Habitation',ic:'🏠',f:'c',c:{bois:4},d:'+3 vivres par an ; après 1715, +2 commerce (café).',z:['Bas','Mi-pentes'],t:1},
+ habitation:{n:'Habitation',ic:'🏠',f:'c',c:{bois:4},d:'La maison du maître : potager et basse-cour, +1,5 vivre par an avec 4 personnes ; après 1715, +2 commerce (café). Les vivres viennent surtout des champs.',z:['Bas','Mi-pentes'],t:1},
  champ:{n:'Champ de café',ic:'☕',f:'c',c:{bois:2},d:'+3 commerce par an ; abat la forêt ; demande des bras.',z:['Bas','Mi-pentes'],an:1715,t:1},
  port:{n:'Port',ic:'⚓',f:'c',c:{pierre:5,bois:3},d:'+3 commerce par an ; le roi et la Compagnie regardent l’île.',z:['Bas'],t:2},
  ville:{n:'Ville',ic:'🏛️',f:'c',c:{pierre:6,bois:4},d:'Un bourg : +2 savoir, +confiance des colons. Demande deux habitations proches.',z:['Bas'],t:3},
@@ -30,15 +30,15 @@ const KACT={
  pierre:{n:'Tirer la pierre',ic:'🪨',r:'pierre',k:.35,ok:t=>t.bare||(t.slope||0)>=8||/Scories|Coulées/.test(t.biome),d:''},
  vivres:{n:'Chasser, cueillir',ic:'🏹',r:'viv',k:.45,ok:t=>t.forest,d:'Le gibier s’épuise si on y reste trop.'},
  peche:{n:'Pêcher',ic:'🐟',r:'viv',k:.55,ok:t=>t.pal==='Bas'&&(t.alt||0)<60,d:''},
- culture:{n:'Cultiver',ic:'🌱',r:'viv',k:.6,ok:t=>(t.slope||0)<10&&!t.bare,d:'Défriche peu à peu.'}};
+ culture:{n:'Cultiver',ic:'🌱',r:'viv',k:.8,ok:t=>(t.slope||0)<10&&!t.bare,d:'Défriche peu à peu.'}};
 // combien de bras faut-il pour qu'un bâtiment tourne à plein
-const KBRAS={habitation:8,champ:12,port:10,ville:15,chapelle:2,magasin:2,camp:4,jardin:4,grenier:1,guet:2,sentier:1,route:0};
+const KBRAS={habitation:4,champ:12,port:10,ville:15,chapelle:2,magasin:2,camp:4,jardin:4,grenier:1,guet:2,sentier:1,route:0};
 function kSauve(){try{localStorage.setItem(KCLE,JSON.stringify(K))}catch(e){}}
 function kReg(t){return t.sect+'·'+t.pal}
 function kLieu(t){return lieuDe(t)||lieuProche(t)||t.biome}
 function kNouveau(f,bascule){const sp=T.find(t=>lieuDe(t)==='Saint-Paul')||T.find(t=>t.pal==='Bas'),mf=T.find(t=>lieuDe(t)==='Cimendef')||T.find(t=>t.pal==='Hauts');
  K={an:1663,joueur:f,bas:bascule,fac:{c:{conf:60,pop:20},m:{conf:60,pop:12}},res:{viv:20,bois:8,pierre:4,com:0,sav:2},b:{},foret:{},vu:{},tension:20,idees:[],adopt:{},log:[],cyc:null,fin:null,notables:[],trav:{},gibier:{}};
- T.forEach(t=>{K.foret[t.i]=t.forest?100:30});kPose(sp.i,'habitation','c');kPose(mf.i,'camp','m');kVoir(sp.i,5);kVoir(mf.i,4);{const mien=f==='c'?sp:mf,k=f==='c'?'habitation':'camp';K.trav[mien.i]={['bat_'+k]:KBRAS[k]};const cu=T.find(t=>t!==mien&&K.vu[t.i]&&KACT.culture.ok(t)&&Math.hypot(t.x-mien.x,t.z-mien.z)<3);if(cu)K.trav[cu.i]={culture:3}}KVUE.z=f==='c'?2.6:2.2;KVUE.cx=(f==='c'?sp:mf).x;KVUE.cz=(f==='c'?sp:mf).z;
+ T.forEach(t=>{K.foret[t.i]=t.forest?100:30});kPose(sp.i,'habitation','c');kPose(mf.i,'camp','m');kVoir(sp.i,5);kVoir(mf.i,4);{const mien=f==='c'?sp:mf,k=f==='c'?'habitation':'camp';K.trav[mien.i]={['bat_'+k]:KBRAS[k]};if(f==='c'&&KACT.culture.ok(mien))K.trav[mien.i].culture=4;const cu=T.find(t=>t!==mien&&K.vu[t.i]&&KACT.culture.ok(t)&&Math.hypot(t.x-mien.x,t.z-mien.z)<3);if(cu)K.trav[cu.i]={culture:3}}KVUE.z=f==='c'?2.6:2.2;KVUE.cx=(f==='c'?sp:mf).x;KVUE.cz=(f==='c'?sp:mf).z;
  K.notables=[{n:'Étienne Regnault',f:'c',r:'commandant',s:{autorite:7,prudence:5}},{n:'Louis Payen',f:'c',r:'premier habitant',s:{travail:6,prudence:4}},{n:'Anchaing',f:'m',r:'chef de camp',s:{courage:8,ruse:6}},{n:'Héva',f:'m',r:'guérisseuse',s:{savoir:7,courage:5}}];
  kLog(f==='c'?'1663 : quelques colons et leurs serviteurs malgaches s’installent à Saint-Paul.':'1663 : des Malgaches fuient Saint-Paul et montent dans les hauts.')}
 function kPose(i,k,f){(K.b[i]=K.b[i]||[]).push({k,f,an:K.an});if(KBAT[k].f==='c'||k==='champ')K.foret[i]=Math.max(0,(K.foret[i]||0)-(k==='champ'?50:20))}
@@ -61,7 +61,7 @@ function kBatir(t){const f=K.joueur;return Object.entries(KBAT).filter(([k,b])=>
 // l'année qui passe
 function kAnnee(){if(K.fin)return;const R=K.res,ad=k=>!!K.adopt[k];let pv=0,pc=0,ps=0,pb=0,pp=0;
  Object.entries(K.b).forEach(([i,L])=>L.forEach(x=>{const k=x.k,mien=x.f===K.joueur||(K.joueur==='c'&&x.f==='c'),nb=KBRAS[k]||0,w=mien&&nb?Math.min(1,((K.trav[i]||{})['bat_'+k]||0)/nb):(mien?1:.8),ab=x.abime?.4:1,q=w*ab;
-  if(k==='habitation'){pv+=3*q;if(K.an>=1715)pc+=2*q}if(k==='champ')pc+=3*q;if(k==='port')pc+=3*q;if(k==='ville')ps+=2*q;if(k==='camp'){pv+=(2+(ad('Alliance des camps')?1:0))*q}if(k==='jardin')pv+=3*q}));
+  if(k==='habitation'){pv+=1.5*q;if(K.an>=1715)pc+=2*q}if(k==='champ')pc+=3*q;if(k==='port')pc+=3*q;if(k==='ville')ps+=2*q;if(k==='camp'){pv+=(2+(ad('Alliance des camps')?1:0))*q}if(k==='jardin')pv+=3*q}));
  // les activités sur les lieux
  Object.entries(K.trav||{}).forEach(([i,a])=>{const t=T[i],lo=kLoin(t);Object.entries(a).forEach(([act,n])=>{const A=KACT[act];if(!A)return;let v=n*A.k*lo;
   if(act==='bois'){v*=Math.max(.2,(K.foret[i]||0)/100);K.foret[i]=Math.max(0,(K.foret[i]||0)-n*.6)}

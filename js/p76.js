@@ -2,7 +2,7 @@
 const KRN={viv:'vivres',bois:'bois',pierre:'pierre',com:'commerce',sav:'savoir'};
 function kRapport(i,k){const t=T[i];if(!t)return null;const n=((K.trav||{})[i]||{})[k]||0,ad=x=>!!(K.adopt||{})[x];
  if(k.startsWith('bat_')){const b=k.slice(4),nb=KBRAS[b]||0,q=nb?Math.min(1,n/nb):1,ab=((K.b[i]||[]).find(x=>x.k===b)||{}).abime?.4:1,w=q*ab,R={};
-  if(b==='habitation'){R.viv=3*w;if(K.an>=1715)R.com=2*w}if(b==='champ'||b==='port')R.com=3*w;if(b==='ville')R.sav=2*w;if(b==='camp')R.viv=(2+(ad('Alliance des camps')?1:0))*w;if(b==='jardin')R.viv=3*w;
+  if(b==='habitation'){R.viv=1.5*w;if(K.an>=1715)R.com=2*w}if(b==='champ'||b==='port')R.com=3*w;if(b==='ville')R.sav=2*w;if(b==='camp')R.viv=(2+(ad('Alliance des camps')?1:0))*w;if(b==='jardin')R.viv=3*w;
   return {R,plein:nb?Math.min(n,nb)+' / '+nb+' pour tourner à plein':''}}
  const A=KACT[k];if(!A)return null;let v=n*A.k*kLoin(t);if(k==='bois')v*=Math.max(.2,(K.foret[i]||0)/100);if(k==='vivres')v*=((K.gibier[i]??100)/100);return {R:{[A.r]:v},plein:k==='vivres'?'gibier '+Math.round(K.gibier[i]??100)+' %':k==='bois'?'forêt '+Math.round(K.foret[i]||0)+' %':''}}
 const kFmt=R=>Object.entries(R).filter(([,v])=>v>.04).map(([r,v])=>'+'+(Math.round(v*10)/10)+' '+KRN[r]).join(', ')||'rien encore';
