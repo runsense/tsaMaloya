@@ -374,3 +374,14 @@ function vpPlace97(){const V=VP;if(!V||!V.p84||V.place97||VPLIEU&&VPLIEU.g)retur
   V.vil.forEach((o,k)=>{if(vote&&o.ordre!=='vote97'&&!o.ordre){o.ordre='vote97';const a=k/Math.max(1,V.vil.length)*6.283;o.poste={x:Math.cos(a)*3.2,z:-30+Math.sin(a)*3.2}}else if(!vote&&o.ordre==='vote97'){o.ordre=null}});
   if(vote&&!V.voteDit97){V.voteDit97=1;vpMsg('Tout le monde se réunit sur la place, autour du feu, pour choisir le chef.')}if(!vote)V.voteDit97=0}catch(e){}}}
 {const vc=vpClip;vpClip=function(o,c){try{if(VP&&o===VP.chef&&VP.perche&&VP.perche.c!=null&&c!=='cueillir'&&c!=='guetteur')return}catch(_){}return vc.apply(this,arguments)}}
+
+// ----- 28. Le Code noir de 1723 (Lettres patentes) se voit dans Vie : statuts, noms effacés, mariages mêlés interdits ; au camp marron, plus de fugitifs et plus de traque -----
+setInterval(()=>{try{if(!S||S.fin||modeHist()||!grpOn()||S.year<1723||S.cn97)return;S.cn97=1;
+ if(S.voieC){let n=0;(S.pp||[]).forEach(p=>{if(p.or!=='eu'&&p.st!=='libre'&&p.st!=='esclave'){p.st='esclave';n++}if(p.or!=='eu'&&p.st==='esclave'&&/\s/.test(p.n)){p.nom97=p.n;p.n=p.n.split(' ')[0]}});
+  journal('Décembre 1723 : les Lettres patentes, le Code noir des îles, arrivent sur l’habitation. '+(n?n+' personne'+(n>1?'s':'')+' de plus sont inscrites comme esclaves. ':'')+'Les noms de famille des esclaves sont effacés du registre : il ne reste qu’un prénom. Les mariages mêlés sont interdits.');fx({coh:-3});try{if(CV.on)cvListe()}catch(e){}}
+ else{const nb=2+Math.floor(rnd()*2);for(let i=0;i<nb;i++){const p=nouvellePersonne({or:rnd()<.7?'mg':'af',g:rnd()<.6?'h':'f',age:16+Math.floor(rnd()*20),st:'marron'});p.camp=(camps()[0]||{}).i;p.fuite97=1;S.pp.push(p)}S.gens=(S.pp||[]).length;
+  journal('Depuis la nouvelle loi des maîtres, d’autres arrivent au camp : '+nb+' fugitifs, dont un qui porte la marque au fer sur l’épaule. Ils racontent ce que la loi promet à qui fuit : les oreilles, puis le jarret, puis la mort. Les détachements vont monter plus souvent.');fx({traque:4,coh:2});try{if(CV.on)cvListe()}catch(e){}}}catch(e){}},1500);
+// après 1723, plus de mariage mêlé sur l'habitation
+{const a3=actions;actions=function(t){let A=a3(t);try{if(S&&S.voieC&&S.year>=1723)A=A.filter(a=>a.id!=='unir')}catch(e){}return A}}
+// côté marron, les faits de la colonie arrivent au camp deux ans plus tard (ce qu'on voit d'en haut, ce que racontent les camps d'esclaves)
+setInterval(()=>{try{if(!S)return;const d=S.voieC?0:2;if(S.retard97===d)return;S.retard97=d;Object.keys(EV).forEach(k=>{const e=EV[k];if(!e||!e.y||e.tag!=='Archive'||/^mv_/.test(k))return;if(e.y97==null)e.y97=e.y;e.y=e.y97+d})}catch(e){}},1000);
