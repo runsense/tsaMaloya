@@ -29,7 +29,7 @@ function expPlan(c,pre){const box0=document.getElementById('expP');if(box0)box0.
 function expFonde(q,t){const M=q.ids.map(ppId).filter(Boolean);const g={n:'Le groupe de '+M[0].n.split(' ')[0],m:q.ids,col:GCOL[S.grp.length%4],id:S.grp.length,pos:q.c,fait:0,xp:0,tour:0,mv:0,exp:{but:q.but,prov:q.prov,etat:'aller',home:q.c,cap:t.i,j:0,sur:0,charge:0}};
  S.vivres-=q.prov;S.grp.push(g);log(g.n+' part '+({chasse:'chasser',cueil:'cueillir',explorer:'explorer',camp:'chercher où s’installer'})[q.but]+' vers '+(lieuDe(t)||lieuProche(t)||'l’inconnu')+', avec '+q.prov+' vivres.');sauve();grpDessin();peindre();panneau()}
 {const ct=choisirTuile;choisirTuile=function(t){const q=window.choixExp;if(q&&S&&grpOn()){const d=hd(T[q.c],t),pm=expPortee(q.prov,q.ids.length);
-  if(!(S.t[t.i]||{}).s){toast('Cette case n’est pas encore découverte : choisissez une case connue, le groupe découvrira en chemin.');return}
+  if(!(S.t[t.i]||{}).s&&q.but!=='explorer'){toast('Cette case n’est pas encore découverte : pour aller dans l’inconnu, envoyez le groupe explorer.');return}
   if(t.bare){toast('On ne peut pas aller là.');return}if(d<1){toast('Choisissez une case hors du camp.');return}
   if(d>pm&&!q.force){alerteSimple('Trop loin pour les vivres emportés','Avec '+q.prov+' vivres, ils peuvent aller à '+pm+' case'+(pm>1?'s':'')+' et revenir. Plus loin, ils mangeront ce qu’ils trouvent : chaque jour sans vivres, ils perdent de la vie, et ils peuvent en mourir.',[['Partir quand même',()=>{q.force=1;choisirTuile(t)}],['Choisir plus près',()=>{}]]);return}
   window.choixExp=null;expFonde(q,t);return}

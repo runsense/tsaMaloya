@@ -23,15 +23,15 @@ const LEG104={
  voile:{y:1849,lieu:[55.525,-21.045],an:'après 1848',t:'Le Voile de la Mariée',anim:'voile',
   v:{all:'Après l’abolition, un petit propriétaire veuf quitte la côte pour Salazie, où la terre coûte moins cher. Il refuse tous les prétendants de sa fille, jusqu’à ce qu’un jardinier, riche en secret, gagne son cœur. Le matin des noces, aveuglée par son voile, elle s’enfuit et tombe dans la ravine ; le voile reste accroché à une branche. Les larmes du père, dit-on, font la cascade qui porte ce nom.'},
   ver:()=>['all']},
- parasol:{y:1961,lieu:[55.795,-21.200],an:'1961',t:'La Vierge au parasol sous la lave',anim:'lave',
+ parasol:{y:1961,tag:'Archive',lieu:[55.795,-21.200],an:'1961',t:'La Vierge au parasol sous la lave',anim:'lave',
   v:{c:'Au début du siècle, un propriétaire de Bois Blanc avait posé une Vierge sous un parasol au milieu de ses champs, pour qu’elle les garde des coulées. En 1961, la lave descend et recouvre la statue. On en posera une autre, plus près du rempart, puis on la déplacera encore à chaque coulée ; chaque 15 août, on monte en procession la prier.',
    m:'Ceux d’en bas avaient planté leur Vierge sous un parasol pour retenir le volcan. En 1961, le volcan est passé quand même. Les anciens des Hauts disent que la montagne n’obéit à personne : on la respecte, on ne la commande pas.'},
   ver:()=>[S.voieC?'c':'m']},
- cavadee:{y:1860,lieu:[55.650,-20.960],an:'seconde moitié du XIXᵉ siècle',t:'La première cavadee',anim:'procession',
+ cavadee:{y:1860,tag:'Archive',lieu:[55.650,-20.960],an:'seconde moitié du XIXᵉ siècle',t:'La première cavadee',anim:'procession',
   v:{c:'Les engagés tamouls arrivés par la Grande Chaloupe gardent leur fête : après dix jours de jeûne, les fidèles portent le kavadi, un arceau fleuri chargé de pots de lait, de la rivière jusqu’au temple de Mourouga. Les aiguilles d’argent leur traversent la peau ; les tambours ouvrent la marche. Les maîtres de l’usine regardent passer, sans comprendre.',
    m:'Des Hauts, on entend les tambours des engagés malbars. Comme nous, ils sont arrivés de loin et gardent leurs dieux : pendant dix jours ils jeûnent, puis ils portent en procession un arceau fleuri jusqu’au temple de Mourouga. Les chemins de l’exil se croisent.'},
   ver:()=>[S.voieC?'c':'m']}};
-for(const k in LEG104){const L=LEG104[k];EV['leg_'+k]={y:L.y,tag:'Légende',an:L.an,get t(){return L.t},get b(){const [v]=L.ver();return (L.debut||'')+(L.v[v]||L.v.all||L.v.c)+(['noir','sorc'].includes(v)?' (Version qui ne court que dans votre histoire.)':'')},o:[{n:'Écouter',d:'Mystique +1',fx:{},f:()=>{S.myst=(S.myst||0)+1}}]}}
+for(const k in LEG104){const L=LEG104[k];EV['leg_'+k]={y:L.y,tag:L.tag||'Mémoire',an:L.an,get t(){return L.t},get b(){const [v]=L.ver();return (L.debut||'')+(L.v[v]||L.v.all||L.v.c)+(['noir','sorc'].includes(v)?' (Version qui ne court que dans votre histoire.)':'')},o:[{n:'Écouter',d:'Mystique +1',fx:{},f:()=>{S.myst=(S.myst||0)+1}}]}}
 setInterval(()=>{try{if(!S||S.fin||!S.evq||!modeHist())return;S.done=S.done||{};for(const k in LEG104){const id='leg_'+k,L=LEG104[k];if(S.done[id]||S.year<L.y||S.year>L.y+60||S.evq.includes(id))continue;if(rnd()>.25)continue;S.done[id]=1;S.evq.push(id);break}}catch(e){}},4000);
 
 // ----- 3. L'animation : un repère qui pulse vu de haut, puis la caméra plonge sur la scène -----
@@ -98,9 +98,10 @@ function vpFaune104(){const V=VP;if(!V||!V.sc||V.f104)return;V.f104=[];const L=n
 Object.assign(SAVOIRS,{
  bredes:{n:'Les brèdes',c:1,bt:'Dès les premiers Malgaches',bes:()=>true,br:'Nourrir II',d:'Les feuilles qu’on cueille partout : brèdes mafane qui piquent la langue, morelle, feuilles de songe. Cuites simplement à l’eau avec ce qu’on a, elles font le repas de tous les jours, chez les pauvres comme dans les camps. +1 vivre par saison, un peu de santé.'},
  grain:{n:'Le grain',c:2,bt:'Demande l’an 1700',bes:()=>S.year>=1700,br:'Nourrir II',d:'Pois du Cap, haricots, puis lentilles : le grain cuit longuement dans la marmite accompagne le riz. Il se garde et se transporte. +1 vivre par saison.'},
- zambrocal:{n:'Le zambrocal',c:2,bt:'Demande le grain, et le cari ou le safran péi',bes:()=>!!(S.sv.grain&&(S.sv.cari||S.sv.massale)),br:'Nourrir III',d:'Le riz cuit avec le grain et le safran péi, tout ensemble dans la même marmite : un plat qui nourrit beaucoup de monde avec peu. +1 vivre et un peu de cohésion par saison.'},
+ zambrovate:{n:'Le zambrovate (pois d’Angole)',c:2,bt:'Demande l’an 1700',bes:()=>S.year>=1700,br:'Nourrir II',d:'Un arbuste à gousses qui tient la sécheresse et enrichit la terre : on en écosse les graines vertes ou sèches pour les cuire longuement, en cari avec le porc chez ceux qui en ont. Il a nourri les travailleurs des champs, esclaves puis engagés. +1 vivre par saison, même en saison sèche.'},
+ zambrocal:{n:'Le zambrocal',c:2,bt:'Demande le grain ou le zambrovate, et le cari ou le safran péi',bes:()=>!!((S.sv.grain||S.sv.zambrovate)&&(S.sv.cari||S.sv.massale)),br:'Nourrir III',d:'Le riz cuit avec le grain et le safran péi, tout ensemble dans la même marmite : un plat qui nourrit beaucoup de monde avec peu. +1 vivre et un peu de cohésion par saison.'},
  chouchou:{n:'Le chouchou',c:2,bt:'Demande l’an 1830',bes:()=>S.year>=1830,br:'Nourrir II',d:'La liane venue d’Amérique couvre les treilles de Salazie : on mange le fruit en gratin et la pousse en brèdes chouchou. +1 vivre par saison.'}});
-{const s0=saison;saison=function(){const r=s0.apply(this,arguments);try{if(!S||S.fin)return r;const v=(S.sv.bredes?1:0)+(S.sv.grain?1:0)+(S.sv.zambrocal?1:0)+(S.sv.chouchou?1:0);if(v)S.vivres+=v;if(S.sv.bredes)fx({sante:.5});if(S.sv.zambrocal)fx({coh:.5})}catch(e){}return r}}
+{const s0=saison;saison=function(){const r=s0.apply(this,arguments);try{if(!S||S.fin)return r;const v=(S.sv.bredes?1:0)+(S.sv.grain?1:0)+(S.sv.zambrocal?1:0)+(S.sv.chouchou?1:0)+(S.sv.zambrovate?1:0);if(v)S.vivres+=v;if(S.sv.bredes)fx({sante:.5});if(S.sv.zambrocal)fx({coh:.5})}catch(e){}return r}}
 
 // ----- 9. Correctif : les modèles allégés (sommets quantifiés en entiers) se tassaient à zéro quand on leur appliquait
 // une matrice (les maisons, cases et greniers de la Survie disparaissaient). On repasse ces attributs en flottants d'abord.
@@ -123,3 +124,17 @@ setInterval(()=>{try{if(!S||S.fin||!S.evq||!modeHist()||!S.voieC)return;S.done=S
   b.addEventListener('mouseenter',()=>{ouvT=performance.now()})}
   if(!b.classList.contains('mini104')&&!b.matches(':hover')&&performance.now()-ouvT>8000)b.classList.add('mini104');
   const ij=$('infoJ');if(ij&&!ij.dataset.m104){ij.dataset.m104=1;ij.classList.add('mini104');ij.addEventListener('click',e=>{if(ij.classList.contains('mini104')){ij.classList.remove('mini104');e.stopPropagation()}else if(e.target.tagName==='H4')ij.classList.add('mini104')},true)}}catch(e){}},700)}
+
+// ----- 13. Modèles Meshy du 16/11/2026 : l'endormi, le tangue, le temple tamoul (kovil) -----
+const MOD104={};
+function mod104(n){if(MOD104[n])return MOD104[n];MOD104[n]=meshyB64(n).then(t=>new Promise((ok,ko)=>{const b=atob(t.trim()),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);new THREE.GLTFLoader().parse(u.buffer,'',g=>{const s=g.scene;s.updateMatrixWorld(true);const bb=new THREE.Box3().setFromObject(s),c=bb.getCenter(new THREE.Vector3());const w=new THREE.Group();s.position.set(-c.x,-bb.min.y,-c.z);w.add(s);w.userData.h=bb.max.y-bb.min.y||1;w.userData.l=Math.max(bb.max.x-bb.min.x,bb.max.z-bb.min.z)||1;s.traverse(o=>{if(o.isMesh&&o.material&&o.material.map)o.material.map.encoding=THREE.sRGBEncoding});ok(w)},ko)}));return MOD104[n]}
+const clone104=(T,taille,parLong)=>{const o=T.clone(true);o.scale.setScalar(taille/(parLong?T.userData.l:T.userData.h));return o};
+// vue personnage : le modèle remplace la forme dessinée dès qu'il est chargé
+{const vb=vpBoucle;vpBoucle=function(){vb.apply(this,arguments);try{const V=VP;if(!V||!V.f104||V.f104m)return;V.f104m=1;
+ mod104('ani_endormi').then(T=>{V.f104.filter(b=>b.k==='endormi').forEach(b=>{const o=clone104(T,.55,true);const old=b.w;o.position.copy(old.position);V.sc.remove(old);V.sc.add(o);o.userData.mat={color:{setHSL(){}}};b.w=o})}).catch(()=>{});
+ mod104('ani_tangue').then(T=>{V.f104.filter(b=>b.k==='tangue').forEach(b=>{const o=clone104(T,.4,true);o.position.copy(b.w.position);V.sc.remove(b.w);V.sc.add(o);b.w=o})}).catch(()=>{})}catch(e){}}}
+// la procession de la cavadee arrive devant un vrai kovil
+{const lj=leg104Jouer;leg104Jouer=function(k){lj.apply(this,arguments);try{if(k!=='cavadee'||!A104.g)return;const g=A104.g;mod104('bat_temple').then(T=>{if(A104.g!==g)return;const o=clone104(T,.75);o.position.set(1.1,0,0);o.rotation.y=-Math.PI/2;g.children.filter(c=>c.geometry&&(c.geometry.type==='BoxGeometry'||c.geometry.type==='ConeGeometry')&&c.position.x>1).forEach(c=>g.remove(c));g.add(o)}).catch(()=>{})}catch(e){}}}
+// et, à partir de 1860, un kovil se voit sur la carte près de Saint-André et de Saint-Pierre
+{let G=null;setInterval(()=>{try{if(!S||typeof scene==='undefined')return;const on=S.year>=1860;if(on&&!G){G=new THREE.Group();scene.add(G);mod104('bat_temple').then(T=>{[[55.655,-20.965],[55.470,-21.330]].forEach(([lo,la])=>{const t=near(lo,la);if(!t)return;const o=clone104(T,.45);o.position.set(t.x+.25,t.alt*VX,t.z-.2);o.rotation.y=Math.PI*.8;G.add(o)})}).catch(()=>{})}
+ if(G)G.visible=on&&(typeof lieu==='undefined'||!lieu||lieu===LA97)}catch(e){}},2500)}
