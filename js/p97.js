@@ -149,3 +149,20 @@ function risque97(i){const t=T[i];if(!t)return 0;return t.alt<500?.25:t.alt<900?
 {const ok=KACT.culture.ok;KACT.culture.ok=t=>ok(t)||(!t.bare&&(t.slope||0)<18&&(K.b[t.i]||[]).some(x=>x.k==='habitation'))}
 // Survie colon : au départ, Saint-Paul a déjà ses champs autour de l'habitation (les gens libérés de la maison y travaillent)
 setInterval(()=>{try{if(!K||K.joueur!=='c'||K.p97||K.an>1700)return;K.p97=1;const i=Object.keys(K.b||{}).find(i=>(K.b[i]||[]).some(x=>x.k==='habitation'&&x.f==='c'));if(i==null)return;const t=T[i];if(!KACT.culture.ok(t))return;const a=K.trav[i]=K.trav[i]||{};const l=kLibres();if(!a.culture&&l>0)a.culture=Math.min(4,l);try{kRendu()}catch(_){}}catch(e){}},1000);
+
+// ----- 15. Les grands sentiers de l'île : les GR d'aujourd'hui reprennent souvent les passages d'antan (refaits après chaque intempérie) -----
+// Tracés approchés, de point de passage en point de passage (à affiner sur la carte de l'ONF).
+const GR97=[
+ {n:'GR R2 · La Diagonale',d:'De Saint-Denis à Saint-Philippe par les sommets et les cirques, environ 143 km.',p:[[55.45,-20.885],[55.445,-20.93],[55.437,-20.97],[55.43,-21.0],[55.435,-21.045],[55.415,-21.075],[55.43,-21.1],[55.445,-21.11],[55.47,-21.13],[55.49,-21.11],[55.53,-21.15],[55.57,-21.2],[55.64,-21.21],[55.69,-21.225],[55.7,-21.29],[55.72,-21.36]]},
+ {n:'GR R1 · Tour du Piton des Neiges',d:'Cilaos, Mafate et Salazie autour du Piton des Neiges, environ 56 km.',p:[[55.47,-21.135],[55.445,-21.11],[55.43,-21.1],[55.455,-21.085],[55.47,-21.07],[55.5,-21.06],[55.52,-21.065],[55.5,-21.09],[55.485,-21.105],[55.47,-21.135]]},
+ {n:'GR R3 · Boucle de Mafate',d:'La boucle à l’intérieur du cirque de Mafate, environ 40 km.',p:[[55.455,-21.085],[55.43,-21.1],[55.405,-21.09],[55.39,-21.07],[55.4,-21.05],[55.42,-21.04],[55.435,-21.045],[55.445,-21.065],[55.455,-21.085]]}];
+const GRT97={};
+function gr97Init(){if(GR97.pts)return;GR97.forEach(g=>{const C=new THREE.CatmullRomCurve3(g.p.map(([lo,la])=>{const [x,z]=xz(lo,la);return new THREE.Vector3(x,0,z)}));const L=C.getLength();g.pts=C.getSpacedPoints(Math.max(20,Math.round(L/.12)));g.pts.forEach(v=>{const t=tileAt({x:v.x,z:v.z});v.ti=t?t.i:null;if(t)(GRT97[t.i]=GRT97[t.i]||new Set()).add(g.n)})});GR97.pts=1}
+{const b0=bat;let cle='',M=null;bat=function(kk){b0.apply(this,arguments);try{if(!S||typeof scene==='undefined')return;gr97Init();let n=0;for(const i in GRT97)if((S.t[i]||{}).s)n++;const k=n+'|'+(lieu?lieu.i:'');if(k===cle)return;cle=k;
+  if(!M){M=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshLambertMaterial({color:0x9a8462,transparent:true,opacity:.75,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));M.renderOrder=3;scene.add(M)}
+  const G=[];GR97.forEach(g=>{let run=[];const fin=()=>{if(run.length>1)G.push(ruban97(run,.05,p=>Math.max(0,alt(p.x,p.z))*VX+.035));run=[]};g.pts.forEach(v=>{if(v.ti!=null&&(S.t[v.ti]||{}).s)run.push(v);else fin()});fin()});
+  M.geometry.dispose();M.geometry=G.length?fusion97(G):new THREE.BufferGeometry();M.visible=!lieu}catch(e){}}}
+// ces vieux passages comptent comme des chemins connus, et la bulle de la case les nomme
+{const c0=connu75;connu75=function(i){return c0(i)||!!(GRT97[i]&&(S.t[i]||{}).s)}}
+{const pa=panneau;panneau=function(){const r=pa.apply(this,arguments);try{if(!sel||!GRT97[sel.i])return r;const p=$('side');if(!p||p.querySelector('.gr97'))return r;const G=GR97.filter(g=>GRT97[sel.i].has(g.n));
+  p.insertAdjacentHTML('beforeend','<div class="sub gr97">🥾 '+G.map(g=>'<b>'+g.n+'</b> · '+g.d).join('<br>🥾 ')+'<br><small>Le sentier d’aujourd’hui reprend un passage d’antan. Tracé approché.</small></div>')}catch(e){}return r}}

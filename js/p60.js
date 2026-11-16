@@ -44,18 +44,18 @@ const KFLORE=[
 // letchis dans l'Est humide (après 1764), manguiers sous le Vent (après 1770), chouchou à Salazie (XIXᵉ), pok pok dans les friches des Hauts (après 1850)
 const FLORE={L:{},geo:null};
 function floreMesh(k){if(FLORE.L[k])return FLORE.L[k];const G={cafe:[new THREE.SphereGeometry(.03,5,4),0x2f5a2a],coton:[new THREE.SphereGeometry(.018,5,4),0xf2efe6],canne:[new THREE.ConeGeometry(.008,.15,3),0xb6cf6a],
-  letchi:[new THREE.SphereGeometry(.06,6,5),0x2c5a2c],mangue:[new THREE.SphereGeometry(.07,6,5),0x3a6a32],chouchou:[new THREE.BoxGeometry(.12,.05,.12),0x6aa04a],pokpok:[new THREE.SphereGeometry(.014,4,3),0xe0a23a]}[k];
+  letchi:[new THREE.SphereGeometry(.06,6,5),0x2c5a2c],mangue:[new THREE.SphereGeometry(.07,6,5),0x3a6a32],chouchou:[new THREE.BoxGeometry(.12,.05,.12),0x6aa04a],pokpok:[new THREE.SphereGeometry(.014,4,3),0xe0a23a],mais:[new THREE.ConeGeometry(.012,.09,4),0x9aa848]}[k];
  const m=new THREE.InstancedMesh(G[0],new THREE.MeshLambertMaterial({color:G[1]}),600);m.count=0;m.frustumCulled=false;scene.add(m);return FLORE.L[k]=m}
 function floreZone(t,y){const o=S.t[t.i]||{},lon=t.x/DEM.kx+DEM.lo0,lat=DEM.la1-t.z/DEM.ky,ouest=lon<55.5&&lat<-20.93,est=lon>55.6&&!ouest,R=[];
- if(o.c||o.clr){if(ouest&&y>=1715&&y<1815&&t.alt<800)R.push(['cafe',14]);if(ouest&&y>=1790&&y<1815&&t.alt>200&&t.alt<700)R.push(['coton',30]);if(y>=1815&&t.alt<500)R.push(['canne',40]);
+ if(o.c||o.clr){if(y<1715&&t.alt<900)R.push(['mais',30]);if(y>=1715&&y<1815&&!ouest&&t.alt<700)R.push(['mais',18]);if(ouest&&y>=1715&&y<1815&&t.alt<800)R.push(['cafe',14]);if(ouest&&y>=1790&&y<1815&&t.alt>200&&t.alt<700)R.push(['coton',30]);if(y>=1815&&t.alt<500)R.push(['canne',40]);
   if(est&&y>=1764&&t.alt<400)R.push(['letchi',3]);if(ouest&&y>=1770&&t.alt<300)R.push(['mangue',2])}
  if(y>=1825&&lon>55.45&&lon<55.56&&lat>-21.1&&lat<-21.0&&t.alt>500&&(o.c||o.b||o.clr))R.push(['chouchou',4]);
  if(y>=1850&&t.alt>600&&t.alt<1600&&(o.clr||o.c||o.b==='jardin'))R.push(['pokpok',12]);return R}
 {const b0=bat;bat=function(k){b0(k);try{if(!S||typeof scene==='undefined')return;const now=performance.now();if(now-(FLORE.t||0)<700)return;FLORE.t=now;
  Object.values(FLORE.L).forEach(m=>m.count=0);if(dist>22||S.fin)return;const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3(),y=S.year||1663;
  T.forEach(t=>{if(Math.hypot(t.x-camT.x,t.z-camT.z)>dist*.8+3)return;floreZone(t,y).forEach(([k,n])=>{const m=floreMesh(k);for(let j=0;j<n&&m.count<600;j++){const a=rndH(t.i*3.1+j*7.7)*6.283,d=Math.sqrt(rndH(t.i*1.7+j*3.3))*.42,
-   x=k==='canne'||k==='cafe'||k==='coton'?t.x-.35+((j%7)/6)*.7+(rndH(j+t.i)-.5)*.02:t.x+Math.cos(a)*d,z=k==='canne'||k==='cafe'||k==='coton'?t.z-.3+Math.floor(j/7)*(.6/Math.ceil(n/7))+.05:t.z+Math.sin(a)*d,h=Math.max(0,alt(x,z))*VX;
-   const s=.8+rndH(j*1.3+t.i)*.4;V.set(x,h+(k==='canne'?.06:k==='letchi'||k==='mangue'?.1:k==='chouchou'?.04:.02),z);Q.setFromAxisAngle(V.clone().set(0,1,0),a);Sc.set(s,s,s);M.compose(V,Q,Sc);m.setMatrixAt(m.count++,M)}})});
+   rg=['canne','cafe','coton','mais'].includes(k),par=Math.floor(j/Math.ceil(n/3)),an=rndH(t.i*5.3+par*2.1)*3.1416,pc=[t.x+Math.cos(t.i+par*2.1)*.44,t.z+Math.sin(t.i+par*2.1)*.44],jj=j%Math.ceil(n/3),cu=((jj%5)/4-.5)*.26+(rndH(j*2.7+t.i)-.5)*.035,cv=(Math.floor(jj/5)/Math.max(1,Math.ceil(n/15))-.5)*.22+(rndH(j*4.1+t.i)-.5)*.03,x=rg?pc[0]+cu*Math.cos(an)-cv*Math.sin(an):t.x+Math.cos(a)*d,z=rg?pc[1]+cu*Math.sin(an)+cv*Math.cos(an):t.z+Math.sin(a)*d,h=Math.max(0,alt(x,z))*VX;if(rg&&(Math.hypot(x-t.x,z-t.z)>.66||Math.hypot(x-t.x,z-t.z)<.38))continue;
+   const s=.8+rndH(j*1.3+t.i)*.4;V.set(x,h+(k==='canne'?.06:k==='mais'?.04:k==='letchi'||k==='mangue'?.1:k==='chouchou'?.04:.02),z);Q.setFromAxisAngle(V.clone().set(0,1,0),a);Sc.set(s,s,s);M.compose(V,Q,Sc);m.setMatrixAt(m.count++,M)}})});
  Object.values(FLORE.L).forEach(m=>m.instanceMatrix.needsUpdate=true)}catch(e){}}}
 
 // ----- l'Est pluvieux : à mi-pente, la forêt de fanjans (fougères arborescentes) ; sur la côte, des plages de galets au pied des remparts -----
