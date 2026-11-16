@@ -23,4 +23,5 @@ const MARCHE75=[];
  for(let m=MARCHE75.length-1;m>=0;m--){const w=MARCHE75[m],u=Math.min(1,(now-w.t0)/w.dur),f=u*(w.P.length-1),i=Math.min(w.P.length-2,Math.floor(f)),r=f-i,A=T[w.P[i]],B=T[w.P[i+1]];
   const x=A.x+(B.x-A.x)*r,z=A.z+(B.z-A.z)*r,ang=Math.atan2(B.x-A.x,B.z-A.z);
   for(let j=0;j<w.n;j++){const dx=-Math.sin(ang)*j*.16,dz=-Math.cos(ang)*j*.16;mfPoser(w.k+'_'+j,w.nm[j%w.nm.length],x+dx,Math.max(0,alt(x+dx,z+dz))*VX+.02,z+dz,ang,'marche')}
+  for(let j=0;j<w.n;j++){const f=MF.L[w.k+'_'+j];if(f&&f.mx&&f.o){const n2=performance.now();f.mx.update(Math.min(.1,(n2-(f.tp75||n2))/1000));f.tp75=n2}}
   if(u>=1){MARCHE75.splice(m,1);w.fin()}}}catch(e){}}}
