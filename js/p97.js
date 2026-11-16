@@ -30,7 +30,7 @@ function q97(p){const h=Math.sin(p.x*12.9898+p.z*78.233)*43758.5453,f=h-Math.flo
 
 // ----- 5. On marche quand on bouge, même quand le jeu est en pause sous la souris -----
 {const mp=mfPoser;mfPoser=function(cle,n,x,y,z,ry,clip){try{const f=MF.L[cle];if(f){const v=Math.hypot(x-(f.px97??x),z-(f.pz97??z));f.v97=(f.v97||0)*.7+v*.3;f.px97=x;f.pz97=z;const bouge=f.v97>.0012;
-  if(bouge&&!/marche|course/.test(clip||''))clip='marche';if(f.mx)f.mx._libre97=bouge}}catch(e){}return mp.call(this,cle,n,x,y,z,ry,clip)}}
+  if(bouge&&!MF.w97&&!/marche|course/.test(clip||''))clip='marche';if(f.mx)f.mx._libre97=bouge}}catch(e){}return mp.call(this,cle,n,x,y,z,ry,clip)}}
 
 // ----- 6. Les chemins et les routes comptent comme connus -----
 connu75=function(i){const o=S.t[i];return !!(o&&(o.s||o.b||o.vo||(S.pas&&S.pas[i]>=2)||(S.trail||[]).includes(i)))};
@@ -166,3 +166,34 @@ function gr97Init(){if(GR97.pts)return;GR97.forEach(g=>{const C=new THREE.Catmul
 {const c0=connu75;connu75=function(i){return c0(i)||!!(GRT97[i]&&(S.t[i]||{}).s)}}
 {const pa=panneau;panneau=function(){const r=pa.apply(this,arguments);try{if(!sel||!GRT97[sel.i])return r;const p=$('side');if(!p||p.querySelector('.gr97'))return r;const G=GR97.filter(g=>GRT97[sel.i].has(g.n));
   p.insertAdjacentHTML('beforeend','<div class="sub gr97">🥾 '+G.map(g=>'<b>'+g.n+'</b> · '+g.d).join('<br>🥾 ')+'<br><small>Le sentier d’aujourd’hui reprend un passage d’antan. Tracé approché.</small></div>')}catch(e){}return r}}
+
+// ----- 16. Les cabris errent au lieu de tourner en rond ; les chasseurs traquent, visent, et le cabri tombe -----
+const HUNT97={};
+function cab97(t,a,q,sp,o0,r1,r2){const h=(HUNT97[t.i]&&HUNT97[t.i].fuit)?2.4:1,u=q*sp*h,j=Math.floor(u*.35+o0);
+ // on avance par à-coups : on broute, puis on fait quelques pas ; le chemin change sans cesse (pas de boucle)
+ const s=u*.35+o0-j,pas=s<.6?0:(s-.6)/.4,w=j+pas,k=a*1.7+o0;return [t.x+Math.sin(w*1.3+k)*r1*.8+Math.sin(w*.47+k*2)*r1*.35,t.z+Math.sin(w*.9+k*1.4)*r2*.8+Math.cos(w*.61+k)*r2*.35]}
+{const b0=bat;bat=function(kk){b0.apply(this,arguments);try{if(!S||modeHist()||!grpOn()||typeof MF==='undefined')return;const now=performance.now();for(const i in HUNT97)HUNT97[i].fuit=0;
+  (S.grp||[]).forEach((g,gi)=>{const e=g.exp;if(!e||e.etat!=='sur place'||e.but!=='chasse')return;const t=T[g.pos];if(!t)return;const H=HUNT97[t.i]=HUNT97[t.i]||{mort:0};
+   const ph=((now/1000)+gi*4)%16,h=s=>rndH(t.i*13.7+s),sp=.05*(.6+h(2)),r1=.32+.05*h(5),r2=.26+.05*h(6),o0=h(7)*6,[cx,cz]=cab97(t,0,kk,sp,o0,r1,r2);
+   if(ph>10.5&&ph<11.2&&H.mort<now)H.mort=now+5000;
+   H.fuit=ph>10.5&&ph<13?1:0;
+   MF.w97=1;grpMembres(g).slice(0,3).forEach((p,j)=>{const a=j*1.9+gi,app=ph<8?1-ph/8*.6:.4,x=cx+Math.cos(a)*(.18+.3*app),z=cz+Math.sin(a)*(.18+.3*app),ang=Math.atan2(cx-x,cz-z);
+    const clip=ph<8?'chasse_traque':ph<10.6?(j===0?'garde':'chasse_traque'):ph<13?'cueillir_sol':'repos_debout';mfPoser('g'+gi+'_'+j,mfModeleDe(p),x,Math.max(0,alt(x,z))*VX+.02,z,ang,clip)});MF.w97=0})}catch(e){MF.w97=0}}}
+// les figurines d'un groupe ne sont posées que par celui qui les mène (marche, chasse) : plus d'aller-retour entre deux places, plus de geste qui saute
+{const mp=mfPoser;mfPoser=function(cle,n,x,y,z,ry,clip){try{const m=/^g(\d+)_/.exec(cle);if(m&&!MF.w97){const g=(S.grp||[])[+m[1]],e=g&&g.exp;const pilote=e&&((e.etat==='aller'||e.etat==='retour')||(e.etat==='sur place'&&e.but==='chasse'));if(pilote){const f=MF.L[cle];if(f)f.vu=MF.t;return}}}catch(_){}return mp.apply(this,arguments)}}
+
+// ----- 17. Vie : de près, la grande carte prend tout le détail d'un lieu (comme au double clic), et ce détail suit la caméra -----
+let LA97=null;
+setInterval(()=>{try{if(!S||S.fin||modeHist()||!grpOn()||VP||CV.on||CINE||window.choixExp)return;
+ if(dist<7){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
+  const c=camT.clone(),d=dist,p=pol,a=az;ouvrirLieu(t);camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
+ else if(dist>9&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
+
+// ----- 18. Cyclone : pas d'« abri anti-cyclone » (il n'en a jamais existé ici). Les marrons montent se réfugier dans une caverne quand il approche,
+// les colons barricadent les cases et rentrent les vivres ; après le passage, il faut tout refaire -----
+BAT.abri.n='Caverne refuge';BAT.abri.d='Une caverne repérée dans la falaise, un muret de pierres sèches à l’entrée : quand le cyclone approche, tout le camp y monte. Les gens sont à l’abri ; les cases, elles, seront à refaire.';
+{const rq=BAT.abri.req;BAT.abri.req=()=>!S.voieC&&rq()}
+preparer=function(){if(S.bras<1||S.abri)return;snap();S.bras--;S.abri=1;sauve()};
+// après le passage : les cases sont emportées, il faut les refaire
+{const cy=cyclone;cyclone=function(fr){const f=fr||(S.cyc&&S.cyc.f)||1;const r=cy.apply(this,arguments);try{let n=0;camps().forEach(c=>{const o=S.t[c.i];if(!o||!o.vl)return;const cs=o.vl.filter(v=>v.k==='case'),k=Math.min(cs.length,Math.ceil(cs.length*(.25+.2*f)));for(let j=0;j<k;j++){const i=o.vl.indexOf(cs[j]);if(i>=0){o.vl.splice(i,1);n++}}});
+  if(n)log('Après le cyclone, '+n+' case'+(n>1?'s':'')+' emportée'+(n>1?'s':'')+' : on redescend, et il faut tout refaire.')}catch(e){}return r}}

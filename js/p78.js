@@ -3,9 +3,9 @@
 const SUIVI={g:-1,jusque:0};
 function grpXZ(g){const t=T[g.pos];if(!t)return null;const e=g.exp;if(!e||(e.etat!=='aller'&&e.etat!=='retour'))return {x:t.x,z:t.z,ang:0,mv:false};
  const cib=T[e.etat==='aller'?e.cap:e.home];if(!cib||cib===t)return {x:t.x,z:t.z,ang:0,mv:false};const P=hexPath(t,cib),n=P[1]||cib;
- const f=(((S.chrono||0)/DUREE())*6)%1;return {x:t.x+(n.x-t.x)*f,z:t.z+(n.z-t.z)*f,ang:Math.atan2(n.x-t.x,n.z-t.z),mv:true}}
+ const f0=(((S.chrono||0)/DUREE())*6)%1,u=Math.min(1,f0/.12),f=u*u*(3-2*u);return {x:t.x+(n.x-t.x)*f,z:t.z+(n.z-t.z)*f,ang:Math.atan2(n.x-t.x,n.z-t.z),mv:u<1,arr:u>=1}}
 {const b0=bat;bat=function(k){b0.apply(this,arguments);try{if(!S||modeHist()||typeof grpOn!=='function'||!grpOn())return;
- (S.grp||[]).forEach((g,gi)=>{if(!g.exp)return;const q=grpXZ(g);if(!q||!q.mv)return;grpMembres(g).slice(0,3).forEach((p,j)=>{const a=q.ang+Math.PI+(j-1)*.5,d=j?.14:0,x=q.x+Math.sin(a)*d,z=q.z+Math.cos(a)*d;mfPoser('g'+gi+'_'+j,mfModeleDe(p),x,Math.max(0,alt(x,z))*VX+.02,z,q.ang,'marche')})});
+ MF.w97=1;(S.grp||[]).forEach((g,gi)=>{if(!g.exp)return;const q=grpXZ(g);if(!q||(!q.mv&&!q.arr))return;grpMembres(g).slice(0,3).forEach((p,j)=>{const a=q.ang+Math.PI+(j-1)*.5,d=j?.14:0,x=q.x+Math.sin(a)*d,z=q.z+Math.cos(a)*d;mfPoser('g'+gi+'_'+j,mfModeleDe(p),x,Math.max(0,alt(x,z))*VX+.02,z,q.mv?q.ang:q.ang+(j-1)*1.2,q.mv?'marche':(j===0?'guetteur':'repos_debout'))})});MF.w97=0;
  if(SUIVI.g>=0&&performance.now()<SUIVI.jusque){const g=(S.grp||[])[SUIVI.g];const q=g&&grpXZ(g);if(q){camT.x+=(q.x-camT.x)*.08;camT.z+=(q.z-camT.z)*.08;camT.y+=(alt(q.x,q.z)*VX-camT.y)*.08}}}catch(e){}}}
 // « Voir » : la caméra va au groupe et le suit 12 secondes
 document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-gv]');if(!b||!S)return;setTimeout(()=>{try{const gi=+b.dataset.gv,g=S.grp[gi],q=g&&grpXZ(g);if(!q)return;SUIVI.g=gi;SUIVI.jusque=performance.now()+12000;dist=Math.min(dist,9);toast(g.n+' : la caméra le suit.')}catch(err){}},50)},true);

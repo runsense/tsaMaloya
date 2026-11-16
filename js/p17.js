@@ -13,7 +13,7 @@ function besoinsCamp(ci){const P=(S.pp||[]).filter(p=>campDe(p)===ci),ad=P.filte
  L.push(['Repos',100-fat,fat>60?'les gens sont épuisés':fat>35?'fatigue qui monte':'reposés',0]);
  L.push(['Se laver',100-sale,sale>60?'très sales':sale>30?'salis par le travail':'propres',0]);
  L.push(['Soins',bl?Math.max(0,100-bl*30):100,bl?bl+' blessé'+(bl>1?'s':''):'personne de blessé',0]);
- if(S.cyc)L.push(['Abri',S.abri||nBat('abri')?100:S.cyc.in<=1?10:S.cyc.in<=2?40:80,S.cyc.in<=2?(S.abri||nBat('abri')?'abri prêt':'cyclone proche, pas d’abri'):'cyclone dans '+S.cyc.in+' saisons',0]);
+ if(S.cyc)L.push(['Abri',S.abri||nBat('abri')?100:S.cyc.in<=1?10:S.cyc.in<=2?40:80,S.cyc.in<=2?(S.abri||nBat('abri')?'tous à l’abri':'cyclone proche : personne à l’abri'):'cyclone dans '+S.cyc.in+' saisons',0]);
  L.push(['Entente',S.coh||0,(S.coh||0)<35?'disputes':(S.coh||0)<60?'tiraillements':'le camp se tient',0]);
  return L}
 function besoinsHtml(L){return L.map(([n,v,t])=>'<div style="display:flex;gap:6px;align-items:center;margin:2px 0"><b style="width:62px;font-size:12px">'+n+'</b>'+jauge(v)+'<small>'+t+'</small></div>').join('')}
