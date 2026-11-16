@@ -5,9 +5,9 @@ TACHES.peche=['Pêcher','pêche'];TLIEU.push('peche');
 {const al=autoLieu;autoLieu=function(p,k){if(k!=='peche')return al(p,k);const c=T[campDe(p)];if(!c)return null;const L=T.filter(t=>hd(c,t)<=2&&lieuOK(p,'peche',t)).sort((a,b)=>hd(c,a)-hd(c,b));return L.length?L[0].i:null}}
 SAVOIRS.boucan={n:'Boucaner et sécher',c:2,bt:'Demande un mystique au camp, ou la voie coloniale',bes:()=>!!S.voieC||(typeof roleL==='function'&&roleL('mys').length>0),br:'Nourrir II',d:'Fumer la viande au-dessus du feu, sécher les poissons et les racines : le camp peut enfin garder des vivres plusieurs jours sans qu’ils se gâtent.'};
 const FAIM={conso:p=>!adulte(p)?.2:ageP(p)>=45?.25:.3};
-function faimCap(){const n=(S.pp||[]).length||S.gens||1;if(S.voieC)return 9999;return n*(S.sv.boucan?4:1.5)+(typeof nBat==='function'?nBat('grenier')*30:0)}
+function faimCap(){const n=(S.pp||[]).length||S.gens||1;if(S.voieC)return 9999;return n*(S.sv.boucan?4:2.5)+(typeof nBat==='function'?nBat('grenier')*30:0)}
 function faimDepart(){if(S.jeuVivres)return;S.jeuVivres=1;
- if(!S.voieC){S.vivres=Math.min(S.vivres,3);journal('Le camp n’a presque rien : quelques racines, un peu de viande. Ici, on se nourrit chaque jour ou on meurt.');return}
+ if(!S.voieC){S.vivres=Math.max(3,Math.round(((S.pp||[]).length||S.gens||8)*.6));journal('Le camp n’a presque rien : quelques racines, un peu de viande. Ici, on se nourrit chaque jour ou on meurt.');return}
  const O=[['de France',5,8,[0,2]],['de Madagascar',1,24,[2,5]],['de l’Inde',2,16,[1,3]]][Math.floor(rnd()*3)];
  S.vivres=O[2];const b=O[3][0]+Math.floor(rnd()*(O[3][1]-O[3][0]+1));S.bet=(S.bet||0)+b;
  journal('Le navire venu '+O[0]+' a mis '+(O[1]===1?'quelques semaines':O[1]+' mois')+' en mer : il reste '+O[2]+' vivres dans la cale'+(b?' et '+b+' bête'+(b>1?'s ont':' a')+' survécu au voyage.':', et aucune bête n’a survécu au voyage.'))}
@@ -23,7 +23,8 @@ function faimJour(){if(!S||modeHist()||!grpOn()||S.fin||!camps().length)return;f
  P.filter(p=>adulte(p)&&(p.tache||p.role)&&['cueil','chasse','cuisine','peche'].includes(tacheDe(p))).forEach(p=>{const k=tacheDe(p);S.vivres+=k==='cuisine'?.15:k==='peche'?.25:.4+(p.role?.15:0)});
  if(S.voieC&&S.bet)S.vivres+=Math.min(S.bet,8)*.12;
  // sans savoir garder, ce qui dépasse se gâte
- const cap=faimCap();if(S.vivres>cap){const perte=(S.vivres-cap)*.3;S.vivres-=perte;if(perte>.5&&!S.ditGate){S.ditGate=1;journal('La viande et les fruits se gâtent vite : sans savoir boucaner ni sécher, le camp ne garde rien plus de quelques jours.')}}
+ P.filter(p=>adulte(p)&&!['cueil','chasse','cuisine','peche','garde'].includes(tacheDe(p))).forEach(()=>{S.vivres+=.08});
+ const cap=faimCap();if(S.vivres>cap){const perte=(S.vivres-cap)*.15;S.vivres-=perte;if(perte>.5&&!S.ditGate){S.ditGate=1;journal('La viande et les fruits se gâtent vite : sans savoir boucaner ni sécher, le camp ne garde rien plus de quelques jours.')}}
  // la famine
  if(S.vivres<0){S.vivres=0;S.faimJ=(S.faimJ||0)+1;P.forEach(p=>p.fat=Math.min(100,(p.fat||0)+12));fx({sante:-2,coh:-1});journal(S.faimJ===1?'Il n’y a plus rien à manger ce soir.':'La faim dure depuis '+S.faimJ+' jours : les gens s’affaiblissent.');if(!CV.on)toast('Famine : '+S.faimJ+' jour'+(S.faimJ>1?'s':'')+' sans manger');
   if(S.faimJ>=2&&rnd()<.3+S.faimJ*.08){const f=P.filter(p=>p.bl||!adulte(p)||ageP(p)>=45).sort((a,b)=>(b.bl?1:0)-(a.bl?1:0))[0]||P[Math.floor(rnd()*P.length)];if(f){S.pp=S.pp.filter(q=>q!==f);S.gens=Math.max(0,(S.gens||1)-1);journal(f.n+' meurt de faim.');log(f.n+' est mort'+(f.g==='f'?'e':'')+' de faim.')}if(!S.pp.length&&!(S.grp||[]).length&&!S.espP){fin('mort');return}}}
