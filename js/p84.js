@@ -89,7 +89,7 @@ function vpEtiquettes(){const V=VP,L=$('vpL');if(!L)return;const W=V.R.domElemen
  const put=(x,y,z,cls,txt)=>{v.set(x,y,z).project(V.cam);if(v.z>1||Math.abs(v.x)>1.1||Math.abs(v.y)>1.1)return;out.push('<div class="'+cls+'" style="left:'+((v.x+1)/2*W).toFixed(0)+'px;top:'+((1-v.y)/2*H).toFixed(0)+'px">'+txt+'</div>')};
  const T=V.troupe||[];if(V.numT>0)T.forEach((o,i)=>{if(o.root)put(o.x,V.h(o.x,o.z)+2.3,o.z,'nu',o.p===V.G.chef?'0':String(i))});
  V.cp.forEach(o=>{if(o.note&&o.root)put(o.x,V.h(o.x,o.z)+(V.numT>0?2.9:2.35),o.z,'ic',o.note.ic)});
- (V.vil||[]).forEach(o=>{const d=Math.hypot(o.x-V.chef.x,o.z-V.chef.z);if(d<14&&o.root)put(o.x,V.h(o.x,o.z)+(adulte(o.p)?2.2:1.5),o.z,'nm',o.p.n.split(/[ ,]/)[0]+' · '+(o.ordre?o.ordre.k:vpTacheNom(o.p)))});
+ (V.vil||[]).forEach(o=>{const d=Math.hypot(o.x-V.chef.x,o.z-V.chef.z);if(d<14&&o.root)put(o.x,V.h(o.x,o.z)+(adulte(o.p)?2.2:1.5),o.z,'nm',o.p.n.split(/[ ,]/)[0]+' · '+(o.ordre&&(o.ordre.k||o.ordre.n)||vpTacheNom(o.p)))});
  L.innerHTML=out.join('')}
 
 // ----- soi-même : manger, dormir, rentrer -----

@@ -2052,7 +2052,7 @@ function satActif(){try{return localStorage.getItem('tsa-sat')!=='0'}catch(e){re
 // toucher un endroit vide du camp revient à la liste
 {let lie=false;setInterval(()=>{const cv=$('cvC');if(!cv||lie)return;lie=true;cv.addEventListener('click',e=>{setTimeout(()=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;let pres=false;for(const id in CV.A){const a=CV.A[id];if(a.vis&&Math.hypot(a.x-x,(a.y-y)*.7)<.05)pres=true}if(!pres&&CV.selP!=null){CV.selP=null;cvListe()}},0)})},1000)}
 // pause quand la souris bouge, reprise dès qu'elle s'arrête (1,5 s) : le temps ne file pas pendant qu'on agit
-let sourisT=0;addEventListener('pointermove',e=>{if(e.pointerType==='mouse')sourisT=performance.now()},{passive:true,capture:true});
+let sourisT=0;addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&!(e.target&&e.target.tagName==='CANVAS')&&e.target&&e.target.closest&&e.target.closest('#drawer,.modal,#modal,#cvSel,.carte,#side,#panel,#infoJ'))sourisT=performance.now()},{passive:true,capture:true});
 const sourisPause=()=>performance.now()-sourisT<1500;
 {const cl0=chronoLibre;chronoLibre=function(){if(S&&!modeHist()&&sourisPause())return false;return cl0()}}
 {const ca2=chronoAff;chronoAff=function(){ca2();const e=$('chM');if(e&&S&&!modeHist()&&sourisPause()&&!/pause/.test(e.textContent))e.textContent+=' · ⏸ pause (souris)';
