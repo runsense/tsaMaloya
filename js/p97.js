@@ -359,3 +359,18 @@ setInterval(()=>{try{if(!S||S.voieC)return;const m=$('modal');if(!m||m.hidden)re
 addEventListener('dblclick',e=>{try{if(!S||VP||e.target.id!=='c'||typeof MF==='undefined')return;const r=e.target.getBoundingClientRect(),V3=new THREE.Vector3();let best=null,bd=24;
  for(const k in MF.L){const f=MF.L[k],m=/^g(\d+)_/.exec(k);if(!m||!f.o||!f.o.visible)continue;V3.copy(f.o.position);V3.y+=.12;V3.project(cam);const sx=r.left+(V3.x+1)/2*r.width,sy=r.top+(1-V3.y)/2*r.height,d=Math.hypot(sx-e.clientX,sy-e.clientY);if(d<bd){bd=d;best=+m[1]}}
  if(best==null)return;const g=S.grp[best];if(!g)return;e.stopImmediatePropagation();e.preventDefault();S.gSel=best;vpOuvrir(g)}catch(_){}},true);
+
+// ----- 27. Vue personnage : on grimpe pour de vrai (lentement, en s'agrippant), et la place du camp pour le vote -----
+{const vb=vpBoucle;let last=performance.now();vpBoucle=function(){const now=performance.now(),dt=Math.min(.1,(now-last)/1000);last=now;const V=VP,p0=V&&V.perche;vb.apply(this,arguments);try{if(!V||!V.chef)return;const ch=V.chef,P=V.perche;
+  if(P&&P===p0){if(P.y0==null){P.y0=V.h(ch.x,ch.z);P.c=0;P.t97=now}P.c=(now-P.t97)/1000;const u=Math.min(1,P.c/1.8),y=P.y0+(P.y-P.y0)*(u*u*(3-2*u));ch.y=y;if(ch.root){ch.root.position.y=y;ch.root.rotation.x=u<1?-.25+Math.sin(P.c*9)*.05:0}
+   const cl=u<1?'cueillir':'guetteur';try{vpClip(ch,cl)}catch(_){}}
+  else if(ch.root&&ch.root.rotation.x)ch.root.rotation.x=0}catch(e){}}}
+// la place du camp : un cercle de pierres plates et de troncs autour du feu, où l'on se réunit pour choisir le chef
+function vpPlace97(){const V=VP;if(!V||!V.p84||V.place97||VPLIEU&&VPLIEU.g)return;V.place97=1;const G=new THREE.Group(),mP=new THREE.MeshLambertMaterial({color:0x6a665e}),mB=new THREE.MeshLambertMaterial({color:0x6a4a2e});try{if(typeof tx91==='function'){mP.map=tx91('basalte',1);mB.map=tx91('ecorce',1);mP.color.setHex(0xbbbbbb);mB.color.setHex(0xaa8866)}}catch(e){}
+ for(let i=0;i<14;i++){const a=i/14*6.283,x=Math.cos(a)*4.2,z=-30+Math.sin(a)*4.2,s=new THREE.Mesh(new THREE.CylinderGeometry(.35+Math.random()*.15,.4,.12,7),mP);s.position.set(x,V.h(x,z)+.05,z);s.rotation.y=Math.random()*3;G.add(s)}
+ for(let i=0;i<5;i++){const a=i/5*6.283+.3,x=Math.cos(a)*3.1,z=-30+Math.sin(a)*3.1,b=new THREE.Mesh(new THREE.CylinderGeometry(.18,.2,1.6,7),mB);b.rotation.z=Math.PI/2;b.rotation.y=-a;b.position.set(x,V.h(x,z)+.18,z);G.add(b)}
+ V.sc.add(G)}
+{const vb=vpBoucle;vpBoucle=function(){vb.apply(this,arguments);try{vpPlace97();const V=VP;if(!V||!V.vil)return;const vote=!!document.querySelector('#cons87');
+  V.vil.forEach((o,k)=>{if(vote&&o.ordre!=='vote97'&&!o.ordre){o.ordre='vote97';const a=k/Math.max(1,V.vil.length)*6.283;o.poste={x:Math.cos(a)*3.2,z:-30+Math.sin(a)*3.2}}else if(!vote&&o.ordre==='vote97'){o.ordre=null}});
+  if(vote&&!V.voteDit97){V.voteDit97=1;vpMsg('Tout le monde se réunit sur la place, autour du feu, pour choisir le chef.')}if(!vote)V.voteDit97=0}catch(e){}}}
+{const vc=vpClip;vpClip=function(o,c){try{if(VP&&o===VP.chef&&VP.perche&&VP.perche.c!=null&&c!=='cueillir'&&c!=='guetteur')return}catch(_){}return vc.apply(this,arguments)}}
