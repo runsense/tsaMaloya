@@ -126,15 +126,15 @@ const GESTE87={cuisine:'cuisine',garde:'garde',eau:'eau',bois:'bois',paille:'cue
  if(V.dortVu>0){V.dortVu-=.016;if(V.dortVu<=0){V.dortVu=0;vs87()}}
  // la consigne des touches, toujours visible
  if(!$('vpEsc')){const d=document.createElement('div');d.id='vpEsc';d.style.cssText='position:absolute;right:14px;bottom:14px;font:600 12px Montserrat,system-ui;background:#000a;border-radius:8px;padding:6px 10px;display:flex;gap:8px;align-items:center;z-index:5';
-  d.innerHTML='<span id="vpEscT">Échap : libérer la souris · Échap ×2 : retour à la carte</span><button id="vpRet" style="font:600 12px Montserrat;border-radius:999px;padding:3px 10px;background:#b5412b;color:#fff;border:0;cursor:pointer">⟵ Carte</button>';V.el.appendChild(d);d.querySelector('#vpRet').onclick=e=>{e.stopPropagation();vpQuitter()}}
- const t=$('vpEscT');if(t){const txt=V.noLock?'🖱️ Souris libre (double-clic sur la vue pour la reprendre) · Échap : retour à la carte':'Échap : libérer la souris · Échap ×2 : retour à la carte';if(t.textContent!==txt)t.textContent=txt}
+  d.innerHTML='<span id="vpEscT">Échap : libérer la souris, puis Échap : retour à la carte</span><button id="vpRet" style="font:600 12px Montserrat;border-radius:999px;padding:3px 10px;background:#b5412b;color:#fff;border:0;cursor:pointer">⟵ Carte</button>';V.el.appendChild(d);d.querySelector('#vpRet').onclick=e=>{e.stopPropagation();vpQuitter()}}
+ const t=$('vpEscT');if(t){const txt=V.noLock?'🖱️ Souris libre (double-clic sur la vue pour la reprendre) · Échap : retour à la carte':'Échap : libérer la souris, puis Échap : retour à la carte';if(t.textContent!==txt)t.textContent=txt}
  // Échap bloque la prise de la souris
  const cv=V.R&&V.R.domElement;if(cv&&!cv._p87){cv._p87=1;const rq=cv.requestPointerLock;cv.requestPointerLock=function(){if(VP&&VP.noLock)return Promise.resolve();return rq.apply(this,arguments)};cv.addEventListener('dblclick',()=>{if(VP){VP.noLock=0;try{const p=rq.call(cv);if(p&&p.catch)p.catch(()=>{})}catch(_){}}})}
  }catch(e){}}}
 function vs87(){const V=VP;if(!V)return;const n=$('vpNoir'),p=V.chef.p;if(!n)return;n.textContent=p.n.split(/[ ,]/)[0]+' dort…';n.style.opacity=1;V.dort=1;setTimeout(()=>{if(!VP)return;V.hp=3;p.fat=0;V.dort=0;n.style.opacity=0;vpClip(V.chef,'repos_debout');vpMsg(p.n.split(/[ ,]/)[0]+' se réveille reposé : souffle plein.');vpHud()},2600)}
 {let tEsc=0;document.addEventListener('pointerlockchange',()=>{if(VP&&!document.pointerLockElement){VP.noLock=1;tEsc=performance.now()}});
  addEventListener('keydown',e=>{if(!VP||e.key!=='Escape'||VP.en2D)return;if($('vpSo')){$('vpSo').remove();e.stopImmediatePropagation();return}const now=performance.now();
-  if(document.pointerLockElement)return;e.stopImmediatePropagation();e.preventDefault();if(!VP.noLock){VP.noLock=1;tEsc=now;return}if(now-tEsc<900){vpQuitter();return}tEsc=now},true)}
+  if(document.pointerLockElement)return;e.stopImmediatePropagation();e.preventDefault();vpQuitter()},true)}
 // la touche B : boire
 {const st=()=>{if(!VP||!VP.p84)return;const M=$('vpMoi');if(M&&!M.querySelector('[data-m="boire"]')){const b=document.createElement('button');b.dataset.m='boire';b.textContent='💧 Boire (B)';b.onclick=e=>{e.stopPropagation();vpSoi('boire')};M.insertBefore(b,M.children[1]||null)}};setInterval(st,700)}
 addEventListener('keydown',e=>{if(!VP||VP.en2D||e.repeat)return;if(e.key.toLowerCase()==='b'&&!e.ctrlKey){vpSoi('boire')}},true);

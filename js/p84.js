@@ -114,7 +114,7 @@ function vp84Init(){const V=VP;if(!V||V.p84)return;V.p84=1;vpStyle84();V.troupe=
  V.src=[];for(let i=0;i<2;i++){let x,z,k=0;do{x=(Math.random()-.5)*130;z=(Math.random()-.5)*130;k++}while(k<40&&(Math.hypot(x,z+30)<15||V.arb.some(a=>Math.hypot(a.x-x,a.z-z)<a.r+1.5)));
   const m=new THREE.Mesh(new THREE.CircleGeometry(1.1,16).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x7ab0d8,transparent:true,opacity:.8}));m.position.set(x,V.h(x,z)+.06,z);V.sc.add(m);const l=new THREE.PointLight(0xb08ae0,.9,7);l.position.set(x,V.h(x,z)+.8,z);V.sc.add(l);V.src.push({x,z,m,l,fait:0})}
  const kd=e=>{if(!VP||VP.en2D)return;if(e.repeat)return;const c=e.code;
-  if(/^Numpad[0-9]$/.test(c)){e.preventDefault();e.stopPropagation();const n=+c.slice(6);if(e.shiftKey&&n>0){const o=VP.troupe[n];const i=VP.cp.indexOf(o);if(i>=0){vpSelect(i,true);vpSelUI()}VP.numT=2.5;return}
+  if(/^Numpad[0-9]$/.test(c)){e.preventDefault();e.stopPropagation();if(!VPLIEU||!VPLIEU.g){vpMsg('On ne change de personnage que dans un groupe, dehors. Au camp, on reste qui l’on est.');return}const n=+c.slice(6);if(e.shiftKey&&n>0){const o=VP.troupe[n];const i=VP.cp.indexOf(o);if(i>=0){vpSelect(i,true);vpSelUI()}VP.numT=2.5;return}
    VP.numT=2.5;if(n===0){vpDevenir(VP.cp.find(o=>o.p===VP.G.chef))}else vpDevenir(VP.troupe[n]);return}
   const k=e.key.toLowerCase();if(k==='m')vpSoi('manger');else if(k==='n')vpSoi('dormir');else if(k==='h')vpSoi('maison')};
  addEventListener('keydown',kd,true);const off0=V.off;V.off=()=>{off0&&off0();removeEventListener('keydown',kd,true)}}
