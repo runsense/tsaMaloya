@@ -61,5 +61,12 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg&&(tg.tagName==='INPUT'||t
  if(CV.on)return;
  // les lettres
  const l=(k||'').toLowerCase();if(l.length!==1||!/[a-z]/.test(l)||e.ctrlKey||e.altKey||e.metaKey)return;
+ // une case choisie : les lettres sont celles de ses actions ; rien de choisi : celles des onglets
+ {const C=sel?kbCase():null;if(C&&C.size){const b=C.get(l);if(b){stop();b.click()}else stop();return}}
  if(e.shiftKey&&KB.shL){const b=kbCase().get(l);if(b){stop();b.click()}return}
  if(!e.shiftKey){const b=kbOnglets().get(l);if(b){stop();b.click()}}},true);
+// Échap sur la carte : on lâche la case choisie, on retrouve les raccourcis généraux
+addEventListener('keydown',e=>{try{if(e.key!=='Escape'||!S||!sel||VP||CV.on||lieu||window.choixExp)return;const m=$('modal');if(m&&!m.hidden)return;if(document.querySelector('#bt,#m2,#kons:not([hidden]),#cons87,#hb,#roi97'))return;sel=null;try{peindre()}catch(_){}panneau()}catch(_){}});
+// les onglets montrent leur lettre seulement quand rien n'est choisi
+setInterval(()=>{try{document.body.classList.toggle('kbCase',!!(S&&sel))}catch(e){}},300);
+{const st=document.createElement('style');st.textContent='body.kbCase .tab .kL{text-decoration:none;text-transform:none}';document.head.appendChild(st)}

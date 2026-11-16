@@ -195,8 +195,12 @@ BAT.abri.n='Caverne refuge';BAT.abri.d='Une caverne repérée dans la falaise, u
 {const rq=BAT.abri.req;BAT.abri.req=()=>!S.voieC&&rq()}
 preparer=function(){if(S.bras<1||S.abri)return;snap();S.bras--;S.abri=1;sauve()};
 // après le passage : les cases sont emportées, il faut les refaire
-{const cy=cyclone;cyclone=function(fr){const f=fr||(S.cyc&&S.cyc.f)||1;const r=cy.apply(this,arguments);try{let n=0;camps().forEach(c=>{const o=S.t[c.i];if(!o||!o.vl)return;const cs=o.vl.filter(v=>v.k==='case'),k=Math.min(cs.length,Math.ceil(cs.length*(.25+.2*f)));for(let j=0;j<k;j++){const i=o.vl.indexOf(cs[j]);if(i>=0){o.vl.splice(i,1);n++}}});
-  if(n)log('Après le cyclone, '+n+' case'+(n>1?'s':'')+' emportée'+(n>1?'s':'')+' : on redescend, et il faut tout refaire.')}catch(e){}return r}}
+{const cy=cyclone;cyclone=function(fr){const f=fr||(S.cyc&&S.cyc.f)||1,m=!S.voieC,abri=!!S.abri&&(!m||cav97Connue());const r=cy.apply(this,arguments);try{
+  // part des cases emportées : à l'abri (caverne ou cases barricadées), on perd une partie ; sans abri, un petit cyclone passe, un fort dévaste tout
+  const part=abri?(.25+.2*f):(f>=2?1:0);let n=0;camps().forEach(c=>{const o=S.t[c.i];if(!o||!o.vl)return;const cs=o.vl.filter(v=>v.k==='case'),k=Math.min(cs.length,Math.ceil(cs.length*part));for(let j=0;j<k;j++){const i=o.vl.indexOf(cs[j]);if(i>=0){o.vl.splice(i,1);n++}}});
+  if(!abri&&f>=2){const pv=Math.round((S.vivres||0)*.4);S.vivres-=pv;fx({sante:-8,coh:-4});log('Personne n’était à l’abri : le cyclone a tout dévasté. '+n+' case'+(n>1?'s':'')+' arrachée'+(n>1?'s':'')+', '+pv+' vivres perdus, des blessés partout.'+(m&&!cav97Connue()?' Il faudrait connaître une caverne où monter la prochaine fois.':''))}
+  else if(!abri)log('Le cyclone était faible : il passe en arrachant quelques toits, sans plus.');
+  else if(n)log('Après le cyclone, '+n+' case'+(n>1?'s':'')+' emportée'+(n>1?'s':'')+' : on redescend, et il faut tout refaire.')}catch(e){}return r}}
 
 // ----- 19. Vue personnage : chiens, cochons et papangues autour du camp -----
 // Les chiens rôdent et suivent les gens, les cochons fouillent près des cases, le papangue tourne haut au-dessus du camp.
@@ -385,3 +389,12 @@ setInterval(()=>{try{if(!S||S.fin||modeHist()||!grpOn()||S.year<1723||S.cn97)ret
 {const a3=actions;actions=function(t){let A=a3(t);try{if(S&&S.voieC&&S.year>=1723)A=A.filter(a=>a.id!=='unir')}catch(e){}return A}}
 // côté marron, les faits de la colonie arrivent au camp deux ans plus tard (ce qu'on voit d'en haut, ce que racontent les camps d'esclaves)
 setInterval(()=>{try{if(!S)return;const d=S.voieC?0:2;if(S.retard97===d)return;S.retard97=d;Object.keys(EV).forEach(k=>{const e=EV[k];if(!e||!e.y||e.tag!=='Archive'||/^mv_/.test(k))return;if(e.y97==null)e.y97=e.y;e.y=e.y97+d})}catch(e){}},1000);
+
+// ----- 29. Les cavernes n'existent pas partout : il faut en découvrir une (falaises, remparts) avant de pouvoir y monter -----
+let CAV97=null;function cavTiles97(){if(CAV97)return CAV97;CAV97=new Set();T.forEach(t=>{if(t.bare||t.alt<400||(t.slope||0)<22)return;if(rndH(t.i*7.31+2)<.3)CAV97.add(t.i)});return CAV97}
+function cav97Connue(){const C=S&&S.cav97||{},cs=camps();return Object.keys(C).some(i=>cs.some(c=>hd(c,T[+i])<=4))}
+setInterval(()=>{try{if(!S||S.fin||S.voieC||!camps().length)return;S.cav97=S.cav97||{};const C=cavTiles97();C.forEach(i=>{if(S.cav97[i])return;const o=S.t[i];if(!o||!o.s)return;const passe=(S.pas&&S.pas[i]>0)||(S.trail||[]).includes(i)||o.ex||o.b||(S.grp||[]).some(g=>g.pos===i);if(!passe)return;S.cav97[i]=1;
+  journal('On a trouvé une caverne dans la falaise, '+(lieuDe(T[i])||lieuProche(T[i])||'dans les remparts')+(camps().some(c=>hd(c,T[i])<=4)?' : assez près du camp pour s’y réfugier quand viendra le cyclone.':' : trop loin du camp pour s’y réfugier, mais on s’en souviendra.'))})}catch(e){}},2500);
+// sans caverne connue, on ne peut pas monter s'y abriter (on peut seulement barricader ce qu'on a)
+{const pr=preparer;let dit=0;preparer=function(){if(S&&!S.voieC&&!cav97Connue()){if(performance.now()-dit>30000){dit=performance.now();toast('Aucune caverne connue près du camp : il faut d’abord en découvrir une, en explorant les falaises et les remparts.')}return}return pr.apply(this,arguments)}}
+{const rq=BAT.abri.req;BAT.abri.req=()=>rq()&&cav97Connue()}
