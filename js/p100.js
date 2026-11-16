@@ -12,14 +12,16 @@ function cp100Vue(k,host){try{if(!KM98.p_structure||!KM98.ship_med){setTimeout((
  const sable=new THREE.Mesh(new THREE.CircleGeometry(5,40),new THREE.MeshLambertMaterial({color:0xe2cf9a}));sable.rotation.x=-Math.PI/2;sable.position.set(-1.5,.02,-1.2);sc.add(sable);
  const put=(m,t,x,z,ry,long)=>{const o=km98(m,t,long);if(!o)return null;o.position.set(x,.02,z);o.rotation.y=ry||0;sc.add(o);return o};
  const taille=Math.min(6,1+Math.floor((c.gens||2)/2)+(c.lien||0));
- put('p_structure_platform_dock',1.6,1.4,.6,Math.PI/2,true);put('p_structure_platform_dock',1.6,2.9,.6,Math.PI/2,true);
+ // un repaire pirate ou marron ne s'affiche pas dans un port tenu par une couronne : on mouille au large, dans une anse, sans pavillon
+ const sec=(OUT[k]&&OUT[k].sec)||'',libre=/Libre|vides|Sultanats/.test(sec),cache=!S.voieC&&!libre;
+ if(!cache){put('p_structure_platform_dock',1.6,1.4,.6,Math.PI/2,true);put('p_structure_platform_dock',1.6,2.9,.6,Math.PI/2,true)}
  for(let i=0;i<Math.min(3,taille);i++){put('p_structure',1.3,-2.6+i*1.5,-2.2,0);put('p_structure_roof',.6,-2.6+i*1.5,-2.2,0)}
  if(taille>=3)put('p_tower_complete_small',2.2,-4.2,.4,.4);
  for(let i=0;i<4+taille;i++){const a=i*1.9;put(i%2?'p_palm_detailed_bend':'p_palm_straight',1.8+(i%3)*.3,-1.5+Math.cos(a)*3.8,-1.2+Math.sin(a)*3.4,a)}
  for(let i=0;i<2+taille;i++)put(i%3?'p_crate':'p_chest',.35,.3+(i%3)*.4,-.4-Math.floor(i/3)*.4,i);
  if(taille>=4)put('p_cannon',.5,-.6,1.6,2.6);
- put(S.voieC?'p_flag':'p_flag_pirate',1.4,-1.2,-.6,0);
- const nav=[put('ship_med',3.2,4.6,1.2,Math.PI/2,true),put('boat_row',.9,2.2,2.1,1,true)];if(taille>=3)nav.push(put('ship_small',2.6,6,-5,.3,true));
+ if(!cache)put(S.voieC?'p_flag':'p_flag_pirate',1.4,-1.2,-.6,0);
+ const nav=cache?[put('ship_small',2.6,8,-6,.8,true),put('boat_row',.9,1.6,2.4,1,true)]:[put('ship_med',3.2,4.6,1.2,Math.PI/2,true),put('boat_row',.9,2.2,2.1,1,true)];if(taille>=3&&!cache)nav.push(put('ship_small',2.6,6,-5,.3,true));
  const t0=performance.now();const loop=()=>{if(CP100.stop||CP100.host!==host){R.dispose();return}if(!host.isConnected){requestAnimationFrame(loop);return}const t=(performance.now()-t0)/1000;nav.forEach((n,i)=>{if(!n)return;n.position.y=.02+Math.sin(t*1.2+i)*.05;n.rotation.z=Math.sin(t*.9+i)*.04});if(nav[2]){nav[2].position.x=6-((t*.4)%14)}
   cam.position.x=7*Math.cos(t*.05)+0;cam.position.z=9*Math.sin(.9+t*.05);cam.lookAt(-.5,0,-.5);R.render(sc,cam);requestAnimationFrame(loop)};loop()}catch(e){console.warn('cp100',e)}}
 // la vue reste la même quand la fiche se redessine : on remet le même cadre à sa place

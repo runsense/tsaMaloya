@@ -12,7 +12,7 @@ function mer98Init(){if(MER98.on||typeof scene==='undefined'||!scene||!S||!KM98.
  ports.forEach(([lo,la],i)=>{let [x,z]=xz(lo,la);for(let k=0;k<40&&alt(x,z)>-5;k++){x-=.05*(i===1?0:1);z-=.05*(i===1?1:0)}const sh=km98(i%2?'ship_small':'ship_med',.55,true);if(!sh)return;G.add(sh);MER98.L.push({o:sh,x,z,r:.6+i*.1,ph:i*1.7,sp:.025,k:'navire',an:i===0?1665:i===1?1690:1720})});
  const cot=T.filter(t=>!t.bare&&cotier(t)).sort(()=>Math.random()-.5).slice(0,14);
  cot.forEach((t,i)=>{for(let k=0;k<10;k++){const a=Math.random()*6.28,x=t.x+Math.cos(a)*HS*.9,z=t.z+Math.sin(a)*HS*.9;if(alt(x,z)<-3){const b=km98(i%2?'boat_row':'boat_fish',.18,true);if(!b)return;G.add(b);MER98.L.push({o:b,x,z,r:.15,ph:Math.random()*6,sp:.05,k:'pirogue',an:1663});return}}})}
-{const b0=bat;bat=function(kk){b0.apply(this,arguments);try{mer98Init();if(!MER98.on)return;const s=performance.now()/1000,proche=dist<26;MER98.G.visible=proche&&!lieu;if(!MER98.G.visible)return;
+{const b0=bat;bat=function(kk){b0.apply(this,arguments);try{mer98Init();if(!MER98.on)return;const s=performance.now()/1000,proche=dist<26;MER98.G.visible=proche&&(!lieu||(typeof LA97!=='undefined'&&lieu===LA97));if(!MER98.G.visible)return;
   MER98.L.forEach(b=>{const vis=(S.year||1663)>=b.an;b.o.visible=vis;if(!vis)return;const a=s*b.sp+b.ph,x=b.x+Math.cos(a)*b.r,z=b.z+Math.sin(a)*b.r*.6;b.o.position.set(x,-.01+Math.sin(s*1.3+b.ph)*.006,z);b.o.rotation.set(Math.sin(s*1.1+b.ph)*.04,-a+(b.k==='navire'?Math.PI:Math.PI/2),Math.sin(s*.9+b.ph)*.05)})}catch(e){}}}
 
 // ----- 2. Vue personnage : la cuisine du camp — marmite sur le feu, pilon, fruits, poissons, sacs et tonneaux -----
@@ -43,3 +43,34 @@ function menu98(p,x,y){const o=$('men98');if(o)o.remove();const d=document.creat
 addEventListener('contextmenu',e=>{try{if(!S||modeHist()||!CV.on)return;let p=null;const row=e.target.closest&&e.target.closest('[data-pid]');if(row)p=ppId(+row.dataset.pid);
  if(!p&&e.target.id==='cvC'){const r=e.target.getBoundingClientRect();let bd=28;for(const id in CV.A){const a=CV.A[id];if(a.sx==null||!a.vis)continue;const d=Math.hypot(r.left+a.sx*r.width-e.clientX,r.top+a.sy*r.height-e.clientY);if(d<bd){bd=d;p=ppId(+id)}}}
  if(!p)return;e.preventDefault();menu98(p,e.clientX,e.clientY)}catch(_){}},true);
+
+// ----- 5. Le deuil s'efface quand une autre annonce arrive (récit, lettre, film) -----
+setInterval(()=>{try{const d=$('deuilL');if(!d)return;const m=$('modal');if((m&&!m.hidden)||(typeof CINE!=='undefined'&&CINE)||document.querySelector('#cons87,#roi97,#lettreD')){const b=$('deuilOk');if(b)b.click();else d.remove()}}catch(e){}},400);
+
+// ----- 6. Au large : frégates royales, corsaires, pirates — selon l'époque ; combats navals pendant les guerres ; des pirates mouillés loin des côtes habitées -----
+// Si l'on a découvert la côte où ils mouillent, on peut aller les voir : commercer, se battre ou piller, selon leur humeur envers vous.
+const NAV98={on:0,L:[],fumees:[]};
+function guerre98(y){return (y>=1744&&y<=1748)||(y>=1756&&y<=1763)||(y>=1778&&y<=1783)||(y>=1793&&y<=1815)}
+function nav98Init(){if(NAV98.on||!MER98.on||!KM98.ship_med||!KM98.ship_small)return;NAV98.on=1;const G=MER98.G;
+ const large=(lo,la,r)=>{const [x,z]=xz(lo,la);return {x,z,r}};
+ // routes au large : frégates françaises (toujours), anglaises (en guerre), corsaires (1793-1810)
+ [['fr',large(55.2,-20.75,9),1680,2100],['an',large(55.85,-20.75,10),1744,1815],['cors',large(55.05,-21.2,8),1793,1810]].forEach(([k,p,a,b],i)=>{const o=km98(k==='cors'?'ship_small':'ship_med',k==='cors'?.5:.7,true);if(!o)return;G.add(o);NAV98.L.push({k,o,...p,ph:i*2.1,a,b})});
+ // le mouillage pirate : une anse loin des habitations (côte sud-est), à l'âge d'or de la piraterie
+ const villes=VILLES.filter(v=>v[0]<=1730).map(v=>xz(v[1],v[2])),loinV=t=>Math.min(...villes.map(([x,z])=>Math.hypot(t.x-x,t.z-z)));const anse=T.filter(t=>!t.bare&&cotier(t)).map(t=>({t,d:loinV(t)})).sort((p,q)=>q.d-p.d)[0];
+ if(anse){const t=anse.t;let x=t.x,z=t.z;for(let k=0;k<30&&alt(x,z)>-6;k++){x+=.06;z+=.04}const o=km98('ship_med',.7,true);if(o){G.add(o);NAV98.pir={t,x,z,o};NAV98.L.push({k:'pir',o,x,z,r:0,ph:0,a:1685,b:1730,mouille:1})}}}
+{const b0=bat;bat=function(kk){b0.apply(this,arguments);try{nav98Init();if(!NAV98.on)return;const s=performance.now()/1000,y=S&&S.year||1663;
+  NAV98.L.forEach(n=>{let vis=y>=n.a&&y<=n.b;if(n.k==='an')vis=vis&&guerre98(y);if(n.k==='pir')vis=vis&&!(S.pir98||{}).parti;n.o.visible=vis;if(!vis)return;
+   if(n.mouille){n.o.position.set(n.x,-.01+Math.sin(s*.8)*.006,n.z);n.o.rotation.set(Math.sin(s*.7)*.03,1.2,Math.sin(s*.6)*.03);return}
+   const a=s*.012+n.ph,x=n.x+Math.cos(a)*n.r,z=n.z+Math.sin(a)*n.r*.5;n.o.position.set(x,-.01+Math.sin(s+n.ph)*.008,z);n.o.rotation.set(0,-a+Math.PI,Math.sin(s*.8+n.ph)*.05)});
+  // combat naval : en temps de guerre, la frégate française et l'anglaise se rapprochent et se canonnent
+  const fr=NAV98.L.find(n=>n.k==='fr'),an=NAV98.L.find(n=>n.k==='an');if(fr&&an&&an.o.visible&&fr.o.visible&&Math.random()<.04){const p=Math.random()<.5?fr.o.position:an.o.position,f=new THREE.Mesh(new THREE.SphereGeometry(.12,6,5),new THREE.MeshBasicMaterial({color:0xdddddd,transparent:true,opacity:.7,depthWrite:false}));f.position.set(p.x+(Math.random()-.5)*.3,.15,p.z+(Math.random()-.5)*.3);MER98.G.add(f);NAV98.fumees.push({f,t:0})}
+  NAV98.fumees.forEach(q=>{q.t+=.016;q.f.scale.setScalar(1+q.t*3);q.f.position.y+=.004;q.f.material.opacity=Math.max(0,.7-q.t*.6);if(q.t>1.2){MER98.G.remove(q.f);q.f.geometry.dispose();q.dead=1}});NAV98.fumees=NAV98.fumees.filter(q=>!q.dead)}catch(e){}}}
+// la rencontre avec les pirates du mouillage : sur la côte où ils sont, si on l'a découverte
+function pirAni98(){S.pir98=S.pir98||{ani:S.voieC?60:30};return S.pir98.ani}
+{const a0=actions;actions=function(t){const A=a0(t);try{const P=NAV98.pir;if(!P||!S||(S.pir98||{}).parti||S.year<1685||S.year>1730)return A;if(!(S.t[t.i]||{}).s||hd(t,P.t)>1)return A;const an=pirAni98();
+  A.push({id:'pir_com',n:'🏴 Commercer avec les pirates',c:1,d:'Des vivres et de l’eau contre de la poudre et des fusils. Ils sont '+(an<35?'plutôt bien disposés':an<65?'méfiants':'hostiles')+'.'});
+  A.push({id:'pir_pil',n:'⚔️ Piller leur campement à terre',c:2,d:'Ils dorment sur la plage : on peut prendre leurs caisses… ou les mettre en colère.'});}catch(e){}return A}}
+{const g0=agir;agir=function(t,id,l){if(id!=='pir_com'&&id!=='pir_pil')return g0.apply(this,arguments);const c=id==='pir_com'?1:2;if(!l){if(S.bras<c)return false;snap();S.bras-=c}const P=S.pir98||(S.pir98={ani:30});
+  if(id==='pir_com'){if(P.ani>70&&rnd()<.6){fx({sante:-4});P.ani+=5;log('Les pirates ont reçu vos gens à coups de pistolet : on revient avec des blessés.')}else{fx({vivres:-3,fu:2});S.fu=(S.fu||0);P.ani=Math.max(0,P.ani-8);log('Échange sur la plage : trois paniers de vivres contre de la poudre et deux fusils. Les pirates vous regardent d’un œil plus amical.')}}
+  else{if(rnd()<.45+(P.ani<35?.15:0)){fx({vivres:5,fu:1});P.ani+=30;log('Le campement pirate est pillé pendant la nuit : vivres, poudre, un fusil. Ils ne l’oublieront pas.')}else{fx({sante:-6,coh:-2});P.ani+=20;log('Les pirates veillaient : la tentative tourne mal, on se replie sous les balles.')}}
+  if(P.ani>=100){P.parti=1;log('Furieux, les pirates lèvent l’ancre et partent écumer d’autres côtes.')}try{sauve();panneau();rafraichir()}catch(e){}return true}}

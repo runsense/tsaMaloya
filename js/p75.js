@@ -16,7 +16,7 @@ const MARCHE75=[];
   if(S.bras<a.c||(a.r&&!peut(a.r))||(id==='camp'&&S.vivres<campV()))return false;
   snap();S.bras-=a.c;if(a.r)paye(a.r);
   const nm=S.voieC?['homme_chemise','femme_travail','jeune_pagne']:['p1a_chasseur','femme_sagaie','jeune_pagne'],k='hv'+Date.now()%100000+'_'+Math.floor(Math.random()*999);
-  const dur=Math.min(9,L*.6)*1000;MARCHE75.push({k,P,n:Math.min(3,a.c||1),nm,t0:performance.now(),dur,fin:()=>{let ok=false;try{ok=ag.call(null,t,id,true)}catch(e){}if(!ok){S.bras+=a.c;log('Les envoyés reviennent sans avoir rien pu faire.')}try{sauve();panneau();rafraichir()}catch(e){}}});
+  const dur=Math.min(22,L*1.9)*1000;MARCHE75.push({k,P,n:Math.min(3,a.c||1),nm,t0:performance.now(),dur,fin:()=>{let ok=false;try{ok=ag.call(null,t,id,true)}catch(e){}if(!ok){S.bras+=a.c;log('Les envoyés reviennent sans avoir rien pu faire.')}try{sauve();panneau();rafraichir()}catch(e){}}});
   log((a.c>1?a.c+' personnes partent':'Une personne part')+' vers '+(lieuDe(t)||lieuProche(t)||'un lieu des Hauts')+' : '+L+' cases par les chemins connus.');try{panneau();rafraichir()}catch(e){}return true}catch(e){return ag.apply(this,arguments)}}}
 // les envoyés marchent sur la carte, case après case ; à l'arrivée, l'action se fait
 {const b0=bat;bat=function(k){b0.apply(this,arguments);try{if(!MARCHE75.length||typeof mfPoser!=='function')return;const now=performance.now();

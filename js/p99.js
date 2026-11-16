@@ -25,7 +25,7 @@ const RITE99=[
  {k:'olivine',n:'La pierre verte du volcan',m:14,c:{olivine:2,galet:1},d:'Les chasseurs de marrons ont peur de monter : traque −10, colonie −4.',f:k=>fx({traque:-10*k,ami:-4})},
  {k:'montagne',n:'Le réveil de la montagne',m:20,c:{olivine:3,zeolithe:2,ambaville:2},d:'Seulement dans une histoire mystique : la Fournaise gronde pour les camps. Traque −20, cohésion +8.',si:()=>utopieMyst99(),f:k=>fx({traque:-20,coh:8})}];
 // chercher un ingrédient : là où il pousse ou affleure seulement
-{const a0=actions;actions=function(t){const A=a0(t);try{if(!S||!modeHist()||!t||!(S.t[t.i]||{}).s)return A;for(const k in ING99){const I=ING99[k];if(I.ok(t)&&!A.find(a=>a.id==='ing_'+k))A.push({id:'ing_'+k,n:I.ic+' Chercher : '+I.n.toLowerCase(),c:1,d:'On ne la trouve que dans '+I.ou+'. Sert aux rites mystiques.'})}}catch(e){}return A}}
+{const a0=actions;actions=function(t){const A=a0(t);try{if(!S||!modeHist()||S.voieC||!t||!(S.t[t.i]||{}).s)return A;for(const k in ING99){const I=ING99[k];if(I.ok(t)&&!A.find(a=>a.id==='ing_'+k))A.push({id:'ing_'+k,n:I.ic+' Chercher : '+I.n.toLowerCase(),c:1,d:'On ne la trouve que dans '+I.ou+'. Sert aux rites mystiques.'})}}catch(e){}return A}}
 {const g0=agir;agir=function(t,id,l){if(!/^ing_/.test(id||''))return g0.apply(this,arguments);const k=id.slice(4),I=ING99[k];if(!I)return false;if(!l){if(S.bras<1)return false;snap();S.bras-=1}const n=1+(rnd()<.35?1:0);ing99()[k]=(ing99()[k]||0)+n;log(I.ic+' On rapporte '+n+' '+I.n.toLowerCase()+' de '+(lieuDe(t)||lieuProche(t)||'ces hauteurs')+'.');try{sauve();panneau();rafraichir()}catch(e){}return true}}
 // les passifs, chaque saison
 {const sa=saison;saison=function(){const r=sa.apply(this,arguments);try{if(!S||!modeHist()||S.voieC)return r;const m=mystique99(),k=utopieMyst99()?1.5:1;PAL99.forEach(P=>{if(m>=P.m)P.f(k)})}catch(e){}return r}}
@@ -77,8 +77,37 @@ function vouves99(){return T.filter(t=>(S.t[t.i]||{}).vouve)}
 {const cy=cyclone;cyclone=function(){const L=S?vouves99():[];const r=cy.apply(this,arguments);try{let n=0;L.forEach(t=>{const o=S.t[t.i];if(o&&o.vouve&&rnd()<.75){o.vouve=0;o.vouveN=0;n++}});if(n)log('La rivière en crue a emporté '+(n>1?n+' installations de vouves':'les vouves de l’embouchure')+' : les galets sont dispersés, tout est à refaire.')}catch(e){}return r}}
 // sur la carte : deux murets de galets en V qui ferment l'embouchure et laissent un petit canal au milieu
 {const b0=bat;let M=null,cle='';bat=function(kk){b0.apply(this,arguments);try{if(!S||typeof scene==='undefined')return;const L=vouves99(),k=L.map(t=>t.i).join(',');if(!M){M=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(.018,0),new THREE.MeshLambertMaterial({color:0x8a8478}),600);M.frustumCulled=false;M.count=0;scene.add(M)}
-  M.visible=dist<20&&!lieu;if(k===cle)return;cle=k;const Mx=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3();let n=0;
+  M.visible=dist<20&&(!lieu||lieu===LA97);if(k===cle)return;cle=k;const Mx=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3();let n=0;
   L.forEach(t=>{const mer=t.nb.map(i=>T[i]).filter(u=>u.alt<=1);let dx=0,dz=0;mer.forEach(u=>{dx+=u.x-t.x;dz+=u.z-t.z});const l=Math.hypot(dx,dz)||1;dx/=l;dz/=l;const px=-dz,pz=dx;
    // le V pointe vers la mer ; le canal reste ouvert à la pointe
    for(const sgn of [-1,1])for(let j=0;j<22;j++){const f=j/21,x0=t.x+dx*HS*.45+px*sgn*(.05+f*.42),z0=t.z+dz*HS*.45+pz*sgn*(.05+f*.42),x=x0-dx*f*.35,z=z0-dz*f*.35;if(n>=600)break;const s=.8+((j*37+t.i)%7)/10;V.set(x,Math.max(0,alt(x,z))*VX+.012,z);Q.setFromAxisAngle(V.clone().set(0,1,0),j*1.7);Sc.set(s,s*.7,s);Mx.compose(V,Q,Sc);M.setMatrixAt(n++,Mx)}});
   M.count=n;M.instanceMatrix.needsUpdate=true}catch(e){}}}
+
+// ===== En Histoire, l'imaginaire (Hanuman, le pilier, les galeries) ne surgit que dans une histoire mystique : sinon, seulement le défi et le roi des camps =====
+{const is=imagSaison;imagSaison=function(){if(!S||!modeHist()||utopieMyst99()||mystique99()>=12)return is.apply(this,arguments);const sv=IMAG.slice();try{IMAG.splice(0,IMAG.length,...sv.filter(i=>['duel','roicafre'].includes(i.k)));return is.apply(this,arguments)}finally{IMAG.splice(0,IMAG.length,...sv)}}}
+
+// ===== Les bêtes et les ennemis des souterrains et des missions : chacun a sa forme (chien, requin, soldat…), on les reconnaît d'un coup d'œil =====
+function mob97(x,m,X,Y,ts,t,P){const a=Math.atan2((P?P.y:Y)-m.y,(P?P.x:X)-m.x),k=m.t||'',r=ts*(m.ia==='boss'?.7:.38),b=Math.sin(t*10+m.x)*.08;x.save();x.translate(X,Y);
+ x.fillStyle='rgba(0,0,0,.3)';x.beginPath();x.ellipse(0,r*.7,r*.9,r*.25,0,0,7);x.fill();
+ if(k==='chi'){// chien : corps allongé, tête, oreilles, queue, pattes qui courent
+  x.rotate(a);x.fillStyle=m.col;x.beginPath();x.ellipse(0,0,r*.9,r*.42,0,0,7);x.fill();x.beginPath();x.ellipse(r*.85,-r*.1,r*.38,r*.3,0,0,7);x.fill();x.fillStyle='#3a2a18';x.beginPath();x.ellipse(r*1.15,-r*.05,r*.15,r*.12,0,0,7);x.fill();
+  x.beginPath();x.moveTo(r*.7,-r*.35);x.lineTo(r*.8,-r*.65);x.lineTo(r*.95,-r*.35);x.fill();x.strokeStyle=m.col;x.lineWidth=r*.16;x.beginPath();x.moveTo(-r*.85,0);x.lineTo(-r*1.25,-r*.35+b*r*2);x.stroke();
+  x.strokeStyle='#3a2a18';x.lineWidth=r*.14;for(const s of [-1,1])for(const f of [-.5,.5]){x.beginPath();x.moveTo(f*r,s*r*.3);x.lineTo(f*r+Math.sin(t*14+f*3)*r*.25,s*r*.62);x.stroke()}}
+ else if(k==='req'){// requin : silhouette grise, aileron et queue
+  x.rotate(a);x.fillStyle=m.col;x.beginPath();x.moveTo(r*1.2,0);x.quadraticCurveTo(0,-r*.55,-r*1,0);x.quadraticCurveTo(0,r*.55,r*1.2,0);x.fill();x.beginPath();x.moveTo(-r*.9,0);x.lineTo(-r*1.4,-r*.45+b*r);x.lineTo(-r*1.3,r*.45+b*r);x.fill();
+  x.fillStyle='#4a5a6a';x.beginPath();x.moveTo(0,0);x.lineTo(-r*.35,-r*.75);x.lineTo(-r*.5,0);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(r*.75,-r*.12,r*.07,0,7);x.fill()}
+ else if(k==='sol'||k==='bossM'){// soldat : uniforme bleu, chapeau, fusil
+  x.fillStyle=m.col;x.fillRect(-r*.35,-r*.3,r*.7,r*.8);x.fillStyle='#e0b896';x.beginPath();x.arc(0,-r*.55,r*.28,0,7);x.fill();x.fillStyle='#111';x.fillRect(-r*.4,-r*.85,r*.8,r*.15);x.strokeStyle='#333';x.lineWidth=r*.12;x.beginPath();x.moveTo(r*.35,-r*.1);x.lineTo(r*.35+Math.cos(a)*r*.9,-r*.1+Math.sin(a)*r*.9);x.stroke()}
+ else if(k==='chv'){// chauve-souris : ailes qui battent
+  const w=Math.sin(t*18)*.5+.5;x.fillStyle=m.col;x.beginPath();x.ellipse(0,0,r*.3,r*.35,0,0,7);x.fill();for(const s of [-1,1]){x.beginPath();x.moveTo(0,0);x.lineTo(s*r*1.2,-r*.6*w);x.lineTo(s*r*.9,r*.2);x.lineTo(s*r*.5,0);x.fill()}}
+ else if(k==='sal'){// salamandre de lave : corps qui ondule, queue
+  x.rotate(a);x.strokeStyle=m.col;x.lineWidth=r*.45;x.lineCap='round';x.beginPath();for(let i=0;i<=8;i++){const u=i/8,px=r*(1-u*2.2),py=Math.sin(u*6+t*8)*r*.25;i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke();x.fillStyle='#ffd070';x.beginPath();x.arc(r*.9,0,r*.12,0,7);x.fill()}
+ else{x.fillStyle=m.col;x.beginPath();x.arc(0,0,r,0,7);x.fill();x.fillStyle='#fff';x.fillRect(-r*.3,-r*.25,3,3);x.fillRect(r*.2,-r*.25,3,3)}
+ x.restore();
+ // le nom au-dessus, pour savoir à quoi on a affaire
+ x.fillStyle='rgba(255,255,255,.85)';x.font='600 '+Math.max(9,Math.round(ts*.22))+'px system-ui';x.textAlign='center';x.fillText((m.n||'').split(' ')[0],X,Y-r-4)}
+
+// ===== Par temps clair, quand on dézoome au plus loin, on devine Maurice à l'horizon, à l'est-nord-est, comme en vrai =====
+{const b0=bat;let M=null;bat=function(kk){b0.apply(this,arguments);try{if(typeof scene==='undefined'||!scene||!DEM)return;if(!M){const [x,z]=xz(57.57,-20.28);M=new THREE.Group();const mat=new THREE.MeshBasicMaterial({color:0x5a6a80,transparent:true,opacity:0,fog:false,depthWrite:false});
+  const corps=new THREE.Mesh(new THREE.SphereGeometry(1,24,10,0,Math.PI*2,0,Math.PI/2),mat);corps.scale.set(26,1.1,20);M.add(corps);[[-8,-6,2.4],[5,4,2.1],[-2,8,1.7],[9,-3,1.6]].forEach(([dx,dz,h])=>{const p=new THREE.Mesh(new THREE.ConeGeometry(2.6,h,7),mat);p.position.set(dx,h/2,dz);M.add(p)});M.position.set(x,-.2,z);M.userData.mat=mat;scene.add(M)}
+  const loin=Math.max(0,Math.min(1,(dist-34)/12)),clair=Math.max(0,1-(typeof stormV!=='undefined'?stormV:0)*2),h=S&&modeHist()?1:.6;M.userData.mat.opacity=.55*loin*clair*h;M.visible=M.userData.mat.opacity>.01}catch(e){}}}
