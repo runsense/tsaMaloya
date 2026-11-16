@@ -126,8 +126,8 @@ const GESTE87={cuisine:'cuisine',garde:'garde',eau:'eau',bois:'bois',paille:'cue
  if(V.dortVu>0){V.dortVu-=.016;if(V.dortVu<=0){V.dortVu=0;vs87()}}
  // la consigne des touches, toujours visible
  if(!$('vpEsc')){const d=document.createElement('div');d.id='vpEsc';d.style.cssText='position:absolute;right:14px;bottom:14px;font:600 12px Montserrat,system-ui;background:#000a;border-radius:8px;padding:6px 10px;display:flex;gap:8px;align-items:center;z-index:5';
-  d.innerHTML='<span id="vpEscT">Échap : libérer la souris, puis Échap : retour à la carte</span><button id="vpRet" style="font:600 12px Montserrat;border-radius:999px;padding:3px 10px;background:#b5412b;color:#fff;border:0;cursor:pointer">⟵ Carte</button>';V.el.appendChild(d);d.querySelector('#vpRet').onclick=e=>{e.stopPropagation();vpQuitter()}}
- const t=$('vpEscT');if(t){const txt=V.noLock?'🖱️ Souris libre (double-clic sur la vue pour la reprendre) · Échap : retour à la carte':'Échap : libérer la souris, puis Échap : retour à la carte';if(t.textContent!==txt)t.textContent=txt}
+  d.innerHTML='<span id="vpEscT">Échap : libérer la souris, puis Échap : remonter (camp, puis carte)</span><button id="vpRet" style="font:600 12px Montserrat;border-radius:999px;padding:3px 10px;background:#b5412b;color:#fff;border:0;cursor:pointer">⟵ Carte</button>';V.el.appendChild(d);d.querySelector('#vpRet').onclick=e=>{e.stopPropagation();vpQuitter()}}
+ const t=$('vpEscT');if(t){const txt=V.noLock?'🖱️ Souris libre (double-clic sur la vue pour la reprendre) · Échap : remonter au camp':'Échap : libérer la souris, puis Échap : remonter (camp, puis carte)';if(t.textContent!==txt)t.textContent=txt}
  // Échap bloque la prise de la souris
  const cv=V.R&&V.R.domElement;if(cv&&!cv._p87){cv._p87=1;const rq=cv.requestPointerLock;cv.requestPointerLock=function(){if(VP&&VP.noLock)return Promise.resolve();return rq.apply(this,arguments)};cv.addEventListener('dblclick',()=>{if(VP){VP.noLock=0;try{const p=rq.call(cv);if(p&&p.catch)p.catch(()=>{})}catch(_){}}})}
  }catch(e){}}}

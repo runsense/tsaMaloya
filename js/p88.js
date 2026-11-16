@@ -84,7 +84,7 @@ setInterval(()=>{try{if(!VP||!VP.p84)return;const M=$('vpMoi');if(!M)return;let 
 // la source mystique remplit aussi la jauge de celui qui s'y recueille
 {const vi=vpInteragir;vpInteragir=function(){try{const d=VP&&vpDevant();if(d&&d.k==='source'){const p=VP.chef.p;p.myg=Math.min(100,MYG(p)+25)}}catch(e){}return vi.apply(this,arguments)}}
 // en revenant : la carte générale, avec les zones visibles un moment
-{const vq=vpQuitter;vpQuitter=function(){const r=vq.apply(this,arguments);try{if(CV.on)cvFermer();window.zones88=performance.now()+4500}catch(e){}return r}}
+{const vq=vpQuitter;vpQuitter=function(){const auCamp=!(VPLIEU&&VPLIEU.g),ci=(camps()[0]||{}).i;const r=vq.apply(this,arguments);try{if(auCamp&&ci!=null){if(!CV.on)cvOuvrir(ci)}else{if(CV.on)cvFermer();window.zones88=performance.now()+4500}}catch(e){}return r}}
 
 // ----- 5. Le début de partie : rôles → chef → première expédition → on s'incarne -----
 setInterval(()=>{try{if(!S||S.fin||modeHist()||!grpOn()||!S.cons87||S.exp1)return;if(document.querySelector('#cons87,#expP')||($('modal')&&!$('modal').hidden))return;const ci=(camps()[0]||{}).i;if(ci==null)return;if(!S.voieC&&!chefDe(ci))return;
