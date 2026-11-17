@@ -219,8 +219,7 @@ function btDessin(){const cv=$('btc');if(!cv)return;const x=cv.getContext('2d'),
  BT.S.forEach(s=>{if(!btVivant(s))return;const vis=s.joueur||btVisible(s);if(!vis)return;const col=s.cote==='m'?(s.joueur?'#e0a860':'#c07848'):(s.T.chien?'#8a7a6a':s.type==='sagaie'?'#6a5040':'#3a5ab0'),sel=BT.sel.has(s.id);
   const al=s.cache?.5:s.rout?(.5+.4*Math.sin(BT.tps*10)):1;x.globalAlpha=al;
   if(sel){x.strokeStyle='#f0c46a';x.lineWidth=1.5;x.beginPath();x.arc(s.x,s.y,btRayon(s)+6,0,7);x.stroke()}
-  s.sold.forEach(q=>{x.fillStyle=col;x.beginPath();x.arc(q.x,q.y,s.T.chien?3:3.6,0,7);x.fill();x.strokeStyle=s.joueur?'#fff':'#200';x.lineWidth=.7;x.stroke();
-   if(!s.T.chien&&!s.T.mys){x.strokeStyle=s.T.feu?'#222':'#c8b080';x.lineWidth=1;x.beginPath();x.moveTo(q.x,q.y);x.lineTo(q.x+Math.cos(s.ang)*7,q.y+Math.sin(s.ang)*7);x.stroke()}});
+  s.sold.forEach((q,qi)=>btFig108(x,q,s,col,qi));
   // le fanion
   x.globalAlpha=al;x.fillStyle=s.joueur?'#000a':'#300a';const lb=s.T.ic+' '+s.sold.length;x.font='600 11px Montserrat';const w=x.measureText(lb).width+8;x.fillRect(s.x-w/2,s.y-btRayon(s)-20,w,15);x.fillStyle=s.joueur?'#fff':'#ffc0b0';x.fillText(lb,s.x-w/2+4,s.y-btRayon(s)-9);
   const m=Math.max(0,Math.min(100,s.mor));x.fillStyle='#0008';x.fillRect(s.x-w/2,s.y-btRayon(s)-5,w,3);x.fillStyle=m>55?'#7ac06a':m>30?'#e0b04a':'#d0503a';x.fillRect(s.x-w/2,s.y-btRayon(s)-5,w*m/100,3);
