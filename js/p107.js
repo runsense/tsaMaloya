@@ -35,3 +35,11 @@ function kEurop107(){try{const f=K.fac||{};return Math.max(2,Math.round(((f.c&&f
 // clic gauche = ce qu'il y a sur ce terrain ; clic droit = ce qu'on peut y faire (plus de doublon)
 {const st=document.createElement('style');st.textContent='body.kinfo107 #kA .pc button{display:none!important}body.kinfo107 #kA .pc::after{content:"Clic droit pour agir ici";display:block;font-size:12px;opacity:.7;margin-top:4px}';document.head.appendChild(st)}
 addEventListener('pointerup',e=>{try{if(!K||!KV3||e.target!==KV3.cv)return;if(e.button===0)document.body.classList.add('kinfo107')}catch(_){}},true);
+
+// ----- Le guide de la Survie : une bulle posée à côté de la commande ; il disparaît si l'on quitte la Survie,
+// et s'il n'est pas suivi (40 s sans faire l'étape), il s'efface de lui-même -----
+{let et=-1,t0=0;setInterval(()=>{try{const g=$('kTuto');const d=$('kons');
+ if(!K||!d||d.hidden||K.fin){if(g)g.remove();document.querySelectorAll('.kLueur').forEach(e=>e.classList.remove('kLueur'));et=-1;return}
+ if(!g||K.guideF)return;if(K.guideE!==et){et=K.guideE;t0=performance.now()}
+ if(performance.now()-t0>40000){K.guideF=1;g.remove();document.querySelectorAll('.kLueur').forEach(e=>e.classList.remove('kLueur'));try{kSauve()}catch(e){}toast('Le guide s’efface. Vous pourrez le relancer depuis l’Aide.');return}
+ const E=KGUIDE[K.guideE],c=E&&E.cible&&document.querySelector(E.cible);if(c&&c.offsetParent){const r=c.getBoundingClientRect(),w=g.offsetWidth||380,h=g.offsetHeight||140;let x=Math.min(innerWidth-w-10,Math.max(10,r.left+r.width/2-w/2)),y=r.bottom+12;if(y+h>innerHeight-10)y=Math.max(10,r.top-h-12);g.style.left=x+'px';g.style.top=y+'px';g.style.bottom='auto';g.style.right='auto';g.style.transform='none'}}catch(e){}},300)}

@@ -148,3 +148,17 @@ setInterval(()=>{try{const b=$('guideJ');document.querySelectorAll('.cible106').
  if(CV.on)cvFermer();const cur=G.findIndex(([g,i])=>i===S.gSel);const [g,i]=G[(cur+1)%G.length];S.gSel=i;choisirTuile(T[g.pos]);try{conteVoir(T[g.pos],14)}catch(e){}
  const auCamp=camps().some(c=>c.i===g.pos);toast(g.n+(auCamp?' se prépare encore au camp : il part avec le jour.':' ('+(G.findIndex(x=>x[1]===i)+1)+'/'+G.length+'). Rappuyez pour le groupe suivant.'));return}catch(e){return cc.apply(this,arguments)}}}
 {const vo=vpOuvrir;vpOuvrir=function(g){try{if(g&&typeof g==='object'&&g.m&&camps().some(c=>c.i===g.pos)){const ch=grpMembres(g)[0];toast(g.n+' est encore au camp : vous le rejoignez avant le départ.');return vo.call(this,ch?{moi:ch}:undefined)}}catch(e){}return vo.apply(this,arguments)}}
+
+// ----- 18. Double clic sur un personnage dans le camp en 3D : on incarne bien celui qu'on a touché (l'enfant reste l'enfant) -----
+// L'ancien choix se faisait sur le plan 2D du camp ; dans la vue 3D, il tombait sur quelqu'un d'autre.
+function p3Sous106(X,Y){try{if(!P3||!P3.C||!P3.M)return null;const cv=P3.cv||$('cv3');if(!cv)return null;const r=cv.getBoundingClientRect(),v=new THREE.Vector3();let best=null,bd=46;
+ for(const id in P3.M){const m=P3.M[id];if(!m||!m.o||!m.o.g||!m.o.g.scene||!m.o.g.scene.visible)continue;m.o.g.scene.getWorldPosition(v);v.y+=.9;v.project(P3.C);if(v.z>1)continue;const sx=r.left+(v.x+1)/2*r.width,sy=r.top+(1-v.y)/2*r.height,d=Math.hypot(sx-X,sy-Y);if(d<bd){bd=d;best=ppId(+id)}}return best}catch(e){return null}}
+document.addEventListener('dblclick',e=>{try{if(!S||modeHist()||VP||!CV.on)return;const cv=P3&&(P3.cv||$('cv3'));if(!cv||e.target!==cv)return;const p=p3Sous106(e.clientX,e.clientY);e.stopImmediatePropagation();e.preventDefault();if(!p)return;if(enGrp(p)){toast(p.n.split(' ')[0]+' est dehors avec un groupe.');return}toast('🧍 Vous incarnez '+p.n.split(' ')[0]+(adulte(p)?'':' (enfant)')+'.');vpOuvrir({moi:p})}catch(_){}},true);
+
+// ----- 19. Vie : on voit partir ceux qu'on envoie seuls (chasse, cueillette, bois, pêche, eau), travailler sur place, puis rentrer le soir -----
+const TACH106={chasse:'chasse_traque',cueil:'repos_debout',bois:'repos_debout',peche:'repos_debout',eau:'repos_debout',pierre:'repos_debout',paille:'repos_debout'};
+{const b0=bat;bat=function(k){b0.apply(this,arguments);try{if(!S||S.fin||K||modeHist()||VP||typeof mfPoser!=='function'||typeof jourPh!=='function')return;const ph=jourPh();let n=0;
+ (S.pp||[]).forEach(p=>{if(n>=14||enGrp(p)||!adulte(p))return;const tk=(typeof tacheDe==='function'?tacheDe(p):p.tache);if(!TACH106[tk]||p.lieu==null)return;const c=T[campDe(p)],L=T[p.lieu];if(!c||!L||L.i===c.i)return;
+  let u,clip;if(ph<.22||ph>.82)return;if(ph<.32){u=(ph-.22)/.1;clip='marche'}else if(ph<.72){u=1;clip=TACH106[tk]}else{u=1-(ph-.72)/.1;clip='marche'}
+  const s=(p.id*37%100)/100,ox=Math.cos(s*6.28)*.25,oz=Math.sin(s*6.28)*.25;let x=c.x+(L.x+ox-c.x)*u,z=c.z+(L.z+oz-c.z)*u;if(u===1){const t=performance.now()/1000;x+=Math.cos(t*.3+s*9)*.08;z+=Math.sin(t*.27+s*7)*.08}
+  const ry=ph<.72?Math.atan2(L.x-c.x,L.z-c.z):Math.atan2(c.x-L.x,c.z-L.z);mfPoser('w106_'+p.id,mfModeleDe(p),x,Math.max(0,alt(x,z))*VX+.02,z,ry,clip);n++})}catch(e){}}}
