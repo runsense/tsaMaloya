@@ -70,3 +70,12 @@ lettreSuivante=function(){if(LETT.on||!LETT.q.length||window.BTUON)return;LETT.o
  journal(S.voieC?'Novembre 1663 : Louis Payen et Pierre Pau débarquent à Saint-Paul avec dix Malgaches. L’habitation commence.':'Les premiers fuyards montent dans les Hauts : le camp commence.')}}catch(e){}return r}}
 // en Vie, la barre d'attente des récits parle du jeu, pas du conte
 setInterval(()=>{try{if(!S||modeHist())return;const t=$('evMinT');if(t&&/le conte/.test(t.textContent))t.textContent='Sans réponse, le jeu choisira à la fin du trait. Survolez pour prendre le temps de lire.';const d=$('evDec');if(d&&/le conte/.test(d.textContent))d.firstChild&&(d.firstChild.textContent='Ce choix compte. Sans réponse, le jeu suit l’histoire réelle dans ')}catch(e){}},300);
+// ===== Le détail des lieux prend les couleurs vraies de l'île (image satellite, ou photo aérienne après 1946) au lieu d'un aplat jaune de savane =====
+const SATC111={img:null,d:null,w:0,h:0};
+function satPix111(x,z){try{const U=terr&&terr.material&&terr.material.uniforms;if(!U||!U.sat||!U.sat.value)return null;let im=U.sat.value.image;if(U.aer&&U.aerOn&&U.aerOn.value>.5&&U.aer.value&&U.aer.value.image)im=U.aer.value.image;if(!im||!im.width)return null;
+ if(SATC111.img!==im){const cv=document.createElement('canvas');cv.width=im.width;cv.height=im.height;const c=cv.getContext('2d');c.drawImage(im,0,0);SATC111.d=c.getImageData(0,0,cv.width,cv.height).data;SATC111.w=cv.width;SATC111.h=cv.height;SATC111.img=im}
+ const W=(NX-1)*ST,H=(NY-1)*ST,px=Math.floor((x+MAR)/W*SATC111.w),py=Math.floor((z+MAR)/H*SATC111.h);if(px<0||py<0||px>=SATC111.w||py>=SATC111.h)return null;const i=(py*SATC111.w+px)*4;if(!SATC111.d[i+3])return null;
+ const L=v=>Math.pow(v/255,2.2);return[L(SATC111.d[i]),L(SATC111.d[i+1]),L(SATC111.d[i+2])]}catch(e){return null}}
+{const c0=col97;col97=function(q,x,z,a,d,t,n,pe){try{if(a>0&&!(t&&t.bare)){const s=satPix111(x,z);if(s){const k=.85+n*.3,c=new THREE.Color(s[0]*k,s[1]*k,s[2]*k),h={};c.getHSL(h);c.setHSL(h.h,Math.min(1,h.s*1.45),h.l*.92);q.lerp(c,.75)}}}catch(e){}return c0.apply(this,arguments)}}
+// Survie : on peut ouvrir le détail du lieu à nouveau (la couleur jaune venait de l'aplat de savane)
+window.LIEU107=1;
