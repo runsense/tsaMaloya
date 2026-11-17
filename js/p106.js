@@ -121,8 +121,8 @@ function prot106Cout(){const n=Math.max(1,camps().length+Math.floor(((S.bats||[]
 
 // ----- 12. Un fondu quand la carte passe du détail (zoom proche) à la vue normale, au lieu d'un changement sec -----
 function fondu106(){try{const c=$('c');if(!c)return;c.style.transition='none';c.style.opacity='.45';requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.transition='opacity .55s ease';c.style.opacity='1'}))}catch(e){}}
-{const ol=ouvrirLieu;ouvrirLieu=function(){const avant=lieu;const r=ol.apply(this,arguments);if(lieu&&lieu!==avant&&!avant)fondu106();return r}}
-{const fl=fermerLieu;fermerLieu=function(){const avant=lieu;const r=fl.apply(this,arguments);if(avant&&!lieu)fondu106();return r}}
+{const ol=ouvrirLieu;ouvrirLieu=function(){const avant=lieu;const r=ol.apply(this,arguments);if(lieu&&lieu!==avant&&!avant&&!(typeof camGo!=='undefined'&&camGo)&&!(S&&modeHist()&&autoD()))fondu106();return r}}
+{const fl=fermerLieu;fermerLieu=function(){const avant=lieu;const r=fl.apply(this,arguments);if(avant&&!lieu&&!arguments[0]&&!(typeof camGo!=='undefined'&&camGo)&&!(S&&modeHist()&&autoD()))fondu106();return r}}
 
 // ----- 13. La pluie se voit : averses pendant la saison des pluies (plus fortes à l'approche d'un cyclone), sur la carte et en vue personnage -----
 function pluieF106(){try{if(!S||S.fin)return 0;const t=performance.now()/1000;const cyc=S.cyc&&S.cyc.in<=0?1:S.cyc&&S.cyc.in===1?.6:0;const sais=pluie()?.55:.12;const averse=Math.max(0,Math.sin(t*.07)+Math.sin(t*.031+1.3)*.6);return Math.min(1,Math.max(cyc,sais*averse))}catch(e){return 0}}

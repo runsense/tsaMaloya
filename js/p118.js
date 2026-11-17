@@ -3,10 +3,10 @@
 // Les trois cirques creusés par l'eau et les effondrements sur 1 000 à 2 000 m ; les pentes déboisées qui ravinent ;
 // la terre rouge que les crues portent jusqu'à la mer ; le recul des plages de l'Ouest (Saint-Paul, l'Ermitage).
 const ERO118={cq:[[55.43,-21.045,4.6],[55.515,-21.065,4.4],[55.47,-21.135,4.2]]};
-// 1. le terrain sait « remplir » les cirques : ero=0, l'île avant l'érosion ; ero=1, l'île d'aujourd'hui
+// 1. le terrain sait « remplir » les cirques (Mafate se creuse le premier, puis Salazie, puis Cilaos) : ero=0, l'île avant l'érosion ; ero=1, l'île d'aujourd'hui
 setInterval(()=>{try{if(typeof terr==='undefined'||!terr||!terr.material||terr.material.uniforms.ero)return;const m=terr.material,U=m.uniforms;U.ero={value:1};
  const C=ERO118.cq.map(([lo,la,r])=>{const [x,z]=xz(lo,la);return new THREE.Vector3(x,z,r)});U.cq0={value:C[0]};U.cq1={value:C[1]};U.cq2={value:C[2]};U.eroH={value:2300*VX};
- m.vertexShader=m.vertexShader.replace('uniform float ech,dec,fz;','uniform float ech,dec,fz,ero,eroH;uniform vec3 cq0,cq1,cq2;').replace('float m=mix(fz,1.,','float w=max(max(smoothstep(cq0.z,cq0.z*.35,distance(p.xz,cq0.xy)),smoothstep(cq1.z,cq1.z*.35,distance(p.xz,cq1.xy))),smoothstep(cq2.z,cq2.z*.35,distance(p.xz,cq2.xy)));p.y=max(p.y,mix(p.y,eroH,(1.-ero)*w));float m=mix(fz,1.,');m.needsUpdate=true}catch(e){}},1000);
+ m.vertexShader=m.vertexShader.replace('uniform float ech,dec,fz;','uniform float ech,dec,fz,ero,eroH;uniform vec3 cq0,cq1,cq2;').replace('float m=mix(fz,1.,','float w0=smoothstep(cq0.z,cq0.z*.35,distance(p.xz,cq0.xy))*(1.-clamp(ero*1.8,0.,1.)),w1=smoothstep(cq1.z,cq1.z*.35,distance(p.xz,cq1.xy))*(1.-clamp(ero*1.8-.6,0.,1.)),w2=smoothstep(cq2.z,cq2.z*.35,distance(p.xz,cq2.xy))*(1.-clamp(ero*1.8-.8,0.,1.));float w=max(max(w0,w1),w2);p.y=max(p.y,mix(p.y,eroH,w));float m=mix(fz,1.,');m.needsUpdate=true}catch(e){}},1000);
 function ero118(v){try{const U=terr.material.uniforms;if(U.ero)U.ero.value=v;ERO118.v=v}catch(e){}}
 // la cinématique : pendant « les pluies et les effondrements creusent trois cirques », on voit les cirques se creuser
 {const cj=cineJouer;cineJouer=function(L,done){try{(L||[]).forEach(s=>{if(/creusent trois cirques/.test(s.txt||'')){const f0=s.f;s.f=(U,k)=>{if(f0)f0(U,k);ero118(Math.min(1,k*1.15))};const i0=s.init;s.init=U=>{if(i0)i0(U);ero118(0)}}
