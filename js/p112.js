@@ -65,3 +65,11 @@ Object.assign(EV,{
 });
 // Les répercussions dans la Vie et l'Histoire : le pigeonnier nourrit tant que les navires passent
 setInterval(()=>{try{if(!S||S.fin||!C112().pigeonnier||S.year>1769)return;const ns=S.ns||0;if(C112().pigN===ns)return;C112().pigN=ns;S.vivres=(S.vivres||0)+3}catch(e){}},2000);
+// ===== L'homme aux diamants devient une figure de l'île quand une utopie donne du poids à la Rhodésie =====
+// Bourbon souveraine liée à Salisbury, l'île des Lumières, la piraterie marronne et le Zambèze libre ; chacun en fait un personnage différent.
+EV.mythRhodes.si=()=>S&&(C112().souv||C112().rhod||C112().zimLib||C112().compB||S.uchLum||BR88().lib||BR88().cors||S.pir);
+Object.defineProperty(EV.mythRhodes,'b',{configurable:true,get(){const B=C112();
+ if(B.souv||(B.rhod&&B.compB))return 'Dans la Bourbon souveraine, on fait de Cecil Rhodes un saint laïc : une statue au Barachois, son nom sur une bourse pour les fils des grandes familles, une carte de « l’axe » de Saint-Denis à Salisbury. Dans les cases, on raconte autre chose : que l’homme aux diamants ne dort pas à Matobo, mais sous le Piton, et qu’il compte encore ce qu’on lui doit.';
+ if(S.uchLum)return 'Dans l’île des Lumières, l’Académie de Saint-Denis reçoit un legs : l’argent des diamants de Rhodes, pour instruire « les meilleurs ». Les savants refusent de choisir qui sont les meilleurs. On garde l’argent, on efface le nom, et l’on raconte aux enfants l’histoire de l’homme qui voulait tracer une ligne rouge du Cap au Caire et qui finit en note de bas de page.';
+ if(B.zimLib||BR88().lib||BR88().cors||S.pir)return 'Les marrons et leurs amis pirates racontent que Rhodes, chassé du Zambèze libre, a voulu se venger sur l’île. Son navire chargé de diamants s’est brisé sur les récifs de Saint-Philippe. Depuis, les nuits de houle, on voit « Kapitèn Diaman » marcher sur la coulée, une lanterne à la main, cherchant la carte que les pirates lui ont prise.';
+ return 'On raconte que Cecil Rhodes, malade, rêve d’une île volcanique où le diamant pousserait dans la lave. Après sa mort, des chercheurs viennent creuser les remparts de Cilaos avec sa carte. Ils ne trouvent que de la pierre ; la carte reste au magasin de Saint-Denis.'}});

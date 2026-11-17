@@ -37,3 +37,16 @@ Object.assign(EV,{
  littoral1990:{y:1990,si:()=>S,tag:'Archive',an:'aujourd’hui',t:'Les plages qui reculent',b:'Les houles australes et les cyclones grignotent les plages de Saint-Paul, de Grand Fond, de l’Ermitage. Sur la route du Littoral, la falaise lâche des pierres. Le trait de côte recule.',
   v:'La côte bouge encore.',h:'Archive : le recul du trait de côte est suivi par le BRGM (réseau OBSCOT) et la DEAL Réunion.',o:[{n:'Planter des patates à Durand sur les dunes',d:'Forêt +1, cohésion +1.',fx:{foret:1,coh:1},hist:1}]}
 });
+// ===== Défricher juste avant un cyclone coûte cher : la pluie emporte la terre nue =====
+// Une pièce défrichée dans les deux saisons avant le cyclone ravine : beaucoup pour les champs des colons, un peu pour les jardins des marrons.
+setInterval(()=>{try{if(typeof S==='undefined'||!S||S.fin||(typeof K!=='undefined'&&K))return;S.defr118=S.defr118||{};const ns=S.ns||0;
+ T.forEach(t=>{const o=S.t[t.i];if(!o)return;if((o.clr||o.b==='jardin'||o.b==='champ')&&S.defr118[t.i]==null)S.defr118[t.i]=ns});
+ const ci=S.cyc?S.cyc.in:9;if(S.cycL118==null){S.cycL118=ci;return}const frappe=ci<=0&&S.cycL118>0;S.cycL118=ci;if(!frappe)return;
+ const R=Object.entries(S.defr118).filter(([i,n])=>ns-n<=2&&T[i]&&!T[i].bare&&T[i].alt>30).map(([i])=>T[+i]);if(!R.length)return;
+ const C=S.voieC,pente=R.filter(t=>(t.slope||0)>10).length,perte=Math.round(C?R.length*3+pente*2:R.length+pente*.5);S.vivres=Math.max(0,(S.vivres||0)-perte);
+ R.forEach(t=>{tl(t.i).rav118=ns});RAV118.cle='';
+ const msg=C?'Le cyclone emporte la terre de '+R.length+' pièce'+(R.length>1?'s':'')+' défrichée'+(R.length>1?'s':'')+' trop tard : la pluie ravine les champs nus jusqu’à la roche. Vivres −'+perte+'.':'Le cyclone ravine les jardins ouverts trop récemment : un peu de terre part à la ravine. Vivres −'+perte+'.';
+ try{log(msg)}catch(e){}try{toast(msg)}catch(e){}}catch(e){}},2000);
+// les pièces ravinées par un cyclone restent marquées plus fort sur la carte
+{setInterval(()=>{try{if(!S||!RAV118.orig||typeof terr==='undefined')return;const A=terr.geometry.attributes.aC;const R=T.filter(t=>{const o=S.t[t.i];return o&&o.rav118!=null&&(S.ns||0)-o.rav118<6});if(!R.length)return;const cle='r'+R.length+'|'+RAV118.cle;if(RAV118.cle2===cle)return;RAV118.cle2=cle;
+ R.forEach(t=>{const i0=Math.round((t.x+MAR)/ST),j0=Math.round((t.z+MAR)/ST),Rr=Math.ceil(1/ST);for(let j=j0-Rr;j<=j0+Rr;j++)for(let i=i0-Rr;i<=i0+Rr;i++){if(i<0||j<0||i>=NX||j>=NY)continue;const n=j*NX+i,d=Math.hypot(i*ST-MAR-t.x,j*ST-MAR-t.z);if(d>1)continue;const k=.6*(1-d)*(.6+((i*7+j*13)%5)/10);A.array[n*3]+=(.5-A.array[n*3])*k;A.array[n*3+1]+=(.25-A.array[n*3+1])*k;A.array[n*3+2]+=(.13-A.array[n*3+2])*k}});A.needsUpdate=true}catch(e){}},3000)}
