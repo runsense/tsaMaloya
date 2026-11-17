@@ -33,3 +33,18 @@ Object.assign(EV,{
   b:'Uchronie, imaginée pour le jeu : Maurice, les Seychelles, les Comores et la Grande Île envoient leurs délégués à Saint-Denis. Chacun apporte un récit : le Morne, le coco de mer, la reine en exil, le chant du lac. On les raconte ensemble, au pied du volcan qui ne s’éteint pas.',
   v:'La Réunion au centre des mythes de l’océan.',o:[{n:'Ouvrir la maison des îles',d:'Mystique +5, cohésion +5.',fx:{myst:5,coh:5}}]}
 });
+// ===== Un petit jeu proposé par le conte (tunnel de lave, bataille…) arrête le conte : rien ne s'ouvre par-dessus, l'histoire attend la fin du jeu =====
+const PJ113={on:0,a:0,vide:0};
+function pjEcran113(){if($('pjIntro')||$('galeries')||$('pjApo'))return true;const W=innerWidth,H=innerHeight;for(const e of document.body.children){if(!e.offsetParent&&getComputedStyle(e).position!=='fixed')continue;if(['modal','lettreD','ecran','pjIntro'].includes(e.id)||e.hidden)continue;const s=getComputedStyle(e);if(s.position!=='fixed'||s.display==='none'||s.visibility==='hidden'||(parseInt(s.zIndex)||0)<900)continue;const r=e.getBoundingClientRect();if(r.width>W*.6&&r.height>H*.6)return true}return false}
+{const ij=introJeu;introJeu=function(o,go){try{if(S&&!PJ113.on){PJ113.on=1;PJ113.vide=0;PJ113.a=modeHist()?S.autoD:0;if(modeHist()){S.autoD=0;try{autoBtn()}catch(e){}}const m=$('modal');if(m)m.hidden=true}}catch(e){}
+ return ij.call(this,o,(ok,...r)=>{try{if(!ok)pjFin113()}catch(e){}return go(ok,...r)})}}
+function pjFin113(){if(!PJ113.on)return;PJ113.on=0;window.BTUON=0;try{if(S&&modeHist()&&PJ113.a&&!S.autoD){S.autoD=PJ113.a;autoBtn()}}catch(e){}setTimeout(()=>{try{if(S&&S.evq&&S.evq.length)modal()}catch(e){}},300)}
+{const md=modal;modal=function(){if(PJ113.on){const m=$('modal');if(m)m.hidden=true;return}return md.apply(this,arguments)}}
+setInterval(()=>{try{if(!PJ113.on)return;if(pjEcran113()){PJ113.vide=0;const m=$('modal');if(m&&!m.hidden)m.hidden=true;if(S&&modeHist()&&S.autoD)S.autoD=0;return}if(++PJ113.vide>=3)pjFin113()}catch(e){}},500);
+// sans réponse pendant 45 s, le conte répond « Plus tard » et reprend
+setInterval(()=>{try{const d=$('pjIntro');if(!d){PJ113.t0=0;return}if(!S||!modeHist())return;PJ113.t0=PJ113.t0||performance.now();let n=d.querySelector('.pj113t');if(!n){n=document.createElement('small');n.className='pj113t';n.style.cssText='display:block;margin-top:6px;opacity:.7';d.querySelector('.pjb').appendChild(n)}const r=Math.max(0,Math.ceil(45-(performance.now()-PJ113.t0)/1000));n.textContent='Le conte attend votre réponse. Sans réponse, il reprend dans '+r+' s.';if(r<=0){const b=d.querySelector('#pjNon');if(b)b.click()}}catch(e){}},500);
+// ===== En utopie, le conte suit l'utopie, pas l'histoire réelle (sauf si l'on a demandé « ramener vers l'histoire ») =====
+function enUtopie113(){return !!(S&&typeof S.orK==='string'&&S.orK.startsWith('u:')&&S.conteVers!=='hist')}
+{const cc=choixConte;choixConte=function(e,id){try{if(id!=='debutC'&&enUtopie113()){const O=id?optsDe(id,e):e.o;if(O&&O.length>1){const k=S.orK.slice(2),nom=((typeof UCHN!=='undefined'&&UCHN[k])||'').toLowerCase();
+ const sc=O.map((o,i)=>{const t=((o.n||'')+' '+(o.d||'')).toLowerCase();let s=0;if(!(o.hist||i===(e.hist||0)))s+=2;if(/uchronie|utopie/.test(t))s+=3;if(nom&&nom.split(/\s+/).some(w=>w.length>4&&t.includes(w)))s+=2;if(o.f)s+=.5;return[i,s]});sc.sort((a,b)=>b[1]-a[1]);return sc[0][0]}}}catch(x){}return cc.apply(this,arguments)}}
+setInterval(()=>{try{if(!enUtopie113())return;const d=$('evDec');if(d&&/histoire réelle/.test(d.textContent)){const n=$('evDecS'),s=n?n.textContent:'45';d.innerHTML='Ce choix décide du cours de l’histoire. Sans réponse, le conte suit votre utopie dans <b id="evDecS">'+s+'</b> s.'}}catch(e){}},300);
