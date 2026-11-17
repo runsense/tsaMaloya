@@ -76,6 +76,6 @@ function satPix111(x,z){try{const U=terr&&terr.material&&terr.material.uniforms;
  if(SATC111.img!==im){const cv=document.createElement('canvas');cv.width=im.width;cv.height=im.height;const c=cv.getContext('2d');c.drawImage(im,0,0);SATC111.d=c.getImageData(0,0,cv.width,cv.height).data;SATC111.w=cv.width;SATC111.h=cv.height;SATC111.img=im}
  const W=(NX-1)*ST,H=(NY-1)*ST,px=Math.floor((x+MAR)/W*SATC111.w),py=Math.floor((z+MAR)/H*SATC111.h);if(px<0||py<0||px>=SATC111.w||py>=SATC111.h)return null;const i=(py*SATC111.w+px)*4;if(!SATC111.d[i+3])return null;
  const L=v=>Math.pow(v/255,2.2);return[L(SATC111.d[i]),L(SATC111.d[i+1]),L(SATC111.d[i+2])]}catch(e){return null}}
-{const c0=col97;col97=function(q,x,z,a,d,t,n,pe){try{if(a>0&&!(t&&t.bare)){const s=satPix111(x,z);if(s){const k=.85+n*.3,c=new THREE.Color(s[0]*k,s[1]*k,s[2]*k),h={};c.getHSL(h);c.setHSL(h.h,Math.min(1,h.s*1.45),h.l*.92);q.lerp(c,.75)}}}catch(e){}return c0.apply(this,arguments)}}
+{const c0=col97;col97=function(q,x,z,a,d,t,n,pe){try{if(a>0&&!(t&&t.bare)){const s=satPix111(x,z);if(s){const k=.85+n*.3,c=new THREE.Color(s[0]*k,s[1]*k,s[2]*k),h={};c.getHSL(h);c.setHSL(h.h,Math.min(1,h.s*.95),h.l*.9);q.lerp(c,.85)}}}catch(e){}return c0.apply(this,arguments)}}
 // Survie : on peut ouvrir le détail du lieu à nouveau (la couleur jaune venait de l'aplat de savane)
 window.LIEU107=1;

@@ -55,7 +55,8 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg&&(tg.tagName==='INPUT'||t
  if(k==='Enter'&&!H){stop();if(CV.on)cvFermer();else cvOuvrir();return}
  if(k==='Escape'&&CV.on){stop();cvFermer();return}
  if(k==='Delete'){stop();const u=$('undo');if(u&&!u.disabled)u.click();return}
- if(k==='Tab'){stop();const cs=camps();if(!cs.length)return;const cur=CV.on?CV.camp:(sel?sel.i:-1);let i=cs.findIndex(t=>t.i===cur);i=(i+(e.shiftKey?-1:1)+cs.length)%cs.length;if(CV.on)cvOuvrir(cs[i].i);else kbCentrer(cs[i]);toast('Camp '+(i+1)+' sur '+cs.length);return}
+ if(k==='Tab'&&H){stop();passerAttente121();return}
+ if(k==='Tab'||e.code==='Numpad4'||e.code==='Numpad6'||e.code==='Numpad8'||e.code==='Numpad2'){if(k==='Tab'&&H)return;stop();const cs=camps();if(!cs.length)return;const cur=CV.on?CV.camp:(sel?sel.i:-1);let i=cs.findIndex(t=>t.i===cur);i=(i+((e.shiftKey||e.code==='Numpad4'||e.code==='Numpad8')?-1:1)+cs.length)%cs.length;if(CV.on)cvOuvrir(cs[i].i);else kbCentrer(cs[i]);toast('Camp '+(i+1)+' sur '+cs.length);return}
  if(k.startsWith('Arrow')){
   if(CV.on){stop();const P=(S.pp||[]).filter(p=>campDe(p)===CV.camp&&!enGrp(p)).sort((a,b)=>(adulte(b)?1:0)-(adulte(a)?1:0));if(!P.length)return;let i=P.findIndex(p=>p.id===CV.selP);i=(i+(k==='ArrowRight'||k==='ArrowDown'?1:-1)+P.length)%P.length;const p=P[i];CV.selP=p.id;const a=CV.A[p.id];if(a){a.say=cvDit(p,a);a.sayT=180}cvListe();return}
   if(k==='ArrowUp'||k==='ArrowDown'){stop();const L=kbCibles();if(!L.length)return;KB.i=(KB.i+(k==='ArrowDown'?1:-1)+L.length)%L.length;const c=L[KB.i];if(c.k==='o'){cpOuvrir(c.o);toast('Outre-mer : '+((typeof OUT!=='undefined'&&OUT[c.o]&&OUT[c.o].n)||c.o))}else{if(onglet)fermerOnglet();kbCentrer(c.t,c.k==='g'?7:9);toast(c.k==='g'?'Groupe en mission':'Camp')}return}

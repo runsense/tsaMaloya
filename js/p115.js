@@ -4,13 +4,13 @@
 // Au lancement (même en 1794, en utopie) : pas d'onglets qui s'ouvrent seuls, pas d'écrans de vote ou de choix ;
 // les rôles et le chef se règlent d'eux-mêmes, puis une seule carte : comment jouer en Vie.
 const V115={t0:0,act:0};
-['pointerdown','keydown','wheel'].forEach(ev=>addEventListener(ev,()=>{V115.act=performance.now()},true));
+addEventListener('pointerdown',e=>{if(e.target&&e.target.closest&&e.target.closest('.tab,[data-t],#drawer,button'))V115.act=performance.now()},true);addEventListener('keydown',e=>{if(/^[a-zA-Z]$/.test(e.key||''))V115.act=performance.now()},true);
 function vie115(){return typeof S!=='undefined'&&S&&!S.fin&&!modeHist()&&!(typeof K!=='undefined'&&K)}
 function init115(){return vie115()&&S.init115!==2}
 // 1. le lancement : rôles et chef réglés sans écran, première expédition laissée au joueur
 {const nv=nouvelle;nouvelle=function(){const r=nv.apply(this,arguments);try{if(vie115()){S.init115=1;S.exp1='fait';V115.t0=performance.now()}}catch(e){}return r}}
-setInterval(()=>{try{if(!vie115()||!S.init115||performance.now()-V115.t0>30000)return;const d=$('cons87');if(d){d.style.visibility='hidden';const B=[...d.querySelectorAll('button')].filter(b=>!b.disabled);const b=B.find(b=>/^(Valider|Laisser voter|Laisser le conseil|C’est décidé|D’accord|Continuer|Commencer|Fermer)/.test(b.textContent.trim()))||B.find(b=>b.id==='rolOk')||(d.querySelector('#rolOk')?null:B[0]);if(b)b.click();return}
- if(S.init115===1&&performance.now()-V115.t0>4000&&S.cons87&&!$('cons87')){S.init115=2;fermerOnglet&&fermerOnglet();comment115()}}catch(e){}},300);
+setInterval(()=>{try{if(!vie115()||!S.init115||performance.now()-V115.t0>240000||(S.init115===2&&(S.pp||[]).some(p=>p.role)&&!$('cons87')&&performance.now()-V115.t0>20000))return;const d=$('cons87');if(d){d.style.visibility='hidden';const B=[...d.querySelectorAll('button')].filter(b=>!b.disabled);const b=B.find(b=>/^(Valider|Laisser voter|Laisser le conseil|C’est décidé|D’accord|Continuer|Commencer|Fermer)/.test(b.textContent.trim()))||B.find(b=>b.id==='rolOk')||(d.querySelector('#rolOk')?null:B[0]);if(b)b.click();return}
+ if(S.init115===1&&!$('cons87')&&((performance.now()-V115.t0>4000&&S.cons87)||performance.now()-V115.t0>7000)){S.init115=2;fermerOnglet&&fermerOnglet();comment115()}}catch(e){}},300);
 // pas d'onglet qui s'ouvre tout seul en Vie (seulement quand le joueur le demande)
 {const dr=drawer;drawer=function(){try{if(vie115()&&onglet&&performance.now()-V115.act>1500){onglet=null;document.querySelectorAll('.tab[data-t]').forEach(x=>x.classList.remove('on'));const d=$('drawer');if(d)d.hidden=true;return}}catch(e){}return dr.apply(this,arguments)}}
 // 2. les récits : en Vie, ils ne s'ouvrent plus. Les grandes étapes passent en bandeau, le reste va au journal ; le conte choisit.

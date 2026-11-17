@@ -20,7 +20,7 @@ function deuilLettre(titre,lignes,reprendre){let d=$('deuilL');if(d)d.remove();d
 setInterval(()=>{try{if(typeof S==='undefined'||!S||S.fin||S.bac){DEUIL.vu=null;return}const M=S.morts||[],cle=m=>m.n+'|'+m.a+'|'+m.age;if(!DEUIL.vu||DEUIL.s!==S){DEUIL.s=S;DEUIL.vu=new Set(M.map(cle));return}
  const neufs=M.filter(m=>!DEUIL.vu.has(cle(m)));if(!neufs.length)return;neufs.forEach(m=>DEUIL.vu.add(cle(m)));if(window.BTUON||$('deuilL'))return;
  const L=neufs.map(m=>{const ctx=(S.log||[]).slice(-6).reverse().find(l=>l.m&&m.n&&l.m.includes(m.n.split(' ')[0]));return '<b>'+m.n+'</b>'+(m.age?', '+m.age+' ans':'')+(ctx?' — '+ctx.m:' nous a quittés.')});
- const hist=modeHist();let rep=null;if(hist){if(typeof conteStop==='function')conteStop()}else{const av=typeof chronoP!=='undefined'?chronoP:false;try{chronoP=true}catch(e){}rep=()=>{try{chronoP=av}catch(e){}}}
+ let rep=null;
  deuilLettre(S.voieC?(S.year<1817?'Lettre de l’habitation':'Courrier de l’habitation'):'Message porté au camp',L,rep)}catch(e){}},1000);
 // Survie : un journal qui parle de morts arrête le temps
 {const kl=kLog;kLog=function(m){const r=kl.apply(this,arguments);try{if(K&&!K.fin&&/\b(\d+ morts|morts?\b|meurent|décès|disette)/i.test(m||'')&&!$('deuilL')){const v=KV.vit;KV.vit=0;deuilLettre('Lettre au '+(K.joueur==='c'?'gouverneur':'chef')+' · '+K.an,[m],()=>{KV.vit=v||1})}}catch(e){}return r}}

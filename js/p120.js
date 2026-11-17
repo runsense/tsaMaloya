@@ -16,7 +16,8 @@ function lacs120(on){try{if(LAC120.g){scene.remove(LAC120.g);LAC120.g.traverse(o
 setInterval(()=>{try{if(!S||!modeHist()||!autoD()||typeof proch==='undefined'||!proch)return;const m=$('modal');if(!m||m.hidden)return;const reste=Math.max(0,proch-performance.now()),tot=Math.max(1000,typeof lecT!=='undefined'&&lecT?lecT:8000);
  const bar=m.querySelector('#evMin i');if(bar)bar.style.width=Math.round(100*(1-reste/tot))+'%';const t=$('evMinT');if(t&&!/Le conte choisit dans/.test(t.textContent))t.textContent='';if(t)t.textContent='Le conte choisit dans '+Math.ceil(reste/1000)+' s. Bougez la souris pour l’arrêter et choisir vous-même.'}catch(e){}},250);
 // ===== La lettre de décès ne bloque plus le conte : elle se pose dans un coin, sans voile ni pause =====
-{const lp=lettrePause;lettrePause=function(){try{if(typeof S!=='undefined'&&S&&modeHist())return()=>{}}catch(e){}return lp.apply(this,arguments)}}
+// partout (Histoire, Vie, Survie) : la lettre ne met plus rien en pause
+lettrePause=function(){return()=>{}};
 {const st=document.createElement('style');st.textContent='#lettreD{inset:auto!important;right:34px!important;top:96px!important;background:none!important;pointer-events:none;display:block!important}#lettreD .lt{pointer-events:auto;max-width:400px!important;transform-origin:top right;transform:scale(.82) rotate(-1deg)!important;cursor:pointer}#lettreD.lt111-froisse .lt{transform:scale(.82) rotate(-3.5deg) skewX(-1.5deg)!important}#lettreD.lt111-abime .lt{transform:scale(.82) rotate(2.5deg)!important}#lettreD.lt111-apparat .lt{transform:scale(.82)!important}#lettreD canvas{width:96px;height:96px}';document.head.appendChild(st)}
 // ===== Les pitons des flancs : des dizaines de petits cratères le long des fissures du Piton des Neiges (hauts de l'Ouest et du Sud) =====
 const PIT120={g:null};
@@ -30,3 +31,6 @@ function pitons120(on,k){try{if(!on){if(PIT120.g){scene.remove(PIT120.g);PIT120.
  L.splice(i+1,0,{pit120:1,d:7000,cam:[px,pz,44,1.6,.8],init:U=>{pitons120(true,0)},f:(U,k)=>pitons120(k<.98,k),txt:'<small>Sur ses flancs</small>Le long de fissures, des dizaines de petits cratères s’ouvrent un peu partout — les pitons des hauts de Saint-Paul, de Saint-Gilles, de Trois-Bassins, de Saint-Leu — et de plus en plus vers le sud-est, comme aujourd’hui sur la Fournaise. À l’est, la pluie en effacera presque toutes les traces. Les ravines comme celles de Saint-Denis seront creusées plus tard par l’eau.'})}}catch(e){}
  return cj.call(this,L,()=>{pitons120(false);if(done)done()})}}
 {const cf=cineFin;cineFin=function(){pitons120(false);return cf.apply(this,arguments)}}
+// la lettre de deuil (la liste des morts) se pose aussi dans un coin, sans voile
+{const st=document.createElement('style');st.textContent='#deuilL{inset:auto!important;right:34px!important;top:300px!important;background:none!important;pointer-events:none;display:block!important}#deuilL .dlP{pointer-events:auto;max-width:380px!important;transform:scale(.85);transform-origin:top right}';document.head.appendChild(st)}
+setInterval(()=>{try{const d=$('deuilL');if(!d){window.__dl120=0;return}window.__dl120=window.__dl120||performance.now();if(performance.now()-window.__dl120>9000){const b=$('deuilOk');if(b)b.click();else d.remove();window.__dl120=0}}catch(e){}},1000);

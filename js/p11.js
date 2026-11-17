@@ -48,7 +48,7 @@ function tacheTxt(p){if(enGrp(p))return 'dehors';if(p.id===S.garde)return 'garde
   gT,
   {t:()=>'Dehors, le groupe avance seul. Touchez-le sur la carte pour voir ce qu’il fait, ou lui donner une autre destination.',ok:()=>(S.grp||[]).some(g=>g.exp&&(g.exp.j||0)>=2),auto:null},
   gF)}
-{const gt=guideTick;guideTick=function(){gt();const b=$('guideJ');if(b){if(CV.on){b.style.top='80px';b.style.bottom='auto'}else{b.style.top='auto';b.style.bottom='110px'}}}}
+{const gt=guideTick;guideTick=function(){gt();const b=$('guideJ');if(b&&!b.classList.contains('pose106')&&!b._cib){if(CV.on){b.style.top='80px';b.style.bottom='auto'}else{b.style.top='auto';b.style.bottom='110px'}}}}
 // jeu ou conte, jamais les deux en même temps : quand un récit s'ouvre, le camp s'efface derrière lui, puis revient
 {const st=document.createElement('style');st.textContent='body.enConte #campV,body.enConte #guideJ,body.enConte #cvBas{visibility:hidden}body.enConte::before{content:"";position:fixed;inset:0;background:#0d0b08;z-index:55}body.enConte #modal{z-index:80}';document.head.appendChild(st);
  setInterval(()=>{const m=$('modal');const on=!!(S&&!modeHist()&&grpOn()&&m&&!m.hidden);document.body.classList.toggle('enConte',on)},250)}
