@@ -51,7 +51,9 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg&&(tg.tagName==='INPUT'||t
  if(zone&&(k==='ArrowDown'||k==='ArrowUp')){stop();kbFocus(kbBoutons(zone),k==='ArrowDown'?1:-1);return}
  if(zone&&k==='Enter'){const f=zone.querySelector('.kF');if(f){stop();f.classList.remove('kF');f.click()}return}
  if(k==='Escape'&&onglet){stop();fermerOnglet();return}
- if(e.code==='Space'){stop();if(H){$('auto').click()}else if(CV.on)cvFermer();else cvOuvrir();return}
+ if(e.code==='Space'){stop();if(H){$('auto').click()}else tempsBascule114();return}
+ if(k==='Enter'&&!H){stop();if(CV.on)cvFermer();else cvOuvrir();return}
+ if(k==='Escape'&&CV.on){stop();cvFermer();return}
  if(k==='Delete'){stop();const u=$('undo');if(u&&!u.disabled)u.click();return}
  if(k==='Tab'){stop();const cs=camps();if(!cs.length)return;const cur=CV.on?CV.camp:(sel?sel.i:-1);let i=cs.findIndex(t=>t.i===cur);i=(i+(e.shiftKey?-1:1)+cs.length)%cs.length;if(CV.on)cvOuvrir(cs[i].i);else kbCentrer(cs[i]);toast('Camp '+(i+1)+' sur '+cs.length);return}
  if(k.startsWith('Arrow')){

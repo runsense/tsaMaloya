@@ -167,7 +167,7 @@ function kPanneau(){const A=$('kA');if(!A)return;let h='';
  const ex=$('kExp');if(ex)ex.onclick=()=>{if(K.res.viv<2){toast('Il faut 2 vivres.');return}K.res.viv-=2;kVoir(KVUE.sel,2);kLog('Des éclaireurs reconnaissent '+kLieu(T[KVUE.sel])+'.');kSauve();kRendu()};
  const ec=$('kEch');if(ec)ec.onclick=()=>{K.res.com-=3;K.res.viv+=4;kSauve();kRendu()};
  const re=$('kRe');if(re)re.onclick=()=>{K=null;try{localStorage.removeItem(KCLE)}catch(e){}kOuvrir()}}
-addEventListener('keydown',e=>{const d=$('kons');if(!d||d.hidden||!K)return;if(e.key==='Enter'||e.code==='Space'){e.preventDefault();e.stopPropagation();kSuite()}if(e.key==='Escape'){KVUE.sel=null;kPanneau();kCarte()}},true);
+addEventListener('keydown',e=>{const d=$('kons');if(!d||d.hidden||!K)return;if(e.key==='Enter'){e.preventDefault();e.stopPropagation();kSuite()}if(e.code==='Space'){e.preventDefault();e.stopPropagation();tempsBascule114()}if(e.key==='Escape'){KVUE.sel=null;kPanneau();kCarte()}},true);
 addEventListener('resize',()=>{const d=$('kons');if(d&&!d.hidden&&K)kCarte()});
 // l'entrée, à l'accueil
 setInterval(()=>{const e=$('ecran');if(!e||e.hidden||!$('nv')||$('kOuv'))return;const b=document.createElement('button');b.className='bt sec';b.id='kOuv';b.innerHTML='<b>Survie</b> <small>· bâtir et tenir face aux bouleversements de l’île</small>';b.onclick=kOuvrir;const pj=[...e.querySelectorAll('button')].find(x=>/Petits jeux/.test(x.textContent));(pj||$('nv')).insertAdjacentElement('afterend',b)},400);
