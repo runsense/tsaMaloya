@@ -118,3 +118,41 @@ window.addEventListener('pointermove',e=>{if(!PL110.on||!P3.cv||!p110Sur(e))retu
 window.addEventListener('pointerup',e=>{if(!PL110.on||!P3.cv||!p110Sur(e))return;e.stopPropagation();e.preventDefault();if(performance.now()-PL110.t0<300)return;const p=p110Sol(e.clientX,e.clientY);if(!p)return;const r=p110Libre(p[0],p[1]);if(r){const b=$('place110');if(b)b.querySelector('b').textContent=r;return}p110Fin(p[0],p[1])},true);
 window.addEventListener('keydown',e=>{if(PL110.on&&e.key==='Escape'){e.stopPropagation();p110Fin()}},true);
 setInterval(()=>{try{if(PL110.on&&(typeof CV==='undefined'||!CV.on))p110Fin()}catch(e){}},1000);
+// ===== Les chemins et les routes : de la terre battue qui épouse le sol, plus des planches =====
+// Le ruban a trois rangs de points en travers (il suit le relief), des coordonnées de texture, et une texture
+// de terre aux bords fondus : ornières et cailloux pour les routes, trace piétinée et touffes d'herbe pour les sentiers.
+ruban97=function(P,w,hY){for(let it=0;it<2&&P.length>2&&P.length<4000;it++){const Q=[P[0]];for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1];Q.push({x:a.x*.75+b.x*.25,y:a.y*.75+b.y*.25,z:a.z*.75+b.z*.25},{x:a.x*.25+b.x*.75,y:a.y*.25+b.y*.75,z:a.z*.25+b.z*.75})}Q.push(P[P.length-1]);P=Q}w*=1.45;const pos=[],uv=[],idx=[];let lon=0;const C=[-1,-.35,.35,1];
+ for(let i=0;i<P.length;i++){const a=P[Math.max(0,i-1)],b=P[Math.min(P.length-1,i+1)],dx=b.x-a.x,dz=b.z-a.z,L=Math.hypot(dx,dz)||1,nx=-dz/L,nz=dx/L,ww=w*(.85+.3*Math.abs(Math.sin(i*1.9)));if(i)lon+=Math.hypot(P[i].x-P[i-1].x,P[i].z-P[i-1].z);
+  C.forEach((c,j)=>{const x=P[i].x+nx*ww/2*c,z=P[i].z+nz*ww/2*c;pos.push(x,hY?hY({x,z}):P[i].y,z);uv.push(j/(C.length-1),lon/(w*2.2))});
+  if(i<P.length-1){const k=i*C.length;for(let j=0;j<C.length-1;j++)idx.push(k+j,k+j+1,k+j+C.length,k+j+1,k+j+1+C.length,k+j+C.length)}}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g};
+fusion97=function(G){const pos=[],uv=[],idx=[];let o=0;G.forEach(g=>{const p=g.attributes.position.array,u=g.attributes.uv&&g.attributes.uv.array;for(let k=0;k<p.length;k++)pos.push(p[k]);if(u)for(let k=0;k<u.length;k++)uv.push(u[k]);else for(let k=0;k<p.length/3;k++)uv.push(0,0);const I=g.index.array;for(let k=0;k<I.length;k++)idx.push(I[k]+o);o+=p.length/3;g.dispose()});
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g};
+function texRuban110(rt){const k='ruban'+rt;if(P110.tx[k])return P110.tx[k];const c=document.createElement('canvas');c.width=128;c.height=256;const x=c.getContext('2d');let s=rt?311:97;const R=()=>((s=(s*9301+49297)%233280)/233280);
+ const base=rt?[168,146,108]:[156,128,90];for(let py=0;py<256;py++)for(let px=0;px<128;px+=2){const e=Math.abs(px/127-.5)*2,a=Math.max(0,Math.min(1,(1-e)/.32))*(.88+R()*.12),v=.85+R()*.3;x.fillStyle='rgba('+(base[0]*v|0)+','+(base[1]*v|0)+','+(base[2]*v|0)+','+a.toFixed(2)+')';x.fillRect(px,py,2,1)}
+ if(rt){for(const cx of[40,88]){x.fillStyle='rgba(80,62,40,.45)';for(let py=0;py<256;py+=2)x.fillRect(cx-5+Math.sin(py*.08)*1.5,py,10,2)}x.fillStyle='rgba(90,140,60,.5)';for(let py=0;py<256;py+=3)x.fillRect(60+Math.sin(py*.2)*2,py,8*R(),2)}
+ else{x.fillStyle='rgba(70,52,32,.35)';for(let py=0;py<256;py+=2)x.fillRect(54+Math.sin(py*.11)*6,py,20,2)}
+ for(let i=0;i<(rt?170:90);i++){const px=20+R()*88,py=R()*256,r=1+R()*2.2,v=110+R()*80;x.fillStyle='rgba('+v+','+(v*.95|0)+','+(v*.88|0)+',.9)';x.beginPath();x.arc(px,py,r,0,6.283);x.fill()}
+ for(let i=0;i<60;i++){const side=R()<.5?8+R()*22:98+R()*22,py=R()*256;x.strokeStyle='rgba('+(60+R()*40|0)+','+(110+R()*50|0)+',40,.85)';x.lineWidth=1.5;for(let j=0;j<4;j++){x.beginPath();x.moveTo(side,py);x.lineTo(side+(R()-.5)*8,py-6-R()*8);x.stroke()}}
+ const t=new THREE.CanvasTexture(c);t.wrapS=THREE.ClampToEdgeWrapping;t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return P110.tx[k]=t}
+function matRuban110(rt){return new THREE.MeshLambertMaterial({map:texRuban110(rt),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2})}
+// ===== Le soin des bêtes de la ferme (Vie) : l'eau, le fourrage, sortir les petits, ne pas mélanger les espèces =====
+function bet110(){S.bt110=S.bt110||{eau:90,four:90,sort:90,sep:0};return S.bt110}
+function betEsp110(){const n=S.bet||0,C=S.voieC,L=[];if(!n)return L;L.push(C||S.year>1700?'bœufs':'zébus');if(n>=2)L.push('cabris');if(n>=4)L.push('cochons');if(n>=3&&C)L.push('volailles');return L}
+{const jt=jourTick;jourTick=function(){jt.apply(this,arguments);try{if(!S||!(S.bet>0)||typeof modeHist==='function'&&modeHist())return;const b=bet110(),pluie=typeof saison==='function'&&/pluie|humide/i.test(saison()||'');
+ b.eau=Math.max(0,b.eau-(pluie?6:12));b.four=Math.max(0,b.four-8);b.sort=Math.max(0,b.sort-5);
+ const perd=(txt)=>{if(S.bet>0){S.bet--;journal(txt)}};
+ if(b.eau<20&&rnd()<.08)perd('Une bête est morte de soif dans l’enclos.');
+ else if(b.four<20&&rnd()<.07)perd('Sans fourrage, une bête maigrit et ne se relève pas.');
+ else if(b.sort<25&&rnd()<.04)perd('Les petits, jamais sortis de l’enclos, tombent malades : on en perd un.');
+ if(!b.sep&&(S.bet||0)>=4&&betEsp110().length>=3&&rnd()<.035)perd(['Les cochons ont tué des poussins dans l’enclos commun.','Un bœuf a encorné un cabri : les espèces sont mêlées dans le même enclos.','Les cabris ont tout mangé, les bœufs ont faim : il faut séparer les bêtes.'][Math.floor(rnd()*3)])}catch(e){}}}
+{const bc=besoinsCamp;besoinsCamp=function(ci){const L=bc.apply(this,arguments);try{if(S.bet>0&&camps()[0]&&ci===camps()[0].i){const b=bet110(),m=Math.min(b.eau,b.four,b.sort,b.sep||S.bet<4?100:55);
+ const t=b.eau<35?'les bêtes ont soif':b.four<35?'plus de fourrage':b.sort<35?'les petits ne sortent pas':!b.sep&&S.bet>=4?'espèces mêlées dans l’enclos':S.bet+' bêtes bien tenues';L.push(['Bêtes',m,t,0])}}catch(e){}return L}}
+{const bm=besoinMenu;besoinMenu=function(n,X,Y){if(n!=='Bêtes')return bm.apply(this,arguments);const ci=CV.camp,A=gensC(ci).filter(adulte).filter(p=>p.id!==S.garde),b=bet110(),L=[],E=betEsp110();
+ const qui=()=>A.slice().sort((a,c)=>(a.fat||0)-(c.fat||0))[0];const fait=(k,f)=>()=>{const p=qui();if(!p){toast('Personne de libre au camp.');return}p.fat=Math.min(100,(p.fat||0)+8);f(p);sauve();try{cvListe()}catch(e){}};
+ L.push([S.bet+' bêtes : '+E.join(', ')+' · eau '+Math.round(b.eau)+' %, fourrage '+Math.round(b.four)+' %, sorties '+Math.round(b.sort)+' %',()=>{}]);
+ L.push(['💧 Abreuver les bêtes à la ravine',fait('eau',p=>{b.eau=100;toast(p.n.split(' ')[0]+' mène les bêtes boire.')})]);
+ L.push(['🌾 Donner le fourrage (1 paille)'+((S.res.paille||0)>=1?'':' — il manque 1 paille'),()=>{if((S.res.paille||0)<1){toast('Il faut 1 paille.');return}fait('four',p=>{S.res.paille--;b.four=100;toast(p.n.split(' ')[0]+' remplit les mangeoires.')})()}]);
+ L.push(['🐐 Sortir les petits au pâturage (avec un gardien)',fait('sort',p=>{b.sort=100;if(rnd()<.08){S.bet=Math.max(0,S.bet-1);journal('Au pâturage, un jeune cabri s’est perdu dans la ravine.')}toast(p.n.split(' ')[0]+' garde les petits au pâturage.')})]);
+ if(!b.sep&&S.bet>=2)L.push(['🪵 Séparer les espèces : parcs à part pour '+E.join(', ')+' (3 bois)'+((S.res.bois||0)>=3?'':' — il manque du bois'),()=>{if((S.res.bois||0)<3){toast('Il faut 3 bois.');return}S.res.bois-=3;b.sep=1;journal('On cloisonne l’enclos : les bœufs d’un côté, les cabris et les cochons à part, les volailles sous le poulailler.');toast('Les bêtes sont séparées.');sauve();try{cvListe()}catch(e){}}]);
+ menuCtx(X,Y,'Les bêtes',L)}}

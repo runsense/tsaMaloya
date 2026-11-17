@@ -16,7 +16,7 @@ function traqueCible106(){const nv=VILLES.filter(v=>S.year>=v[0]).length;const a
  if(tq>20&&rnd()<.35){const t=C[0];log('🐕 Des chasseurs de marrons rôdent près de '+(lieuDe(t)||'votre camp')+' : la chasse et la cueillette rapportent moins.');S.vivres=Math.max(0,(S.vivres||0)-2)}
  if(tq>50&&C.length>1&&rnd()<.3){const t=C[Math.floor(rnd()*C.length)];log('🔥 Un détachement fouille les ravines autour de '+(lieuDe(t)||'un autre camp')+'.');fx({coh:-1})}
  if(tq>70&&rnd()<.22&&!(S.evq||[]).includes('raid106')&&!RAID106.t){raid106Jouer(C[0])}}catch(e){}return r}}
-EV.raid106={y:1663,tag:'Archive',an:'',get t(){return 'Les chasseurs entrent dans le camp'},
+EV.raid106={sys:1,tag:'Archive',an:'',get t(){return 'Les chasseurs entrent dans le camp'},
  get b(){return 'La traque est si forte que le détachement a trouvé le sentier jusqu’au camp. Ils arrivent avec des fusils et des chiens, pour prendre ce qu’ils peuvent et ramener des captifs.'},
  o:[{n:'Défendre le camp',d:'Une bataille : on peut perdre des gens, ou tuer des chasseurs et faire reculer la traque',fx:{},f:()=>{try{if(typeof btOuvrir==='function'){btOuvrir('defCamp');return}}catch(e){}if(rnd()<.5){S.traque=Math.max(0,S.traque-15);log('Les chasseurs sont repoussés ; deux d’entre eux ne redescendent pas.')}else{const p=(S.pp||[])[0];if(p)mourirP(p,'en défendant le camp')}}},
   {n:'Fuir dans les ravines',d:'Vivres −10, une personne est prise',fx:{vivres:-10},f:()=>{const L=(S.pp||[]).filter(q=>!q.chef);if(L.length>1){const p=L[Math.floor(rnd()*L.length)];S.pp=S.pp.filter(q=>q!==p);S.gens=S.pp.length;log('⛓️ '+p.n+' est rattrapé'+(p.g==='f'?'e':'')+' et redescendu'+(p.g==='f'?'e':'')+' enchaîné'+(p.g==='f'?'e':'')+'.')}S.traque=Math.max(0,S.traque-5)}}]};

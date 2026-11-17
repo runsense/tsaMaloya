@@ -101,7 +101,7 @@ function ruban97(P,w,hY){const pos=[],idx=[];for(let i=0;i<P.length;i++){const a
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();return g}
 // les sentiers des marrons sur la grande carte : une trace de terre battue qui serpente d'une case à l'autre
 {const b0=bat;let cle='',M97=null;bat=function(kk){b0.apply(this,arguments);try{if(!S||typeof sentier==='undefined'||!sentier)return;sentier.visible=false;const tr=S.trail||[],k=tr.length+':'+tr.slice(-3).join(',');if(k===cle)return;cle=k;
-  if(!M97){M97=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshLambertMaterial({color:0x7a6040,transparent:true,opacity:.7,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));M97.renderOrder=3;scene.add(M97)}
+  if(!M97){M97=new THREE.Mesh(new THREE.BufferGeometry(),matRuban110(0));M97.renderOrder=3;scene.add(M97)}
   const G=[],fait=new Set();tr.forEach(i=>{const u=T[i];T[i].nb.forEach(j=>{const v=T[j],o=S.t[j]||{};if(!(o.ex||tr.includes(j)||o.b))return;const cl=Math.min(i,j)+'-'+Math.max(i,j);if(fait.has(cl))return;fait.add(cl);
    const L=Math.hypot(v.x-u.x,v.z-u.z)||1,ph=(i*13+j*7)%10,P=[];for(let s=0;s<=10;s++){const f=s/10,w=Math.sin(f*Math.PI)*(Math.sin(f*6+ph)*.1+Math.sin(f*15+ph)*.03),x=u.x+(v.x-u.x)*f-(v.z-u.z)/L*w,z=u.z+(v.z-u.z)*f+(v.x-u.x)/L*w;P.push({x,y:0,z})}
    G.push(ruban97(P,.06,p=>Math.max(0,alt(p.x,p.z))*VX+.03))})});
@@ -160,7 +160,7 @@ const GR97=[
 const GRT97={};
 function gr97Init(){if(GR97.pts)return;GR97.forEach(g=>{const C=new THREE.CatmullRomCurve3(g.p.map(([lo,la])=>{const [x,z]=xz(lo,la);return new THREE.Vector3(x,0,z)}));const L=C.getLength();g.pts=C.getSpacedPoints(Math.max(20,Math.round(L/.12)));g.pts.forEach(v=>{const t=tileAt({x:v.x,z:v.z});v.ti=t?t.i:null;if(t)(GRT97[t.i]=GRT97[t.i]||new Set()).add(g.n)})});GR97.pts=1}
 {const b0=bat;let cle='',M=null;bat=function(kk){b0.apply(this,arguments);try{if(!S||typeof scene==='undefined')return;gr97Init();let n=0;for(const i in GRT97)if((S.t[i]||{}).s)n++;const k=n+'|'+(lieu?lieu.i:'');if(k===cle)return;cle=k;
-  if(!M){M=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshLambertMaterial({color:0x9a8462,transparent:true,opacity:.75,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));M.renderOrder=3;scene.add(M)}
+  if(!M){M=new THREE.Mesh(new THREE.BufferGeometry(),matRuban110(0));M.renderOrder=3;scene.add(M)}
   const G=[];GR97.forEach(g=>{let run=[];const fin=()=>{if(run.length>1)G.push(ruban97(run,.05,p=>Math.max(0,alt(p.x,p.z))*VX+.035));run=[]};g.pts.forEach(v=>{if(v.ti!=null&&(S.t[v.ti]||{}).s)run.push(v);else fin()});fin()});
   M.geometry.dispose();M.geometry=G.length?fusion97(G):new THREE.BufferGeometry();M.visible=!lieu||lieu===LA97}catch(e){}}}
 // ces vieux passages comptent comme des chemins connus, et la bulle de la case les nomme

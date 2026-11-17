@@ -60,7 +60,7 @@ setInterval(()=>{try{if(!S||S.fin||!S.evq||!modeHist())return;S.done=S.done||{};
 // et la source n'est qu'à un seul endroit, tiré au hasard à chaque partie.
 const galetCoeur103=t=>{if(!t||!t.riv||t.bare)return false;const g=LL99(t);return t.alt>500&&t.alt<1500&&g.lon>55.38&&g.lon<55.58&&g.lat<-21.0&&g.lat>-21.18};
 if(ING99.galet){ING99.galet.ou='la source du cœur de l’île, qu’il faut d’abord trouver';ING99.galet.ok=t=>!!S&&S.galet103&&S.galet103.src!=null&&!!t&&(t.i===S.galet103.src||(t.nb||[]).includes(S.galet103.src))}
-EV.galetMythe103={y:1690,tag:'Mythe',an:'récit des pêcheurs',t:'Le galet sacré',
+EV.galetMythe103={sys:1,tag:'Mythe',an:'récit des pêcheurs',t:'Le galet sacré',
  b:'Un vieux pêcheur ramasse un galet rond dans le lit de la rivière et le porte à sa bouche : il a un goût de sel. Il raconte que ce galet ne vient pas d’ici. Il naît au cœur de l’île, jaillit d’une rivière qui coule sous la montagne, puis remonte les rivières avec les poissons de la mer : voilà pourquoi il est un peu salé. On dit qu’il guérit. Personne ne sait plus où se trouve la source (récit populaire, recueilli pour le jeu).',
  o:[{n:'Écouter jusqu’au bout',d:'Mystique +1 ; on pourra chercher la source dans les rivières du cœur de l’île',fx:{},f:()=>{S.myst=(S.myst||0)+1;S.galet103=S.galet103||{};S.galet103.ou=1}}]};
 // 1. on entend le récit en pêchant à l'embouchure ou dans la rivière (une chance par pêche, si l'on a déjà un peu de mystique)

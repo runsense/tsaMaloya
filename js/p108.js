@@ -46,7 +46,7 @@ const FOND108={
  'Saint-Louis':'La Compagnie pousse vers le Sud : colons de Saint-Paul et nouveaux venus de France, esclaves de Madagascar, du Mozambique et d’Inde.',
  'Saint-Benoît':'Plus loin dans l’Est, des colons créoles prennent les terres humides, avec leurs esclaves.',
  'Saint-Pierre':'La Compagnie fonde un quartier au Sud, autour de la rivière d’Abord ; colons venus de Saint-Paul et de France, esclaves venus de loin.'};
-EV.fond108={y:1663,tag:'Archive',an:'',get t(){return 'Fondation de '+(S.fondN108||'')},get b(){const n=S.fondN108;return (FOND108[n]||'De nouveaux colons s’installent sur la côte.')+' La zone autour se défriche peu à peu : on la voit s’étendre sur la carte.'},o:[{n:'Suivre',d:'',fx:{}}]};
+EV.fond108={sys:1,tag:'Archive',an:'',get t(){return 'Fondation de '+(S.fondN108||'')},get b(){const n=S.fondN108;return (FOND108[n]||'De nouveaux colons s’installent sur la côte.')+' La zone autour se défriche peu à peu : on la voit s’étendre sur la carte.'},o:[{n:'Suivre',d:'',fx:{}}]};
 function fond108Jouer(n){try{const v=VILLES.find(v=>v[3]===n);if(!v||typeof scene==='undefined')return;const t=near(v[1],v[2]);if(!t)return;
  const g=new THREE.Group();scene.add(g);const M=c=>new THREE.MeshLambertMaterial({color:c});
  // le navire arrive du large (de l'ouest pour Saint-Paul, venu de Madagascar ; sinon par la mer, le long de la côte)
