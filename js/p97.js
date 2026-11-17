@@ -206,7 +206,7 @@ preparer=function(){if(S.bras<1||S.abri)return;snap();S.bras--;S.abri=1;sauve()}
 // ----- 19. Vue personnage : chiens, cochons et papangues autour du camp -----
 // Les chiens rôdent et suivent les gens, les cochons fouillent près des cases, le papangue tourne haut au-dessus du camp.
 function vpBetes97(){const V=VP;if(!V||!V.p84||typeof p3Instance!=='function')return;const ok=n=>P3.buf&&P3.buf[n];V.betes97=V.betes97||[];V.bk97=V.bk97||{};
- const L=[['ani_chien',2,.55,'chien'],['ani_cochon',S.voieC?3:2,.5,'cochon'],['ani_papangue',1,.9,'papangue']].filter(x=>!V.bk97[x[0]]);if(!L.length)return;L.forEach(x=>{if(!ok(x[0]))try{p3Charge(x[0])}catch(e){}});const P=L.filter(x=>ok(x[0]));P.forEach(x=>V.bk97[x[0]]=1);
+ const L=[...((S.voieC||S.chienM)?[['ani_chien',2,.55,'chien']]:[]),['ani_cochon',S.voieC?3:2,.5,'cochon'],['ani_papangue',1,.9,'papangue']].filter(x=>!V.bk97[x[0]]);if(!L.length)return;L.forEach(x=>{if(!ok(x[0]))try{p3Charge(x[0])}catch(e){}});const P=L.filter(x=>ok(x[0]));P.forEach(x=>V.bk97[x[0]]=1);
  P.forEach(([n,nb,taille,k])=>{for(let i=0;i<nb;i++)p3Instance(n).then(o=>{if(VP!==V)return;const r=o.g.scene,b=new THREE.Box3().setFromObject(r),h=Math.max(.01,k==='papangue'?Math.max(b.max.x-b.min.x,b.max.z-b.min.z):b.max.y-b.min.y),w=new THREE.Group();r.position.y=-b.min.y;w.add(r);w.scale.setScalar(taille/h*(k==='papangue'?2:1));V.sc.add(w);
   const A=o.g.animations,cl=A.find(c=>/marche|walk|vol|fly|course|run/i.test(c.name))||A[0];if(cl)o.mx.clipAction(cl).play();
   const a=Math.random()*6.28;V.betes97.push({k,w,mx:o.mx,x:Math.cos(a)*(4+i*2),z:-30+Math.sin(a)*(4+i*2),cap:Math.random()*6.28,att:Math.random()*3,ph:Math.random()*6.28,suit:k==='chien'&&i===0})},()=>{})})}

@@ -18,3 +18,20 @@ setInterval(()=>{try{if(!KV3.R||KV3.R._u107)return;const R=KV3.R,r0=R.render.bin
 setInterval(()=>{try{if(!window.LIEU107||!UNIF107||S||!K||K.vue!=="ville"||typeof kCol!=="function")return;const c=T[kCol().i];if(!c)return;
  if(KV3.dist<9){if(lieu&&Math.hypot(lieu.x-KV3.tg.x,lieu.z-KV3.tg.z)<1.5)return;const t=tileAt(KV3.tg)||c;kShim105(t,()=>ouvrirLieu(t));LA97=lieu}
  else if(lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},500);
+
+// ----- Survie, colons : on ne bâtit pas n'importe quoi n'importe où -----
+// · une habitation de plus seulement s'il y a assez d'Européens pour la tenir (une pour deux colons d'Europe, plus la première) ;
+// · la chapelle près de la maison du maître (à côté d'une habitation), une seule par domaine ;
+// · le magasin à côté d'une habitation ; la route seulement quand il y a de quoi commercer (un port ou un magasin) et qu'elle prolonge une route ou part d'une habitation ;
+// · ailleurs, la terre sert à chasser, pêcher, compléter les vivres.
+function kCompte107(k){let n=0;for(const i in K.b)(K.b[i]||[]).forEach(x=>{if(x.k===k)n++});return n}
+function kEurop107(){try{const f=K.fac||{};return Math.max(2,Math.round(((f.c&&f.c.pop)||(f.p&&f.p.pop)||6)/3))}catch(e){return 2}}
+{const kb=kBatir;kBatir=function(t){const L=kb(t);try{if(!K||K.joueur!=='c')return L;const voisin=k=>kVoisins(t).some(u=>(K.b[u.i]||[]).some(x=>x.k===k))||(K.b[t.i]||[]).some(x=>x.k===k);
+ return L.filter(([k])=>{if(k==='habitation')return kCompte107('habitation')<1+Math.floor(kEurop107()/2);
+  if(k==='chapelle')return voisin('habitation')&&kCompte107('chapelle')<Math.max(1,Math.floor(kCompte107('habitation')/3));
+  if(k==='magasin')return voisin('habitation');
+  if(k==='route')return (kCompte107('port')+kCompte107('magasin'))>0&&(voisin('route')||voisin('habitation'));
+  return true})}catch(e){return L}}}
+// clic gauche = ce qu'il y a sur ce terrain ; clic droit = ce qu'on peut y faire (plus de doublon)
+{const st=document.createElement('style');st.textContent='body.kinfo107 #kA .pc button{display:none!important}body.kinfo107 #kA .pc::after{content:"Clic droit pour agir ici";display:block;font-size:12px;opacity:.7;margin-top:4px}';document.head.appendChild(st)}
+addEventListener('pointerup',e=>{try{if(!K||!KV3||e.target!==KV3.cv)return;if(e.button===0)document.body.classList.add('kinfo107')}catch(_){}},true);
