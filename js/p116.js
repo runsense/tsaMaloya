@@ -17,7 +17,7 @@ function p116Mods(){if(MOD.filao||typeof p23Mod!=='function')return;const TR=TR2
 {const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);try{const t=lieu;if(!t||t.bare||!S)return r;p116Mods();if(!MOD.filao)return r;const B=boisIci116(t),hC=new THREE.Color(1,1,1);
  const cou=(k,s)=>{const a=rndH(k*s+t.i)*6.283,d=Math.sqrt(rndH(k*s+7))*3.15;return [t.x+Math.cos(a)*d,t.z+Math.sin(a)*d,a]};const o=S.t[t.i]||{},ra=o.b==='camp'?1.3:0;
  const pose=(m,n,s,f,sc)=>{for(let k=0;k<n;k++){const [x,z,a]=cou(k,s),h=alt(x,z);if(!f(h)||Math.hypot(x-t.x,z-t.z)<ra)continue;const v=.85+rndH(k+3)*.3;hC.setRGB(v,v,v);poseM(m,x,h*VX+.03,z,a,0,0,(.8+rndH(k+9)*.5)*sc,hC)}};
- if(B.includes('filao'))pose(MOD.filao,70,11.3,h=>h>1&&h<40,1);if(B.includes('tamB'))pose(MOD.tamarinier,22,12.7,h=>h>3,1.1)}catch(e){}return r}}
+ if(B.includes('filao'))pose(MOD.filao,320,11.3,h=>h>1&&h<75,1);if(B.includes('tamB'))pose(MOD.tamarinier,22,12.7,h=>h>3,1.1)}catch(e){}return r}}
 // une carte « Le bois d'ici » en ouvrant un lieu (une fois par lieu ouvert)
 const BC116={i:null};
 setInterval(()=>{try{let d=$('bois116');if(!S||!lieu||(typeof K!=='undefined'&&K)){BC116.i=null;if(d)d.remove();return}if(BC116.i===lieu.i)return;BC116.i=lieu.i;const B=boisIci116(lieu);if(d)d.remove();if(!B.length)return;
