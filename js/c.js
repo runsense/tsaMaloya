@@ -536,7 +536,7 @@ function pick(px,py){NDC.set(px/innerWidth*2-1,-(py/innerHeight*2-1));RC.setFrom
 function zoomVers(px,py,f){const nd=clamp(dist*f,3.5,86),kk=nd/dist;let p=pick(px,py);if(!p){const o=RC.ray.origin,d=RC.ray.direction,s=-o.y/d.y;if(s>0)p=o.clone().addScaledVector(d,s)}
  if(p)camT.lerp(p,1-kk);dist=nd;bornes();
  // en zoomant, la vue revient en 3/4 ; de près, elle passe au-dessus, dans l'axe de la pente (on regarde vers l'amont)
- if(!F&&typeof alt==='function'){const pt=dist>40?.72:dist>10?.85:.62;pol+=(pt-pol)*.22;if(dist<14){const e=.6,gx=alt(camT.x+e,camT.z)-alt(camT.x-e,camT.z),gz=alt(camT.x,camT.z+e)-alt(camT.x,camT.z-e);if(Math.hypot(gx,gz)>.01){let da=Math.atan2(-gx,-gz)-az;da=Math.atan2(Math.sin(da),Math.cos(da));az+=da*.18}}}if(lieu&&dist>16)fermerLieu()}
+ if(!F&&typeof alt==='function'){const pt=dist>40?.72:dist>10?.85:.62;pol+=(pt-pol)*.22;if(dist<14){const e=.6,gx=alt(camT.x+e,camT.z)-alt(camT.x-e,camT.z),gz=alt(camT.x,camT.z+e)-alt(camT.x,camT.z-e);if(Math.hypot(gx,gz)>.01){let da=Math.atan2(-gx,-gz)-az;da=Math.atan2(Math.sin(da),Math.cos(da));az+=da*.18}}}if(lieu&&dist>30)fermerLieu()}
 function bornes(){camT.x=clamp(camT.x,-6,72);camT.z=clamp(camT.z,-6,64)}
 function ctrl(){let dn=null,mv=false;const ptrs=new Map();let pin=0,ang=0;
  cv.addEventListener('contextmenu',e=>e.preventDefault());

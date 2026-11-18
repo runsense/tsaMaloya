@@ -5,7 +5,7 @@
 setInterval(()=>{try{if(!S||S.fin||K||VP||CV.on||CINE||window.choixExp)return;if(!(modeHist()||!grpOn()))return;
  if(dist<7){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&typeof camGo!=='undefined'&&camGo)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
   const c=camT.clone(),d=dist,p=pol,a=az;ouvrirLieu(t);camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
- else if(dist>9&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
+ else if(dist>30&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
 
 // ----- 2. Vie, côté colons : chaque ville de la colonie est un lieu à vous, d'où l'on peut partir -----
 // Saint-Paul dès 1663, puis Saint-Denis, Sainte-Suzanne… à leur date de fondation ; chacune arrive avec deux colons.
@@ -28,7 +28,7 @@ function kShim105(t,f){const s0=S;S={t:{},year:(typeof kAnnee==='function'?kAnne
 setInterval(()=>{try{if(!window.LIEU107||S||!K||K.fin||VP||CINE)return;
  if(dist<7){const t=tileAt(camT);if(!t||t.bare&&t.alt<0)return;if(K.vu&&!K.vu[t.i])return;if(lieu&&lieu!==LA97)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
   const c=camT.clone(),d=dist,p=pol,a=az;kShim105(t,()=>ouvrirLieu(t));camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
- else if(dist>9&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
+ else if(dist>30&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
 
 // ----- 5. Le raccourci Espace se voit : une petite touche sur le bouton du conte (Histoire) et sur la carte du camp (Vie) -----
 {const st=document.createElement('style');st.textContent='#auto::after,#chronoB::after,#cvBtn:not(.mini104)::after,#cvBtn.mini104::before{content:"Espace";display:inline-block;margin-left:8px;padding:1px 6px;border:1px solid currentColor;border-bottom-width:2px;border-radius:4px;font-size:10px;letter-spacing:.04em;opacity:.75;vertical-align:middle;text-transform:none}#cvBtn{position:relative}#cvBtn.mini104::before{position:absolute;left:50%;top:-18px;transform:translateX(-50%);margin:0;background:rgba(20,16,12,.8);color:#f3e6c4;z-index:2}';document.head.appendChild(st)}

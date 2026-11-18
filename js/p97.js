@@ -188,7 +188,7 @@ let LA97=null;
 setInterval(()=>{try{if(!S||S.fin||modeHist()||!grpOn()||VP||CV.on||CINE||window.choixExp)return;
  if(dist<7){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
   const c=camT.clone(),d=dist,p=pol,a=az;ouvrirLieu(t);camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
- else if(dist>9&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
+ else if(dist>30&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
 
 // ----- 18. Cyclone : pas d'« abri anti-cyclone » (il n'en a jamais existé ici). Les marrons montent se réfugier dans une caverne quand il approche,
 // les colons barricadent les cases et rentrent les vivres ; après le passage, il faut tout refaire -----

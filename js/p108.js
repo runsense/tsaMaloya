@@ -3,6 +3,9 @@
 const VIV108={g:null,cle:'',b:[],o:[],t0:performance.now()};
 function viv108Mat(c,o){return new THREE.MeshLambertMaterial(Object.assign({color:c},o||{}))}
 function viv108Icone(txt){const cv=document.createElement('canvas');cv.width=cv.height=64;const x=cv.getContext('2d');x.font='44px serif';x.textAlign='center';x.textBaseline='middle';x.shadowColor='rgba(255,240,170,.9)';x.shadowBlur=14;x.fillText(txt,32,34);const t=new THREE.CanvasTexture(cv);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthWrite:false,transparent:true}));s.scale.set(.2,.2,1);return s}
+// la taille d'une rivière et de son embouchure : la Rivière des Galets d'abord, puis la Rivière des Pluies, puis les autres
+function RIVF108(n){return {'la Rivière des Galets':1.5,'la Rivière Saint-Étienne':1.35,'la Rivière des Pluies':1.2,'la Rivière du Mât':1.05,'la Rivière des Marsouins':1,'la Rivière de l’Est':1,'la Rivière des Remparts':.9,'la Rivière Langevin':.9,'la Rivière des Roches':.9,'la Rivière Saint-Denis':.85}[n]||.7}
+function bas108(x,z){let bx=x,bz=z,bh=alt(x,z);for(let i=-4;i<=4;i++)for(let j=-4;j<=4;j++){if(i*i+j*j>16)continue;const X=x+i*.1,Z=z+j*.1,h=alt(X,Z);if(h<bh-.5){bh=h;bx=X;bz=Z}}return [bx,bz]}
 function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=tileAt(camT);if(!c)return g;const P=T.filter(t=>Math.hypot(t.x-camT.x,t.z-camT.z)<Math.max(4,dist*.7)&&seen(t));
  // les rivières : un ruban d'eau qui serpente d'une case de rivière à la suivante, vers l'aval.
  // Gros temps : elle gonfle et déborde ; saison sèche : elle maigrit, et dans l'Ouest elle s'assèche (lit de galets)
@@ -10,8 +13,13 @@ function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=
  P.filter(t=>t.riv&&t.alt>0).forEach(t=>{const n=t.nb.map(i=>T[i]).filter(u=>u.riv&&u.alt<t.alt).sort((a,b)=>a.alt-b.alt)[0]||t.nb.map(i=>T[i]).filter(u=>u.alt<=0).sort((a,b)=>a.alt-b.alt)[0];if(!n)return;
   const ouest=LL99(t).lon<55.45,sec=!pl&&!cyc&&ouest;const w=cyc?.32:pl?.12:sec?.07:.06;
   const a=new THREE.Vector3(t.x,0,t.z),b=new THREE.Vector3(n.x,0,n.z),d=b.clone().sub(a),per=new THREE.Vector3(-d.z,0,d.x).normalize(),k=((t.i*9301+49297)%233280)/233280-.5,k2=((t.i*7919)%997)/997-.5;
-  const C=new THREE.CatmullRomCurve3([a,a.clone().lerp(b,.33).addScaledVector(per,k*.35),a.clone().lerp(b,.66).addScaledVector(per,k2*.3),b]);const Q=C.getPoints(14),V=[],I=[];
-  Q.forEach((q,j)=>{const tg=C.getTangent(j/14),pp=new THREE.Vector3(-tg.z,0,tg.x).normalize();[-1,1].forEach(sg=>{const x=q.x+pp.x*w*sg,z=q.z+pp.z*w*sg;V.push(x,Math.max(0,alt(x,z))*VX+.03,z)});if(j){const o=(j-1)*2;I.push(o,o+1,o+2,o+1,o+3,o+2)}});
+  const C=new THREE.CatmullRomCurve3([a,a.clone().lerp(b,.33).addScaledVector(per,k*.35),a.clone().lerp(b,.66).addScaledVector(per,k2*.3),b]);let Q=C.getPoints(14);const V=[],I=[];{/* la rivière suit la vraie pente : on part du fond près de la case et on descend toujours vers le plus bas */
+   const st=bas108(t.x,t.z),L=Math.hypot(n.x-t.x,n.z-t.z),D=[];let x=st[0],z=st[1],px=n.x-t.x,pz=n.z-t.z;const pl=Math.hypot(px,pz)||1;px/=pl;pz/=pl;D.push(new THREE.Vector3(x,0,z));
+   for(let k=0;k<Math.ceil(L*2.2/.06);k++){let bh=alt(x,z),bx=null,bz=null;for(let a=0;a<16;a++){const an=a/16*6.283,dx=Math.cos(an),dz=Math.sin(an);if(dx*px+dz*pz<-.2)continue;const X=x+dx*.06,Z=z+dz*.06,h=alt(X,Z)-(dx*px+dz*pz)*.4;if(h<bh){bh=h;bx=X;bz=Z}}
+    if(bx==null)break;px=(bx-x)/.06*.6+px*.4;pz=(bz-z)/.06*.6+pz*.4;const ql=Math.hypot(px,pz)||1;px/=ql;pz/=ql;x=bx;z=bz;D.push(new THREE.Vector3(x,0,z));if(alt(x,z)<=0||Math.hypot(x-n.x,z-n.z)<.12)break}
+   if(D.length>=4){const E=[];for(let q=0;q<D.length;q+=2)E.push(D[q]);if(E[E.length-1]!==D[D.length-1])E.push(D[D.length-1]);Q=E}}
+  const TG=j=>{const a=Q[Math.max(0,j-1)],b=Q[Math.min(Q.length-1,j+1)];return new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize()};
+  Q.forEach((q,j)=>{const tg=TG(j),pp=new THREE.Vector3(-tg.z,0,tg.x).normalize();const hq=Math.max(0,alt(q.x,q.z)),ww=w*RIVF108(t.riv)*(1+Math.max(0,(60-hq)/60)*1.2)*(hq>500?(pl||cyc?1:.75):1);[-1,1].forEach(sg=>{const x=q.x+pp.x*ww*sg,z=q.z+pp.z*ww*sg;V.push(x,Math.max(0,alt(x,z))*VX+.03,z)});if(j){const o=(j-1)*2;I.push(o,o+1,o+2,o+1,o+3,o+2)}});
   const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.Float32BufferAttribute(V,3));G.setIndex(I);G.computeVertexNormals();g.add(new THREE.Mesh(G,sec?galM:eauM));
   if(cyc){const f=new THREE.Mesh(new THREE.CircleGeometry(.55,16),viv108Mat(0x7a6a4a,{transparent:true,opacity:.45}));f.rotation.x=-Math.PI/2;f.position.set(t.x,t.alt*VX+.025,t.z);g.add(f)}
   // un poisson de temps en temps (pas dans un lit à sec)

@@ -35,13 +35,16 @@ new MutationObserver(M=>M.forEach(m=>m.addedNodes.forEach(n=>{if(n.id==='svLet')
 // fanjan d'Australie (C. cooperi) : cicatrices ovales sur le tronc, crosses aux longs poils blancs ; introduit, il gagne les bords de route.
 function fanjan122Mods(){if(MOD.fanjanEx||typeof p23Mod!=='function')return;const TR=TR23,cy=(a,b,h,n=6)=>new THREE.CylinderGeometry(a,b,h,n),co=(r,h,n=8)=>new THREE.ConeGeometry(r,h,n),bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d),sp=r=>new THREE.IcosahedronGeometry(r,0);
  // une fronde 3 fois divisée : un rachis et des pennes de part et d'autre
- const fronde=(k,col,lg,y)=>{const a=k*.785+.2,P=[];const c=Math.cos(a),s=Math.sin(a);P.push([bx(lg,.004,.012),col,TR(c*lg/2*.9,y,s*lg/2*.9,0,-a,.3)]);
-  for(let j=1;j<=4;j++){const d=lg*j/5,px=c*d*.9,pz=s*d*.9,py=y+Math.sin(.3)*d*.9-.004;P.push([bx(.008,.003,lg*.34*(1-j*.13)),col,TR(px,py,pz,0,-a,.3)])}return P};
- const crosses=(col,r,y)=>[0,2.1,4.2].map(a=>[sp(r),col,TR(Math.cos(a)*.016,y,Math.sin(a)*.016,0,0,0,1,1.4,1)]);
+ // une fronde : une longue feuille dentelée (les pennes), qui monte puis retombe en arc
+ const feuille=(L0,L1,lg)=>{const sh=new THREE.Shape(),n=14,pts=[];for(let q=0;q<=n;q++){const u=L0+(L1-L0)*q/n,w=lg*.15*Math.pow(Math.sin(Math.PI*Math.min(1,u*1.05)),.7)*(q%2?.72:1);pts.push([u*lg,w])}
+  sh.moveTo(L0*lg,0);pts.forEach(([x,w])=>sh.lineTo(x-L0*lg,w));for(let q=pts.length-1;q>=0;q--)sh.lineTo(pts[q][0]-L0*lg,-pts[q][1]);return new THREE.ShapeGeometry(sh).rotateX(-Math.PI/2)};
+ const fronde=(k,col,lg,y)=>{const a=k*.785+.2,c=Math.cos(a),s=Math.sin(a),m=.5,up=.32,dn=-.42,x1=Math.cos(up)*lg*m,y1=Math.sin(up)*lg*m;
+  return [[feuille(0,m,lg),col,TR(0,y,0,0,-a,up)],[feuille(m,1,lg),col,TR(c*x1,y+y1,s*x1,0,-a,dn)]]};
+ const crosses=(col,r,y)=>[0,2.1,4.2].map(a=>[new THREE.TorusGeometry(r,r*.45,4,8,Math.PI*1.5),col,TR(Math.cos(a)*.014,y+r,Math.sin(a)*.014,0,a,0)]);
  const manchon=[[co(.05,.1,9),0x3a2b1e,TR(0,.05,0)],[co(.036,.07,7),0x4a3626,TR(.008,.035,.006,0,.4,0)]];
  const F=c=>[0,1,2,3,4,5,6,7].flatMap(k=>fronde(k,c,.21,.27));
  p23Mod('fanjanEx',[[cy(.013,.018,.27,6),0x33261c,TR(0,.135,0)],...manchon,...F(0x2f7a46),...crosses(0x6aa04c,.009,.285)],160);
- p23Mod('fanjanGl',[[cy(.013,.018,.27,6),0x30241a,TR(0,.135,0)],...manchon,...F(0x3d7464),...crosses(0x9a4c22,.01,.285)],160);
+ p23Mod('fanjanGl',[[cy(.013,.018,.27,6),0x30241a,TR(0,.135,0)],...manchon,...F(0x3a6a4c),...crosses(0x9a4c22,.01,.285)],160);
  p23Mod('fanjanCo',[[cy(.016,.019,.27,6),0x4a3a2c,TR(0,.135,0)],...[.05,.1,.15,.2].flatMap((y,j)=>[[sp(.008),0x9a8a70,TR(Math.cos(j*1.7)*.016,y,Math.sin(j*1.7)*.016,0,0,0,.6,1.3,.6)]]),...F(0x5c9a3a),...crosses(0xeeeae0,.013,.288)],160)}
 function fanjan122Esp(h,k,o){const r=rndH(k*3.3+7);if(S&&S.year>=1960&&(o.c||o.clr||h<900)&&r<.22)return 'Co';
  if(h>1100)return r<.55?'Gl':r<.8?'Ex':'';if(h>400)return r<.55?'Ex':r<.65?'Gl':'';return r<.4?'Ex':''}
@@ -71,7 +74,7 @@ const FICHE122={fanjan:'Fougère arborescente indigène, tronc fin et net.',fanj
 // ===== en Histoire, en tout petit sous le chrono du conte : « Tab pour avancer » =====
 setInterval(()=>{try{let d=$('tab122');const c=$('auto');const on=S&&!S.fin&&typeof modeHist==='function'&&modeHist()&&c&&c.offsetParent&&!(typeof VP!=='undefined'&&VP);
  if(!on){if(d)d.style.display='none';return}const r=c.getBoundingClientRect();if(!r.width){if(d)d.style.display='none';return}
- if(!d){d=document.createElement('div');d.id='tab122';d.innerHTML='<kbd>Tab</kbd> pour avancer';d.style.cssText='position:fixed;z-index:61;font:10px system-ui;color:#f3e6c4;opacity:.6;pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px #000';document.body.appendChild(d);
+ if(!d){d=document.createElement('div');d.id='tab122';d.innerHTML='<kbd>Tab</kbd> pour avancer';d.style.cssText='position:fixed;z-index:61;font:600 11px system-ui;color:#e8be5a;opacity:.95;background:rgba(20,16,12,.75);padding:1px 7px;border-radius:8px;pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px #000';document.body.appendChild(d);
   const st=document.createElement('style');st.textContent='#tab122 kbd{font:600 9px system-ui;padding:0 4px;border:1px solid currentColor;border-bottom-width:2px;border-radius:3px;margin-right:3px}';document.head.appendChild(st)}
  d.style.display='';d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.bottom+2)+'px';d.style.transform='translateX(-50%)'}catch(e){}},500);
 

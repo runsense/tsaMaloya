@@ -78,4 +78,4 @@ function satPix111(x,z){try{const U=terr&&terr.material&&terr.material.uniforms;
  const L=v=>Math.pow(v/255,2.2);return[L(SATC111.d[i]),L(SATC111.d[i+1]),L(SATC111.d[i+2])]}catch(e){return null}}
 {const c0=col97;col97=function(q,x,z,a,d,t,n,pe){try{if(a>0&&!(t&&t.bare)){const s=satPix111(x,z);if(s){const k=.85+n*.3,c=new THREE.Color(s[0]*k,s[1]*k,s[2]*k),h={};c.getHSL(h);c.setHSL(h.h,Math.min(1,h.s*.95),h.l*.9);q.lerp(c,.85)}}}catch(e){}return c0.apply(this,arguments)}}
 // Survie : on peut ouvrir le détail du lieu à nouveau (la couleur jaune venait de l'aplat de savane)
-window.LIEU107=1;
+window.LIEU107=0; // en Survie, le zoom proche garde la carte lisible (le détail du lieu y brouillait tout)
