@@ -36,7 +36,7 @@ function sol125(t){try{const b=t.biome||'',o=(S&&S.t&&S.t[t.i])||{};
 }catch(e){}}}
 
 // le disque du lieu ne se voit qu'en zoom proche : de loin, le décor reste mais le sol rejoint la carte
-setInterval(()=>{try{if(typeof lieuM!=='undefined'&&lieuM)lieuM.visible=dist<9.5}catch(e){}},300);
+
 // le bord du lieu s'éclaircit peu à peu : pas de cercle net entre la forêt détaillée et la carte
 {const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);try{const t=lieu;if(!t)return r;const K=['arbre','sapin','tamarin','fanjan','fanjanEx','fanjanGl','fanjanCo','palmiste','latanier','vacoa','herbe','rocher','filao','tamarinier','branle','benjoin','bois_chandelle','ambaville'];
  const M4=new THREE.Matrix4(),p=new THREE.Vector3(),Z=new THREE.Matrix4().makeScale(0,0,0);K.forEach(k=>{const m=MOD[k];if(!m||!m.userData)return;let ch=0;for(let i=0;i<m.userData.n;i++){m.getMatrixAt(i,M4);p.setFromMatrixPosition(M4);const d=Math.hypot(p.x-t.x,p.z-t.z);if(d<2.1)continue;
@@ -45,7 +45,7 @@ setInterval(()=>{try{if(typeof lieuM!=='undefined'&&lieuM)lieuM.visible=dist<9.5
 function plage125(t){try{const ouest=typeof sousVent==='function'?sousVent(t):(t.x<30);if(!ouest)return 'ganges_river_pebbles';const [lx,lz]=xz(55.22,-21.08),[sx,sz]=xz(55.3,-21.2);const lagon=Math.hypot(t.x-lx,t.z-lz)<9||Math.hypot(t.x-sx,t.z-sz)<6;return lagon?'shell_floor_01':'coast_sand_01'}catch(e){return 'coast_sand_01'}}
 {const ol=ouvrirLieu;ouvrirLieu=function(t){const r=ol.apply(this,arguments);try{if(!lieuM||!lieu||lieu.bare)return r;const g=lieuM.geometry,P=g.attributes.position,sb=new Float32Array(P.count);let a=0;
  for(let i=0;i<P.count;i++){const h=alt(P.getX(i),P.getZ(i));sb[i]=Math.max(0,Math.min(1,(70-h)/50));a=Math.max(a,sb[i])}if(a<.05)return r;g.setAttribute('sb',new THREE.BufferAttribute(sb,1));
- const m=lieuM.material,t2=tx125(plage125(lieu),1);m.onBeforeCompile=sh=>{sh.uniforms.map2={value:t2};sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float sb;varying float vSb;').replace('#include <begin_vertex>','#include <begin_vertex>\nvSb=sb;');
+ const m=lieuM.material,t2=tx125(plage125(lieu),1);m.userData.t2=t2;m.onBeforeCompile=sh=>{sh.uniforms.map2={value:t2};sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float sb;varying float vSb;').replace('#include <begin_vertex>','#include <begin_vertex>\nvSb=sb;');
   sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform sampler2D map2;varying float vSb;').replace('#include <map_fragment>','#ifdef USE_MAP\nvec4 tA=texture2D(map,vUv);vec4 tB=texture2D(map2,vUv);diffuseColor*=mix(tA,tB*vec4(1.25,1.2,1.1,1.),vSb);\n#endif')};m.customProgramCacheKey=()=>'plage125';
  // sur le sable, les couleurs de la carte (vertes) s'effacent vers une teinte claire
  const C=g.attributes.color;if(C){for(let i=0;i<C.count;i++){const w=sb[i];C.setXYZ(i,C.getX(i)*(1-w)+.95*w,C.getY(i)*(1-w)+.9*w,C.getZ(i)*(1-w)+.8*w)}C.needsUpdate=true}m.needsUpdate=true}catch(e){}return r}}
@@ -61,3 +61,28 @@ function plage125(t){try{const ouest=typeof sousVent==='function'?sousVent(t):(t
  // fougères basses en touffes
  const fm=new THREE.MeshLambertMaterial({color:hum?0x356f34:0x4a7a3a,side:THREE.DoubleSide});const fg=new THREE.PlaneGeometry(.3,1.2).translate(0,.6,0);const nF=sav?40:220,FI=new THREE.InstancedMesh(fg,fm,nF*5),M=new THREE.Matrix4(),E=new THREE.Euler(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3();let c=0;
  for(let i=0;i<nF;i++){const x=(R(71+i)-.5)*L,z=(R(73+i*1.7)-.5)*L,y=F.h(x,z),s=.7+R(79+i)*.8;for(let j=0;j<5;j++){Q.setFromEuler(E.set(-.7,j*1.257+R(i)*1,0,'YXZ'));M.compose(V.set(x,y,z),Q,Sc.set(s,s,s));FI.setMatrixAt(c++,M)}}FI.count=c;F.sc.add(FI)}catch(e){}return r}}
+// le détail du lieu se fond dans la carte : il apparaît en fondu en zoomant, ses bords s'effacent, et il ne couvre que le connu
+{const ol=ouvrirLieu;ouvrirLieu=function(t){const r=ol.apply(this,arguments);try{if(!lieuM||!lieu)return r;const g=lieuM.geometry,P=g.attributes.position,n=P.count,ed=new Float32Array(n);
+ for(let i=0;i<n;i++){const x=P.getX(i),z=P.getZ(i),d=Math.hypot(x-lieu.x,z-lieu.z),u=tileAt({x,z});const k=u&&seen(u)?1:0;ed[i]=k*Math.max(0,Math.min(1,(3.35-d)/.9))}g.setAttribute('ed',new THREE.BufferAttribute(ed,1));if(!g.attributes.sb)g.setAttribute('sb',new THREE.BufferAttribute(new Float32Array(n),1));
+ const m=lieuM.material,t2=(m.userData&&m.userData.t2)||tx125(typeof plage125==='function'?plage125(lieu):'coast_sand_01',1);m.transparent=true;m.depthWrite=false;lieuM.renderOrder=1;m.userData.op=0;
+ m.onBeforeCompile=sh=>{sh.uniforms.map2={value:t2};sh.uniforms.op125={value:1};m.userData.sh=sh;sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float sb;attribute float ed;varying float vSb;varying float vEd;').replace('#include <begin_vertex>','#include <begin_vertex>\nvSb=sb;vEd=ed;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform sampler2D map2;uniform float op125;varying float vSb;varying float vEd;').replace('#include <map_fragment>','#ifdef USE_MAP\nvec4 tA=texture2D(map,vUv);vec4 tB=texture2D(map2,vUv);diffuseColor*=mix(tA,tB*vec4(1.25,1.2,1.1,1.),vSb);\n#endif\ndiffuseColor.a*=vEd*op125;')};m.customProgramCacheKey=()=>'fondu125';m.needsUpdate=true;
+ // le décor (arbres, rochers…) ne déborde pas sur les cases inconnues
+ const K=['arbre','sapin','tamarin','fanjan','fanjanEx','fanjanGl','fanjanCo','palmiste','latanier','vacoa','herbe','rocher','filao','tamarinier','branle','benjoin','bois_chandelle','ambaville'],M4=new THREE.Matrix4(),p=new THREE.Vector3(),Z=new THREE.Matrix4().makeScale(0,0,0);
+ K.forEach(k=>{const mm=MOD[k];if(!mm||!mm.userData)return;let ch=0;for(let i=0;i<mm.userData.n;i++){mm.getMatrixAt(i,M4);p.setFromMatrixPosition(M4);const u=tileAt(p);if(!u||!seen(u)){mm.setMatrixAt(i,Z);ch=1}}if(ch)mm.instanceMatrix.needsUpdate=true})}catch(e){}return r}}
+// l'opacité suit le zoom : de 9,5 (rien) à 6 (tout)
+{const K=['arbre','tamarin','fanjan','fanjanEx','fanjanGl','fanjanCo','palmiste','latanier','vacoa','herbe','rocher','filao','tamarinier','branle','benjoin','bois_chandelle','ambaville'];let o0=-1;
+setInterval(()=>{try{if(typeof lieuM==='undefined'||!lieuM){o0=-1;return}const m=lieuM.material,o=Math.max(0,Math.min(1,(9.5-dist)/3.5));lieuM.visible=o>.01;if(m.userData.sh)m.userData.sh.uniforms.op125.value=o;
+ if(Math.abs(o-o0)<.02)return;o0=o;K.forEach(k=>{const mm=MOD[k];if(!mm||!mm.material)return;const mt=mm.material;const tr=o<.99;if(mt.transparent!==tr){mt.transparent=tr;mt.needsUpdate=true}mt.opacity=o;mm.visible=o>.01})}catch(e){}},60)}
+// autour du lieu ouvert, tout le connu suit : une couronne de forêt détaillée sur les cases découvertes voisines (jusqu'à ~8)
+{const RG={g:null};function anneau125(){try{if(RG.g){scene.remove(RG.g);RG.g=null}window.LR125=3.3;const t=lieu;if(!t||!S)return;const G=new THREE.Group();const RX=8.5;window.LR125=RX;
+ const lots={};const add=(k,x,z,s,ry)=>{(lots[k]=lots[k]||[]).push([x,z,s,ry])};const R=q=>{const v=Math.sin(q*12.9898)*43758.5453;return v-Math.floor(v)};
+ for(let i=0;i<2600;i++){const a=R(i*1.37+t.i)*6.283,d=3.1+Math.sqrt(R(i*2.11+t.i*.7))*(RX-3.1),x=t.x+Math.cos(a)*d,z=t.z+Math.sin(a)*d,u=tileAt({x,z});if(!u||!seen(u)||u.bare)continue;const o=S.t[u.i]||{};if(o.c||o.clr||o.b)continue;const h=alt(x,z);if(h<5)continue;const b=u.biome||'',sav=/Savane/.test(b);
+  if(typeof bruit==='function'&&bruit(x,z)<.42&&R(i*3.3)<.6)continue;const r=R(i*5.7);let k;if(sav)k=r<.25?'arbre':r<.35?'latanier':r<.5?'rocher':'herbe';else if(u.alt>1100)k=r<.4?'tamarin':r<.55?'fanjanGl':r<.7?'rocher':'herbe';else k=r<.38?'arbre':r<.5?'fanjanEx':r<.58?'palmiste':r<.66?'rocher':'herbe';
+  add(k,x,z,k==='herbe'?1:.75+R(i*7.1)*.8,a)}
+ const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3(),Y=new THREE.Vector3(0,1,0),c=new THREE.Color(1,1,1);
+ for(const k in lots){const m=MOD[k];if(!m||!m.geometry)continue;const L=lots[k],I=new THREE.InstancedMesh(m.geometry,m.material,L.length);L.forEach(([x,z,s,ry],i)=>{M.compose(V.set(x,alt(x,z)*VX+.03,z),Q.setFromAxisAngle(Y,ry),Sc.set(s,s,s));I.setMatrixAt(i,M);if(m.instanceColor){I.setColorAt(i,c)}});I.frustumCulled=false;G.add(I)}
+ scene.add(G);RG.g=G;if(!RG.p){RG.p=1;try{peindre()}catch(e){}finally{RG.p=0}}}catch(e){}}
+ const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);if(!RG.p&&(!RG.g||RG.t!==lieu)){RG.t=lieu;anneau125()}return r};
+ const fl=fermerLieu;fermerLieu=function(){if(RG.g){scene.remove(RG.g);RG.g=null;RG.t=null}window.LR125=3.3;return fl.apply(this,arguments)};
+ setInterval(()=>{try{if(!RG.g)return;const o=Math.max(0,Math.min(1,(9.5-dist)/3.5));RG.g.visible=o>.01}catch(e){}},100)}

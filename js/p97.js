@@ -186,7 +186,7 @@ function cab97(t,a,q,sp,o0,r1,r2){const h=(HUNT97[t.i]&&HUNT97[t.i].fuit)?2.4:1,
 // ----- 17. Vie : de près, la grande carte prend tout le détail d'un lieu (comme au double clic), et ce détail suit la caméra -----
 let LA97=null;
 setInterval(()=>{try{if(!S||S.fin||modeHist()||!grpOn()||VP||CV.on||CINE||window.choixExp)return;
- if(dist<7){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
+ if(dist<9){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
   const c=camT.clone(),d=dist,p=pol,a=az;ouvrirLieu(t);camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
  else if(dist>30&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
 

@@ -6,11 +6,11 @@ function viv108Icone(txt){const cv=document.createElement('canvas');cv.width=cv.
 // la taille d'une rivière et de son embouchure : la Rivière des Galets d'abord, puis la Rivière des Pluies, puis les autres
 function RIVF108(n){return {'la Rivière des Galets':1.5,'la Rivière Saint-Étienne':1.35,'la Rivière des Pluies':1.2,'la Rivière du Mât':1.05,'la Rivière des Marsouins':1,'la Rivière de l’Est':1,'la Rivière des Remparts':.9,'la Rivière Langevin':.9,'la Rivière des Roches':.9,'la Rivière Saint-Denis':.85}[n]||.7}
 function bas108(x,z){let bx=x,bz=z,bh=alt(x,z);for(let i=-4;i<=4;i++)for(let j=-4;j<=4;j++){if(i*i+j*j>16)continue;const X=x+i*.1,Z=z+j*.1,h=alt(X,Z);if(h<bh-.5){bh=h;bx=X;bz=Z}}return [bx,bz]}
-function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=tileAt(camT);if(!c)return g;const P=T.filter(t=>Math.hypot(t.x-camT.x,t.z-camT.z)<Math.max(4,dist*.7)&&seen(t));
+function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=tileAt(camT);if(!c)return g;const P=T.filter(t=>Math.hypot(t.x-camT.x,t.z-camT.z)<Math.max(6,dist*1.05)&&seen(t));
  // les rivières : un ruban d'eau qui serpente d'une case de rivière à la suivante, vers l'aval.
  // Gros temps : elle gonfle et déborde ; saison sèche : elle maigrit, et dans l'Ouest elle s'assèche (lit de galets)
  const cyc=S.cyc&&S.cyc.in<=0,pl=pluie(),eauM=viv108Mat(cyc?0x7a6a4a:0x3d8db5,{transparent:true,opacity:.85,side:THREE.DoubleSide}),galM=viv108Mat(0xb8b0a0,{side:THREE.DoubleSide});
- P.filter(t=>t.riv&&t.alt>0).forEach(t=>{const n=t.nb.map(i=>T[i]).filter(u=>u.riv&&u.alt<t.alt).sort((a,b)=>a.alt-b.alt)[0]||t.nb.map(i=>T[i]).filter(u=>u.alt<=0).sort((a,b)=>a.alt-b.alt)[0];if(!n)return;
+ (window.RIV126?[]:P).filter(t=>t.riv&&t.alt>0).forEach(t=>{const n=t.nb.map(i=>T[i]).filter(u=>u.riv&&u.alt<t.alt).sort((a,b)=>a.alt-b.alt)[0]||t.nb.map(i=>T[i]).filter(u=>u.alt<=0).sort((a,b)=>a.alt-b.alt)[0];if(!n)return;
   const ouest=LL99(t).lon<55.45,sec=!pl&&!cyc&&ouest;const w=cyc?.32:pl?.12:sec?.07:.06;
   const a=new THREE.Vector3(t.x,0,t.z),b=new THREE.Vector3(n.x,0,n.z),d=b.clone().sub(a),per=new THREE.Vector3(-d.z,0,d.x).normalize(),k=((t.i*9301+49297)%233280)/233280-.5,k2=((t.i*7919)%997)/997-.5;
   const C=new THREE.CatmullRomCurve3([a,a.clone().lerp(b,.33).addScaledVector(per,k*.35),a.clone().lerp(b,.66).addScaledVector(per,k2*.3),b]);let Q=C.getPoints(14);const V=[],I=[];{/* la rivière suit la vraie pente : on part du fond près de la case et on descend toujours vers le plus bas */
@@ -36,7 +36,7 @@ function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=
  try{if(!S.voieC&&typeof ING99!=='undefined'){let n=0;P.forEach(t=>{if(n>14)return;const ok=Object.entries(ING99).find(([q,J])=>{try{return J.ok&&J.ok(t)}catch(e){return false}});if(!ok)return;const s=viv108Icone(ok[1].ic||'🌿');s.position.set(t.x-.2,t.alt*VX+.22,t.z-.15);s.userData.n=ok[1].n;g.add(s);VIV108.o.push(s);n++})}}catch(e){}
  return g}
 setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin||K||VP){if(VIV108.g)VIV108.g.visible=false;return}const on=dist<16;if(!on){if(VIV108.g)VIV108.g.visible=false;return}
- const cle=Math.round(camT.x/1.5)+'|'+Math.round(camT.z/1.5)+'|'+Math.round(dist/4)+'|'+Object.keys(S.cav97||{}).length+'|'+(pluie()?1:0)+'|'+(S.cyc&&S.cyc.in<=0?1:0)+'|'+(S.gib106||0);if(cle!==VIV108.cle){VIV108.cle=cle;if(VIV108.g){scene.remove(VIV108.g);VIV108.g.traverse(o=>{if(o.geometry)o.geometry.dispose()})}VIV108.g=viv108Bati();scene.add(VIV108.g)}VIV108.g.visible=true}catch(e){}},700);
+ const cle=Math.round(camT.x/4)+'|'+Math.round(camT.z/4)+'|'+Math.round(dist/4)+'|'+Object.keys(S.cav97||{}).length+'|'+(pluie()?1:0)+'|'+(S.cyc&&S.cyc.in<=0?1:0)+'|'+(S.gib106||0);if(cle!==VIV108.cle){VIV108.cle=cle;if(VIV108.g){scene.remove(VIV108.g);VIV108.g.traverse(o=>{if(o.geometry)o.geometry.dispose()})}VIV108.g=viv108Bati();scene.add(VIV108.g)}VIV108.g.visible=true}catch(e){}},700);
 (function boucle(){requestAnimationFrame(boucle);try{if(!VIV108.g||!VIV108.g.visible)return;const s=(performance.now()-VIV108.t0)/1000;
  VIV108.b.forEach(b=>{if(b.k==='oiseau'){const a=s*.35+b.v*3+b.i*.18,r=1.6+b.v*.8;const x=camT.x+Math.cos(a)*r+b.i*.06,z=camT.z+Math.sin(a)*r,y=(Math.max(0,alt(x,z))*VX)+1.1+b.v*.3+Math.sin(s*2+b.i)*.04;b.o.position.set(x,y,z);b.o.rotation.y=-a;b.ai.forEach((w,j)=>w.rotation.z=(j?-1:1)*Math.sin(s*12+b.i)*.6);return}
   if(b.k==='poisson'){const u=((s*.15+b.ph)%1);const q=b.C.getPoint(u);b.o.position.set(q.x,Math.max(0,alt(q.x,q.z))*VX+.04+Math.max(0,Math.sin(u*40))*.02,q.z);return}

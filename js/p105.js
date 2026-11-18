@@ -3,7 +3,7 @@
 // ----- 1. Le détail d'un lieu (celui du double clic) s'ouvre tout seul en zoomant, dans tous les modes -----
 // (p97 le faisait en Vie avec les groupes ; on l'étend à l'Histoire et au reste. La Survie garde sa propre vue.)
 setInterval(()=>{try{if(!S||S.fin||K||VP||CV.on||CINE||window.choixExp)return;if(!(modeHist()||!grpOn()))return;
- if(dist<7){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&typeof camGo!=='undefined'&&camGo)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
+ if(dist<9){const t=tileAt(camT);if(!t||!seen(t))return;if(lieu&&lieu!==LA97)return;if(lieu&&typeof camGo!=='undefined'&&camGo)return;if(lieu&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<1.5)return;
   const c=camT.clone(),d=dist,p=pol,a=az;ouvrirLieu(t);camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
  else if(dist>30&&lieu&&lieu===LA97){LA97=null;fermerLieu()}}catch(e){}},400);
 
