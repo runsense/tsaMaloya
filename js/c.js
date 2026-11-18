@@ -332,8 +332,8 @@ function init3D(){
   {float wP=smoothstep(.1,.42,fog)*(1.-smoothstep(.6,.9,fog));if(wP>0.){float m=fb(vP.xz*.9+vec2(t*.04,0.));C=mix(C,vec3(.7,.76,.76),(.28+.3*m)*wP);}}
   {float wU=smoothstep(.6,.92,fog);if(wU>0.){float m=fb(vP.xz*.9+vec2(t*.04,0.));vec3 g=vec3(dot(C,vec3(.3,.6,.1)));C=mix(C,mix(mix(g,C,.35)*.82+vec3(.05,.07,.08),vec3(.7,.76,.76),smoothstep(.35,.8,m)*.5),wU);}}
   if(er>.01){float de=length(vP.xz-vol),cr=fb(vP.xz*2.+vec2(0.,t*.3));float fl=smoothstep(.54,.6,cr)*smoothstep(7.5,2.,de)+smoothstep(1.5,.3,de);C=mix(C,vec3(1.,.36,.08)*(1.2+.4*sin(t*5.)),clamp(fl,0.,1.)*.92*er);}
-  float hl=d.b;if(grille>.5&&d.a<.75&&fog<.75)C=mix(C,vec3(1.,.87,.5),.2+.18*sin(t*6.));if(e>.965&&grille>.5)C=mix(C,fog>.75?C*1.05:vec3(.95,.92,.78),fog>.75?.5:.16+.2*step(.05,hl));
-  if(hl>.6){if(e>.84)C=mix(C,vec3(1.,.87,.5),.95);C*=1.12;}else if(hl>.2){if(e>.9)C=mix(C,vec3(.97,.93,.78),.6);C*=1.12;}
+  float hl=d.b;if(grille>.5&&d.a<.75&&fog<.75)C=mix(C,vec3(1.,.87,.5),.4+.2*sin(t*4.));if(e>.965&&grille>.5)C=mix(C,fog>.75?C*1.05:vec3(.95,.92,.78),fog>.75?.5:.16+.2*step(.05,hl));
+  if(hl>.6){if(e>.84)C=mix(C,vec3(1.,.87,.5),.4+.2*sin(t*4.));C*=1.12;}else if(hl>.2){if(e>.9)C=mix(C,vec3(.97,.93,.78),.4+.2*sin(t*4.));C*=1.12;}
   if(sil>.5&&fog<.5){C=mix(C,vec3(.62,.8,.78),.2*fb(vP.xz*.5+t*.08));}
   C*=1.-nu*(.26+.25*storm);C=mix(C,vec3(dot(C,vec3(.3,.6,.1)))*.7,storm*.4);C*=tint;if(gen>.5){if(vP.y<=0.){float dd=clamp(-vP.y/4.,0.,1.);C=mix(vec3(.12,.5,.55),vec3(.02,.07,.14),dd);float ww=fb(vP.xz*1.3+vec2(-t*.13,t*.05));C+=vec3(.05,.09,.1)*(ww-.5)*2.;}else{float h=vP.y/6.7;C=mix(vec3(.22,.4,.2),vec3(.38,.32,.25),smoothstep(.15,.5,h));C=mix(C,vec3(.52,.5,.48),smoothstep(.5,.85,h));C*=l;}float gl=lave*smoothstep(2.6,0.,distance(vP.xz,lc))*smoothstep(-2.,.4,vP.y);C+=vec3(1.,.36,.06)*gl*(.65+.35*sin(t*3.+vP.x*5.));C*=1.-nu*.2;}gl_FragColor=vec4(C,1.);}`});
  terr=new THREE.Mesh(g,mat);terr.frustumCulled=false;scene.add(terr);
