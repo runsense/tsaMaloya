@@ -7,7 +7,7 @@ function aniNouveau(k){const o={pret:false};new THREE.GLTFLoader().parse(BETM.bu
   const w=new THREE.Group();r.rotation.y=Math.PI/2;r.position.y=-box.min.y;r.scale.setScalar(1);w.add(r);w.userData.h=h;w.visible=false;scene.add(w);const mx=new THREE.AnimationMixer(r),A={};g.animations.forEach(c=>{A[c.name]=mx.clipAction(c);A[c.name].play();A[c.name].setEffectiveWeight(0)});
   const a0=A.marche||A.guet;if(a0)a0.setEffectiveWeight(1);Object.assign(o,{pret:true,g:w,mx,A,px:null,pz:null,v:0})},()=>{});return o}
 // les places des bêtes autour de la caméra : une liste {k, x, z, ry} recalculée à chaque image
-function aniPlaces(k){const L=[];if(!S||S.fin||dist>=16)return L;const R2=dist*.8+3,now=performance.now()/1000;
+function aniPlaces(k){const L=[];if(!S||S.fin||dist>=(k==='papangue'?16:10))return L;const R2=dist*.8+3,now=performance.now()/1000;
  T.forEach(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;if(dx*dx+dz*dz>R2*R2)return;const o=S.t[t.i];if(!o||!o.s||t.bare)return;const h=s=>rndH(t.i*7.3+s);
   const tour=(r1,r2,sp,o0)=>{const u=now*sp+o0+.5*Math.sin(now*sp*2.3+o0);return [t.x+Math.cos(u)*r1,t.z+Math.sin(u)*r2,u]};
   // une bande de cochons marrons : la laie devant, les autres à la file, les petits plus menus

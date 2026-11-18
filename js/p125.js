@@ -86,3 +86,17 @@ setInterval(()=>{try{if(typeof lieuM==='undefined'||!lieuM){o0=-1;return}const m
  const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);if(!RG.p&&(!RG.g||RG.t!==lieu)){RG.t=lieu;anneau125()}return r};
  const fl=fermerLieu;fermerLieu=function(){if(RG.g){scene.remove(RG.g);RG.g=null;RG.t=null}window.LR125=3.3;return fl.apply(this,arguments)};
  setInterval(()=>{try{if(!RG.g)return;const o=Math.max(0,Math.min(1,(9.5-dist)/3.5));RG.g.visible=o>.01}catch(e){}},100)}
+// effet de rapprochement : les décors du lieu grandissent de leur base plus vite que le relief ne se rapproche
+{const K=['arbre','tamarin','fanjan','fanjanEx','fanjanGl','fanjanCo','palmiste','latanier','vacoa','herbe','rocher','filao','tamarinier','branle','benjoin','bois_chandelle','ambaville'],U={value:1};const fait=new Set();
+ setInterval(()=>{try{K.forEach(k=>{const m=MOD[k];if(!m||!m.material||fait.has(m.material))return;fait.add(m.material);const mt=m.material,ob=mt.onBeforeCompile;mt.onBeforeCompile=(sh,r)=>{if(ob)ob(sh,r);sh.uniforms.gr125=U;sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nuniform float gr125;').replace('#include <begin_vertex>','#include <begin_vertex>\ntransformed*=gr125;')};mt.customProgramCacheKey=()=>'gr125'+k;mt.needsUpdate=true});
+  const o=Math.max(0,Math.min(1,(9.5-dist)/3.5));U.value=.25+.75*Math.min(1,Math.pow(o,.5)*1.15)}catch(e){}},60)}
+// la carte entière prend le grain des vrais sols, même de loin : sable sur les côtes sèches, feuilles et terre en forêt, roche sur les pentes et les hauteurs
+{let fait=0;setInterval(()=>{try{if(fait||typeof terr==='undefined'||!terr||!terr.material||!terr.material.fragmentShader)return;const m=terr.material,fs=m.fragmentShader,cle='C=vC*(.82+.36*fb(vP.xz*1.7))';if(!fs.includes(cle))return;fait=1;
+ const ld=k=>{const t=tx125(k,1);t.repeat.set(1,1);return t};m.uniforms.tS={value:ld('coast_sand_01')};m.uniforms.tF={value:ld('leaves_forest_ground')};m.uniforms.tR={value:ld('rock_ground')};m.uniforms.tH={value:ld('mud_forest')};
+ let f=fs.replace('uniform sampler2D det;','uniform sampler2D det;uniform sampler2D tS,tF,tR,tH;');
+ const i=f.indexOf(cle),j=f.indexOf(';',f.indexOf('wet);',i))+1;
+ f=f.slice(0,j)+'{vec2 uv=vP.xz*.9;float jau=clamp((vC.r+vC.g-1.9*vC.b)*2.2-.4,0.,1.)*smoothstep(1.4,.2,vP.y);float pen=clamp((1.-N.y)*2.6-.5,0.,1.);float vert=clamp((vC.g-vC.r)*4.,0.,1.);float hum=vert*clamp(1.-jau,0.,1.)*smoothstep(.0,.6,vP.y);'+
+  'float lS=dot(texture2D(tS,uv).rgb,vec3(.33)),lF=dot(texture2D(tF,uv).rgb,vec3(.33)),lR=dot(texture2D(tR,uv*.7).rgb,vec3(.33)),lH=dot(texture2D(tH,uv).rgb,vec3(.33));float wS=jau,wR=pen*(1.-jau),wH=hum*(1.-pen)*.6,wF=max(0.,1.-wS-wR-wH);float g=(lS*wS+lF*wF+lR*wR+lH*wH)/(wS+wF+wR+wH+.001);C*=1.+(g-.6)*1.6;}'+f.slice(j);
+ m.fragmentShader=f;m.needsUpdate=true}catch(e){}},900)}
+// le sol du lieu ne se distingue plus de la carte : seule la carte (texturée) se voit, le lieu n'ajoute que ses décors
+setInterval(()=>{try{if(typeof lieuM!=='undefined'&&lieuM)lieuM.visible=false}catch(e){}},50);
