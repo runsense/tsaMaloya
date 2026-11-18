@@ -20,7 +20,7 @@ function p116Mods(){if(MOD.filao||typeof p23Mod!=='function')return;const TR=TR2
  if(B.includes('filao'))pose(MOD.filao,320,11.3,h=>h>1&&h<75,1);if(B.includes('tamB'))pose(MOD.tamarinier,22,12.7,h=>h>3,1.1)}catch(e){}return r}}
 // une carte « Le bois d'ici » en ouvrant un lieu (une fois par lieu ouvert)
 const BC116={i:null};
-setInterval(()=>{try{let d=$('bois116');if(!S||!lieu||(typeof K!=='undefined'&&K)){BC116.i=null;if(d)d.remove();return}if(BC116.i===lieu.i)return;BC116.i=lieu.i;const B=boisIci116(lieu);if(d)d.remove();if(!B.length)return;
+setInterval(()=>{try{let d=$('bois116');if(!S||!lieu||(typeof K!=='undefined'&&K)){BC116.i=null;if(d)d.remove();return}if(BC116.i===lieu.i)return;BC116.i=lieu.i;S.boisVu116=S.boisVu116||{};const B=boisIci116(lieu).filter(k=>!S.boisVu116[k]);if(d)d.remove();if(!B.length)return;B.forEach(k=>S.boisVu116[k]=1);
  d=document.createElement('div');d.id='bois116';d.innerHTML='<small>Le bois d’ici</small>'+B.map(k=>'<div><b>'+BOIS116[k].ic+' '+BOIS116[k].n+'</b><span>'+BOIS116[k].d+'</span></div>').join('');d.onclick=()=>d.remove();document.body.appendChild(d);setTimeout(()=>{if(d.isConnected)d.remove()},10000)}catch(e){}},800);
 // le bois récolté garde son essence : un petit compte par essence, selon où l'on coupe
 setInterval(()=>{try{if(!S||S.fin||!S.res||(typeof K!=='undefined'&&K))return;const b=S.res.bois||0;if(S.bois116L==null){S.bois116L=b;return}const d=b-S.bois116L;S.bois116L=b;if(d<=0)return;const c=camps()[0];if(!c)return;

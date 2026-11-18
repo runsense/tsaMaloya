@@ -3,12 +3,15 @@
 // Les bœufs (couchés, au repos) remplacent les petites boîtes sur la carte et dans la vue du camp.
 // Les moutons arrivent avec la colonisation des Hauts (XIXe siècle) : sur les cases d'altitude, puis dans les fermes des Hauts.
 const P122={};
-['ani_boeuf','ani_mouton'].forEach(n=>mod104(n).then(m=>{P122[n]=m;try{VIV108.cle=null;if(typeof CV!=='undefined'&&CV.on&&typeof p3Deco==="function"&&P122.L)p3Deco(P122.L,P122.C)}catch(e){}}).catch(()=>{}));
+['ani_boeufc','ani_mouton'].forEach(n=>mod104(n).then(m=>{P122[n]=m;try{VIV108.cle=null;if(typeof CV!=='undefined'&&CV.on&&typeof p3Deco==="function"&&P122.L)p3Deco(P122.L,P122.C)}catch(e){}}).catch(()=>{}));
 const hauts122=()=>S&&S.year>=1830&&(S.voieC||S.year>=1848);
-function bete122(k,taille){const m=P122[k==='mouton'?'ani_mouton':'ani_boeuf'];if(!m)return null;return clone104(m,taille,true)}
-{const vb=viv108Bati;viv108Bati=function(){const g=vb.apply(this,arguments);try{if(!P122.ani_boeuf&&!P122.ani_mouton)return g;
- const garde=[];VIV108.b.forEach(b=>{let k=b.k;if(k==='cabri'&&hauts122()&&P122.ani_mouton){const a=Math.max(0,alt(b.cx,b.cz));if(a>800&&Math.sin(b.ph*7)>-.4)k='mouton'}
-  if((k==='boeuf'||k==='mouton')){const o=bete122(k,k==='boeuf'?.17:.11);if(o){b.o.clear();b.o.scale.setScalar(1);b.o.add(o);b.o.rotation.y=b.cap;b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX;return}}garde.push(b)});
+function bete122(k,taille){const m=P122[k==='mouton'?'ani_mouton':'ani_boeufc'];if(!m)return null;return clone104(m,taille,true)}
+{const vb=viv108Bati;viv108Bati=function(){const g=vb.apply(this,arguments);try{if(!P122.ani_boeufc)return g;
+ const garde=[];VIV108.b.forEach(b=>{const k=b.k;
+  if(k==='boeuf'){const o=bete122('boeuf',.17);if(o){b.o.clear();b.o.scale.setScalar(1);b.o.add(o);b.o.rotation.y=b.cap;b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX}return}
+  // les petites boîtes (cabris, cochons, tangues) disparaissent : les vraies bêtes animées les remplacent
+  if(k==='cabri'||k==='cochon'||k==='tangue'){if(b.o.parent)b.o.parent.remove(b.o);return}
+  garde.push(b)});
  VIV108.b=garde}catch(e){}return g}}
 // dans la vue du camp : les bêtes de l'enclos, couchées près de la maison
 {const pd=p3Deco;p3Deco=function(L,C){pd.apply(this,arguments);try{P122.L=L;P122.C=C;if(!C||!S||!L||!L.cases||!L.cases.length||!(S.bet>0))return;const G=P3.deco;const [x,z]=p3W(...L.cases[0]);
@@ -52,14 +55,18 @@ function fanjan122Esp(h,k,o){const r=rndH(k*3.3+7);if(S&&S.year>=1960&&(o.c||o.c
 const NOMS122={fanjan:['Fanjan mâle','Cyathea borbonica'],fanjanEx:['Fanjan femelle','Cyathea excelsa'],fanjanGl:['Fanjan femelle','Cyathea glauca'],fanjanCo:['Fanjan d’Australie','Cyathea cooperi'],
  tamarin:['Tamarin des Hauts','Acacia heterophylla'],filao:['Filao','Casuarina equisetifolia'],tamarinier:['Tamarinier','Tamarindus indica'],palmiste:['Palmiste',''],latanier:['Latanier rouge','Latania lontaroides'],
  vacoa:['Vacoa','Pandanus utilis'],branle:['Branle vert','Erica reunionensis'],bois_chandelle:['Bois de chandelle','Dracaena reflexa'],benjoin:['Benjoin','Terminalia bentzoë'],ambaville:['Ambaville','Hubertia ambavilla']};
-{const st=document.createElement('style');st.textContent='#nom122{position:fixed;z-index:70;pointer-events:none;background:rgba(20,16,12,.82);color:#f3e6c4;border:1px solid rgba(232,190,90,.6);border-radius:6px;padding:3px 8px;font:12px system-ui;white-space:nowrap;transition:opacity .2s}#nom122 i{font-family:Georgia,serif;opacity:.75;margin-left:6px}';document.head.appendChild(st)}
+const FICHE122={fanjan:'Fougère arborescente indigène, tronc fin et net.',fanjanEx:'Fougère arborescente des forêts humides de mi-pente.',fanjanGl:'Fougère arborescente endémique, plutôt en altitude.',fanjanCo:'Venue d’Australie, elle gagne les bords de route et les jardins.',
+ tamarin:(typeof BOIS116!=='undefined'&&BOIS116.tamH&&BOIS116.tamH.d)||'',filao:(typeof BOIS116!=='undefined'&&BOIS116.filao&&BOIS116.filao.d)||'',tamarinier:(typeof BOIS116!=='undefined'&&BOIS116.tamB&&BOIS116.tamB.d)||'',
+ palmiste:'Son cœur se mange ; on l’a tant coupé qu’il est devenu rare.',latanier:'Palmier des côtes sèches ; ses feuilles couvrent les cases.',vacoa:'Ses feuilles tressées font les sacs, les nattes et les paniers.',branle:'Bruyère des sommets, au-dessus des forêts.',
+ bois_chandelle:'Petit arbre des forêts sèches, au bois qui brûle bien.',benjoin:'Bois dur des forêts de l’Ouest, recherché pour la marine.',ambaville:'Arbuste des Hauts, plante de tisane.'};
+{const st=document.createElement('style');st.textContent='#nom122{position:fixed;z-index:70;pointer-events:none;background:rgba(20,16,12,.82);color:#f3e6c4;border:1px solid rgba(232,190,90,.6);border-radius:6px;padding:3px 8px;font:12px system-ui;white-space:nowrap;transition:opacity .2s}#nom122 i{font-family:Georgia,serif;opacity:.75;margin-left:6px}#nom122 span{display:block;white-space:normal;max-width:260px;margin-top:3px;opacity:.85;font-size:11px}';document.head.appendChild(st)}
 {let tl=0;const rc=new THREE.Raycaster(),v=new THREE.Vector2();const cache=()=>{const b=$('nom122');if(b)b.style.opacity=0};
  addEventListener('pointermove',e=>{const now=performance.now();if(now-tl<110)return;tl=now;try{
-  if(!S||!lieu||dist>1.7||(typeof VP!=='undefined'&&VP)||(typeof CV!=='undefined'&&CV.on)||!e.target||e.target.tagName!=='CANVAS'){cache();return}
+  if(!S||!lieu||dist>4.5||(typeof VP!=='undefined'&&VP)||(typeof CV!=='undefined'&&CV.on)||!e.target||e.target.tagName!=='CANVAS'){cache();return}
   const r=e.target.getBoundingClientRect();v.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);rc.setFromCamera(v,cam);
   const L=Object.keys(NOMS122).map(k=>MOD[k]).filter(m=>m&&m.visible!==false&&m.count>0);const h=rc.intersectObjects(L,false)[0];
-  if(!h||h.distance>2.2){cache();return}const k=Object.keys(NOMS122).find(q=>MOD[q]===h.object),N=NOMS122[k];let b=$('nom122');if(!b){b=document.createElement('div');b.id='nom122';document.body.appendChild(b)}
-  b.innerHTML='<b>'+N[0]+'</b>'+(N[1]?'<i>'+N[1]+'</i>':'');b.style.left=(e.clientX+14)+'px';b.style.top=(e.clientY-26)+'px';b.style.opacity=1}catch(x){cache()}},{passive:true})}
+  if(!h||h.distance>Math.max(2.2,dist*1.8)){cache();return}const k=Object.keys(NOMS122).find(q=>MOD[q]===h.object),N=NOMS122[k];let b=$('nom122');if(!b){b=document.createElement('div');b.id='nom122';document.body.appendChild(b)}
+  const D=FICHE122[k];b.innerHTML='<b>'+N[0]+'</b>'+(N[1]?'<i>'+N[1]+'</i>':'')+(D?'<span>'+D+'</span>':'');b.style.left=(e.clientX+14)+'px';b.style.top=(e.clientY-26)+'px';b.style.opacity=1}catch(x){cache()}},{passive:true})}
 
 // ===== en Histoire, en tout petit sous le chrono du conte : « Tab pour avancer » =====
 setInterval(()=>{try{let d=$('tab122');const c=$('auto');const on=S&&!S.fin&&typeof modeHist==='function'&&modeHist()&&c&&c.offsetParent&&!(typeof VP!=='undefined'&&VP);
@@ -67,3 +74,25 @@ setInterval(()=>{try{let d=$('tab122');const c=$('auto');const on=S&&!S.fin&&typ
  if(!d){d=document.createElement('div');d.id='tab122';d.innerHTML='<kbd>Tab</kbd> pour avancer';d.style.cssText='position:fixed;z-index:61;font:10px system-ui;color:#f3e6c4;opacity:.6;pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px #000';document.body.appendChild(d);
   const st=document.createElement('style');st.textContent='#tab122 kbd{font:600 9px system-ui;padding:0 4px;border:1px solid currentColor;border-bottom-width:2px;border-radius:3px;margin-right:3px}';document.head.appendChild(st)}
  d.style.display='';d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.bottom+2)+'px';d.style.transform='translateX(-50%)'}catch(e){}},500);
+
+// les bêtes qui marchent (modèles animés, un par bête) : cabris en savane, tangues en forêt, agneaux dans les Hauts après 1830
+if(typeof BETES!=='undefined'){BETES.cabri={f:'ani_cabri',h:.07,max:12};BETES.tangue={f:'ani_tangue',h:.035,max:8};BETES.mouton={f:'ani_agneau',h:.065,max:12};
+ const ap=aniPlaces;aniPlaces=function(k){const L=ap.apply(this,arguments);try{if(!['cabri','tangue','mouton'].includes(k)||!S||S.fin||dist>=16)return L;const R2=dist*.8+3,now=performance.now()/1000;
+  T.forEach(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;if(dx*dx+dz*dz>R2*R2)return;const o=S.t[t.i];if(!o||!o.s||t.bare||t.alt<15)return;const h=q=>rndH(t.i*5.1+q);
+   const tour=(r1,r2,sp,o0)=>{const u=now*sp+o0+.5*Math.sin(now*sp*2.3+o0);return [t.x+Math.cos(u)*r1,t.z+Math.sin(u)*r2]};const pr=((S.gibP||{})[t.i]||0);
+   if(k==='cabri'&&!t.forest&&t.alt<1500&&!o.c&&h(1)<.22-pr*.15){const n=1+Math.floor(h(2)*3);for(let j=0;j<n;j++){const [x,z]=tour(.38+h(3)*.2,.3,.05+h(4)*.03,h(5)*6-j*.25);L.push({x,z,sc:j?.8:1})}}
+   if(k==='tangue'&&t.forest&&t.alt<1200&&!o.c&&h(6)<.12-pr*.1){const [x,z]=tour(.3+h(7)*.2,.25,.04+h(8)*.03,h(9)*6);L.push({x,z,sc:1})}
+   if(k==='mouton'&&hauts122()&&t.alt>480&&!t.forest&&h(10)<.35){const n=2+Math.floor(h(11)*4);for(let j=0;j<n;j++){const [x,z]=tour(.4+(j%3)*.07,.3+(j%2)*.06,.025+h(12)*.015,h(13)*6-j*.18);L.push({x,z,sc:j>2?.75:1})}}});
+ }catch(e){}return L}}
+
+// ===== les coqs et les poules autour des cases : petits, mais visibles en zoomant =====
+function poule122(coq){const g=new THREE.Group(),M=c=>new THREE.MeshLambertMaterial({color:c});const plume=coq?0x8a3a1c:0xb08a5a;
+ const corps=new THREE.Mesh(new THREE.SphereGeometry(.012,8,6),M(plume));corps.scale.set(1.35,1,1);corps.position.y=.016;g.add(corps);
+ const tete=new THREE.Mesh(new THREE.SphereGeometry(.0065,7,5),M(plume));tete.position.set(.014,.028,0);g.add(tete);
+ const crete=new THREE.Mesh(new THREE.BoxGeometry(.006,coq?.007:.004,.002),M(0xd02020));crete.position.set(.015,.035,0);g.add(crete);
+ const bec=new THREE.Mesh(new THREE.ConeGeometry(.002,.006,4),M(0xe0b030));bec.rotation.z=-Math.PI/2;bec.position.set(.022,.027,0);g.add(bec);
+ if(coq){[0x1a4a30,0x2a2a2a,0x8a3a1c].forEach((c,i)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(.003,.02,.006),M(c));q.position.set(-.017-i*.002,.03,0);q.rotation.z=.5+i*.15;g.add(q)})}
+ else{const q=new THREE.Mesh(new THREE.BoxGeometry(.004,.01,.008),M(plume));q.position.set(-.016,.024,0);q.rotation.z=.4;g.add(q)}
+ [-.004,.004].forEach(z=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.0012,.0012,.01,4),M(0xd8a030));p.position.set(0,.005,z);g.add(p)});g.scale.setScalar(1.3);return g}
+{const vb=viv108Bati;viv108Bati=function(){const g=vb.apply(this,arguments);try{if(!S)return g;(camps()||[]).forEach((c,ci)=>{if(Math.hypot(c.x-camT.x,c.z-camT.z)>dist*.9+3)return;
+ const n=S.voieC?5:(S.year>1700?3:0);for(let i=0;i<n;i++){const a=ci*2.1+i*1.37,r=.35+(i%3)*.12,x=c.x+Math.cos(a)*r,z=c.z+Math.sin(a)*r;const o=poule122(i===0);o.position.set(x,Math.max(0,alt(x,z))*VX,z);g.add(o);VIV108.b.push({k:'poule',o,cx:x,cz:z,cap:a,ph:Math.random()*6})}})}catch(e){}return g}}
