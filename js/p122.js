@@ -1,92 +1,69 @@
 
-// ===== p122 : le rhum de l'île (fangourin, arack, mélasse, Ferme des Guildives, pur jus) ; les cartes du conte ne se doublent plus ;
-// le film de la reconnaissance suit le groupe ; les onglets grossissent au survol ; chez les colons, des sages et pas de feu au milieu =====
-// Archives : un alambic attesté en 1704 ; le fangourin, vin de canne, doit son nom au moulin qui écrase la canne ; l'arack (guildive)
-// a mauvaise réputation auprès des voyageurs ; Decaen interdit l'arack à Bourbon en 1807, Farquhar lève l'interdiction ;
-// première distillerie moderne attribuée à Charles Panon-Desbassayns en 1815 ; Ferme des Guildives (1818), monopole du rhum et de l'arack ;
-// aujourd'hui, les distilleries de l'île font du rhum de mélasse et du rhum de pur jus. Côté marron : fiction du jeu sur ces réalités.
-const HD122=()=>typeof modeHist==='function'&&modeHist();
+// ===== p122 : les bœufs et les moutons de la bibliothèque 3D =====
+// Les bœufs (couchés, au repos) remplacent les petites boîtes sur la carte et dans la vue du camp.
+// Les moutons arrivent avec la colonisation des Hauts (XIXe siècle) : sur les cases d'altitude, puis dans les fermes des Hauts.
+const P122={};
+['ani_boeuf','ani_mouton'].forEach(n=>mod104(n).then(m=>{P122[n]=m;try{VIV108.cle=null;if(typeof CV!=='undefined'&&CV.on&&typeof p3Deco==="function"&&P122.L)p3Deco(P122.L,P122.C)}catch(e){}}).catch(()=>{}));
+const hauts122=()=>S&&S.year>=1830&&(S.voieC||S.year>=1848);
+function bete122(k,taille){const m=P122[k==='mouton'?'ani_mouton':'ani_boeuf'];if(!m)return null;return clone104(m,taille,true)}
+{const vb=viv108Bati;viv108Bati=function(){const g=vb.apply(this,arguments);try{if(!P122.ani_boeuf&&!P122.ani_mouton)return g;
+ const garde=[];VIV108.b.forEach(b=>{let k=b.k;if(k==='cabri'&&hauts122()&&P122.ani_mouton){const a=Math.max(0,alt(b.cx,b.cz));if(a>800&&Math.sin(b.ph*7)>-.4)k='mouton'}
+  if((k==='boeuf'||k==='mouton')){const o=bete122(k,k==='boeuf'?.17:.11);if(o){b.o.clear();b.o.scale.setScalar(1);b.o.add(o);b.o.rotation.y=b.cap;b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX;return}}garde.push(b)});
+ VIV108.b=garde}catch(e){}return g}}
+// dans la vue du camp : les bêtes de l'enclos, couchées près de la maison
+{const pd=p3Deco;p3Deco=function(L,C){pd.apply(this,arguments);try{P122.L=L;P122.C=C;if(!C||!S||!L||!L.cases||!L.cases.length||!(S.bet>0))return;const G=P3.deco;const [x,z]=p3W(...L.cases[0]);
+ const n=Math.min(4,1+Math.floor(S.bet/2)),ca=camps()[0],mt=hauts122()&&ca&&T[ca.i]&&T[ca.i].alt>800;
+ for(let i=0;i<n;i++){const k=mt&&i%2?'mouton':'boeuf',o=bete122(k,k==='boeuf'?2.4:1.3);if(!o)continue;o.position.set(x+5+i*2.8,0,z+9+(i%2)*2.4);o.userData.b122=1;o.rotation.y=.6+i*1.3;G.add(o)}
+ if(mt&&P122.ani_mouton)for(let i=0;i<3;i++){const o=bete122('mouton',1.2);o.position.set(x+9+i*1.8,0,z-4+(i%2)*1.6);o.rotation.y=i*2.1;G.add(o)}}catch(e){}}}
 
-// ----- 1. Le rhum de l'île -----
-Object.assign(EV,{
- rh1704:{y:1704,si:()=>HD122()&&S.voieC,tag:'Archive',an:'1704',t:'Le premier alambic',
-  b:'Sur une habitation des bas, on monte un alambic : le premier dont l’île garde la trace. Jusque-là, on buvait le fangourin, un vin de canne : le jus écrasé au moulin à bras, celui qui lui a donné son nom, puis laissé fermenter quelques jours. Chauffé dans l’alambic, ce vin donne une eau-de-vie forte, qu’on appelle arack ou guildive.',
-  v:'Plus forte que le fangourin, l’arack a mauvaise réputation : les voyageurs de passage décrivent ses ravages sur la santé des habitants.',
-  h:'Archive : un alambic est attesté à Bourbon en 1704. Le fangourin, vin de canne fermenté, tire son nom du moulin qui écrase la canne ; l’arack, ou guildive, est le jus fermenté passé à l’alambic.',
-  o:[{n:'Distiller pour l’habitation',d:'Vivres +2, cohésion +1, santé −1.',fx:{vivres:2,coh:1,sante:-1}},{n:'S’en tenir au fangourin',d:'Santé +1.',fx:{sante:1}}]},
- rh1807:{y:1807,si:()=>HD122()&&S.voieC,tag:'Archive',an:'1807',t:'L’arack interdit',
-  b:'Le capitaine général Decaen interdit la fabrication de l’arack à Bourbon. Les alambics de l’île doivent se taire.',
-  v:'Trois ans plus tard, les Anglais prennent l’île ; leur gouverneur, Farquhar, lève l’interdiction.',
-  h:'Archive : la fabrication de l’arack est interdite à Bourbon par Decaen en 1807 ; l’édit est abrogé par le gouverneur britannique Farquhar.',
-  o:[{n:'Éteindre l’alambic',d:'Cohésion +1.',fx:{coh:1}},{n:'Le cacher au fond de la ravine',d:'Vivres +2, colonie −2.',fx:{vivres:2,ami:-2}}]},
- rh1815:{y:1815,si:()=>HD122()&&S.voieC,tag:'Archive',an:'1815',t:'Le rhum de mélasse',
-  b:'Charles Panon-Desbassayns, fils de Madame Desbassayns, fonde la première distillerie moderne de l’île, quand commence le temps du sucre. Le jus de la canne part désormais aux chaudières ; ce que l’on distille, c’est ce qui reste au fond, le sirop noir de la mélasse. Le pur jus des premiers temps devient rare.',
-  v:'Le rhum de mélasse devient pour longtemps le rhum de l’île. Il est fait, comme le sucre, du travail des esclaves.',
-  h:'Archive : la première distillerie moderne de Bourbon est attribuée à Charles Panon-Desbassayns, en 1815, au début de la production sucrière.',
-  o:[{n:'Envoyer la mélasse à la distillerie',d:'Colonie +3, vivres +2.',fx:{ami:3,vivres:2}}]},
- rh1818:{y:1818,si:()=>HD122()&&S.voieC,tag:'Archive',an:'1818',t:'La Ferme des Guildives',
-  b:'Une société reçoit le droit, et elle seule, de fabriquer le rhum et l’arack, de les vendre en gros comme au détail, et de les faire entrer dans l’île : la Ferme des Guildives. Le petit alambic de l’habitant devient hors-la-loi.',
-  v:'Le rhum passe aux mains de quelques-uns ; les gros planteurs n’ont plus de petits concurrents.',
-  h:'Archive : la Ferme des Guildives est créée en 1818, avec l’exclusivité de la fabrication et de la vente des rhums et de l’arack.',
-  o:[{n:'Vendre sa mélasse à la Ferme',d:'Colonie +2.',fx:{ami:2}},{n:'Garder un alambic caché',d:'Vivres +2, colonie −3.',fx:{vivres:2,ami:-3}}]},
- rh1705m:{y:1705,si:()=>HD122()&&!S.voieC,tag:'Conte',an:'vers 1705',nat:'Fiction du jeu, sur une réalité : le vin de canne était connu de tous dans l’île.',t:'La marmite au long cou',
-  b:'Un guetteur revient des bas : sur une habitation, une marmite de cuivre fume jour et nuit, avec un long cou qui pleure goutte à goutte. Les derniers arrivés au camp savent son nom : la guildive. Ce qui en coule brûle la gorge et couche les hommes. Les vieux du camp, eux, laissent le jus de la canne volée aux lisières travailler quelques jours dans une calebasse : un vin doux, le fangourin, qu’on garde pour les fêtes.',
-  o:[{n:'Faire notre fangourin',d:'Cohésion +2, vivres −1.',fx:{coh:2,vivres:-1}},{n:'Se méfier de la marmite des Blancs',d:'Mystique +1.',fx:{myst:1}}]},
- rh1819m:{y:1819,si:()=>HD122()&&!S.voieC,tag:'Conte',an:'vers 1819',nat:'Fiction du jeu, sur un fait : la Ferme des Guildives (1818) avait seule le droit de faire et de vendre le rhum.',t:'Les barriques de la nuit',
-  b:'Dans les bas, on ne parle plus que de la Ferme : une poignée de messieurs a seule le droit de faire le rhum et de le vendre. Les petits planteurs cachent leurs alambics, et des barriques montent la nuit par les sentiers, au nez des gardes. Les porteurs connaissent les mêmes chemins que vous.',
-  o:[{n:'Prendre une part de la contrebande',d:'Vivres +3, traque +3. Une barrique monte au camp.',fx:{vivres:3,traque:3},f:()=>{S.rhum=(S.rhum||0)+1}},{n:'Laisser passer les porteurs',d:'Cohésion +1.',fx:{coh:1}}]},
- rh1995:{y:1995,si:()=>HD122(),tag:'Mémoire',an:'fin du XXᵉ siècle',nat:'Scène du jeu, sur un fait : les distilleries de l’île font aujourd’hui du rhum de mélasse et du rhum de pur jus.',t:'Le goût du vesou',
-  b:'À la boutique du coin, deux bouteilles sur le comptoir. Le rhum de l’usine, celui des fêtes et des cuisines, sec et chaud. À côté, un rhum de pur jus, distillé comme aux premiers temps avec le vesou frais : il garde la douceur de la canne coupée le matin. Les vieux du quartier le disent sans hésiter : celui de l’île tient tête à ceux des Antilles.',
-  v:'Deux héritages sur la même table : le rhum des sucreries et celui du fangourin.',
-  o:[{n:'Goûter les deux',d:'Cohésion +1, savoir +1.',fx:{coh:1,savoir:1}}]}
-});
+// ===== les savoirs qui attendent : une bulle près de l'onglet Savoirs, qui s'efface quand on passe dessus =====
+{const st=document.createElement('style');st.textContent='#svLet.b122{left:auto;top:auto;transform:none;max-width:260px;padding:8px 12px;font:13px Georgia,serif;border-radius:10px}#svLet.b122 h4{font-size:14px}#svLet.b122 small{font-size:11px}#svLet.b122::after{content:"";position:absolute;width:12px;height:12px;background:#efe2c0;border:1px solid #b89a5a;border-width:var(--bw);transform:rotate(45deg);left:var(--fx);top:var(--fy)}';document.head.appendChild(st)}
+function svBulle122(d){const t=$('t-sav'),r=t&&t.offsetParent?t.getBoundingClientRect():null;d.classList.add('b122');const W=Math.min(260,innerWidth-24);
+ if(r&&r.width){const bas=r.top<innerHeight/2;let l=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2));d.style.left=l+'px';d.style.width=W+'px';
+  if(bas){d.style.top=(r.bottom+12)+'px';d.style.setProperty('--fy','-7px');d.style.setProperty('--bw','1px 0 0 1px')}else{d.style.bottom=(innerHeight-r.top+12)+'px';d.style.setProperty('--fy','calc(100% - 6px)');d.style.setProperty('--bw','0 1px 1px 0')}
+  d.style.setProperty('--fx',(r.left+r.width/2-l-6)+'px')}
+ else{d.style.right='14px';d.style.top='70px';d.style.width=W+'px';d.style.setProperty('--fx','calc(100% - 30px)');d.style.setProperty('--fy','-7px');d.style.setProperty('--bw','1px 0 0 1px')}
+ d.onmouseenter=()=>{d.style.opacity=0;setTimeout(()=>d.remove(),500)}}
+new MutationObserver(M=>M.forEach(m=>m.addedNodes.forEach(n=>{if(n.id==='svLet')svBulle122(n)}))).observe(document.body,{childList:true});
 
-// ----- 2. Les cartes du conte : une carte lue reste lue, une carte ouverte reste devant tant qu'on n'a pas choisi -----
-// (une lettre de décès, une alerte ou un événement glissé devant ne la relancent plus, ne la doublent plus)
-const MOD122={cur:null};
-{const md=modal;modal=function(){try{if(S&&S.evq&&S.evq.length){const vu={},lus=S.lus122||{};
-   S.evq=S.evq.filter(id=>{if(vu[id])return false;vu[id]=1;if(lus[id]&&!(S.revu&&S.revu[id]))return false;return true});
-   const m=$('modal');if(MOD122.cur&&m&&!m.hidden&&S.evq[0]!==MOD122.cur){const i=S.evq.indexOf(MOD122.cur);if(i>0){S.evq.splice(i,1);S.evq.unshift(MOD122.cur)}}}}catch(e){}
-  const r=md.apply(this,arguments);try{const m=$('modal');MOD122.cur=(m&&!m.hidden&&S&&S.evq&&S.evq[0])||null}catch(e){}return r}}
-{const ch=choisir;choisir=function(id,k){let av=0,rev=false;try{av=S.evq.length;rev=!!(S.revu&&S.revu[id])}catch(e){}const r=ch.apply(this,arguments);
-  try{if(S&&S.evq&&(S.evq[0]!==id||S.evq.length<av)){window.EVN122=(window.EVN122||0)+1;MOD122.cur=null;const e=EV[id];if(e&&e.tag==='Archive'&&!rev)(S.lus122=S.lus122||{})[id]=1}}catch(e){}return r}}
+// ===== les quatre fanjans : on les reconnaît en zoomant, rien n'est écrit =====
+// mâle (C. borbonica) : tronc fin, net, sans manchon ; feuilles 2 fois divisées.
+// femelles (C. excelsa, C. glauca) : la base renflée d'un gros cône de racines ; crosses vertes et lisses (excelsa), duvet roux (glauca, dans les Hauts).
+// fanjan d'Australie (C. cooperi) : cicatrices ovales sur le tronc, crosses aux longs poils blancs ; introduit, il gagne les bords de route.
+function fanjan122Mods(){if(MOD.fanjanEx||typeof p23Mod!=='function')return;const TR=TR23,cy=(a,b,h,n=6)=>new THREE.CylinderGeometry(a,b,h,n),co=(r,h,n=8)=>new THREE.ConeGeometry(r,h,n),bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d),sp=r=>new THREE.IcosahedronGeometry(r,0);
+ // une fronde 3 fois divisée : un rachis et des pennes de part et d'autre
+ const fronde=(k,col,lg,y)=>{const a=k*.785+.2,P=[];const c=Math.cos(a),s=Math.sin(a);P.push([bx(lg,.004,.012),col,TR(c*lg/2*.9,y,s*lg/2*.9,0,-a,.3)]);
+  for(let j=1;j<=4;j++){const d=lg*j/5,px=c*d*.9,pz=s*d*.9,py=y+Math.sin(.3)*d*.9-.004;P.push([bx(.008,.003,lg*.34*(1-j*.13)),col,TR(px,py,pz,0,-a,.3)])}return P};
+ const crosses=(col,r,y)=>[0,2.1,4.2].map(a=>[sp(r),col,TR(Math.cos(a)*.016,y,Math.sin(a)*.016,0,0,0,1,1.4,1)]);
+ const manchon=[[co(.05,.1,9),0x3a2b1e,TR(0,.05,0)],[co(.036,.07,7),0x4a3626,TR(.008,.035,.006,0,.4,0)]];
+ const F=c=>[0,1,2,3,4,5,6,7].flatMap(k=>fronde(k,c,.21,.27));
+ p23Mod('fanjanEx',[[cy(.013,.018,.27,6),0x33261c,TR(0,.135,0)],...manchon,...F(0x2f7a46),...crosses(0x6aa04c,.009,.285)],160);
+ p23Mod('fanjanGl',[[cy(.013,.018,.27,6),0x30241a,TR(0,.135,0)],...manchon,...F(0x3d7464),...crosses(0x9a4c22,.01,.285)],160);
+ p23Mod('fanjanCo',[[cy(.016,.019,.27,6),0x4a3a2c,TR(0,.135,0)],...[.05,.1,.15,.2].flatMap((y,j)=>[[sp(.008),0x9a8a70,TR(Math.cos(j*1.7)*.016,y,Math.sin(j*1.7)*.016,0,0,0,.6,1.3,.6)]]),...F(0x5c9a3a),...crosses(0xeeeae0,.013,.288)],160)}
+function fanjan122Esp(h,k,o){const r=rndH(k*3.3+7);if(S&&S.year>=1960&&(o.c||o.clr||h<900)&&r<.22)return 'Co';
+ if(h>1100)return r<.55?'Gl':r<.8?'Ex':'';if(h>400)return r<.55?'Ex':r<.65?'Gl':'';return r<.4?'Ex':''}
+{const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);try{const t=lieu,m=MOD.fanjan;if(!t||!m||!S)return r;fanjan122Mods();if(!MOD.fanjanEx)return r;const o=S.t[t.i]||{};
+ const M4=new THREE.Matrix4(),p=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),c=new THREE.Color(1,1,1),Z=new THREE.Matrix4().makeScale(0,0,0),e=new THREE.Euler();
+ for(let i=0;i<m.userData.n;i++){m.getMatrixAt(i,M4);M4.decompose(p,q,sc);if(sc.x<=0)continue;const esp=fanjan122Esp(p.y/VX,i+t.i,o);if(!esp)continue;const d=MOD['fanjan'+esp];if(!d)continue;
+  e.setFromQuaternion(q);if(m.instanceColor)m.getColorAt(i,c);poseM(d,p.x,p.y,p.z,e.y,0,0,sc.x,c);m.setMatrixAt(i,Z)}
+ m.instanceMatrix.needsUpdate=true;['Ex','Gl','Co'].forEach(k=>{const d=MOD['fanjan'+k];if(d){d.count=d.userData.n;d.instanceMatrix.needsUpdate=true;if(d.instanceColor)d.instanceColor.needsUpdate=true}})}catch(e){}return r}}
 
-// ----- 3. Le film d'une sortie attend que les marcheurs soient là, puis les suit de près, au lieu de regarder un champ vide -----
-// (les personnages se chargent un par un : si aucun n’est prêt au bout de huit secondes, on ne joue pas de film du tout)
-{const cs=cineSortie;cineSortie=function(a,b,t1,t2){try{if((typeof CINE!=='undefined'&&CINE)||performance.now()-SORT.dern<25000||!$('ecran').hidden)return;
-  const o=SORT.L.slice().reverse().find(q=>q&&q.b&&Math.abs(q.b.x-b.x)<1e-6&&Math.abs(q.b.z-b.z)<1e-6);if(!o)return cs.apply(this,arguments);
-  SORT.dern=performance.now();const pret=()=>o.n.some((m,j)=>{const f=MF.L[o.cle+'_'+j];return f&&f.o});
-  const pos=()=>{const u=Math.max(0,Math.min(1,(performance.now()-o.t0)/o.dur));return {x:o.a.x+(o.b.x-o.a.x)*u,z:o.a.z+(o.b.z-o.a.z)*u}};
-  const an=Math.atan2(b.x-a.x,b.z-a.z)+Math.PI;
-  const go=()=>{o.t0=performance.now();SORT.dern=performance.now();const p0=pos(),suit=w=>{const p=pos();camT.x+=(p.x-p0.x)*w;camT.z+=(p.z-p0.z)*w};
-   cineJouer([{d:2400,cam:[p0.x,p0.z,3.4,an,.95],camY:0,txt:t1,f:(U,k)=>suit(Math.min(1,k*2))},{d:3400,cam:[p0.x,p0.z,3.8,an+.35,.9],camY:0,txt:t2,f:()=>suit(1)}])};
-  let n=0;const att=()=>{try{if(typeof CINE!=='undefined'&&CINE)return;if(!SORT.L.includes(o))return;if(pret())return go();if(++n>40)return;setTimeout(att,200)}catch(e){}};att()}catch(e){try{return cs.apply(this,arguments)}catch(_){}}}}
+// ===== en gros zoom sur un lieu, la plante sous la souris est nommée (nom créole, nom savant) =====
+const NOMS122={fanjan:['Fanjan mâle','Cyathea borbonica'],fanjanEx:['Fanjan femelle','Cyathea excelsa'],fanjanGl:['Fanjan femelle','Cyathea glauca'],fanjanCo:['Fanjan d’Australie','Cyathea cooperi'],
+ tamarin:['Tamarin des Hauts','Acacia heterophylla'],filao:['Filao','Casuarina equisetifolia'],tamarinier:['Tamarinier','Tamarindus indica'],palmiste:['Palmiste',''],latanier:['Latanier rouge','Latania lontaroides'],
+ vacoa:['Vacoa','Pandanus utilis'],branle:['Branle vert','Erica reunionensis'],bois_chandelle:['Bois de chandelle','Dracaena reflexa'],benjoin:['Benjoin','Terminalia bentzoë'],ambaville:['Ambaville','Hubertia ambavilla']};
+{const st=document.createElement('style');st.textContent='#nom122{position:fixed;z-index:70;pointer-events:none;background:rgba(20,16,12,.82);color:#f3e6c4;border:1px solid rgba(232,190,90,.6);border-radius:6px;padding:3px 8px;font:12px system-ui;white-space:nowrap;transition:opacity .2s}#nom122 i{font-family:Georgia,serif;opacity:.75;margin-left:6px}';document.head.appendChild(st)}
+{let tl=0;const rc=new THREE.Raycaster(),v=new THREE.Vector2();const cache=()=>{const b=$('nom122');if(b)b.style.opacity=0};
+ addEventListener('pointermove',e=>{const now=performance.now();if(now-tl<110)return;tl=now;try{
+  if(!S||!lieu||dist>1.7||(typeof VP!=='undefined'&&VP)||(typeof CV!=='undefined'&&CV.on)||!e.target||e.target.tagName!=='CANVAS'){cache();return}
+  const r=e.target.getBoundingClientRect();v.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);rc.setFromCamera(v,cam);
+  const L=Object.keys(NOMS122).map(k=>MOD[k]).filter(m=>m&&m.visible!==false&&m.count>0);const h=rc.intersectObjects(L,false)[0];
+  if(!h||h.distance>2.2){cache();return}const k=Object.keys(NOMS122).find(q=>MOD[q]===h.object),N=NOMS122[k];let b=$('nom122');if(!b){b=document.createElement('div');b.id='nom122';document.body.appendChild(b)}
+  b.innerHTML='<b>'+N[0]+'</b>'+(N[1]?'<i>'+N[1]+'</i>':'');b.style.left=(e.clientX+14)+'px';b.style.top=(e.clientY-26)+'px';b.style.opacity=1}catch(x){cache()}},{passive:true})}
 
-// ----- 4. Au survol, l'élément pointé d'un onglet ou du panneau reprend sa taille de lecture -----
-// (les panneaux se resserrent pour ne pas défiler : le texte peut descendre aux deux tiers ; la loupe le remet en grand le temps de le lire)
-const H122={el:null,old:''};
-const SEL122='.sv,.pc,.nd,.fa,.pers,.fam,.lg,.act,.op,.note,.besR,.lt';
-function zoomEff122(el){let z=1,e=el;while(e&&e!==document.body){const v=parseFloat(e.style.zoom);if(v>0)z*=v;e=e.parentElement}return z}
-function loupeFin122(){const e=H122.el;if(!e)return;H122.el=null;e.style.zoom=H122.old;e.classList.remove('loupe122')}
-function loupe122(it){if(H122.el===it)return;loupeFin122();if(!it||!it.isConnected)return;const z=zoomEff122(it),own=parseFloat(it.style.zoom)||1;
- H122.el=it;H122.old=it.style.zoom;it.style.zoom=String(own*Math.max(1,1/z)*1.06);it.classList.add('loupe122')}
-document.addEventListener('mouseover',ev=>{try{const t=ev.target;if(!t||!t.closest)return;const box=t.closest('#drawer,#side');if(!box){loupeFin122();return}
- let it=t.closest(SEL122);if(it&&!box.contains(it))it=null;if(!it){let e=t;while(e&&e.parentElement!==box)e=e.parentElement;if(e&&!e.matches('h3,h4')&&!e.querySelector('svg,canvas'))it=e}
- if(it)loupe122(it);else loupeFin122()}catch(e){}},true);
-document.addEventListener('mouseleave',()=>loupeFin122());
-{const aj=ajuste;ajuste=function(el){if(H122.el&&el&&el.contains&&el.contains(H122.el))return;return aj.apply(this,arguments)}}
-{const st=document.createElement('style');st.textContent='.loupe122{position:relative;z-index:3;box-shadow:0 3px 16px rgba(0,0,0,.45)!important;transform:none!important}';document.head.appendChild(st)}
-
-// ----- 5. Chez les colons, on ne parle pas des « anciens » mais des « sages » -----
-const SAGE122=/(^|[^\wÀ-ÿ])(les|des|aux|vos|nos|ses|leurs|Les|Des|Aux|Vos|Nos|Ses|Leurs)(\s+)(A|a)nciens(?![\wÀ-ÿ])(?!\s+(esclaves|liens|corsaires|tunnels|forbans|colons|soldats|engagés|marrons|camps|habitants|maîtres|propriétaires|pirates|chemins|habitations|nobles|comptoirs|quartiers|marins|tunnels)\b)/g;
-function sages122(n){if(!n)return;if(n.nodeType===3){const v=n.nodeValue;if(!v||v.indexOf('nciens')<0)return;
-  const w=v.replace(SAGE122,(m,a,b,c,d)=>a+b+c+(d==='A'?'Sages':'sages')).replace(/\bAnciens(?=\s*[+−-]\s*\d)/g,'Sages');if(w!==v)n.nodeValue=w;return}
- if(n.nodeType!==1||/^(SCRIPT|STYLE|TEXTAREA|INPUT)$/.test(n.tagName))return;if((n.textContent||'').indexOf('nciens')<0)return;
- const it=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);let x;while((x=it.nextNode()))sages122(x)}
-{let vu=false;new MutationObserver(R=>{try{if(typeof S==='undefined'||!S||!S.voieC){vu=false;return}if(!vu){vu=true;sages122(document.body);return}
-  R.forEach(r=>{if(r.type==='characterData')sages122(r.target);else r.addedNodes.forEach(sages122)})}catch(e){}}).observe(document.body,{childList:true,subtree:true,characterData:true})}
-
-// ----- 6. Chez les colons, pas de feu au milieu : ni flamme sur la grande carte, ni foyer de pierres dans la cour de l'habitation -----
-setInterval(()=>{try{const c=!!(typeof S!=='undefined'&&S&&S.voieC);if(typeof flam!=='undefined'&&flam)flam.visible=!c;
- if(typeof P3!=='undefined'&&P3&&P3.flamme){P3.flamme.visible=!c;if(P3.feuL)P3.feuL.visible=!c;const k=(c?'c':'m')+'|'+P3.decoK;
-  if(P3.S&&P3.flamme.userData.k122!==k){P3.flamme.userData.k122=k;const fp=P3.flamme.position;P3.S.traverse(o=>{if(o.isMesh&&o!==P3.flamme&&o.geometry&&o.geometry.type==='SphereGeometry'&&o.geometry.parameters&&Math.abs(o.geometry.parameters.radius-.16)<1e-3&&Math.hypot(o.position.x-fp.x,o.position.z-fp.z)<.7)o.visible=!c})}}}catch(e){}},500);
+// ===== en Histoire, en tout petit sous le chrono du conte : « Tab pour avancer » =====
+setInterval(()=>{try{let d=$('tab122');const c=$('auto');const on=S&&!S.fin&&typeof modeHist==='function'&&modeHist()&&c&&c.offsetParent&&!(typeof VP!=='undefined'&&VP);
+ if(!on){if(d)d.style.display='none';return}const r=c.getBoundingClientRect();if(!r.width){if(d)d.style.display='none';return}
+ if(!d){d=document.createElement('div');d.id='tab122';d.innerHTML='<kbd>Tab</kbd> pour avancer';d.style.cssText='position:fixed;z-index:61;font:10px system-ui;color:#f3e6c4;opacity:.6;pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px #000';document.body.appendChild(d);
+  const st=document.createElement('style');st.textContent='#tab122 kbd{font:600 9px system-ui;padding:0 4px;border:1px solid currentColor;border-bottom-width:2px;border-radius:3px;margin-right:3px}';document.head.appendChild(st)}
+ d.style.display='';d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.bottom+2)+'px';d.style.transform='translateX(-50%)'}catch(e){}},500);

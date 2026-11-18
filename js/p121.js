@@ -47,3 +47,11 @@ setInterval(()=>{try{const g=$('kTuto');if(!g||typeof K==='undefined'||!K){G121.
 // ===== Histoire : Tab passe l'attente du conte (il choisit tout de suite, ou passe à la suite) =====
 function passerAttente121(){try{if(!S||!modeHist())return;const m=$('modal');if(m&&!m.hidden&&S.evq&&S.evq.length){const id=S.evq[0],e=EV[id];let k=0;try{k=choixConte(e,id)}catch(x){}const b=$('op'+k);if(b){window.decAuto=1;try{b.click()}finally{setTimeout(()=>window.decAuto=0,50)}}toast('Le conte passe : « '+((optsDe(id,e)[k]||{}).n||'')+' ».');return}
  if(!S.autoD){S.autoD=1;try{autoBtn()}catch(x){}}proch=performance.now()+50;toast('Le conte avance.')}catch(e){}}
+// ===== Les routes et chemins coloniaux : de vraies bandes de terre (ornières, cailloux, bords d'herbe), plus des traits parallèles =====
+const VR121={pos:[null,null,null,null],m:[null,null,null,null]};
+setInterval(()=>{try{if(!window.VOIES||typeof scene==='undefined')return;VOIES.forEach((l,k)=>{l.visible=false;const a=l.geometry.attributes.position;if(!a||a===VR121.pos[k]&&VR121.m[k])return;VR121.pos[k]=a;
+ if(VR121.m[k]){scene.remove(VR121.m[k]);VR121.m[k].geometry.dispose()}const A=a.array,G=[],w=k>=2?.16:.075;
+ for(let e=0;e+23<A.length;e+=24){const P=[];for(let s=0;s<4;s++)P.push({x:A[e+s*6],y:A[e+s*6+1],z:A[e+s*6+2]});P.push({x:A[e+21],y:A[e+22],z:A[e+23]});G.push(ruban97(P,w,q=>Math.max(0,alt(q.x,q.z))*VX+(k>=2?.1:.05)))}
+ if(!G.length){VR121.m[k]=null;return}const g=fusion97(G),m=new THREE.Mesh(g,matRuban110(k>=2?1:0));if(k===3)m.material.color.set(0xd0ccc0);m.renderOrder=3;m.frustumCulled=false;scene.add(m);VR121.m[k]=m});
+ // les chemins s'effacent de loin comme avant
+ VR121.m.forEach((m,k)=>{if(m&&k<2){const o=VOIES[k].material.opacity;m.visible=o>.02;m.material.opacity=Math.min(1,o*1.15)}})}catch(e){}},700);
