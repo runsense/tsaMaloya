@@ -1,0 +1,45 @@
+
+// ===== p136 : le pont d'Adam — vers la fin d'une utopie, un pont de lumière naît entre La Réunion et Maurice =====
+// Le vrai pont d'Adam (ou pont de Rama) est une chaîne de hauts-fonds d'environ 48 km entre l'Inde et Sri Lanka.
+// Le Ramayana dit que l'armée d'Hanuman l'a bâti ; une tradition musulmane et chrétienne dit qu'Adam l'a traversé, chassé du paradis, vers le pic Adam de Sri Lanka.
+// Ici, c'est une fiction du jeu : selon l'utopie et selon qui le fait naître, le monde évolue autrement.
+const PONT136={
+ hanuman:{qui:'le peuple d’Hanuman',n:'Le pont d’Hanuman',b:'Les descendants du peuple d’Hanuman reprennent le chant de leurs pères, celui qui avait bâti le pont de Lanka. Pierre par pierre, corail par corail, une crête monte de la mer vers Maurice.'},
+ anc:{qui:'les anciens des camps',n:'Le pont des ancêtres',b:'Les anciens des camps descendent des remparts avec leurs tambours. Toute une nuit, le doany brûle sur la côte de l’Est. Au matin, la lave du volcan a coulé dans la mer en ligne droite, et elle ne refroidit pas : elle luit.'},
+ centre:{qui:'l’île centre du monde',n:'L’axe du monde',b:'L’île que tous les navires du monde visitent devient le point où les routes se croisent. Le pont naît de leurs sillages : une ligne de lumière qui ne s’efface plus.'},
+ sir:{qui:'le peuple des sirènes',n:'Le pont des profondeurs',b:'Le peuple des sirènes soulève du fond de l’océan une crête de corail blanc. Elle affleure à peine : on y marche dans l’eau jusqu’aux chevilles, et elle luit sous la lune.'},
+ ombre:{qui:'l’ordre noir',n:'Le pont d’ombre',b:'L’ordre noir fait naître le pont dans le secret. Il luit, mais d’une lumière violette, et ceux qui le gardent décident qui passe.'},
+ maur:{qui:'les îles sœurs',n:'Le pont des îles sœurs',b:'Les deux îles l’ont rêvé ensemble. Des deux rivages, on lance des pierres et des chants ; un matin, les deux moitiés se touchent au milieu de la mer.'},
+ autre:{qui:'les gens de l’île',n:'Le pont d’Adam',b:'Personne ne sait qui l’a commencé. Des pêcheurs disent l’avoir vu monter de l’eau une nuit sans vent, lumineux comme un chemin d’étoiles.'}};
+function pontType136(){const br=S.br||{};if(br.ombre)return 'ombre';if(br.sir)return 'sir';if(br.centre)return 'centre';if(br.anc)return 'anc';if(br.maur)return 'maur';if(S.leg||(S.done&&(S.done.sirene||S.done.dravid119)))return 'hanuman';return 'autre'}
+const utopie136=()=>S&&S.orK&&String(S.orK).startsWith('u:');
+Object.assign(EV,{
+ pont136:{y:1990,si:()=>utopie136()&&!S.pont136,tag:'Utopie',an:'fin du XXᵉ siècle',get t(){return PONT136[pontType136()].n},
+  get b(){const P=PONT136[pontType136()];return P.b+' On l’appelle le pont d’Adam, comme celui qui relie l’Inde à Sri Lanka. Il ne sert pas seulement à passer : il éclaire la terre, et l’on dit qu’il cherche une étincelle de pureté oubliée, quelque part entre La Réunion et Maurice.'},
+  v:'Un souverain sans couronne : un pont.',h:'Fiction du jeu (utopie). Le vrai pont d’Adam est une chaîne de hauts-fonds entre l’Inde et Sri Lanka ; selon le Ramayana, l’armée d’Hanuman l’a bâti ; selon une autre tradition, Adam l’a traversé vers le pic Adam. Récits transmis, non prouvés. La Réunion et Maurice sont séparées par près de 200 km d’océan profond.',
+  get o(){const k=pontType136();return [
+   {n:'Le laisser souverain',d:'Personne ne le possède : il éclaire qui il veut. Mystique +4.',fx:{myst:4},hist:1,f:()=>{S.pont136={k,m:'souv',y:S.year}}},
+   {n:k==='ombre'?'Le garder pour l’ordre':'Le garder et le servir',d:k==='ombre'?'Le pont obéit à l’ordre. Cohésion −3.':'Votre peuple en devient le gardien. Cohésion +3.',fx:{coh:k==='ombre'?-3:3},hist:1,f:()=>{S.pont136={k,m:'garde',y:S.year}}},
+   {n:'L’ouvrir à tous les peuples',d:'Les navires, les pirogues, les marcheurs passent. Savoir +4.',fx:{savoir:4},hist:1,f:()=>{S.pont136={k,m:'ouvert',y:S.year}}}]}},
+ pont136b:{get y(){return S&&S.pont136?S.pont136.y+6:9999},si:()=>!!(S&&S.pont136),tag:'Utopie',an:'',t:'La lumière gagne l’océan',
+  get b(){const p=S.pont136;const A={souv:'Le pont n’a pas de maître. Sa lumière passe d’île en île : Rodrigues, les Seychelles, puis Madagascar la voient au loin, la nuit.',garde:'Vos gardiens veillent aux deux bouts. Ceux qui veulent passer viennent demander, et apportent des présents.',ouvert:'Des pirogues de Madagascar, des boutres du nord, des navires de l’Inde font halte au pied du pont. Chacun repart avec un peu de sa lumière.'};
+   const K={ombre:' Mais c’est une lumière violette : là où elle tombe, on parle plus bas.',sir:' Sous l’eau, les coraux du lagon repoussent.',anc:' Dans les remparts, les anciens disent que les morts dorment mieux.',hanuman:' Les vieux chants d’Hanuman reviennent dans les cuisines.',centre:' Les routes du monde passent désormais par ici.',maur:' Les familles des deux îles se retrouvent.',autre:''};return A[p.m]+(K[p.k]||'')},
+  v:'Le monde commence à changer.',h:'Fiction du jeu (utopie).',o:[{n:'Regarder la lumière passer',d:'Mystique +2.',fx:{myst:2},hist:1}]},
+ pont136c:{get y(){return S&&S.pont136?S.pont136.y+18:9999},si:()=>!!(S&&S.pont136),tag:'Utopie',an:'',get t(){return S.pont136&&S.pont136.k==='ombre'?'La terre divisée':'L’étincelle retrouvée'},
+  get b(){const p=S.pont136,k=p.k;
+   if(k==='ombre')return p.m==='garde'?'L’ordre tient le pont, et le pont tient la mer. Le monde se partage entre ceux qui passent et ceux qui attendent. Mais une lueur blanche est revenue au milieu du pont, là où personne ne garde.':'Le pont s’est dégagé de l’ordre qui l’avait fait naître. Sa lumière violette pâlit ; au milieu, une lueur blanche grandit.';
+   const M={souv:'Au milieu du pont, entre les deux îles, une lueur ne bouge plus : l’étincelle de pureté qu’on avait oubliée. Le pont ne mène plus seulement à Maurice : il relie les gens à ce qu’ils avaient perdu.',garde:'Vos gardiens trouvent au milieu du pont une lueur qui ne bouge plus. Ils la protègent ; on vient de loin pour la voir, et l’on repart plus calme.',ouvert:'Au milieu du pont, les marcheurs de tous les peuples trouvent une lueur fixe. Personne ne la possède ; chacun la décrit dans sa langue.'};
+   const E={sir:' Le lagon s’est refait, de Saint-Gilles à Saint-Leu.',anc:' Les forêts des Hauts repoussent sur les pentes brûlées.',hanuman:' On dit que le peuple d’Hanuman est revenu habiter les ravines du Sud.',centre:' Les nations du monde y tiennent leurs grands kabars.',maur:' Les deux îles n’ont plus qu’un seul nom pour la mer qui les sépare.',autre:''};return M[p.m]+(E[k]||'')},
+  v:'Selon qui l’a fait naître, la terre a pris un autre chemin.',h:'Fiction du jeu (utopie).',o:[{n:'Garder cette lumière',d:'Cohésion +3, mystique +3.',fx:{coh:3,myst:3},hist:1,f:()=>{S.pont136.fin=1}}]}});
+// le pont change le monde : moins d'usure des bêtes (sauf l'ordre noir), forêts qui repoussent avec les anciens
+if(typeof pression135==='function'){const pr=pression135;pression135=function(k){const r=pr.apply(this,arguments);try{const p=S&&S.pont136;if(p)r.m*=p.k==='ombre'?(p.m==='garde'?1.15:.8):p.m==='souv'?.4:.6}catch(e){}return r}}
+// sur la carte : une ligne de lumière qui part de la côte Est vers Maurice, un pilier de lumière à la naissance
+{let G=null,M=null;const t0=performance.now();setInterval(()=>{try{if(typeof scene==='undefined'||!scene||!S)return;const p=S.pont136;if(!p){if(G){G.visible=false}return}
+  if(!G){const [ax,az0]=xz(55.80,-21.02),[bx,bz]=xz(57.40,-20.30),P=[];for(let i=0;i<=60;i++){const u=i/60,x=ax+(bx-ax)*u,z=az0+(bz-az0)*u+Math.sin(u*Math.PI)*-1.2;P.push(new THREE.Vector3(x,.06+Math.sin(u*Math.PI)*.12,z))}
+   const cv=new THREE.CatmullRomCurve3(P),col=p.k==='ombre'?new THREE.Color(.62,.36,1):new THREE.Color(1,.92,.6);
+   M=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{t:{value:0},c:{value:col}},vertexShader:'varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'varying vec2 vU;uniform float t;uniform vec3 c;void main(){float pulse=.55+.45*sin(vU.x*60.-t*2.5);float mid=exp(-pow((vU.x-.5)*9.,2.));gl_FragColor=vec4(c*(pulse+mid*1.5),.55*pulse+mid*.6);}'});
+   G=new THREE.Group();G.add(new THREE.Mesh(new THREE.TubeGeometry(cv,200,.07,6,false),M));
+   const pil=new THREE.Mesh(new THREE.CylinderGeometry(.05,.18,6,10,1,true),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.25,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide}));pil.position.set(ax,3,az0);G.add(pil);G.userData.pil=pil;
+   const mid=cv.getPoint(.5),et=new THREE.Mesh(new THREE.SphereGeometry(.18,12,10),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false}));et.position.copy(mid);et.position.y+=.2;G.add(et);G.userData.et=et;scene.add(G)}
+  G.visible=true;const t=(performance.now()-t0)/1000;M.uniforms.t.value=t;G.userData.pil.material.opacity=Math.max(0,.3-(S.year-p.y)*.03)+.03*Math.sin(t*2);G.userData.et.visible=S.year>=p.y+18;G.userData.et.scale.setScalar(1+.2*Math.sin(t*3))}catch(e){}},50)}

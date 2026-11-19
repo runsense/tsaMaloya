@@ -9,7 +9,9 @@ function aniNouveau(k){const o={pret:false};new THREE.GLTFLoader().parse(BETM.bu
 // les places des bêtes autour de la caméra : une liste {k, x, z, ry} recalculée à chaque image
 function aniPlaces(k){const L=[];if(!S||S.fin||dist>=(k==='papangue'?16:10))return L;const R2=dist*.8+3,now=performance.now()/1000;
  T.forEach(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;if(dx*dx+dz*dz>R2*R2)return;const o=S.t[t.i];if(!o||!o.s||t.bare)return;const h=s=>rndH(t.i*7.3+s);
-  const tour=(r1,r2,sp,o0)=>{const u=now*sp+o0+.5*Math.sin(now*sp*2.3+o0);return [t.x+Math.cos(u)*r1,t.z+Math.sin(u)*r2,u]};
+  // plus de ronde : chaque bête erre (somme de sinus de fréquences différentes) et s'arrête pour brouter une partie du temps
+  const tour=(r1,r2,sp,o0)=>{const k=now*sp*1.6+o0,fk=k-Math.floor(k),u=Math.floor(k)+(fk<.45?0:(x=>x*x*(3-2*x))((fk-.45)/.55));
+   const x=t.x+r1*.62*(Math.sin(u*1.0+o0)+.55*Math.sin(u*1.73+o0*2.1)+.3*Math.sin(u*3.11+o0*.7)),z=t.z+r2*.62*(Math.cos(u*.91+o0*1.3)+.5*Math.sin(u*1.57+o0)+.3*Math.cos(u*2.71+o0*2.4));return [x,z,u]};
   // une bande de cochons marrons : la laie devant, les autres à la file, les petits plus menus
   if(k==='cochon'&&t.forest&&t.alt>150&&t.alt<1600&&!o.c&&h(1)<.2*fAb(t)){const n=2+Math.floor(h(17)*3);for(let j=0;j<n;j++){const [x,z]=tour(.42+h(2)*.25+(j%2)*.05,.32+h(3)*.15,.05+h(4)*.03,h(5)*6-j*.22);L.push({x,z,sc:j>1?.65:1})}}
   if(k==='chien'&&(o.b==='camp'||o.c)&&h(6)<.8){const n=1+(h(18)<.5?1:0);for(let j=0;j<n;j++){const [x,z]=tour(.35+j*.04,.25,.12+h(7)*.05,h(8)*6-j*.35);L.push({x,z,sc:j?.85:1})}}
