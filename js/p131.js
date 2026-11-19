@@ -14,7 +14,9 @@ setInterval(()=>{try{const f=$('fin');if(!f)return;f.classList.toggle('clig131',
  if(!connu)A=A.filter(a=>!/^peche|^lagon|^corail|^bichique|^chev/i.test(a.id||'')&&!/Pêcher|pêche/i.test(a.n||''))}catch(e){}return A}}
 // 4. Les sentiers des cirques ne se tracent pas d'un coup : une case découverte montre son sentier quand on y est passé,
 //    ou peu à peu, au fil des saisons (une à cinq saisons après la découverte, selon la case).
-function grOk131(i){try{const o=S.t[i]||{};if(!o.s)return false;if(o.ex||o.b||o.c||(S.pas&&S.pas[i]>0)||(S.trail||[]).includes(i)||(S.grp||[]).some(g=>g.pos===i))return true;S.vu131=S.vu131||{};if(S.vu131[i]==null){S.vu131[i]=S.ns||0;return false}return (S.ns||0)-S.vu131[i]>=1+((i*7919)%5)}catch(e){return false}}
+function grOk131(i){try{const o=S.t[i]||{};if(!o.s)return false;if(o.ex||o.b||o.c||(S.pas&&S.pas[i]>0)||(S.trail||[]).includes(i)||(S.grp||[]).some(g=>g.pos===i))return true;
+ // les Hauts n'ont pas de sentier tant que personne n'y est monté : seul ce qu'on a parcouru, ou ce que les années ont tracé près des bourgs, se voit
+ const t=T[i];if(t&&t.alt>300)return false;S.vu131=S.vu131||{};if(S.vu131[i]==null){S.vu131[i]=S.ns||0;return false}return (S.ns||0)-S.vu131[i]>=1+((i*7919)%5)}catch(e){return false}}
 setInterval(()=>{try{if(!S||!S.t)return;S.vu131=S.vu131||{};for(const i in S.t){if(S.t[i]&&S.t[i].s&&S.vu131[i]==null)S.vu131[i]=S.ns||0}}catch(e){}},3000);
 // 5. Les cyclones, chez les marrons :
 //  - abrités dans une caverne connue : les vivres sont gardés, mais la santé baisse (−9 si faible, jusqu'à −18 si fort) ;

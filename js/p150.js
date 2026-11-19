@@ -1,0 +1,19 @@
+
+// ===== p150 : le cerf de Java (Rusa timorensis) =====
+// Introduit à Maurice par les Hollandais au XVIIᵉ siècle, il arrive à Bourbon vers 1750-1760 comme gibier ; il y reste rare et très chassé.
+// En 1954, une soixantaine de cerfs venus de Maurice sont relâchés dans les Hauts (Roche Écrite) ; sept cerfs élaphes d'Europe, lâchés à la même époque, disparaissent.
+// Depuis les années 1980, on l'élève (Hauts de Sainte-Marie, Mafate…) ; le civet de cerf entre dans la cuisine créole.
+Object.assign(EV,{
+ cerf1755:{y:1755,si:()=>S,tag:'Archive',an:'vers 1750-1760',t:'Le cerf de Java',get b(){return 'Un navire venu de l’île de France débarque des cerfs : une espèce d’Indonésie que les Hollandais avaient lâchée à Maurice pour nourrir leurs équipages. On les relâche dans les bois comme gibier.'+(S.voieC?' Les habitants les chassent tant qu’ils restent rares.':' Dans les Hauts, une bête nouvelle, plus grande qu’un cabri, laisse ses traces dans la boue.')},
+  v:'Une viande de plus dans les forêts — et une bête de plus qui mange les jeunes plants.',h:'Archive : introduction du cerf de Java (Rusa timorensis) à La Réunion vers 1750-1760, d’après l’atlas Borbonica ; à Maurice, introduction par les Hollandais au XVIIᵉ siècle.',
+  o:[{n:'Le chasser',d:'Vivres +3.',fx:{vivres:3},hist:1,f:()=>{S.cerf150=1}},{n:'Le laisser se multiplier',d:'Vivres +1 ; plus de cerfs dans les Hauts.',fx:{vivres:1},f:()=>{S.cerf150=2}}]},
+ cerf1954:{y:1954,si:()=>S,tag:'Archive',an:'1954',t:'Les cerfs de la Roche Écrite',b:'Après la guerre, il ne reste presque plus de cerfs. Une soixantaine sont importés de Maurice et relâchés dans les Hauts, vers la Roche Écrite. On essaie aussi sept cerfs élaphes venus d’Europe : ils ne s’acclimatent pas et disparaissent.',
+  v:'Un gibier qu’on recrée.',h:'Archive : lâcher d’une soixantaine de cerfs de Java en 1954 ; échec du cerf élaphe à la même époque.',o:[{n:'Continuer',d:'',fx:{},hist:1,f:()=>{S.cerf150=Math.max(S.cerf150||1,2)}}]},
+ cerf1985:{y:1985,si:()=>S,tag:'Archive',an:'depuis les années 1980',t:'Élevages de cerfs et civet',b:'Des élevages de cerfs s’ouvrent dans les Hauts de Sainte-Marie, dans les cirques, jusqu’à Mafate près de Marla. Le civet de cerf devient un plat de fête ; la production locale ne suffit pas, on en importe. Paradoxe : chez lui, à Java et à Bali, le cerf rusa est menacé — moins de dix mille adultes, classé « Vulnérable » — alors qu’il prospère à Maurice et envahit la Nouvelle-Calédonie, où douze cerfs offerts en 1870 sont devenus des centaines de milliers.',
+  v:'Du gibier à l’élevage.',h:'Archive : élevages de cerfs de Java à La Réunion à partir des années 1980. Espèce indigène de Java et Bali classée Vulnérable sur la liste rouge de l’UICN : à protéger chez elle.',o:[{n:'Un civet pour la fête',d:'Cohésion +2.',fx:{coh:2},hist:1}]}});
+// sur la carte : des cerfs dans les forêts des Hauts (en attendant un vrai modèle de cerf, le modèle du cabri, plus grand, robe fauve)
+if(typeof BETES!=='undefined'){BETES.cerf={f:'ani_cabri',h:.1,max:8};
+ const ap=aniPlaces;aniPlaces=function(k){if(k!=='cerf')return ap.apply(this,arguments);const L=[];try{if(!S||S.fin||S.year<1755||dist>=10)return L;const now=performance.now()/1000,R2=dist*.8+3,n0=S.year>=1954?.5:(S.cerf150===2?.35:.15);
+  T.forEach(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;if(dx*dx+dz*dz>R2*R2)return;const o=S.t[t.i];if(!o||!o.s||!t.forest||t.alt<700||o.c||L.length>=8)return;const h=s=>rndH(t.i*6.1+s);if(h(1)>n0)return;
+   const n=1+Math.floor(h(2)*3);for(let j=0;j<n;j++){const k=now*.07+h(3)*6-j*.2,fk=k-Math.floor(k),u=Math.floor(k)+(fk<.55?0:(fk-.55)/.45);L.push({x:t.x+.35*Math.sin(u+h(4)*6)+j*.06,z:t.z+.28*Math.cos(u*.9+h(5)*6)+j*.05,sc:j?.85:1})}})}catch(e){}return L}
+ setInterval(()=>{try{(BETM.pool.cerf||[]).forEach(o=>{if(!o.pret||o.t150)return;o.t150=1;o.g.traverse(m=>{if(m.isMesh&&m.material){m.material=m.material.clone();m.material.color=new THREE.Color(.78,.52,.32)}})})}catch(e){}},1000)}

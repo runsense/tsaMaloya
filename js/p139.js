@@ -40,6 +40,8 @@ function kPool139(L,n,mk){while(L.length<n){const o=mk();if(o.parent)o.parent.re
 // Un camp ou une ville reste ouvert tant que la vue est à moins de 2,6 de son centre ; et s'il y en a un tout près, c'est lui qu'on ouvre.
 {let dbl=0;addEventListener('dblclick',()=>{dbl=performance.now()},true);
  const imp=t=>{try{const o=S.t[t.i];return !!(o&&(o.b==='camp'||o.c))||(typeof colTiles==='function'&&colTiles().includes(t))}catch(e){return false}};
- const ol=ouvrirLieu;ouvrirLieu=function(t){try{if(S&&t&&performance.now()-dbl>400&&typeof camT!=='undefined'){
+ let derO=0;const ol=ouvrirLieu;ouvrirLieu=function(t){try{if(S&&t&&performance.now()-dbl>400&&typeof camT!=='undefined'){
+   // jamais rouvrir le même lieu, ni rouvrir un lieu moins d'1,2 s après le précédent : chaque réouverture refait le décor, et l'enchaînement clignotait
+   if(t===lieu)return;if(performance.now()-derO<1200)return;
    if(lieu&&lieu!==t&&imp(lieu)&&Math.hypot(lieu.x-camT.x,lieu.z-camT.z)<2.6)return;
-   if(!imp(t)){const c=T.filter(u=>imp(u)&&seen(u)&&Math.hypot(u.x-camT.x,u.z-camT.z)<1.6).sort((a,b)=>Math.hypot(a.x-camT.x,a.z-camT.z)-Math.hypot(b.x-camT.x,b.z-camT.z))[0];if(c){if(c===lieu)return;t=c}}}}catch(e){}return ol.call(this,t)}}
+   if(!imp(t)){const c=T.filter(u=>imp(u)&&seen(u)&&Math.hypot(u.x-camT.x,u.z-camT.z)<1.6).sort((a,b)=>Math.hypot(a.x-camT.x,a.z-camT.z)-Math.hypot(b.x-camT.x,b.z-camT.z))[0];if(c){if(c===lieu)return;t=c}}derO=performance.now()}}catch(e){}return ol.call(this,t)}}
