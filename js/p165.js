@@ -37,7 +37,7 @@ setInterval(()=>{try{let b=document.getElementById('inc165');const g=S&&!modeHis
  b.querySelector('#inc165l').onclick=()=>{G165.chasse=null;if(inc)inc.j0=Math.min(inc.j0,e.j-2);b.remove()}}catch(e){}},700);
 // au retour de la vue incarnée : l'imprévu est réglé, au prix d'un peu de temps
 setInterval(()=>{try{if(!G165.dern||(typeof VP!=='undefined'&&VP))return;const d=G165.dern;G165.dern=null;const g=(S.grp||[])[d.g];if(!g||!g.exp)return;const e=g.exp;
- if(d.inc&&e.inc){const p=ppId(d.inc.pid);if(d.inc.k==='blesse'&&p){p.pv=Math.min(100,pv165(p)+25);journal(p.n.split(' ')[0]+' s’est soigné'+(p.g==='f'?'e':'')+' avec les plantes d’ici. Le groupe repart, avec un jour de retard.')}else journal(g.n+' est resté caché : le détachement est passé sans les voir.');delete e.inc}}catch(e){}},800);
+ if(d.inc&&e.inc){const p=ppId(d.inc.pid);if(d.inc.k==='blesse'&&p){if(!(p.pv>=70))p.pv=Math.min(100,pv165(p)+10);journal(p.n.split(' ')[0]+(p.pv>=70?' s’est soigné'+(p.g==='f'?'e':'')+' avec les plantes d’ici. Le groupe repart, en retard.':' repart en boitant ('+Math.round(p.pv)+' pv) : il aurait fallu plus de plantes.'))}else journal(g.n+' est resté caché : le détachement est passé sans les voir.');delete e.inc}}catch(e){}},800);
 // les gens du groupe marchent sur la carte
 {const b0=bat;bat=function(){const r=b0.apply(this,arguments);try{if(!S||modeHist()||!S.grp||typeof mfPoser!=='function'||dist>16||(typeof VP!=='undefined'&&VP))return r;let ph=.5;try{ph=jourPh()}catch(e){}
   S.grp.forEach(g=>{if(!g.exp||g.pos==null)return;const M=grpMembres(g).slice(0,4),a=T[g.prev!=null?g.prev:g.pos],b=T[g.pos];if(!a||!b)return;const marche=g.prev!=null&&g.prev!==g.pos&&!g.exp.inc&&g.exp.etat!=='sur place';
