@@ -10,7 +10,7 @@ if(typeof vpClipE==='function'){const c0=vpClipE;vpClipE=function(o,c){try{if(o&
    if(!o.mx||o.v151==null)return;const run=o.clip==='course',walk=o.clip==='marche';if(!run&&!walk)return;const nat=o.h151*(run?2.1:.85);const ts=o.v151<.05?.3:Math.max(.5,Math.min(2.2,o.v151/nat));(o.mx._actions||[]).forEach(a=>{if(a.isRunning&&a.isRunning())a.timeScale=ts})})}catch(e){}})();
 // 2) Des oiseaux dans le ciel de la vue personnage : une petite bande qui tourne au-dessus des arbres et se pose, un papangue qui plane haut
 const VPB151={sc:null,L:[],pap:null};
-(function ois151(){requestAnimationFrame(ois151);try{const V=typeof VP!=='undefined'&&VP;if(!V||!V.sc||!V.cam){VPB151.sc=null;return}
+(function ois151(){requestAnimationFrame(ois151);try{const V=(typeof VP!=='undefined'&&VP)||(typeof F!=='undefined'&&F&&!F.fin&&F.sc&&F.cam&&F);if(!V||!V.sc||!V.cam){VPB151.sc=null;return}
   if(VPB151.sc!==V.sc){VPB151.sc=V.sc;VPB151.L=[];VPB151.pap=null;const nb=8;for(let i=0;i<nb;i++){const o=new THREE.Group();V.sc.add(o);VPB151.L.push({o,ph:Math.random()*6,r:6+Math.random()*4,h:9+Math.random()*3});
     if(typeof inst144==='function')inst144('sk_colibri',{h:.28,long:true,tint:0x6a7a50,vit:.8}).then(r=>o.add(r.w)).catch(()=>{})}
    const pp=new THREE.Group();V.sc.add(pp);VPB151.pap=pp;if(typeof inst144==='function')inst144('oi_papangue',{h:1.6,long:true,rz:Math.PI/2,yaw:-Math.PI/2}).then(r=>pp.add(r.w)).catch(()=>{})}
