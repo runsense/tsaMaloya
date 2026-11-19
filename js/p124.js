@@ -35,7 +35,7 @@ setInterval(()=>{try{const V=typeof VP!=='undefined'&&VP;if(!V||!V.src||!V.sc)re
   const lum=new THREE.Mesh(new THREE.PlaneGeometry(W*.9,.12),new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:0,side:THREE.DoubleSide,fog:false,depthWrite:false}));lum.position.y=.08;g.add(lum);
   g.position.set(P.x,y0,P.z);g.lookAt(c0.x,y0,c0.z);g.userData={mat,lum:lum.material};scene.add(g);MA.g=g;
   scene.children.forEach(o=>{if(o.isGroup&&o.children[0]&&o.children[0].geometry&&o.children[0].geometry.type==='SphereGeometry'&&o.children[0].scale.x===26)MA.vieux=o})}
- const b0=bat;bat=function(){const r=b0.apply(this,arguments);try{if(typeof scene==='undefined'||!scene||typeof DEM==='undefined'||!DEM||(typeof K!=='undefined'&&K))return r;if(!MA.g)mauriceBati();if(MA.vieux)MA.vieux.visible=false;
+ const b0=bat;bat=function(){const r=b0.apply(this,arguments);try{if(typeof scene==='undefined'||!scene||typeof DEM==='undefined'||!DEM||(typeof K!=='undefined'&&K))return r;if(!MA.g)mauriceBati();if(MA.vieux)MA.vieux.visible=true;MA.g.visible=false;return r;
   const loin=Math.max(0,Math.min(1,(dist-30)/12)),clair=Math.max(0,1-(typeof stormV!=='undefined'?stormV:0)*2),nuit=S&&S.heure!=null&&(S.heure<6||S.heure>19);
   MA.g.userData.mat.opacity=.85*loin*clair;MA.g.userData.lum.opacity=nuit?.7*loin*clair:0;MA.g.visible=loin*clair>.01}catch(e){}return r}}
 // le texte du conte (« Le conte · … ») : centré, juste au-dessus des boutons du bas, jamais dessus

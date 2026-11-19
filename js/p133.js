@@ -1,0 +1,25 @@
+
+// ===== p133 : les espèces disparues de l'île, et les listes rouges d'aujourd'hui =====
+// Chaque disparition arrive dans le conte à sa date (souvent approximative : on date la dernière observation).
+// Les bêtes encore nombreuses au début (tortues, oiseaux qui ne fuient pas l'homme) nourrissent les premiers venus ; on les chasse jusqu'au bout.
+const DISP133=[
+ ['dugong',1720,'Les dugongs du lagon','Les « vaches de mer » broutaient les herbiers des lagons. Chassées pour leur viande aux XVIIᵉ et XVIIIᵉ siècles, elles disparaissent de l’île. Un dugong isolé sera aperçu au large… en 2019.','Archive'],
+ ['solitaire',1710,'Le solitaire de Bourbon','Un grand ibis blanc qui ne volait pas, longtemps pris pour un « dodo blanc ». Facile à prendre, il disparaît au début du XVIIIᵉ siècle.','Archive'],
+ ['oiseaubleu',1730,'L’oiseau bleu','Un grand râle bleu qui marchait dans les plaines d’altitude, vers la Plaine des Cafres. On n’en parle plus après 1730.','Archive'],
+ ['perroquets',1750,'Les perroquets de Bourbon','Le perroquet vert, le perroquet gris de Dubois, la perruche verte : chassés, privés de forêt, ils disparaissent au XVIIIᵉ siècle.','Archive'],
+ ['oiseauxeau',1760,'Les oiseaux des étangs','L’oie, la sarcelle, la foulque, le bihoreau, la bécasse, le flamant : les étangs se vident de leurs oiseaux à mesure qu’on les chasse et qu’on draine.','Archive'],
+ ['roussetteN',1800,'La roussette noire','Les grandes chauves-souris qui dormaient en grappes dans les arbres ne se voient plus vers 1800. Elles reviendront d’elles-mêmes depuis Maurice, en 2007.','Archive'],
+ ['tortues',1810,'Les tortues géantes','Il y en avait des milliers sur les côtes. On les a tuées pour leur viande et leur huile, pour ravitailler les navires. Au début du XIXᵉ siècle, il n’en reste plus.','Archive'],
+ ['mascarin',1834,'Le mascarin','Un perroquet brun au bec rouge, propre à l’île. Les derniers vivaient en cage, loin d’ici.','Archive'],
+ ['huppe',1850,'La huppe de Bourbon','Un étourneau huppé, blanc et gris, qui ne craignait pas l’homme. Il s’éteint au milieu du XIXᵉ siècle.','Archive'],
+ ['roussetteC',1862,'La roussette à collet rouge','Elle nichait dans les troncs creux et les grottes : facile à surprendre. Chasse et défrichement l’emportent vers 1860.','Archive'],
+ ['chauveH',1868,'La chauve-souris des Hauts','Une petite chauve-souris qui mangeait les insectes la nuit. On ne la revoit plus après la fin du XIXᵉ siècle.','Archive']];
+// au début, ces bêtes sont partout : une bonne chasse les prend sans peine
+Object.assign(EV,{
+ abond133:{y:1665,si:()=>S,tag:'Archive',an:'1665',t:'Une île qui ne connaît pas l’homme',get b(){return 'Les tortues montent sur les plages par centaines, les oiseaux se laissent prendre à la main, les lagons sont pleins de « vaches de mer ». Personne ici n’a jamais appris à fuir l’homme.'+(S.voieC?'':' Les premiers marrons mangent bien.')},
+  v:'L’abondance des premiers temps ne durera pas.',h:'Archive : les récits des premiers navigateurs décrivent des oiseaux qui ne fuient pas et des tortues par milliers.',o:[{n:'Prendre sans compter',d:'Vivres +6. Les bêtes disparaîtront plus vite.',fx:{vivres:6},hist:1,f:()=>{S.disp133=-12}},{n:'Ne prendre que le nécessaire',d:'Vivres +3. Les bêtes tiennent plus longtemps.',fx:{vivres:3},f:()=>{S.disp133=10}}]},
+ liste2010:{y:2010,si:()=>S,tag:'Archive',an:'2010',t:'La liste rouge de la faune',b:'Les naturalistes font le compte : un quart des espèces d’oiseaux de l’île sont éteintes dans le monde entier ; les trois reptiles terrestres indigènes sont menacés ; des papillons et des phasmes ne vivent plus que sur une seule plante, elle-même rare.',v:'Ce qui reste est fragile.',h:'Archive : Liste rouge UICN de la faune de La Réunion, 2010.',o:[{n:'Protéger ce qui reste',d:'Cohésion +2.',fx:{coh:2},hist:1}]},
+ liste2020:{y:2020,si:()=>S,tag:'Archive',an:'2020-2022',t:'Coraux et poissons du récif',b:'Les houles, les cyclones et l’eau qui descend des villes abîment le récif. Une part des coraux qui bâtissent le lagon est menacée ; de grands poissons, comme le napoléon ou le mérou marron, sont en danger critique.',v:'Le lagon change.',h:'Archive : Listes rouges des coraux (2020) et des poissons récifaux (2022) de La Réunion.',o:[{n:'Continuer',d:'',fx:{},hist:1}]},
+ liste2023:{y:2023,si:()=>S,tag:'Archive',an:'2023',t:'La liste rouge des plantes',b:'Sur près d’un millier de plantes indigènes, 41 ont déjà disparu et quatre sur dix sont menacées — plus qu’en 2010. Les plantes venues d’ailleurs étouffent les forêts ; le grand escargot d’Afrique mange les graines du bois d’ortie.',v:'La forêt d’ici recule encore.',h:'Archive : Liste rouge de la flore vasculaire de La Réunion, 2023.',o:[{n:'Replanter en bois indigène',d:'Cohésion +2.',fx:{coh:2},hist:1}]}});
+DISP133.forEach(([k,y,t,b,tg])=>{EV['disp133_'+k]={get y(){return y+((S&&S.disp133)||0)},si:()=>S,tag:tg,an:'vers '+y,t:'Disparu : '+t,b,v:'Une espèce de moins, pour toujours.',h:'Archive : date de la dernière observation connue ; elle reste approximative.',o:[{n:'Se souvenir',d:'Savoir +1.',fx:{savoir:1},hist:1}]}});
+

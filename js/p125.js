@@ -73,7 +73,7 @@ function plage125(t){try{const ouest=typeof sousVent==='function'?sousVent(t):(t
 // l'opacité suit le zoom : de 9,5 (rien) à 6 (tout)
 {const K=['arbre','tamarin','fanjan','fanjanEx','fanjanGl','fanjanCo','palmiste','latanier','vacoa','herbe','rocher','filao','tamarinier','branle','benjoin','bois_chandelle','ambaville'];let o0=-1;
 setInterval(()=>{try{if(typeof lieuM==='undefined'||!lieuM){o0=-1;return}const m=lieuM.material,o=Math.max(0,Math.min(1,(9.5-dist)/3.5));if(m.userData.sh)m.userData.sh.uniforms.op125.value=o;
- if(Math.abs(o-o0)<.02)return;o0=o;K.forEach(k=>{const mm=MOD[k];if(!mm||!mm.material)return;const mt=mm.material;if(mt.transparent){mt.transparent=false;mt.opacity=1;mt.needsUpdate=true}mm.visible=o>.01})}catch(e){}},60)}
+ if(Math.abs(o-o0)<.02)return;o0=o;K.forEach(k=>{const mm=MOD[k];if(!mm||!mm.material)return;})}catch(e){}},60)}
 // autour du lieu ouvert, tout le connu suit : une couronne de forêt détaillée sur les cases découvertes voisines (jusqu'à ~8)
 {const RG={g:null};function anneau125(){try{if(RG.g){scene.remove(RG.g);RG.g=null}window.LR125=3.3;const t=lieu;if(!t||!S)return;const G=new THREE.Group();const RX=8.5;window.LR125=RX;
  const lots={};const add=(k,x,z,s,ry)=>{(lots[k]=lots[k]||[]).push([x,z,s,ry])};const R=q=>{const v=Math.sin(q*12.9898)*43758.5453;return v-Math.floor(v)};
