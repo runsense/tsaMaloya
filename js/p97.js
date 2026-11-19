@@ -100,12 +100,14 @@ function ruban97(P,w,hY){const pos=[],idx=[];for(let i=0;i<P.length;i++){const a
   for(const s of [-1,1]){const x=P[i].x+nx*ww/2*s,z=P[i].z+nz*ww/2*s;pos.push(x,hY?hY({x,z}):P[i].y,z)}if(i<P.length-1){const k=i*2;idx.push(k,k+1,k+2,k+1,k+3,k+2)}}
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();return g}
 // les sentiers des marrons sur la grande carte : une trace de terre battue qui serpente d'une case à l'autre
-{const b0=bat;let cle='',M97=null;bat=function(kk){b0.apply(this,arguments);try{if(!S||typeof sentier==='undefined'||!sentier)return;sentier.visible=false;const tr=S.trail||[],k=tr.length+':'+tr.slice(-3).join(',');if(k===cle)return;cle=k;
+{const b0=bat;let cle='',M97=null;bat=function(kk){b0.apply(this,arguments);try{if(!S||typeof sentier==='undefined'||!sentier)return;sentier.visible=false;const tr=S.trail||[],k=tr.length+':'+tr.slice(-3).join(',')+':'+camps().length+':'+tr.reduce((q,i)=>q+((S.pas&&S.pas[i])||0),0);if(k===cle)return;cle=k;
   if(!M97){M97=new THREE.Mesh(new THREE.BufferGeometry(),matRuban110(0));M97.renderOrder=3;scene.add(M97)}
   const G=[],fait=new Set();tr.forEach(i=>{const u=T[i];T[i].nb.forEach(j=>{const v=T[j],o=S.t[j]||{};if(!(o.ex||tr.includes(j)||o.b))return;const cl=Math.min(i,j)+'-'+Math.max(i,j);if(fait.has(cl))return;fait.add(cl);
    const L=Math.hypot(v.x-u.x,v.z-u.z)||1,ph=(i*13+j*7)%10,P=[];for(let s=0;s<=10;s++){const f=s/10,w=Math.sin(f*Math.PI)*(Math.sin(f*6+ph)*.1+Math.sin(f*15+ph)*.03),x=u.x+(v.x-u.x)*f-(v.z-u.z)/L*w,z=u.z+(v.z-u.z)*f+(v.x-u.x)/L*w;P.push({x,y:0,z})}
-   G.push(ruban97(P,.06,p=>Math.max(0,alt(p.x,p.z))*VX+.03))})});
+   G.push(ruban97(P,larg97(i,j),p=>Math.max(0,alt(p.x,p.z))*VX+.03))})});
   M97.geometry.dispose();M97.geometry=G.length?(THREE.BufferGeometryUtils&&THREE.BufferGeometryUtils.mergeBufferGeometries?THREE.BufferGeometryUtils.mergeBufferGeometries(G):fusion97(G)):new THREE.BufferGeometry()}catch(e){}}}
+// la trace s'élargit avec l'usage : un passage = une petite trace ; plus on y repasse, et plus un camp est proche, plus elle devient sentier
+function larg97(i,j){try{const p=((S.pas&&S.pas[i])||0)+((S.pas&&S.pas[j])||0),cs=camps(),pres=cs.some(c=>hd(c,T[i])<=1||hd(c,T[j])<=1);return Math.min(.07,.016+p*.005+(pres?.022:0))}catch(e){return .03}}
 function fusion97(G){const pos=[],idx=[];let o=0;G.forEach(g=>{const p=g.attributes.position.array;for(let k=0;k<p.length;k++)pos.push(p[k]);const I=g.index.array;for(let k=0;k<I.length;k++)idx.push(I[k]+o);o+=p.length/3;g.dispose()});const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();return g}
 
 // la cuisine : avec les macabits rapportés du lagon, on prépare une sauce macabit au camp

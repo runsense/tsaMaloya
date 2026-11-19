@@ -23,7 +23,7 @@ function meshyB64(n){if(window.P3B64&&P3B64[n])return Promise.resolve(P3B64[n]);
 function meshyPeindre(geo,k){const D=MESHY_TEINTE[k]||{f:.4,t:0x5a4430,v:[0x3f7a3c,0x4f8a44]};const g=geo.index?geo.toNonIndexed():geo;g.computeBoundingBox();const bb=g.boundingBox,H=bb.max.y-bb.min.y||1,R=Math.max(bb.max.x-bb.min.x,bb.max.z-bb.min.z)/2||1;
  const p=g.attributes.position,C=new Float32Array(p.count*3),ct=new THREE.Color(D.t),c1=new THREE.Color(D.v[0]),c2=new THREE.Color(D.v[1]),ca=D.a?new THREE.Color(D.a[2]):null,q=new THREE.Color();
  for(let i=0;i<p.count;i+=3){let y=0,r=0;for(let j=0;j<3;j++){y+=p.getY(i+j);r+=Math.hypot(p.getX(i+j),p.getZ(i+j))}y=(y/3-bb.min.y)/H;r=r/3/R;
-  if(ca&&y>D.a[0]&&y<D.a[1]&&r<(k==='palmiste'?.18:.6))q.copy(ca);else if(y<D.f&&r<.22)q.copy(ct);else q.copy(c1).lerp(c2,Math.min(1,y*.4+((i*7919)%13)/40)).multiplyScalar(.66);
+  if(ca&&y>D.a[0]&&y<D.a[1]&&r<(k==='palmiste'?.18:.6))q.copy(ca);else if(D.l&&y>.25&&y<.85&&((i*2654435761)>>>0)%100<7)q.set(D.l);else if(y<D.f&&r<.22)q.copy(ct);else q.copy(c1).lerp(c2,Math.min(1,y*.4+((i*7919)%13)/40)).multiplyScalar(.66);
   for(let j=0;j<3;j++){C[(i+j)*3]=q.r;C[(i+j)*3+1]=q.g;C[(i+j)*3+2]=q.b}}
  g.setAttribute('color',new THREE.BufferAttribute(C,3));g.computeVertexNormals();return g}
 // les bâtiments Meshy (texturés) : même mécanisme, autre nom de fichier

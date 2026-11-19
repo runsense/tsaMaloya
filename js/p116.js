@@ -12,7 +12,13 @@ function boisIci116(t){if(!t||t.bare)return [];const L=[],b=t.biome||'',y=S?S.ye
  if(t.alt>1000||/tamarins/.test(b))L.push('tamH');if(t.alt<400&&/Savane/.test(b)&&y>=1701)L.push('tamB');if(t.alt<260&&sv&&(y>=1768||(S&&S.done&&S.done.filao)))L.push('filao');if(/Bois de couleurs|humide/.test(b)||(t.alt>300&&t.alt<1100&&!sv))L.push('coul');return L}
 // les arbres eux-mêmes, dans le détail des lieux : le filao en aiguilles sur les plages de l'Ouest, le tamarinier en boule près des villes
 function p116Mods(){if(MOD.filao||typeof p23Mod!=='function')return;const TR=TR23,cy=(a,b,h,n=6)=>new THREE.CylinderGeometry(a,b,h,n),co=(r,h,n=7)=>new THREE.ConeGeometry(r,h,n),sp=r=>new THREE.IcosahedronGeometry(r,1);
- p23Mod('filao',[[cy(.01,.018,.42),0x6a5440,TR(0,.21,0,0,0,.05)],[co(.06,.26,6),0x5f7a62,TR(.02,.36,0,0,0,.12)],[co(.05,.22,6),0x6a846c,TR(-.02,.46,.01,0,0,-.1)],[co(.035,.16,6),0x728c74,TR(.01,.54,0)]],260);
+ // le filao tel qu'il est : tronc roux qui penche, branches en éventail, longues touffes d'aiguilles grises qui pendent, racines à nu dans le sable,
+ // et sous lui le tapis brun d'aiguilles sèches et de petits cônes qui couvre tout le sol
+ {const W=[[.085,.45,.02,0x7f9470],[.02,.52,-.035,0x6f8462],[-.055,.44,.035,0x8fa27c],[.05,.41,-.06,0x7a8e6c],[.115,.40,.035,0x8a9c76],[-.02,.48,.06,0x76896a],[-.075,.39,-.03,0x859774]];
+  p23Mod('filao',[[cy(.13,.13,.003,12),0x8e6e48,TR(.02,.0015,0)],[cy(.09,.09,.003,10),0xa88a60,TR(-.02,.003,.02)],
+   [cy(.009,.017,.27,6),0x8a5a3e,TR(0,.13,0,0,0,.14)],[cy(.006,.01,.2,6),0x93634a,TR(.035,.35,0,0,0,.26)],[cy(.004,.006,.13,5),0x8a5a3e,TR(.075,.42,.01,0,0,.95)],[cy(.004,.006,.12,5),0x8a5a3e,TR(-.01,.41,.03,.6,0,-.8)],[cy(.003,.005,.11,5),0x8a5a3e,TR(.04,.43,-.04,-.7,0,.3)],
+   [cy(.003,.006,.09,4),0x7a5038,TR(.04,.01,0,0,0,1.25)],[cy(.003,.006,.08,4),0x7a5038,TR(-.035,.01,.02,.9,0,-1.1)],[cy(.003,.005,.07,4),0x7a5038,TR(0,.01,-.04,-1.2,0,0)],
+   ...W.map(([x,y,z,c],i)=>[co(.038+(i%3)*.006,.15+(i%2)*.04,5),c,TR(x,y,z,3.1416+(i%2?.12:-.1),i*.9,(i%3-1)*.1)])],260)}
  p23Mod('tamarinier',[[cy(.024,.034,.18),0x4a3a2a,TR(0,.09,0)],[sp(.16),0x3f6a2e,TR(0,.27,0,0,0,0,1.25,.85,1.2)],[sp(.11),0x4c7a36,TR(.08,.3,.04,0,0,0,1,.8,1)]],160)}
 {const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);try{const t=lieu;if(!t||t.bare||!S)return r;p116Mods();if(!MOD.filao)return r;const B=boisIci116(t),hC=new THREE.Color(1,1,1);
  const cou=(k,s)=>{const a=rndH(k*s+t.i)*6.283,d=Math.sqrt(rndH(k*s+7))*3.15;return [t.x+Math.cos(a)*d,t.z+Math.sin(a)*d,a]};const o=S.t[t.i]||{},ra=o.b==='camp'?1.3:0;

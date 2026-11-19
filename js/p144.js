@@ -70,7 +70,7 @@ setTimeout(function roc144(){try{if(typeof MOD==='undefined'||!MOD.rocher||!MOD.
  inst144('sk_pierre',{h:1,long:true}).then(r=>{let me=null;r.w.updateMatrixWorld(true);r.w.traverse(o=>{if(o.isMesh&&!me)me=o});if(!me)return;
   const g=me.geometry.clone();g.applyMatrix4(me.matrixWorld);g.computeBoundingBox();const ob=MOD.rocher.geometry.boundingBox||(MOD.rocher.geometry.computeBoundingBox(),MOD.rocher.geometry.boundingBox),os=ob.getSize(new THREE.Vector3()),b=g.boundingBox,s=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
   g.translate(-c.x,-b.min.y,-c.z);const k=Math.max(os.x,os.z)/Math.max(s.x,s.z);g.scale(k,k*1.1,k);const n=g.attributes.position.count;g.setAttribute('color',new THREE.Float32BufferAttribute(new Float32Array(n*3).fill(1),3));
-  const m=me.material.clone();m.vertexColors=true;m.needsUpdate=true;const vieux=MOD.rocher.geometry;MOD.rocher.geometry=g;MOD.rocher.material=m;
+  const m=me.material.clone();m.vertexColors=true;if(m.color)m.color.multiplyScalar(2.3);m.needsUpdate=true;const vieux=MOD.rocher.geometry;MOD.rocher.geometry=g;MOD.rocher.material=m;
   // les copies déjà posées sur la carte et dans les lieux suivent
   scene.traverse(o=>{if(o.isInstancedMesh&&o.geometry===vieux){o.geometry=g;o.material=m}})}).catch(()=>{})}catch(e){}},3000);
 
