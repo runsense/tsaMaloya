@@ -14,7 +14,8 @@ function lacs120(on){try{if(LAC120.g){scene.remove(LAC120.g);LAC120.g.traverse(o
 {const cf=cineFin;cineFin=function(){lacs120(false);return cf.apply(this,arguments)}}
 // ===== Le conte : la barre et le décompte montrent le vrai temps qui reste avant que le conte choisisse =====
 setInterval(()=>{try{if(!S||!modeHist()||!autoD()||typeof proch==='undefined'||!proch)return;const m=$('modal');if(!m||m.hidden)return;const reste=Math.max(0,proch-performance.now()),tot=Math.max(1000,typeof lecT!=='undefined'&&lecT?lecT:8000);
- const bar=m.querySelector('#evMin i');if(bar)bar.style.width=Math.round(100*(1-reste/tot))+'%';const t=$('evMinT');if(t&&!/Le conte choisit dans/.test(t.textContent))t.textContent='';if(t)t.textContent='Le conte choisit dans '+Math.ceil(reste/1000)+' s. Bougez la souris pour l’arrêter et choisir vous-même.'}catch(e){}},250);
+ const bar=m.querySelector('#evMin i');if(bar){// la barre ne recule jamais pendant une même annonce
+  const id=S.evq&&S.evq[0],w=Math.round(100*(1-reste/tot));if(bar.dataset.ev!==String(id)){bar.dataset.ev=String(id);bar.dataset.w='0'}const w2=Math.max(+bar.dataset.w||0,w);bar.dataset.w=w2;bar.style.width=w2+'%'}const t=$('evMinT');if(t&&!/Le conte choisit dans/.test(t.textContent))t.textContent='';if(t)t.textContent='Le conte choisit dans '+Math.ceil(reste/1000)+' s. Bougez la souris pour l’arrêter et choisir vous-même.'}catch(e){}},250);
 // ===== La lettre de décès ne bloque plus le conte : elle se pose dans un coin, sans voile ni pause =====
 // partout (Histoire, Vie, Survie) : la lettre ne met plus rien en pause
 lettrePause=function(){return()=>{}};
