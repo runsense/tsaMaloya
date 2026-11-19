@@ -59,11 +59,17 @@ const PRE72={
  tonnerre:{d:2.6,f:()=>{bruit7(2.6,{ft:'lowpass',f:220,q:.4,v:.5,a:.05});ton7(48,2,{v:.3,vers:30})}},
  gronde:{d:4,f:()=>{bruit7(4,{ft:'lowpass',f:110,q:.5,v:.35,a:.8});ton7(36,4,{v:.25,a:.8,vers:30})}},
  apotheose:{d:1.6,f:()=>{[392,494,587,784].forEach((f,i)=>ton7(f,1.3,{t:i*.13,type:'triangle',v:.1}));for(let i=0;i<10;i++)I72.kayamb(i*.12,.07);I72.rouler(.55,.4)}},
+ // « Zion hört die Wächter singen » : la ritournelle de Bach (BWV 140 n°4, 1731 ; transcrite pour orgue BWV 645), celle qui porte la musique — domaine public.
+ // Notes reprises de l'édition Bach-Gesellschaft (saisie Mutopia, BWV 645) : le dessus et la pédale du premier ritornello, puis un accord de mi bémol pour conclure.
+ zion:{d:21,f:()=>{const q=60/76,hz=m=>440*Math.pow(2,(m-69)/12),H=[58,.5,63,.25,65,.25,67,.5,67,.5,65,.5,68,.5,67,.5,58,.5,56,.5,67,.25,63,.25,65,.5,56,.5,55,.5,62,.5,63,.5,0,.5,58,.5,63,.25,65,.25,67,.5,67,.5,65,.5,68,.5,67,.5,58,.5,56,.5,67,.25,63,.25,65,.5,56,.5,55,.5,62,.5,63,.5,0,.5,70,.5,70,1.0,68,.25,67,.25,65,.25,63,.25,65,.25,63,.25,62,.25,60,.25,58,.5,60,.25,62,.25,63,.25,65,.25,67,.25,65,.25,68,.25,67,.25,65,.25,63,.25,67,.5,65,.5,0,.5],B=[0,.5,39,1.0,39,1.0,39,1.0,43,1.0,44,1.0,46,1.0,39,1.0,0,1.0,39,1.0,39,1.0,39,1.0,43,1.0,44,1.0,46,1.0,39,1.0,0,1.0,43,1.0,48,1.0,46,1.0,44,1.0,43,1.0,39,1.0,46,1.0,50,.5];let t=.2;
+  for(let i=0;i<H.length;i+=2){const m=H[i],d=H[i+1]*q;if(m){ton7(hz(m),d*.95+.08,{t,type:'triangle',v:.1,a:.015,fl:2600});ton7(hz(m+12),d*.9+.05,{t,v:.025,a:.015})}t+=d}
+  let u=.2;for(let i=0;i<B.length;i+=2){const m=B[i],d=B[i+1]*q;if(m){ton7(hz(m),d*.92,{t:u,type:'triangle',v:.16,a:.03,fl:500});ton7(hz(m+12),d*.9,{t:u,type:'triangle',v:.05,a:.03,fl:900})}u+=d}
+  [51,58,63,67,70].forEach((m,i)=>ton7(hz(m),2.6,{t,type:'triangle',v:i?.07:.12,a:.06,fl:1800}));I72.cloche(t,155.6,.07)}},
  silence:{d:1,f:()=>{}}};
 // les sons « de nature » sont des ambiances en couches, pas des motifs à boucler
 const PROFIL={mer:'carte',grillons:'nuit',vent:'cyclone',tonnerre:'cyclone',volcan:'volcan',gouttes:'galeries',tambGuerre:'bataille',silence:'silence'};
 // ----- les choix de la Table des sons (enregistrés le 14/11/2026 ; « __sample » = un enregistrement déposé, à intégrer) -----
-const SONCH={alerte:'lambi',deces:'cloche',decesDem:'clocheGrave',faim:'coeur',bras:'sec',naissance:'carillon',info:'tick',
+const SONCH={alerte:'lambi',deces:'zion',decesDem:'clocheGrave',faim:'coeur',bras:'sec',naissance:'carillon',info:'tick',
  evArchive:'plume',evConte:'conte',evDecouverte:'carillon',evMonde:'corne',evVote:'roulerVote',kabar:'maloya68',cyclone:'tonnerre',victoire:'sega',
  ambJour:'mer',ambNuit:'grillons',ambCyclone:'vent',ambSurvie:'mer',genese:'volcan',
  jGaleries:'gouttes',jBataille:'tambGuerre',jCommando:'grillons',jDuel:'maloya68',jEchecs:'malLent',jDonjon:'gouttes',jMission:'mer',jCourse:'vent',jChasse:'mer'};
