@@ -166,7 +166,7 @@ const TACH106={chasse:'chasse_traque',cueil:'repos_debout',bois:'repos_debout',p
 {const b0=bat;bat=function(k){b0.apply(this,arguments);try{if(!S||S.fin||K||modeHist()||VP||typeof mfPoser!=='function'||typeof jourPh!=='function')return;const ph=jourPh();let n=0;
  (S.pp||[]).forEach(p=>{if(n>=14||enGrp(p)||!adulte(p))return;const tk=(typeof tacheDe==='function'?tacheDe(p):p.tache);if(!TACH106[tk]||p.lieu==null)return;const c=T[campDe(p)],L=T[p.lieu];if(!c||!L||L.i===c.i)return;
   let u,clip;if(ph<.22||ph>.82)return;if(ph<.32){u=(ph-.22)/.1;clip='marche'}else if(ph<.72){u=1;clip=TACH106[tk]}else{u=1-(ph-.72)/.1;clip='marche'}
-  const s=(p.id*37%100)/100,ox=Math.cos(s*6.28)*.25,oz=Math.sin(s*6.28)*.25;let x=c.x+(L.x+ox-c.x)*u,z=c.z+(L.z+oz-c.z)*u;if(u===1){const t=performance.now()/1000;x+=Math.cos(t*.3+s*9)*.08;z+=Math.sin(t*.27+s*7)*.08}
+  const s=(p.id*37%100)/100,ox=Math.cos(s*6.28)*.25,oz=Math.sin(s*6.28)*.25;const dl=Math.hypot(L.x-c.x,L.z-c.z)||1,cx0=c.x+(L.x-c.x)/dl*.38+oz*.3,cz0=c.z+(L.z-c.z)/dl*.38-ox*.3;let x=cx0+(L.x+ox-cx0)*u,z=cz0+(L.z+oz-cz0)*u;if(typeof solOk29==='function'&&!solOk29(x,z)){x+=oz*.6;z-=ox*.6}if(u===1){const t=performance.now()/1000;x+=Math.cos(t*.3+s*9)*.08;z+=Math.sin(t*.27+s*7)*.08}
   const ry=ph<.72?Math.atan2(L.x-c.x,L.z-c.z):Math.atan2(c.x-L.x,c.z-L.z);mfPoser('w106_'+p.id,mfModeleDe(p),x,Math.max(0,alt(x,z))*VX+.02,z,ry,clip);n++})}catch(e){}}}
 
 // ----- 20. Les colons chassent beaucoup les oiseaux ; et ils élèvent des pigeons -----

@@ -15,12 +15,23 @@ function riv126Calc(){const R=[];RIVS.forEach(r=>{let x=r.x2,z=r.z2,hx=r.x1-x,hz
   let x=q[0]-dz*sg*.7,z=q[1]+dx*sg*.7;for(let u=0;u<10;u++){let bh=alt(x,z),bx=x,bz=z;for(let k=0;k<12;k++){const an=k/12*6.283,X=x+Math.cos(an)*.05,Z=z+Math.sin(an)*.05;if(alt(X,Z)>bh){bh=alt(X,Z);bx=X;bz=Z}}x=bx;z=bz}
   const B=[[x,z]];for(let k=0;k<90;k++){let bh=alt(x,z),bx=null,bz=null;for(let a2=0;a2<20;a2++){const an=a2/20*6.283,X=x+Math.cos(an)*.04,Z=z+Math.sin(an)*.04,h=alt(X,Z);if(h<bh){bh=h;bx=X;bz=Z}}if(bx==null)break;x=bx;z=bz;B.push([x,z]);if(S2.some(m=>Math.hypot(m[0]-x,m[1]-z)<.07))break}
   if(B.length>5)R.push({n:r.n,P:B,ouest,br:1})}});return R}
-{const vb=viv108Bati;viv108Bati=function(){if(!window.RIV126){try{window.RIV126=riv126Calc()}catch(e){window.RIV126=[]}}const g=vb.apply(this,arguments);try{if(!S)return g;
- const cyc=S.cyc&&S.cyc.in<=0,pl=pluie(),R0=Math.max(4,dist*.75);const eau=viv108Mat(cyc?0x7a6a4a:0x3d8db5,{transparent:true,opacity:.85,side:THREE.DoubleSide}),gal=viv108Mat(0xb8b0a0,{side:THREE.DoubleSide});
- window.RIV126.forEach(r=>{const sec=!pl&&!cyc&&/Ravine/.test(r.n);let run=[];const fin=()=>{if(run.length<3){run=[];return}const V=[],I=[],UV=[];let lg=0;run.forEach((q,j)=>{if(j)lg+=Math.hypot(q[0]-run[j-1][0],q[1]-run[j-1][1]);const a=run[Math.max(0,j-1)],b=run[Math.min(run.length-1,j+1)];let dx=b[0]-a[0],dz=b[1]-a[1];const L=Math.hypot(dx,dz)||1;dx/=L;dz/=L;const h=Math.max(0,alt(q[0],q[1]));
-   const w=(cyc?.3:pl?.11:sec?.06:.08)*RIVF108(r.n)*(1+Math.max(0,(60-h)/60)*1.2)*Math.max(.28,1-h/2300)*(r.br?.5:1)*(pl||cyc?1.25:1);[-1,1].forEach(sg=>{const x=q[0]-dz*w*sg,z=q[1]+dx*w*sg;V.push(x,Math.max(0,alt(x,z),h)*VX+.035,z);UV.push(sg<0?0:1,lg*6)});if(j){const o=(j-1)*2;I.push(o,o+1,o+2,o+1,o+3,o+2)}});
-   const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.Float32BufferAttribute(V,3));G.setAttribute('uv',new THREE.Float32BufferAttribute(UV,2));G.setIndex(I);G.computeVertexNormals();g.add(new THREE.Mesh(G,sec?gal:(typeof eauRiv147==='function'?eauRiv147(cyc):eau)));run=[]};
-  r.P.forEach(q=>{const t=tileAt({x:q[0],z:q[1]});const vu=t&&(seen(t)||(t.nb||[]).some(i=>seen(T[i])))&&Math.hypot(q[0]-camT.x,q[1]-camT.z)<R0*1.6;if(vu)run.push(q);else fin()});fin()})}catch(e){}return g}}
+// Les rivières ont leur propre calque : visibles à tous les zooms (plus larges quand on s'éloigne), tracé lissé (pas de zigzags ni de tresses),
+// et dessinées sur tout ce qui est connu, pas seulement près de la caméra.
+const RIVG126={g:null,cle:''};
+function rivLisse126(run){let Q=run.map(q=>[q[0],q[1]]);for(let it=0;it<3;it++){const N=[Q[0]];for(let i=1;i<Q.length-1;i++){const a=Q[i-1],b=Q[i],c=Q[i+1];N.push([(a[0]+b[0]*2+c[0])/4,(a[1]+b[1]*2+c[1])/4])}if(Q.length>1)N.push(Q[Q.length-1]);Q=N}return Q}
+function rivBatir126(){const g=new THREE.Group();if(!window.RIV126||!S)return g;const cyc=S.cyc&&S.cyc.in<=0,pl=pluie(),zf=Math.max(1,Math.min(5,dist/9));
+ const gal=viv108Mat(0xb8b0a0,{side:THREE.DoubleSide});
+ window.RIV126.forEach(r=>{const sec=!pl&&!cyc&&/Ravine/.test(r.n);let run=[];const fin=()=>{if(run.length<3){run=[];return}const R=rivLisse126(run),V=[],I=[],UV=[];let lg=0;
+   R.forEach((q,j)=>{if(j)lg+=Math.hypot(q[0]-R[j-1][0],q[1]-R[j-1][1]);const a=R[Math.max(0,j-3)],b=R[Math.min(R.length-1,j+3)];let dx=b[0]-a[0],dz=b[1]-a[1];const L=Math.hypot(dx,dz)||1;dx/=L;dz/=L;const h=Math.max(0,alt(q[0],q[1]));
+    const w=(cyc?.3:pl?.11:sec?.06:.08)*RIVF108(r.n)*(1+Math.max(0,(60-h)/60)*1.2)*Math.max(.28,1-h/2300)*(r.br?.5:1)*(pl||cyc?1.25:1)*zf;
+    [-1,1].forEach(sg=>{const x=q[0]-dz*w*sg,z=q[1]+dx*w*sg;V.push(x,h*VX+.035*zf,z);UV.push(sg<0?0:1,lg*6)});if(j){const o=(j-1)*2;I.push(o,o+1,o+2,o+1,o+3,o+2)}});
+   const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.Float32BufferAttribute(V,3));G.setAttribute('uv',new THREE.Float32BufferAttribute(UV,2));G.setIndex(I);const m=new THREE.Mesh(G,sec?gal:eauRiv147(cyc));m.renderOrder=2;g.add(m);run=[]};
+  r.P.forEach(q=>{const t=tileAt({x:q[0],z:q[1]});const vu=t&&(seen(t)||(t.nb||[]).some(i=>seen(T[i])));if(vu)run.push(q);else fin()});fin()});return g}
+setInterval(()=>{try{if(typeof scene==='undefined'||!S||typeof alt!=='function')return;if(!window.RIV126){try{window.RIV126=riv126Calc()}catch(e){window.RIV126=[]}}
+ let n=0;for(const k in S.t)if(S.t[k].s)n++;
+ const cle=Math.round(Math.max(1,Math.min(5,dist/9))*4)+'|'+n+'|'+(pluie()?1:0)+'|'+(S.cyc&&S.cyc.in<=0?1:0);
+ if(cle!==RIVG126.cle){RIVG126.cle=cle;if(RIVG126.g){scene.remove(RIVG126.g);RIVG126.g.traverse(o=>{if(o.geometry)o.geometry.dispose()})}RIVG126.g=rivBatir126();scene.add(RIVG126.g)}
+ RIVG126.g.visible=!(S.fin||K||VP)&&dist<70}catch(e){}},900);
 // le lagon de l'Ouest : une eau claire turquoise derrière la barrière de corail, de Saint-Gilles à Saint-Leu, avec la ligne blanche du récif
 {let G=null;setInterval(()=>{try{if(typeof scene==='undefined'||!DEM||G)return;const P=[];for(let la=-21.025;la>=-21.185;la-=.004){const lo0=55.31;let [x,z]=xz(lo0,la);let k=0;while(alt(x,z)>0&&k<400){x-=.02;k++}if(k>=400)continue;P.push([x,z])}
  if(P.length<5)return;G=new THREE.Group();const V=[],W=[],I=[],J=[];P.forEach((q,j)=>{const a=P[Math.max(0,j-1)],b=P[Math.min(P.length-1,j+1)];let dx=b[0]-a[0],dz=b[1]-a[1];const L=Math.hypot(dx,dz)||1;let nx=dz/L,nz=-dx/L;if(nx>0){nx=-nx;nz=-nz}

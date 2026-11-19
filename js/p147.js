@@ -22,7 +22,7 @@ function cascBatir147(){const L=[];CASC147.forEach(([n,lo,la,lieuN])=>{try{const
   G.userData={...G.userData,n,lieuN,t:tileAt({x:best.x,z:best.z})};G.visible=false;scene.add(G);L.push(G)}catch(e){}});return L}
 (function boucle147(){requestAnimationFrame(boucle147);try{if(typeof scene==='undefined'||!scene||!S||typeof alt!=='function')return;if(!C147.L){if(!T||!T.length)return;C147.L=cascBatir147()}
   const t=(performance.now()-C147.t0)/1000;eauMat147().uniforms.t.value=t;const vu=!(typeof VP!=='undefined'&&VP)&&!(typeof K!=='undefined'&&K);
-  C147.L.forEach((G,i)=>{const tt=G.userData.t,ok=vu&&dist<(G.userData.petite?14:26)&&tt&&S.t[tt.i]&&S.t[tt.i].s&&Math.hypot(G.position.x-camT.x,G.position.z-camT.z)<dist*1.4+3;G.visible=!!ok;if(ok){const b=G.userData.br;b.material.opacity=.4+.15*Math.sin(t*1.3+i);b.scale.set(.3+.04*Math.sin(t+i),.17,1);const k=Math.max(1,Math.min(3,dist/8));G.scale.set(k,1,k)}})}catch(e){}})();
+  C147.L.forEach((G,i)=>{const tt=G.userData.t,ok=vu&&dist<(G.userData.petite?9:26)&&tt&&S.t[tt.i]&&S.t[tt.i].s&&Math.hypot(G.position.x-camT.x,G.position.z-camT.z)<dist*1.4+3;G.visible=!!ok;if(ok){const b=G.userData.br;b.material.opacity=.4+.15*Math.sin(t*1.3+i);b.scale.set(.3+.04*Math.sin(t+i),.17,1);const k=G.userData.petite?1:Math.max(1,Math.min(3,dist/8));G.scale.set(k,1,k)}})}catch(e){}})();
 // au survol proche, le nom de la cascade s'affiche comme les plantes (fiche courte)
 setInterval(()=>{try{if(!C147.L||!S)return;let n=null;C147.L.forEach(G=>{if(G.visible&&Math.hypot(G.position.x-camT.x,G.position.z-camT.z)<Math.max(1.2,dist*.2))n=G.userData});
   let el=document.getElementById('casc147');if(!n){if(el)el.remove();return}if(!el){el=document.createElement('div');el.id='casc147';el.style.cssText='position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9;background:#fbf7ec;color:#14110c;border-left:5px solid #2f6b8a;padding:6px 12px;border-radius:4px;font:14px system-ui;box-shadow:0 3px 12px rgba(0,0,0,.4);pointer-events:none';document.body.appendChild(el)}
@@ -32,7 +32,7 @@ setInterval(()=>{try{if(!C147.L||!S)return;let n=null;C147.L.forEach(G=>{if(G.vi
 function cascRiv147(){const L=[];if(!window.RIV126||!RIV126.length)return null;
  RIV126.forEach(r=>{const P=r.P||[];let der=-1e9,dist0=0;for(let i=2;i<P.length-2;i++){const a=P[i-2],b=P[i+2];const d=Math.hypot(b[0]-a[0],b[1]-a[1])||1e-3;dist0+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);
    const ha=alt(a[0],a[1]),hb=alt(b[0],b[1]),chute=ha-hb;if(hb<60||chute<=0)continue;const pente=chute/d;// mètres par unité de carte
-   const seuil=hb>1200?650:hb>500?950:1400;if(pente<seuil||dist0-der<(hb>800?.45:.75))continue;der=dist0;
+   const seuil=hb>1200?650:hb>500?950:1400;if(pente<seuil||dist0-der<(hb>800?1.1:1.8))continue;der=dist0;
    const dx=(b[0]-a[0])/d,dz=(b[1]-a[1])/d,H=Math.max(.1,Math.min(1,chute*VX*1.1));
    const G=new THREE.Group();G.position.set(P[i][0]+dx*.04,Math.max(0,hb)*VX,P[i][1]+dz*.04);G.rotation.y=Math.atan2(dx,dz);const w=hb<500?.14:hb<1200?.11:.08;
    const pl=new THREE.PlaneGeometry(w,H,1,6);pl.translate(0,H/2,0);const eau=new THREE.Mesh(pl,eauMat147());eau.position.z=-.03;G.add(eau);

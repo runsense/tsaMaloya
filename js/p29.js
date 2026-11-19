@@ -18,11 +18,11 @@ function lieuGens(t){const o=S.t[t.i]||{},B=lieuBatis(t);if(!B.length&&!o.b)retu
  // les gens du camp s'ils habitent là ; sinon des habitants du lieu
  let P=(S.pp||[]).filter(p=>campDe(p)===t.i&&!enGrp(p)).slice(0,10).map(p=>mfModeleDe(p));
  if(!P.length)P=C?['p7_colon','colone','servante','homme_chemise','femme_travail','enfant_colon','commandeur','jeune_colon']:['p1a_chasseur','femme_sagaie','jeune_pagne','femme_travail','vieux','p6_enfant'];
- const pts=B.length?B:[[t.x,t.z,1]];return P.map((n,i)=>{const b=pts[i%pts.length];return {cle:'L'+t.i+'_'+i,n,x:b[0]+(Math.random()-.5)*.8,z:b[1]+(Math.random()-.5)*.8,tx:0,tz:0,att:Math.random()*3,pts}})}
+ const pts=B.length?B:[[t.x,t.z,1]];const ids=(S.pp||[]).filter(p=>campDe(p)===t.i&&!enGrp(p)).slice(0,10).map(p=>p.id);return P.map((n,i)=>{const b=pts[i%pts.length];let x=b[0],z=b[1];for(let k=0;k<10;k++){const X=b[0]+(Math.random()-.5)*.8,Z=b[1]+(Math.random()-.5)*.8;if(solOk29(X,Z)){x=X;z=Z;break}}return {cle:'L'+t.i+'_'+i,pid:ids[i],n,x,z,tx:x,tz:z,att:Math.random()*3,pts}})}
 {const b0=bat;bat=function(k){b0(k);try{if(!S||typeof lieu==='undefined')return;if(!lieu){if(LG.t){lgLibere();LG.t=null}return}
  if(LG.t!==lieu){lgLibere();LG.t=lieu;LG.L=lieuGens(lieu);LG.tp=performance.now()}const now=performance.now(),dt=Math.min(.1,(now-LG.tp)/1000);LG.tp=now;
- if(window.PAUSEJ)return;LG.L.forEach(g=>{if(g.att>0){g.att-=dt;if(g.att<=0){const b=g.pts[Math.floor(Math.random()*g.pts.length)];g.tx=b[0]+(Math.random()-.5)*1.2;g.tz=b[1]+(Math.random()-.5)*1.2}}
-  const dx=g.tx-g.x,dz=g.tz-g.z,d=Math.hypot(dx,dz);let clip='marche';if(g.att>0||d<.03){clip='repos_debout';if(g.att<=0)g.att=1.5+Math.random()*4}else{const v=.32*dt;g.x+=dx/d*Math.min(v,d);g.z+=dz/d*Math.min(v,d)}
+ if(window.PAUSEJ)return;LG.L.forEach(g=>{if(g.att>0){g.att-=dt;if(g.att<=0){const b=g.pts[Math.floor(Math.random()*g.pts.length)];g.tx=g.x;g.tz=g.z;for(let k=0;k<10;k++){const X=b[0]+(Math.random()-.5)*1.2,Z=b[1]+(Math.random()-.5)*1.2;if(solOk29(X,Z)&&cheminOk29(g.x,g.z,X,Z)){g.tx=X;g.tz=Z;break}}}}
+  const dx=g.tx-g.x,dz=g.tz-g.z,d=Math.hypot(dx,dz);let clip='marche';if(g.att>0||d<.03){clip='repos_debout';if(g.att<=0)g.att=1.5+Math.random()*4}else{const v=.32*dt,nx=g.x+dx/d*Math.min(v,d),nz=g.z+dz/d*Math.min(v,d);if(solOk29(nx,nz)||!solOk29(g.x,g.z)){g.x=nx;g.z=nz}else{g.tx=g.x;g.tz=g.z;g.att=.4}}
   const ry=d>.03?Math.atan2(dx,dz):(g.ry||0);g.ry=ry;mfPoser(g.cle,g.n,g.x,alt(g.x,g.z)*VX+.02,g.z,ry,clip);const f=MF.L[g.cle];if(f){f.vu=MF.t;if(f.mx&&f.o)f.mx.update(dt)}});
  // les figurines du lieu se dessinent à l'échelle du zoom : un peu plus petites que les maisons
  }catch(e){}}}
@@ -32,3 +32,10 @@ function lieuGens(t){const o=S.t[t.i]||{},B=lieuBatis(t);if(!B.length&&!o.b)retu
  setInterval(()=>{const F0=window.__fps&&__fps.F;if(!F0){fin=0;return}if(!S||!modeHist()||typeof autoD!=='function'||!autoD())return;const idle=performance.now()-act;
   if(!F0.fin&&idle>15000){const n=1+Math.floor(Math.random()*3);S.vivres=(S.vivres||0)+n;log('Le conte raconte la chasse : '+n+' gibier'+(n>1?'s':'')+' rapporté'+(n>1?'s':'')+'.');__fps.fpsQuitter();fin=performance.now()}
   else if(F0.fin&&fin&&performance.now()-fin>4000){fin=0;__fps.fpsQuitter()}},1000)}
+
+// On ne marche ni dans le feu, ni sur l'eau (mer, rivière, bassin) : les cibles et chaque pas sont vérifiés.
+const SOL29={riv:null};
+function rivGrille29(){if(SOL29.riv||!window.RIV126||!RIV126.length)return SOL29.riv;const G=new Set();RIV126.forEach(r=>(r.P||[]).forEach(q=>{const i=Math.floor(q[0]/.1),j=Math.floor(q[1]/.1);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)G.add((i+a)+'|'+(j+b))}));return SOL29.riv=G}
+function solOk29(x,z){try{if(alt(x,z)<=1)return false;const G=rivGrille29();if(G&&G.has(Math.floor(x/.1)+'|'+Math.floor(z/.1)))return false;
+ if(typeof FEU135!=='undefined'&&FEU135.L)for(const f of FEU135.L)if(f.visible&&Math.hypot(f.position.x-x,f.position.z-z)<.08+.15*f.scale.x)return false;return true}catch(e){return true}}
+function cheminOk29(x0,z0,x1,z1){for(let k=1;k<=6;k++){const u=k/6;if(!solOk29(x0+(x1-x0)*u,z0+(z1-z0)*u))return false}return true}
