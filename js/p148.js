@@ -9,10 +9,13 @@ function houleMat148(){if(HOU148.mat)return HOU148.mat;HOU148.mat=new THREE.Shad
  fragmentShader:'varying vec2 vU;uniform float t;uniform float force;float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}'+
  'void main(){float d=vU.y;float vit=.35+force*.6;float ph=fract(d*(3.+force*2.)+t*vit*.5);float crete=smoothstep(.0,.06,ph)*smoothstep(.22,.06,ph);float brise=n(vec2(vU.x*260.,d*8.+t))*.5+.5;'+
  'float rivage=smoothstep(.25,0.,d)*(.6+.4*sin(vU.x*500.+t*2.));float a=(crete*brise*(.35+force*.6)*(1.-d)+rivage*.55)*smoothstep(1.,.7,d);gl_FragColor=vec4(vec3(.96,.98,1.),a);}'});return HOU148.mat}
-function houleBatir148(){if(typeof alt!=='function'||typeof xz!=='function')return null;const [cx,cz]=xz(55.53,-21.12),N=420,P=[];
+function houleBatir148(){if(typeof alt!=='function'||typeof xz!=='function')return null;const [cx,cz]=xz(55.53,-21.12),N=900,P=[];
  for(let i=0;i<=N;i++){const a=i/N*6.2832,dx=Math.cos(a),dz=Math.sin(a);let r=2,last=null;while(r<60){const x=cx+dx*r,z=cz+dz*r;if(alt(x,z)<=0){last=[x,z];break}r+=.08}if(last)P.push([last[0],last[1],dx,dz])}
- if(P.length<50)return null;const V=[],UV=[],I=[],L=.9,K=4;
- P.forEach((p,i)=>{for(let k=0;k<=K;k++){const d=k/K*L;V.push(p[0]+p[2]*d,.008,p[1]+p[3]*d);UV.push(i/P.length,k/K)}if(i){const o=(i-1)*(K+1);for(let k=0;k<K;k++){const a=o+k,b=o+k+1,c=o+K+1+k,e=o+K+2+k;I.push(a,c,b,b,c,e)}}});
+ if(P.length<50)return null;
+ // lissage du trait de côte (sinon des marches et des pointes dessinent des polygones dans le lagon)
+ for(let it=0;it<4;it++){const Q=P.map((p,i)=>{const a=P[(i-1+P.length)%P.length],b=P[(i+1)%P.length];return [(a[0]+2*p[0]+b[0])/4,(a[1]+2*p[1]+b[1])/4,(a[2]+2*p[2]+b[2])/4,(a[3]+2*p[3]+b[3])/4]});P.splice(0,P.length,...Q)}
+ const V=[],UV=[],I=[],L=.7,K=4;
+ P.forEach((p,i)=>{const dl=Math.hypot(p[2],p[3])||1;for(let k=0;k<=K;k++){const d=k/K*L;V.push(p[0]+p[2]/dl*d,.008,p[1]+p[3]/dl*d);UV.push(i/P.length,k/K)}if(i){const q=P[i-1];if(Math.hypot(p[0]-q[0],p[1]-q[1])>.6)return;const o=(i-1)*(K+1);for(let k=0;k<K;k++){const a=o+k,b=o+k+1,c=o+K+1+k,e=o+K+2+k;I.push(a,c,b,b,c,e)}}});
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(V,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(UV,2));g.setIndex(I);
  const m=new THREE.Mesh(g,houleMat148());m.renderOrder=3;m.frustumCulled=false;return m}
 (function boucle148(){requestAnimationFrame(boucle148);try{if(typeof scene==='undefined'||!scene||!S)return;if(!HOU148.M){HOU148.M=houleBatir148();if(HOU148.M)scene.add(HOU148.M);return}

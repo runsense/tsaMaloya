@@ -145,7 +145,8 @@ function conteClic135(t,id,suite){try{const a=actions(t).find(x=>x.id===id);if(!
  const ecran=()=>{const v=new THREE.Vector3(t.x,Math.max(0,alt(t.x,t.z))*VX,t.z).project(cam);const r=$('c').getBoundingClientRect();return [r.left+(v.x+1)/2*r.width,r.top+(1-v.y)/2*r.height]};
  setTimeout(()=>{try{const [x,y]=ecran();cur.style.left=x+'px';cur.style.top=y+'px'}catch(e){}},500);
  setTimeout(()=>{try{const [x,y]=ecran();choisirTuile(t);const L=[];[...document.querySelectorAll('#side button')].filter(b=>!b.disabled&&b.textContent.trim()).slice(0,9).forEach(b=>{const t0=b.querySelector('b');L.push(['▸ '+(t0?t0.textContent:b.textContent).trim().replace(/\s+/g,' ').slice(0,60),()=>{}])});
-   if(L.length){menuCtx(x+6,y+6,lieuDe(t)||lieuProche(t)||t.biome,L);const m=$('mCtx');if(m){const b=[...m.querySelectorAll('button')].find(b=>b.textContent.includes(a.n));if(b){b.classList.add('vise135');const r=b.getBoundingClientRect();cur.style.left=(r.left+20)+'px';cur.style.top=(r.top+r.height/2)+'px'}}}}catch(e){}},1200);
+   try{souris157(x,y)}catch(e){}
+   }catch(e){}},1200);
  setTimeout(()=>{try{const m=$('mCtx');if(m)m.remove();cur.hidden=true;if(S&&!S.fin&&agir(t,id)&&suite)suite();}catch(e){}},2300);return true}catch(e){return false}}
 //    si un choix du menu ouvre un sous-choix dans le panneau (bâtir, préparer…), le panneau se montre le temps de choisir
 {let av=null;addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#mCtx button');if(!b||!S)return;const sd=$('side');av={h:sd?sd.innerHTML.length+'|'+sd.querySelectorAll('button').length:'',br:S.bras,t:performance.now()};

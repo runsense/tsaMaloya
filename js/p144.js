@@ -21,7 +21,7 @@ function tpl144(n,o){return M144.tpl[n]||(M144.tpl[n]=inst144(n,o).then(r=>r.w))
 function habille144(g,n,o){inst144(n,o).then(r=>{g.children.forEach(c=>{if(!c.userData.m144)c.visible=false});g.add(r.w)}).catch(()=>{})}
 {const t0=tortue138;tortue138=function(){const g=t0();habille144(g,'sk_tortue',{h:.075,long:true,yaw:0});return g}}
 {const r0=roussette138;roussette138=function(){const g=r0();habille144(g,'sk_roussette',{h:.16,long:true,yaw:Math.PI,vit:1.3});return g}}
-{const r0=rapace138;rapace138=function(blanc){const g=r0(blanc);habille144(g,blanc?'oi_phaeton':'oi_papangue',blanc?{h:.32,long:true,yaw:-Math.PI/2,tint:0xf4f2ec}:{h:.3,long:true,rz:Math.PI/2,yaw:-Math.PI/2});return g}}
+{const r0=rapace138;rapace138=function(blanc){const g=r0(blanc);habille144(g,blanc?'oi_phaeton':'oi_papangue',blanc?{h:.32,long:true,yaw:-Math.PI/2,tint:0xf4f2ec}:{h:.3,long:true,rz:-Math.PI/2,yaw:-Math.PI/2,tint:0x9a7a5e});return g}}
 {const i0=ibis139;ibis139=function(){const g=i0();habille144(g,'sk_ibis',{h:.12});return g}}
 {const o0=oiseau135;oiseau135=function(esp){const g=o0(esp);try{if(esp==='perroquets')habille144(g,'sk_perroquet',{h:.07,long:true,yaw:-Math.PI/2,tint:0x3f8a3a,remplace:true});
   else if(esp==='mascarin')habille144(g,'sk_perroquet',{h:.07,long:true,yaw:-Math.PI/2,tint:0x6a4a32,remplace:true});

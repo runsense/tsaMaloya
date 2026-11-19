@@ -13,7 +13,7 @@ const VPB151={sc:null,L:[],pap:null};
 (function ois151(){requestAnimationFrame(ois151);try{const V=(typeof VP!=='undefined'&&VP)||(typeof F!=='undefined'&&F&&!F.fin&&F.sc&&F.cam&&F);if(!V||!V.sc||!V.cam){VPB151.sc=null;return}
   if(VPB151.sc!==V.sc){VPB151.sc=V.sc;VPB151.L=[];VPB151.pap=null;const nb=8;for(let i=0;i<nb;i++){const o=new THREE.Group();V.sc.add(o);VPB151.L.push({o,ph:Math.random()*6,r:6+Math.random()*4,h:9+Math.random()*3});
     if(typeof inst144==='function')inst144('sk_colibri',{h:.28,long:true,tint:0x6a7a50,vit:.8}).then(r=>o.add(r.w)).catch(()=>{})}
-   const pp=new THREE.Group();V.sc.add(pp);VPB151.pap=pp;if(typeof inst144==='function')inst144('oi_papangue',{h:1.6,long:true,rz:Math.PI/2,yaw:-Math.PI/2}).then(r=>pp.add(r.w)).catch(()=>{})}
+   const pp=new THREE.Group();V.sc.add(pp);VPB151.pap=pp;if(typeof inst144==='function')inst144('oi_papangue',{h:1.6,long:true,rz:-Math.PI/2,yaw:-Math.PI/2,tint:0x9a7a5e}).then(r=>pp.add(r.w)).catch(()=>{})}
   const t=performance.now()/1000,c=V.cam.position,pl=typeof pluieF106==='function'?pluieF106():0;
   VPB151.L.forEach((b,i)=>{const k=t*.35+b.ph,x=c.x+Math.cos(k)*b.r+Math.sin(t*.7+i)*.6,z=c.z-12+Math.sin(k*1.2)*b.r,y=(typeof V.h==='function'?V.h(x,z):0)+b.h+Math.sin(t*1.3+i)*.4;const px=b.o.position.x,pz=b.o.position.z;b.o.position.set(x,y,z);b.o.rotation.y=Math.atan2(x-px,z-pz);b.o.visible=pl<.5});
   if(VPB151.pap){const k=t*.16,x=c.x+Math.cos(k)*18,z=c.z-20+Math.sin(k)*14;const px=VPB151.pap.position.x,pz=VPB151.pap.position.z;VPB151.pap.position.set(x,(typeof V.h==='function'?V.h(x,z):0)+22,z);VPB151.pap.rotation.y=Math.atan2(x-px,z-pz);VPB151.pap.rotation.z=.3+.12*Math.sin(t*.7)}
