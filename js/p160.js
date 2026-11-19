@@ -5,12 +5,15 @@
 //    éviter les fosses, ramasser ce qu'on trouve (os d'ancêtres, pièces de pirates, poteries). Tant qu'elle n'est pas sûre, on ne peut pas y monter.
 // 3. Quand on monte à la caverne (cyclone, battue), on voit les gens des camps choisis y aller et s'y abriter.
 const CAV160={spr:{},ln:null,cle:''};
-function cavOk160(){if(!S)return {};if(!S.cavOk160){S.cavOk160={};Object.keys(S.cav97||{}).forEach(i=>S.cavOk160[i]=1)}return S.cavOk160}
+function cavOk160(){if(!S)return {};if(!S.cavOk160)S.cavOk160={};return S.cavOk160}
 // seules les cavernes explorées comptent pour s'abriter
 {const c0=cav97Connue;cav97Connue=function(){const C=cavOk160(),cs=camps();return Object.keys(C).some(i=>cs.some(c=>hd(c,T[+i])<=4))}}
 function cavSure160(){const C=cavOk160(),cs=camps();let best=null,bd=99;Object.keys(C).forEach(i=>{cs.forEach(c=>{const d=hd(c,T[+i]);if(d<bd){bd=d;best=+i}})});return best}
 // en mode conte (lecture automatique), l'exploration se fait d'elle-même, on la raconte
-setInterval(()=>{try{if(!S||S.fin||S.voieC)return;const C=cavOk160();Object.keys(S.cav97||{}).forEach(i=>{if(C[i])return;if(typeof autoD==='function'&&autoD()){C[i]=1;journal('Les éclaireurs ont fouillé la caverne '+(lieuProche(T[+i])||'')+' à la torche : pas de cochons, pas de fosse cachée. On pourra s’y abriter.')}})}catch(e){}},3000);
+// en mode conte : une seule caverne est fouillée d'elle-même, la plus proche d'un camp, et seulement quand un cyclone approche et qu'aucune n'est sûre
+setInterval(()=>{try{if(!S||S.fin||S.voieC||typeof autoD!=='function'||!autoD())return;const C=cavOk160();if(!(S.cyc&&S.cyc.in<=3)||Object.keys(C).some(i=>camps().some(c=>hd(c,T[+i])<=4)))return;
+ const L=Object.keys(S.cav97||{}).filter(i=>!C[i]).map(i=>[+i,camps().reduce((m,c)=>Math.min(m,hd(c,T[+i])),99)]).filter(x=>x[1]<=4).sort((a,b)=>a[1]-b[1]);if(!L.length)return;const i=L[0][0];
+ C[i]=1;journal('Le cyclone approche : les éclaireurs fouillent la caverne '+(lieuProche(T[i])||'')+' à la torche. Pas de cochons, pas de fosse cachée : on pourra s’y abriter.')}catch(e){}},3000);
 {const a0=actions;actions=function(t){const A=a0(t);try{if(S&&!S.voieC&&t&&S.cav97&&S.cav97[t.i]&&!cavOk160()[t.i])A.unshift({id:'cav160',n:'🕳 Explorer la caverne',c:1,d:'Petit jeu : à la torche, regardez partout, chassez les cochons marrons, évitez les fosses. Une fois sûre, on pourra s’y réfugier quand viendra le cyclone.'})}catch(e){}return A}}
 {const g0=agir;agir=function(t,id,l){if(id!=='cav160')return g0.apply(this,arguments);if(!l){if(S.bras<1)return false;snap();S.bras-=1}
  cav160Jeu(t.i,ok=>{if(ok){cavOk160()[t.i]=1;journal('La caverne '+(lieuProche(t)||'des remparts')+' est sûre : on l’a fouillée de bout en bout. Les camps proches pourront y monter quand viendra le cyclone.')}else journal('La torche s’est éteinte avant qu’on ait tout vu : la caverne n’est pas encore sûre. Il faudra y retourner.');try{sauve();rafraichir();panneau()}catch(e){}});return true}}
