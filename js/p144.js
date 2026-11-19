@@ -50,7 +50,7 @@ function pool144(L,n,nom,o){const k=nom;while(L.length+(NB144.att[k]||0)<n){NB14
   // scinques : rivages et basses pentes sèches, tant qu'ils vivent
   Q=[];if(on&&!nuit&&(vivant('grandScinque')||vivant('scinqueBojer')))proche.forEach(t=>{if(Q.length<5&&t.alt<500&&!t.forest&&h(t,8)<.4)Q.push(t)});pool144(NB144.sci,Q.length,'sk_scinque',{h:.06,long:true,tint:0x8a7a5a,remplace:true});Q.forEach((t,i)=>{const w=NB144.sci[i];if(w){const [x,z]=erre(t,.2,.15,h(t,9)*6);pose(w,x,z)}});
   // rats : arrivés par les navires ; la nuit, autour des cases, des greniers et des villes
-  Q=[];if(on&&nuit&&S.year>=1670)proche.forEach(t=>{const o=S.t[t.i];if(Q.length<6&&(o.c||o.b==='camp'))Q.push(t)});pool144(NB144.rat,Q.length,'sk_rat',{h:.035,long:true,yaw:Math.PI/2});Q.forEach((t,i)=>{const w=NB144.rat[i];if(w){const [x,z]=erre(t,.35,.25,i*1.7);pose(w,x,z)}});
+  Q=[];if(on&&(nuit||modeHist())&&S.year>=1670)proche.forEach(t=>{const o=S.t[t.i];if(Q.length<6&&(o.c||o.b==='camp'))Q.push(t)});pool144(NB144.rat,Q.length,'sk_rat',{h:.035,long:true,yaw:Math.PI/2});Q.forEach((t,i)=>{const w=NB144.rat[i];if(w){const [x,z]=erre(t,.35,.25,i*1.7);pose(w,x,z)}});
  }catch(e){}return r}}
 // --- décor : cocotiers des côtes, rochers, branches et troncs morts en forêt ---
 const DEC144={G:null,cle:''};
