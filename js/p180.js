@@ -40,9 +40,9 @@ try{['resurgence177','grossesPluies179','glissement179'].forEach(k=>{if(EV[k])EV
 // second arc très pâle, pieds qui s'effacent avant de toucher le relief, et un voile irrégulier qui le mêle à la pluie =====
 (function arc180(){try{if(typeof AV146==='undefined'||!AV146.arc){setTimeout(arc180,1500);return}const a=AV146.arc;if(a.userData.v180)return;a.userData.v180=1;
  const g=new THREE.RingGeometry(7.6,12,128,6,0,Math.PI);
- const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{op:{value:0},t:{value:0}},
-  vertexShader:'varying vec2 vp;void main(){vp=position.xy;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-  fragmentShader:'uniform float op;uniform float t;varying vec2 vp;'+
+ const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{op:{value:0},t:{value:0},ks:{value:1},cote:{value:1}},
+  vertexShader:'attribute float hr;varying vec2 vp;varying float vh;void main(){vp=position.xy;vh=hr;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:'uniform float op;uniform float t;uniform float ks;uniform float cote;varying vec2 vp;varying float vh;'+
    'vec3 hsv(float h){vec3 k=clamp(abs(mod(h*6.+vec3(0.,4.,2.),6.)-3.)-1.,0.,1.);return k;}'+
    'vec3 spec(float x){x=clamp(x,0.,1.);return mix(vec3(1.),hsv(clamp((.88-x)/.76,0.,1.)*.76),.72);}'+
    'float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}'+
@@ -51,9 +51,15 @@ try{['resurgence177','grossesPluies179','glissement179'].forEach(k=>{if(EV[k])EV
    'float x=(r-9.0)/1.3;float b=smoothstep(-.3,.2,x)*(1.-smoothstep(.8,1.3,x));vec3 c=spec(x)*b*.55;'+
    'float dedans=smoothstep(-1.4,-.1,x)*(1.-smoothstep(-.1,.1,x))*.1;c+=vec3(dedans);'+
    'float x2=(r-10.9)/.9;float b2=smoothstep(-.3,.2,x2)*(1.-smoothstep(.8,1.3,x2))*.12;c+=spec(1.-x2)*b2;'+
-   'float pied=smoothstep(.2,.78,a);'+
+   'float sol=smoothstep(.25*ks,1.6*ks,vh);'+
+   'float haut=mix(1.,.35,smoothstep(.15,1.,a));'+
+   'float flanc=mix(1.,.45,smoothstep(-1.,1.,vp.x/r*cote));'+
+   'float pied=sol*haut*flanc*smoothstep(.0,.2,a);'+
    'float voile=.45+.55*n(vec2(vp.x*.7+3.,vp.y*.2+t*.04))*(.55+.45*n(vec2(vp.x*6.,vp.y*.8-t*.9)));'+
    'gl_FragColor=vec4(c*pied*voile*op,1.0);}'});
- a.geometry.dispose();a.geometry=g;const m0=a.material;a.material=m;m.opacity=m0.opacity;
+ g.setAttribute('hr',new THREE.Float32BufferAttribute(new Float32Array(g.attributes.position.count).fill(9),1));a.geometry.dispose();a.geometry=g;
+ // la hauteur de chaque point de l'arc au-dessus du relief : près du sol il s'efface (il commence plus haut sur une montagne, plus bas sur la plaine)
+ setInterval(()=>{try{if(!a.visible||typeof alt!=='function')return;a.updateMatrixWorld();const P=g.attributes.position,H=g.attributes.hr,v=new THREE.Vector3();for(let i=0;i<P.count;i++){v.set(P.getX(i),P.getY(i),0).applyMatrix4(a.matrixWorld);H.setX(i,v.y-Math.max(0,alt(v.x,v.z))*VX)}H.needsUpdate=true;m.uniforms.ks.value=a.scale.x}catch(e){}},300);
+ m.uniforms.cote.value=Math.random()<.5?1:-1;const m0=a.material;a.material=m;m.opacity=m0.opacity;
  a.onBeforeRender=()=>{m.uniforms.op.value=Math.min(1,m.opacity*2.6);m.uniforms.t.value=performance.now()/1000};
  }catch(e){}})();

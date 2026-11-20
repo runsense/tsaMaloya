@@ -50,9 +50,16 @@ EV.grossesPluies179={sys:1,tag:'Nature',an:'',t:'Les grosses pluies sur les Haut
  o:[{n:'Rester à l’abri et attendre la décrue',d:'Cohésion +1.',fx:{coh:1},hist:1}]};
 // ===== 4) des rivières qui virent au marron, et les glissements de terrain =====
 // Pendant les grosses pluies, certaines rivières (pas toutes) charrient la terre des pentes : l'eau devient marron. En cyclone, toutes.
-setInterval(()=>{try{if(typeof RIVG126==='undefined'||!RIVG126.g||!S)return;const G=grossePluie179('centre'),cyc=S.cyc&&S.cyc.in<=0;
+// la couleur passe en fondu : l'eau se trouble peu à peu (une vingtaine de secondes), puis s'éclaircit lentement après la pluie
+const MUD179={a:0,b:0,der:performance.now()};
+function mudMat179(k){if(RIVM147[k])return RIVM147[k];const m=eauRiv147(false).clone();m.uniforms.boue.value=0;RIVM147[k]=m;return m}
+(function mudBoucle179(){requestAnimationFrame(mudBoucle179);try{if(typeof RIVG126==='undefined'||!RIVG126.g||!S||typeof eauRiv147!=='function')return;const now=performance.now(),dt=Math.min(.2,(now-MUD179.der)/1000);MUD179.der=now;
+ const G=grossePluie179('centre'),cyc=S.cyc&&S.cyc.in<=0,ta=cyc?1:G>=.4?Math.min(1,.55+G*.45):0,tb=cyc?.9:0;
+ const va=ta>MUD179.a?.05:.02;MUD179.a+=(ta-MUD179.a)*Math.min(1,dt*va);MUD179.b+=(tb-MUD179.b)*Math.min(1,dt*(tb>MUD179.b?.05:.02));
+ const m1=mudMat179('m1'),m2=mudMat179('m2');m1.uniforms.boue.value=MUD179.a;m2.uniforms.boue.value=MUD179.b;
+ if(now-(MUD179.ch||0)<500)return;MUD179.ch=now;
  RIVG126.g.children.forEach(m=>{if(!m.material||!m.geometry||m.material.type!=='ShaderMaterial')return;if(m.userData.mud==null){const p=m.geometry.attributes.position;m.userData.mud=rndH(Math.round(p.getX(0)*7)+Math.round(p.getZ(0)*13)*.37)}
-  const boue=cyc||(G>=.4&&m.userData.mud<.5);const want=eauRiv147(boue);if(m.material!==want)m.material=want})}catch(e){}},1000);
+  const want=m.userData.mud<.5?m1:m2;if(m.material!==want)m.material=want})}catch(e){}})();
 // Glissements : sur une pente très raide, un pan de terre part et descend en coulée jusqu'au fond. Plus fréquents quand une saison sèche a fissuré le sol.
 const GL179={L:[],ns:-1};
 function glisser179(t){const g=new THREE.Group();const P=[[t.x,t.z]];let x=t.x,z=t.z;for(let k=0;k<40;k++){let bh=alt(x,z),bx=null,bz=null;for(let a=0;a<12;a++){const an=a/12*6.283,X=x+Math.cos(an)*.04,Z=z+Math.sin(an)*.04,h=alt(X,Z);if(h<bh){bh=h;bx=X;bz=Z}}if(bx==null)break;x=bx;z=bz;P.push([x,z]);if(window.RIV126&&RIV126.some(r=>r.P.some(q=>Math.hypot(q[0]-x,q[1]-z)<.05)))break}

@@ -21,18 +21,20 @@ function g168Carte(k,phase){const c=g168Toile();if(!c)return;const W=c.width=c.c
  const L0=30,L1=100,A0=30,A1=-27,top=H*.1,hh=H*.62,sc=Math.min(W/(L1-L0),hh/(A0-A1)),ox=(W-sc*(L1-L0))/2,oy=top+(hh-sc*(A0-A1))/2;const P=(lo,la)=>[ox+(lo-L0)*sc,oy+(A0-la)*sc];
  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0e3550');g.addColorStop(1,'#081e30');x.fillStyle=g;x.fillRect(0,0,W,H);
  const poly=(L,dl,da,f,s)=>{x.beginPath();L.forEach(([lo,la],i)=>{const [a,b]=P(lo+dl,la+da);i?x.lineTo(a,b):x.moveTo(a,b)});x.closePath();x.fillStyle=f;x.fill();if(s){x.strokeStyle=s;x.lineWidth=1.5;x.stroke()}};
- poly(AFR168.slice(0,10),0,0,'#5b6a4a');poly(AFR168.slice(10),0,0,'#5b6a4a','#7a8a64');poly(MDG168,0,0,'#5b6a4a','#7a8a64');
+ poly(AFR168.slice(0,10),0,0,'#5b6a4a');poly(AFR168.slice(10).concat([[20,12]]),0,0,'#5b6a4a','#7a8a64');poly(MDG168,0,0,'#5b6a4a','#7a8a64');
  // l'Inde : posée sur le point chaud il y a 66 millions d'années, puis remontée vers le nord
- const u=phase===1?0:Math.min(1,k*1.05),dl=-19.5*(1-u),da=-40*(1-u);poly(IND168,dl,da,'#7a7050','#a09468');poly(LKA168,dl,da,'#7a7050');
- const [hx,hy]=P(55.5,-21.1),t=performance.now()/1000;
+ const u=phase===1?0:Math.min(1,k*1.05),dl=-14.5*(1-u),da=-31.5*(1-u);
+ // le point chaud vu depuis l'Afrique : sous les Mascareignes, puis sous Maurice, puis sous La Réunion (c'est la plaque qui glisse au-dessus)
+ const HP=[[0,60.5,-12.5],[.72,60.5,-12.5],[.86,57.5,-20.2],[.97,55.5,-21.1],[1,55.5,-21.1]];let hlo=55.5,hla=-21.1;for(let i=1;i<HP.length;i++)if(u<=HP[i][0]){const f=(u-HP[i-1][0])/Math.max(1e-6,HP[i][0]-HP[i-1][0]);hlo=HP[i-1][1]+(HP[i][1]-HP[i-1][1])*f;hla=HP[i-1][2]+(HP[i][2]-HP[i-1][2])*f;break}poly(IND168,dl,da,'#7a7050','#a09468');poly(LKA168,dl,da,'#7a7050');
+ const [hx,hy]=P(hlo,hla),t=performance.now()/1000;
  // le Deccan qui brûle
  if(phase===1){const [dx,dy]=P(75+dl,19+da),r=sc*(3.5+1.2*k);const gd=x.createRadialGradient(dx,dy,0,dx,dy,r*1.6);gd.addColorStop(0,'rgba(255,150,40,.95)');gd.addColorStop(.5,'rgba(220,60,20,.55)');gd.addColorStop(1,'rgba(220,60,20,0)');x.fillStyle=gd;x.beginPath();x.arc(dx,dy,r*1.6,0,7);x.fill()}
  // le point chaud, fixe
  const gh=x.createRadialGradient(hx,hy,0,hx,hy,sc*2.6);gh.addColorStop(0,'rgba(255,120,30,.9)');gh.addColorStop(1,'rgba(255,120,30,0)');x.fillStyle=gh;x.beginPath();x.arc(hx,hy,sc*2.6*(.9+.1*Math.sin(t*1.3)),0,7);x.fill();
  x.font='600 '+Math.max(12,sc*.9|0)+'px system-ui';x.textAlign='left';x.textBaseline='middle';x.fillStyle='#ffd9a0';x.fillText('point chaud',hx+sc*2.2,hy+sc*1.6);
  // la traînée d'îles
- if(phase===2)ILE168.forEach(([n,lo,la,s])=>{if(u<s)return;const [a,b]=P(lo,la);x.fillStyle='#e8d6a0';x.beginPath();x.arc(a,b,Math.max(3,sc*.45),0,7);x.fill();x.fillStyle='#f4ead0';x.fillText(n,a+sc*.8,b)});
- x.fillStyle='rgba(244,234,208,.85)';x.textAlign='center';x.font='600 '+Math.max(13,sc|0)+'px system-ui';const [ix,iy]=P(78+dl,22+da);x.fillText('Inde',ix,iy);const [mx,my]=P(46.5,-19.5);x.fillText('Madagascar',mx,my);const [ax,ay]=P(28,4);x.fillText('Afrique',ax,ay)}
+ if(phase===2)ILE168.forEach(([n,lo,la,s],i)=>{const ind=i<3;if(ind?(hla-da>la+.5):u<s)return;const [a,b]=ind?P(lo+dl,la+da):P(lo,la);x.fillStyle='#e8d6a0';x.beginPath();x.arc(a,b,Math.max(3,sc*.45),0,7);x.fill();x.fillStyle='#f4ead0';if(n==='La Réunion'){x.textAlign='center';x.fillText(n,a-sc*.3,b+sc*2.6);x.textAlign='left'}else x.fillText(n,a+sc*.8,n==='Maurice'?b-sc*.6:b)});
+ x.fillStyle='rgba(244,234,208,.85)';x.textAlign='center';x.font='600 '+Math.max(13,sc|0)+'px system-ui';const [ix,iy]=P(78+dl,22+da);x.fillText('Inde',ix,iy);const [mx,my]=P(46.5,-19.5);x.fillText('Madagascar',mx,my);const [ax,ay]=P(34,2);x.fillText('Afrique',ax,ay)}
 // ----- 2. sous la mer -----
 const BUL168=[];
 function g168SousMer(k){const c=g168Toile();if(!c)return;const W=c.width=c.clientWidth,H=c.height=c.clientHeight,x=c.getContext('2d'),t=performance.now()/1000;

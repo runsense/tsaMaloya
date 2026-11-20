@@ -975,7 +975,7 @@ function genese(done){const [pnx,pnz]=xz(55.489,-21.099),[fx_,fz_]=xz(55.714,-21
  const S0=(U)=>{U.gen.value=1;cacherDecor()};
  cineJouer([
  {d:6500,cam:[cx,cz,95,.3,.55],init:U=>{S0(U);U.ech.value=.02;U.dec.value=-6;U.fz.value=0;U.lave.value=0},txt:'<small>Il y a plus de 60 millions d’années</small>Sous l’Inde, un point chaud perce la croûte de la Terre. La lave noie le Deccan.'},
- {d:6500,cam:[cx,cz,85,.6,.6],txt:'<small>Des millions d’années</small>L’Inde remonte vers le nord. Le point chaud reste en place et laisse une traînée d’îles : les Laquedives, les Maldives, les Chagos, puis Maurice.'},
+ {d:6500,cam:[cx,cz,85,.6,.6],txt:'<small>Des millions d’années</small>L’Inde remonte vers le nord et laisse une traînée d’îles : les Laquedives, les Maldives, les Chagos. Puis le feu passe sous les Mascareignes : il fait naître Maurice, puis La Réunion.'},
  {d:7000,cam:[pnx,pnz,60,.9,.75],init:U=>{U.lc.value.set(pnx,pnz)},f:(U,k)=>{U.dec.value=-6+3.2*k;U.ech.value=.02+.25*k;U.lave.value=k},txt:'<small>Plus de 4 000 mètres sous la mer</small>Sur le fond de l’océan, la lave s’empile, coulée après coulée. Un volcan grandit dans le noir.'},
  {d:8000,cam:[pnx,pnz,48,1.3,.85],f:(U,k)=>{U.dec.value=-2.8+2.8*k;U.ech.value=.27+.73*k;U.lave.value=1-.3*k},txt:'<small>Il y a un peu plus de 2 millions d’années</small>Le Piton des Neiges perce la surface. L’île est née.'},
  {d:7500,cam:[fx_,fz_,45,1.9,.85],init:U=>{U.lc.value.set(fx_,fz_)},f:(U,k)=>{U.fz.value=k;U.lave.value=.4+.6*Math.sin(k*Math.PI)},txt:'<small>Il y a environ 500 000 ans</small>À l’est, un second volcan s’ouvre : la Fournaise.'},
