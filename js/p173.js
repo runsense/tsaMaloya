@@ -23,3 +23,6 @@ setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;NAG173.t=(N
     const r=(bas.geometry.parameters.radius||.15)*.45,a=now*.25+gi;place173('bn'+gi,col?'homme_chemise':'jeune_pagne',.16,'nager',p.x+Math.cos(a)*r,p.y-.012,p.z+Math.sin(a)*r,-a+Math.PI/2);
     if(!col)place173('bl'+gi,'femme_drapee',.16,'lavandiere',p.x+r*1.9,p.y-.004,p.z,-Math.PI/2)})}}
  for(const k in NAG173.L){const f=NAG173.L[k];if(f.vu!==NAG173.t){if(f.g)scene.remove(f.g);delete NAG173.L[k]}}}catch(e){}},150);
+// ===== le conte suit l'histoire : laissé à lui-même, il ne prend jamais un choix qui ouvre une utopie (comptoirs, café, course…) =====
+{const cc=choixConte;const UTO=/\.(centre|ombre|sir|roy|lib|anc|abol|maur|angl|cors|arab|vichy|comp|cafe|polit)\s*=\s*1/;
+ choixConte=function(e,id){const k=cc.apply(this,arguments);try{const O=id&&typeof optsDe==='function'?optsDe(id,e):e.o;if(!O||!O[k])return k;const ut=o=>o&&o.f&&UTO.test(String(o.f));if(!ut(O[k]))return k;const h=O.findIndex(o=>o.hist&&!ut(o));if(h>=0)return h;const j=O.findIndex(o=>!ut(o));return j>=0?j:k}catch(x){return k}}}
