@@ -3,7 +3,7 @@
 const DUEL184={cache:null,cle:''};
 const SCENE184={milicien:'canne',commandeur:'usine',mussard:'bebour',anglais:'chaloupe',ombre:'fournaise'};
 const NOMSC184={mafate:'Rempart de Mafate',canne:'Champ de canne, Saint-Paul',usine:'Usine sucrière, Saint-André',bebour:'Forêt de Bébour',chaloupe:'La Grande Chaloupe',fournaise:'Piton de la Fournaise'};
-function fondDuel184(x,W,H,sol,lk,t){const sc=SCENE184[lk]||'mafate',cle=sc+W+'x'+H;
+function fondDuel184(x,W,H,sol,lk,t){const sc=SCENE184[lk]||'mafate',cle=sc+W+'x'+H+'s'+sol;
  if(DUEL184.cle!==cle){DUEL184.cle=cle;DUEL184.cache=peint184(sc,W,H,sol)}
  x.drawImage(DUEL184.cache,0,0);anim184(x,sc,W,H,sol,t);
  x.save();x.font='italic 13px Georgia,serif';x.fillStyle='rgba(243,233,208,.7)';x.textAlign='right';x.fillText(NOMSC184[sc],W-14,H-12);x.restore()}
@@ -73,3 +73,4 @@ function anim184(x,sc,W,H,sol,t){
  if(sc==='bebour'){x.fillStyle='rgba(230,236,240,.08)';x.beginPath();x.ellipse((t*20)%(W+400)-200,sol*.85,260,30,0,0,7);x.fill()}}
 {const st=document.createElement('style');st.textContent='.gpad small.tk{display:block;opacity:.6;font-size:.7em}#duV,#duC{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;color:#f3e9d0;font:16px/1.5 Georgia,serif;text-shadow:0 2px 8px #000;width:min(620px,92vw);z-index:5;animation:duIn .5s ease-out}#duV{background:rgba(20,12,6,.72);border:1px solid #c8a060;border-radius:14px;padding:22px}#duV .vt,#duC .vt{font:900 64px/1 Georgia,serif;letter-spacing:.06em;margin-bottom:8px}.vt.v{color:#ffcf4a;-webkit-text-stroke:2px #3a1a04}.vt.d{color:#d85a4a;-webkit-text-stroke:2px #2a0604}#duV .vs{font-style:italic;opacity:.85;margin-bottom:6px}#duV p{margin:10px 0 16px}#duV small,#duC small{opacity:.6;font-size:.75em;margin-left:4px}@keyframes duIn{from{opacity:0;transform:translate(-50%,-40%) scale(1.15)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}';document.head.appendChild(st)}
 {const st=document.createElement('style');st.textContent='#duel.fin184 .gpad{opacity:0;pointer-events:none;transition:opacity .4s}';document.head.appendChild(st);setInterval(()=>{const d=document.getElementById('duel');if(d&&window.__duel)d.classList.toggle('fin184',!!__duel.fini)},250)}
+{const st=document.createElement('style');st.textContent='#duel .gpad{flex-wrap:wrap;gap:6px;padding:0 8px}#duel .gpad .grp{display:flex;gap:4px;align-items:center;border:1px solid rgba(200,160,96,.35);border-radius:10px;padding:3px 5px;background:rgba(20,12,6,.35)}#duel .gpad .grp>small{font:600 10px Montserrat,sans-serif;color:#e8be5a;writing-mode:vertical-rl;transform:rotate(180deg);opacity:.85}#duel .gpad .grp button{min-width:0;padding:6px 8px;font-size:12px}';document.head.appendChild(st)}

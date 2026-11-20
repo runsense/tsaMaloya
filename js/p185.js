@@ -36,7 +36,7 @@ function mod185(b,s,id){const nm=((b&&b.n)||'').toLowerCase();
   let d=MEM.get(u);const now=performance.now();if(!d){d={x:px,y:py,a:s===0?-Math.PI/2:Math.PI/2,v:0,t:now};MEM.set(u,d)}const dx=px-d.x,dy=py-d.y,dist=Math.hypot(dx,dy);if(dist>.4)d.a=Math.atan2(dy,dx);d.v=d.v*.85+Math.min(3,dist)*.15;d.x=px;d.y=py;
   let att=0;(G&&G.fx||[]).forEach(f=>{if(Math.abs(f.x0-(u.x||0))<.15&&Math.abs(f.y0-(u.y||0))<.15)att=Math.max(att,f.t||.3)});
   const nm=((b&&b.n)||'').toLowerCase(),tir=/fusil|archer|tireur|canon|mousquet/.test(nm)||m==='milicien'&&s===1&&/fusil/.test(nm);
-  const clip=u.peur>0?'marche_blesse':att>0?(tir?'fusil':m==='p1a_chasseur'||m==='femme_sagaie'?'sagaie':'baton_coup'):(d.v>.15||(G&&G.phase==='fight'))?'marche':'garde';
+  const clip=u.peur>0?'marche_blesse':att>0?(tir?'fusil':m==='p1a_chasseur'||m==='femme_sagaie'?'sagaie':'baton_coup'):(d.v>.15||(G&&G.phase==='fight'))?'marche':'repos_debout';
   const t=now/1000,ph=t*(clip==='marche'?1.1:clip==='garde'?.5:1.6)+id*.13;
   // ombre et anneau de camp, comme avant
   x.save();x.fillStyle='rgba(0,0,0,.3)';x.beginPath();x.ellipse(px,py+cs*.06,cs*.3,cs*.22,0,0,7);x.fill();x.strokeStyle=s===0?'#e2bd74':'#c03030';x.lineWidth=3;x.beginPath();x.ellipse(px,py+cs*.06,cs*.36,cs*.27,0,0,7);x.stroke();x.restore();
