@@ -991,7 +991,7 @@ function genese(done){const [pnx,pnz]=xz(55.489,-21.099),[fx_,fz_]=xz(55.714,-21
  {d:6500,cam:[pnx,pnz,45,4.0,.85],txt:'<small>Quelques mois plus tard</small>Les Malgaches quittent le camp et montent vers les remparts, là où personne ne les suivra. Le marronnage est né avec la colonie.'}]),done)}
 // interludes : la nouvelle arrive par navire, puis par la gazette, puis le jour même
 function delaiNouv(y){if(y<1869)return 'Nouvelle partie de Paris il y a '+(3+Math.floor(rnd()*4))+' mois, arrivée par le navire.';if(y<1950)return 'Nouvelle partie de Paris il y a '+(y<1900?5:3)+' semaines, par le canal de Suez.';return 'Nouvelle reçue le jour même.'}
-function formatJ(y){return y<1817?{k:'lettre',titre:'Lettre arrivée par le navire'}:y<1900?{k:'gazette',titre:'Gazette de l’île'}:{k:'journal',titre:'Le journal de l’île'}}
+function formatJ(y){return y<1804?{k:'lettre',titre:'Lettre arrivée par le navire'}:y<1900?{k:'gazette',titre:'Gazette de l’île'}:{k:'journal',titre:'Le journal de l’île'}}
 const INTER=[
  {y:1715,ll:[55.27,-21.01],date:'1715',une:'Le café arrive de Moka',texte:'Des plants de caféier venus d’Arabie sont mis en terre. La Compagnie veut faire de l’île un jardin de café. Il faudra des bras : la traite va s’accélérer.'},
  {y:1794,ll:[55.45,-20.88],date:'16 pluviôse an II',une:'La Convention abolit l’esclavage',texte:'À Paris, l’esclavage est aboli dans toutes les colonies. L’Assemblée coloniale de l’île refuse de publier le décret.'},
