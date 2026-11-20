@@ -9,12 +9,12 @@ fig173.cl={};
 function mer173(t){const N=(t.nb||[]).map(i=>T[i]).filter(Boolean);const w=N.find(u=>u.alt<=1);if(w)return {x:w.x,z:w.z};if(N.length>=6)return null;let cx=0,cz=0;N.forEach(u=>{cx+=u.x-t.x;cz+=u.z-t.z});const l=Math.hypot(cx,cz)||1,d=Math.hypot(N[0].x-t.x,N[0].z-t.z)||.6;return {x:t.x-cx/l*d,z:t.z-cz/l*d}}
 const beau173=()=>{try{return !(typeof pluie==='function'&&pluie())&&!(S.cyc&&S.cyc.in<=1)}catch(e){return true}};
 function place173(cle,n,h,clip,x,y,z,ry){let f=NAG173.L[cle];if(!f){f=NAG173.L[cle]={g:null,att:1};fig173(n,h,clip).then(g=>{if(NAG173.L[cle]!==f)return;f.g=g;scene.add(g)}).catch(()=>{delete NAG173.L[cle]})}f.vu=NAG173.t;if(f.g){f.g.position.set(x,y,z);f.g.rotation.y=ry}}
-setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;NAG173.t=(NAG173.t||0)+1;const ph=typeof jourPh==='function'?jourPh():.5,jour=ph>.18&&ph<.7,voir=jour&&beau173()&&dist<12&&!(typeof VP!=='undefined'&&VP)&&!(typeof CINE!=='undefined'&&CINE);
+setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;NAG173.t=(NAG173.t||0)+1;const ph=typeof jourPh==='function'?jourPh():.5,jour=ph>.18&&ph<.7,voir=jour&&beau173()&&dist<18&&!(typeof VP!=='undefined'&&VP)&&!(typeof CINE!=='undefined'&&CINE);
  const now=performance.now()/1000,col=!!S.voieC;
  if(voir){
   // 1. le lagon de l'Ouest (Saint-Gilles, la Saline, Saint-Leu, l'Étang-Salé) : des nageurs et des pêcheurs à pied dans l'eau
-  let n=0;T.forEach(t=>{if(n>=3||!seen(t)||t.alt<=0)return;const g=LL99(t);if(!(g.lon<55.4&&g.lat<-21.02&&g.lat>-21.3))return;if(Math.hypot(t.x-camT.x,t.z-camT.z)>dist*.9+2)return;const m=mer173(t);if(!m)return;
-   if(rndH(t.i*3.3+Math.floor(now/600))>.6)return;n++;const cx=t.x+(m.x-t.x)*.62,cz=t.z+(m.z-t.z)*.62,dx=m.x-t.x,dz=m.z-t.z;
+  let n=0;T.forEach(t=>{if(n>=4||!seen(t)||t.alt<=0)return;const g=LL99(t);if(!(g.lon<55.4&&g.lat<-21.02&&g.lat>-21.3))return;if(Math.hypot(t.x-camT.x,t.z-camT.z)>dist*1.1+3)return;const m=mer173(t);if(!m)return;
+   if(rndH(t.i*3.3+Math.floor(now/600))>.8)return;n++;const cx=t.x+(m.x-t.x)*.62,cz=t.z+(m.z-t.z)*.62,dx=m.x-t.x,dz=m.z-t.z;
    const a=now*.08+t.i,x=cx+Math.cos(a)*.18,z=cz+Math.sin(a)*.12;place173('lg'+t.i,col?'homme_chemise':'jeune_pagne',.16,'nager',x,-.012,z,-a+Math.PI/2);
    place173('lp'+t.i,col?'femme_travail':'femme_drapee',.16,'bichique',t.x+dx*.5+dz*.12,0,t.z+dz*.5-dx*.12,Math.atan2(dx,dz))});
   // 2. les bassins des cascades, près des camps : on s'y baigne, on s'y lave
