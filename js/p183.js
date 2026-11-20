@@ -49,3 +49,14 @@ Object.assign(EV,{
   v:'L’île vue de Paris.',h:'Archives nationales d’outre-mer, collection Moreau de Saint-Méry, CP F3 290/123 : « Carte de l’Isle de Bourbon dressée… par ordre de M. le duc de Choiseul… par le Sieur Bellin ingénieur de la Marine, 1763 », cantons en différentes couleurs, relief et végétation. Réutilisation libre et gratuite. Image réduite pour le jeu.',o:[{n:'Continuer',d:'',fx:{},hist:1}]},
  tromelin1773:{y:1773,si:()=>S,tag:'Archive',an:'1773',nat:'Fait historique.',t:'Un port pour la Rivière d’Abord',b:'Le chevalier de Tromelin dessine des jetées pour abriter les navires à l’embouchure de la Rivière d’Abord, le futur Saint-Pierre. L’île n’a toujours aucun port sûr : les navires mouillent en rade, à la merci de la houle et des cyclones.',
   v:'Un port rêvé sur le papier.',h:'Archives nationales d’outre-mer, collection Moreau de Saint-Méry, CP F3 290/121 et 129 : « Plan de la rivière Dabord et des jetées projetées par M. le chevalier de Tromelin, pour la sûreté du mouillage », levé et dessiné par Selhausen en 1773.',o:[{n:'Continuer',d:'',fx:{},hist:1}]}});
+// ===== 1794 : le récapitulatif « ce que vos gens savent déjà » défile tout seul, doucement, jusqu'au bouton, puis s'arrête =====
+// La main reprend la main : survol, molette ou doigt le mettent en pause.
+setInterval(()=>{try{const c=document.querySelector('#sv129 .c');if(!c||c.dataset.defile)return;c.dataset.defile=1;let pause=false,der=0,t0=performance.now()+2500,y=c.scrollTop;
+ ['wheel','touchstart','pointerdown'].forEach(ev=>c.addEventListener(ev,()=>{pause=true;setTimeout(()=>{pause=false;y=c.scrollTop},4000)},{passive:true}));
+ const pas=t=>{if(!c.isConnected)return;const fin=c.scrollHeight-c.clientHeight;if(c.scrollTop>=fin-1&&t>t0)return;const dt=der?Math.min(.5,(t-der)/1000):0;der=t;if(t>t0&&!pause){y=Math.min(fin,y+dt*22);c.scrollTop=y}requestAnimationFrame(pas)};requestAnimationFrame(pas)}catch(e){}},500);
+// ===== le conte d'Histoire ne part plus en utopie tout seul =====
+// Tant que le conte joue (et que le passé choisi est l'histoire réelle), toute utopie qui s'ouvre sans geste du joueur est refermée.
+// Si le joueur a repris la main (conte arrêté) et choisit lui-même, l'utopie est acceptée et retenue.
+const UTO183=['centre','ombre','sir','roy','lib','anc','abol','maur','angl','cors','arab','vichy','comp','cafe','polit'];
+setInterval(()=>{try{if(!S||S.fin||typeof modeHist!=='function'||!modeHist())return;const br=S.br||{};S.brOK=S.brOK||{};if(S.brInit===undefined){S.brInit=1;UTO183.forEach(k=>{if(br[k])S.brOK[k]=1});return}const conte=typeof autoD==='function'&&autoD();const hist=!S.passe||S.passe==='hist';
+ UTO183.forEach(k=>{if(!br[k]||S.brOK[k])return;if(conte&&hist){delete br[k];if(!S.uto183)S.uto183=0;S.uto183++;try{log('Le conte reste sur l’histoire réelle : il ne prend pas ce chemin-là.')}catch(e){}}else S.brOK[k]=1})}catch(e){}},300);
