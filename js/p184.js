@@ -1,7 +1,7 @@
 // ===== Duel : des décors peints de La Réunion, à la manière des jeux de combat (fond fixe en cache + quelques éléments animés) =====
 // Le décor dépend de l'adversaire : rempart de Mafate, champ de canne, usine sucrière, forêt de Bébour, Grande Chaloupe, Fournaise.
 const DUEL184={cache:null,cle:''};
-const SCENE184={milicien:'canne',commandeur:'usine',mussard:'bebour',anglais:'chaloupe',ombre:'fournaise'};
+const SCENE184={milicien:'canne',commandeur:'usine',mussard:'bebour',anglais:'chaloupe',ombre:'fournaise',milicienEn:'chaloupe',milicienFr:'canne',colon:'canne',gouverneur:'usine',malabar:'canne',malgache:'mafate',capoeira:'chaloupe',chinois:'bebour',cimendef:'mafate',dimitile:'mafate',heva:'bebour',gardien:'fournaise'};
 const NOMSC184={mafate:'Rempart de Mafate',canne:'Champ de canne, Saint-Paul',usine:'Usine sucrière, Saint-André',bebour:'Forêt de Bébour',chaloupe:'La Grande Chaloupe',fournaise:'Piton de la Fournaise'};
 function fondDuel184(x,W,H,sol,lk,t){const sc=SCENE184[lk]||'mafate',cle=sc+W+'x'+H+'s'+sol;
  if(DUEL184.cle!==cle){DUEL184.cle=cle;DUEL184.cache=peint184(sc,W,H,sol)}
