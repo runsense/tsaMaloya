@@ -12,7 +12,7 @@ function grandProprio(p){return S.voieC&&((typeof noble==='function'&&noble(p))|
 // chaque jour : on se salit au travail, on se lave à la rivière ; les locks poussent dehors et à l'effort
 function aspJour(){if(!S||modeHist()||!grpOn()||S.fin)return;(S.pp||[]).forEach(p=>{aspInit(p);if(grandProprio(p)){p.sale=0;return}const t=tacheDe(p);
  const dur={pierre:.12,bois:.09,chasse:.08,peche:.06,cueil:.06,paille:.05,eau:.03,cuisine:.04}[t]||.02;p.sale=Math.min(1,p.sale+dur);
- if(t==='laver'){p.sale=0;if(rnd()<.3)dire(p,lgNoble(p)?'Voilà qui est mieux.':'Lo dolo lé fré, lé bon !')}
+ if(t==='laver'){p.sale=0;if(rnd()<.3)dire(p,lgNoble(p)?'Voilà qui est mieux.':'De lo lé frè, lé bon !')}
  const x=lkTex(p),sueur=(typeof pluie==='function'&&!pluie()?1:.7),eff=({pierre:1,bois:.8,chasse:.8,peche:.6,paille:.5}[t]||0);if(adulte(p))p.locks=Math.min(1,p.locks+.004*eff*x*sueur)});
  (S.grp||[]).forEach(g=>grpMembres(g).forEach(p=>{aspInit(p);p.sale=Math.min(1,p.sale+.1);const x=lkTex(p);if(adulte(p))p.locks=Math.min(1,p.locks+.02*x)}))}
 {const jt=jourTick;jourTick=function(){jt();aspJour()}}

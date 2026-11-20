@@ -32,3 +32,6 @@ const KC177={L:[],mx:[],t:performance.now()};
    const f=new THREE.Color(.82,.56,.34);r.traverse(m=>{if(m.isMesh){m.frustumCulled=false;if(m.material){m.material=m.material.clone();if(m.material.color)m.material.color.multiply(f)}}});
    if(g.animations&&g.animations.length){const mx=new THREE.AnimationMixer(r);const cl=g.animations.find(a=>/marche|walk|brout|graze|idle/i.test(a.name))||g.animations[0];mx.clipAction(cl).play();KC177.mx.push(mx)}o.ok=1})}
  const tps=now/1000;KC177.L.forEach((o,i)=>{const t=T2[i];o.g.visible=!!t&&o.ok;if(!t)return;const k=tps*.05+i*1.7,x=t.x+Math.cos(k)*.3,z=t.z+Math.sin(k*1.2)*.25;o.g.position.set(x,typeof k3Y==='function'?k3Y(x,z):0,z);o.g.rotation.y=-k+Math.PI/2})}catch(e){}})();
+// ===== le conte ne reste plus coincé : s'il n'arrive pas à employer ses bras, il finit la saison ; et une partie reprise ne garde pas plus de bras que le camp n'en a =====
+{const s1=suite;suite=function(){try{if(S&&!S.fin&&!S.evq.length&&typeof autoD==='function'&&autoD()&&!(typeof exps!=='undefined'&&exps.length)&&S.bras>0){log('Le conte laisse '+S.bras+' bras au repos et passe à la saison suivante.');S.bras=0;saison();if(!S.fin)rafraichir();return}}catch(e){}return s1.apply(this,arguments)}}
+setInterval(()=>{try{if(S&&!S.fin&&typeof brasMax==='function'){const m=brasMax();if(S.bras>m)S.bras=m}}catch(e){}},1500);

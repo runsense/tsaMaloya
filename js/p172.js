@@ -20,7 +20,7 @@ setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;const nuit=
 function kz172(p,txt){try{if(typeof txt!=='string')return txt;const t=p&&typeof campDe==='function'?T[campDe(p)]:null,z=typeof zone162==='function'?zone162(t):'bas',sud=z==='sud',haut=t&&(t.alt||0)>600;
  txt=txt.replace(/\{([NB]):([^|}]*)\|([SH]):([^}]*)\}/g,(m,a,x,b,y)=>a==='N'?(sud?y:x):(haut?y:x));
  if(sud)txt=txt.replace(/(^|[\s«(])([Ll])e(?=\s)/g,(m,s,l)=>s+(l==='L'?'Lo':'lo')).replace(/(^|[\s«(])([Ll])i(?=\s)/g,(m,s,l)=>s+(l==='L'?'Lu':'lu'));
- else txt=txt.replace(/(^|[\s«(])([Ll])o(?=\s)(?!\s+van\b)/g,(m,s,l)=>s+(l==='L'?'Le':'le')).replace(/(^|[\s«(])([Ll])u(?=\s)/g,(m,s,l)=>s+(l==='L'?'Li':'li'));
+ else txt=txt.replace(/(?<!\b[Dd]e)(^|[\s«(])([Ll])o(?=\s)(?!\s+van\b)/g,(m,s,l)=>s+(l==='L'?'Le':'le')).replace(/(^|[\s«(])([Ll])u(?=\s)/g,(m,s,l)=>s+(l==='L'?'Li':'li'));
  return txt}catch(e){return txt}}
 const kr172=p=>!(typeof lgNoble==='function'&&lgNoble(p))&&!(typeof lgMys==='function'&&lgMys(p)&&false);
 {const di=dire;dire=function(p,m){return di(p,kr172(p)?kz172(p,m):m)}}

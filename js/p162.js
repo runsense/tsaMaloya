@@ -9,7 +9,7 @@ const CR162=[
  ['Na poin rien pou tout astèr.','il n’y a plus rien pour tout le monde maintenant'],
  ['Kosa ou di ? Mi antan pa bien.','qu’est-ce que tu dis ? je n’entends pas bien'],
  ['La pli y vien, rant toute.','la pluie arrive, rentre tout'],
- ['Mi sa rod un peu {B:debois|H:dibois}.','je vais chercher un peu de bois'],
+ ['{B:Mi sa rod in pti pé de bois|H:M’ sa rod dibois}.','je vais chercher un peu de bois'],
  ['{le} marmay i dor ankor.','les enfants dorment encore'],
  ['Ou lé fatigé ? Asiz in pé.','tu es fatigué ? assieds-toi un peu'],
  ['Mon dalon, koman i lé ?','mon ami, comment ça va ?'],

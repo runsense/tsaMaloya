@@ -18,7 +18,7 @@ setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;NAG173.t=(N
    const a=now*.08+t.i,x=cx+Math.cos(a)*.18,z=cz+Math.sin(a)*.12;place173('lg'+t.i,col?'homme_chemise':'jeune_pagne',.16,'nager',x,-.012,z,-a+Math.PI/2);
    place173('lp'+t.i,col?'femme_travail':'femme_drapee',.16,'bichique',t.x+dx*.5+dz*.12,0,t.z+dz*.5-dx*.12,Math.atan2(dx,dz))});
   // 2. les bassins des cascades, près des camps : on s'y baigne, on s'y lave
-  if(typeof C147!=='undefined'&&C147.L){let k=0;const cs=typeof camps==='function'?camps():[];C147.L.forEach((G,gi)=>{if(k>=2||!G.visible)return;const bas=G.children.find(c=>c.geometry&&c.geometry.type==='CircleGeometry');if(!bas)return;const p=bas.getWorldPosition(new THREE.Vector3());
+  if(typeof C147!=='undefined'&&C147.L){let k=0;const cs=typeof camps==='function'?camps():[];C147.L.forEach((G,gi)=>{if(k>=2||!G.visible||G.userData.tourb)return;const bas=G.children.find(c=>c.geometry&&c.geometry.type==='CircleGeometry');if(!bas)return;const p=bas.getWorldPosition(new THREE.Vector3());
     if(Math.hypot(p.x-camT.x,p.z-camT.z)>dist*.9+1.5)return;if(cs.length&&!cs.some(c=>Math.hypot(c.x-p.x,c.z-p.z)<4))return;if(rndH(gi*7.7+Math.floor(now/900))>.7)return;k++;
     const r=(bas.geometry.parameters.radius||.15)*.45,a=now*.25+gi;place173('bn'+gi,col?'homme_chemise':'jeune_pagne',.16,'nager',p.x+Math.cos(a)*r,p.y-.012,p.z+Math.sin(a)*r,-a+Math.PI/2);
     if(!col)place173('bl'+gi,'femme_drapee',.16,'lavandiere',p.x+r*1.9,p.y-.004,p.z,-Math.PI/2)})}}
