@@ -13,7 +13,7 @@ const CR162=[
  ['{le} marmay i dor ankor.','les enfants dorment encore'],
  ['Ou lé fatigé ? Asiz in pé.','tu es fatigué ? assieds-toi un peu'],
  ['Mon dalon, koman i lé ?','mon ami, comment ça va ?'],
- ['Lé gayar zordi, néna in bon solèy.','il fait beau aujourd’hui, il y a un bon soleil'],
+ ['Gayar zordi, na rien’ solèy.','il fait beau aujourd’hui, rien que du soleil'],
  ['Akoz ou lé tris konmsa ?','pourquoi es-tu triste comme ça ?'],
  ['{li} lé la, akoté {le} kaz.','il est là, à côté de la case'],
  ['{li} la monté ek in gramoun.','il est monté avec un vieux']];

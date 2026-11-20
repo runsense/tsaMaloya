@@ -9,17 +9,18 @@ requestAnimationFrame(ramTick172);
 // les pirogues des pêcheurs : sur une case de pêche au bord de la mer, une pirogue tourne au large le jour
 const PIR172={L:{}};
 setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;const nuit=typeof jourPh==='function'&&(jourPh()>.74||jourPh()<.05),voir=dist<16&&!(typeof VP!=='undefined'&&VP)&&!(typeof CINE!=='undefined'&&CINE);const vus={};
- if(voir&&!nuit)T.forEach(t=>{const o=S.t[t.i];if(!o||o.b!=='peche'||!o.s&&!seen(t))return;const m=(t.nb||[]).map(i=>T[i]).find(u=>u&&u.alt<=1);if(!m)return;const dx=Math.hypot(t.x-camT.x,t.z-camT.z);if(dx>dist*1.3+4)return;vus[t.i]=m});
+ if(voir&&!nuit)T.forEach(t=>{const o=S.t[t.i];if(!o||o.b!=='peche'||!o.s&&!seen(t))return;const m=typeof mer173==='function'?mer173(t):null;if(!m)return;const dx=Math.hypot(t.x-camT.x,t.z-camT.z);if(dx>dist*1.3+4)return;vus[t.i]=m});
  for(const k in PIR172.L)if(!vus[k]){scene.remove(PIR172.L[k]);delete PIR172.L[k]}
  const now=performance.now()/1000;
  for(const k in vus){const t=T[k],m=vus[k];let p=PIR172.L[k];if(!p){p=new THREE.Group();const c=g168Navire('pirogue');c.scale.setScalar(1.4);p.add(c);const n=S.voieC?'homme_chemise':'jeune_pagne';rameur172(n,.1).then(r=>{r.position.set(0,.04,0);r.rotation.y=Math.PI/2;c.add(r)}).catch(()=>{});scene.add(p);PIR172.L[k]=p}
   const cx=t.x+(m.x-t.x)*.75,cz=t.z+(m.z-t.z)*.75,a=now*.05+(+k),x=cx+Math.cos(a)*.35,z=cz+Math.sin(a)*.25;p.position.set(x,.01+Math.sin(now*1.3+(+k))*.005,z);p.rotation.y=-a}}catch(e){}},120);
 // ===== le créole suit le lieu (relecture de Paris) : « lo » et « lu » au Sud, « le » et « li » ailleurs ; quelques mots changent entre les Bas et les Hauts, le Nord et le Sud =====
+// « lo van » reste partout tel quel : devant « van », on dit toujours « lo ».
 // {N:…|S:…} : Nord / Sud ; {B:…|H:…} : Bas / Hauts
 function kz172(p,txt){try{if(typeof txt!=='string')return txt;const t=p&&typeof campDe==='function'?T[campDe(p)]:null,z=typeof zone162==='function'?zone162(t):'bas',sud=z==='sud',haut=t&&(t.alt||0)>600;
  txt=txt.replace(/\{([NB]):([^|}]*)\|([SH]):([^}]*)\}/g,(m,a,x,b,y)=>a==='N'?(sud?y:x):(haut?y:x));
  if(sud)txt=txt.replace(/(^|[\s«(])([Ll])e(?=\s)/g,(m,s,l)=>s+(l==='L'?'Lo':'lo')).replace(/(^|[\s«(])([Ll])i(?=\s)/g,(m,s,l)=>s+(l==='L'?'Lu':'lu'));
- else txt=txt.replace(/(^|[\s«(])([Ll])o(?=\s)/g,(m,s,l)=>s+(l==='L'?'Le':'le')).replace(/(^|[\s«(])([Ll])u(?=\s)/g,(m,s,l)=>s+(l==='L'?'Li':'li'));
+ else txt=txt.replace(/(^|[\s«(])([Ll])o(?=\s)(?!\s+van\b)/g,(m,s,l)=>s+(l==='L'?'Le':'le')).replace(/(^|[\s«(])([Ll])u(?=\s)/g,(m,s,l)=>s+(l==='L'?'Li':'li'));
  return txt}catch(e){return txt}}
 const kr172=p=>!(typeof lgNoble==='function'&&lgNoble(p))&&!(typeof lgMys==='function'&&lgMys(p)&&false);
 {const di=dire;dire=function(p,m){return di(p,kr172(p)?kz172(p,m):m)}}
