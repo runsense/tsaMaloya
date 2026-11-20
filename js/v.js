@@ -32,13 +32,13 @@ const DUE=(()=>{
   function d3Etat(c,o){const dx=c.x-(c.p3==null?c.x:c.p3);c.p3=c.x;const vit=Math.abs(dx);c.vl=(c.vl||0)*.8+vit*.2;const dur=n=>{const cl=THREE.AnimationClip.findByName(o.clips,n);return cl?cl.duration:1};
    if(G.fini){if(c===G.L&&!c.fuite)return d3Jouer(o,'ko','chute_mort',true,1.3);if(c.fuite)return d3Jouer(o,'fuite','marche',false,2.2);if(c.win)return d3Jouer(o,'win',MAR3.includes(c.f.k)?'transe_maloya':'commandeur',false,1);if(c.act)return d3Jouer(o,'fin'+(c.nA||0),o.arme,true,dur(o.arme)/.7)}
    if(c.pw>0)return d3Jouer(o,'pw'+(c.nA||0),c.pwc,true,dur(c.pwc)/.8);
-   if(c.act){const t=atk(c,c.act),n=c.act==='p'?'pierre':o.arme;return d3Jouer(o,c.act+(c.nA||0),n,true,dur(n)/(t.dur+.3))}
+   if(c.act){const t=atk(c,c.act),n=c.act==='p'?'sagaie':o.arme;return d3Jouer(o,c.act+(c.nA||0),n,true,dur(n)/(t.dur+.3))}
    if(c.stun>0)return d3Jouer(o,'stun','marche_blesse',false,1);
    if(c.garde)return d3Jouer(o,'garde','cacher',true,2);
    if(c.y>0)return d3Jouer(o,'saut','marche',false,.4);
    if(c.vl>1.6)return d3Jouer(o,'marche','marche',false,2);if(c.vl>.4)return d3Jouer(o,'marche2','marche',false,1.3);
    return d3Jouer(o,'garde0','garde',false,1)}
-  function d3Dessin(dt){if(!D3.ok)return;[[A,D3.f.A],[B,D3.f.B]].forEach(([c,o])=>{if(!c||!o)return;d3Etat(c,o);o.mx.update(dt);const k=165/o.h;o.grp.scale.setScalar(k);const X=c.x-(c.touche>0?c.s*6:0),Ys=SOL()-c.y-(c.yF||0);o.grp.position.set(X,H-Ys-o.y0*k,0);o.grp.rotation.set(0,c.s>0?Math.PI/2-.35:-Math.PI/2+.35,(G.frap&&c===G.L)?-(c.rot||0):0)});D3.R.render(D3.S,D3.C)}
+  function d3Dessin(dt){if(!D3.ok)return;[[A,D3.f.A],[B,D3.f.B]].forEach(([c,o])=>{if(!c||!o)return;d3Etat(c,o);o.mx.update(dt);if(c.act==='p'&&!G.fini){if(!o.props){o.props=[];o.g.scene.traverse(b=>{if(b.isBone&&typeof P3OBJ!=='undefined'&&P3OBJ.includes(b.name))o.props.push(b)})}o.props.forEach(b=>b.scale.set(0,0,0))}const k=165/o.h;o.grp.scale.setScalar(k);const X=c.x-(c.touche>0?c.s*6:0),Ys=SOL()-c.y-(c.yF||0);o.grp.position.set(X,H-Ys-o.y0*k,0);o.grp.rotation.set(0,c.s>0?Math.PI/2-.35:-Math.PI/2+.35,(G.frap&&c===G.L)?-(c.rot||0):0)});D3.R.render(D3.S,D3.C)}
   const taille=()=>{W=cv.width=ch.width=innerWidth;H=cv.height=ch.height=innerHeight;d3Taille()};taille();addEventListener('resize',taille);d3Init();
   const K={};const map={arrowleft:'g',q:'g',a:'g',arrowright:'d',d:'d',arrowup:'h',z:'h',w:'h',arrowdown:'b',s:'b',j:'p',k:'j',l:'s',i:'u'};
   const NUM={Digit1:'p',Numpad1:'p',Digit2:'j',Numpad2:'j',Digit3:'s',Numpad3:'s',Digit4:'u',Numpad4:'u',Numpad0:'b',Numpad5:'b'},km=e=>NUM[e.code]||map[e.key.toLowerCase()];
@@ -56,7 +56,7 @@ const DUE=(()=>{
   function pouvoir(a,b,sp,nom){const moi=a===A,info=(t)=>{if(moi)dire(t,1100)};if(a.stun>0){info('Étourdi : '+nom+' impossible pour l’instant.');return}if((a.cds[sp]||0)>0){info(nom+' : encore '+Math.ceil(a.cds[sp])+' s.');return}
    const dd=Math.abs(a.x-b.x);if(sp==='peur'&&dd>=260){info(nom+' : trop loin, approchez-vous.');return}if(sp==='peur'&&b.garde){info(nom+' : '+b.f.n+' est en garde, attendez qu’il la baisse.');return}if(sp==='aveugle'&&dd>=300){info(nom+' : trop loin, approchez-vous.');return}
    if((sp==='tir')&&a.aveugle>0){dire(a.f.n+' ne voit plus rien : impossible de viser.',1000);a.cds[sp]=1;return}
-   a.cds[sp]=CD[sp]||3;a.pw=.7;a.pwc=sp==='tir'?'fusil':sp==='sagaie'?'pierre':sp==='bond'?'baton_coup':'offrande';a.nA=(a.nA||0)+1;
+   a.cds[sp]=CD[sp]||3;a.pw=.7;a.pwc=sp==='tir'?'fusil':sp==='sagaie'?'sagaie':sp==='bond'?'baton_coup':'offrande';a.nA=(a.nA||0)+1;
    if(sp==='tir'||sp==='sagaie')G.proj.push({x:a.x+a.s*40,y:SOL()-a.y-60,v:a.s*(sp==='tir'?520:380),o:a,d:sp==='tir'?14:12,k:sp});
    else if(sp==='peur'){b.stun=1.2;b.pv-=6;dire(nom+' !',900)}
    else if(sp==='aveugle'){b.aveugle=3;G.nuage={x:b.x,t:1};dire(nom+' : '+b.f.n+' est aveuglé, il devra se battre au corps à corps.',1800)}
