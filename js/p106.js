@@ -42,9 +42,9 @@ document.addEventListener('keydown',e=>{try{if((e.code==='Space'||e.key===' ')&&
 function campProche106(t){const C=camps();return C.length?C.slice().sort((a,b)=>hd(a,t)-hd(b,t))[0]:null}
 function sortie106(t,k){const c=campProche106(t);if(!c){toast('Aucun camp d’où partir.');return}window.EXPS=window.EXPS||{coche:{},prov:2,but:k};EXPS.coche={};EXPS.but=k;EXPS.dest106=t.i;try{expPlan(c.i,null)}catch(e){toast('Impossible de préparer la sortie.')}}
 {const ep=expPlan;expPlan=function(){const r=ep.apply(this,arguments);try{const ok=$('expOk');if(ok&&window.EXPS&&EXPS.dest106!=null){const d=EXPS.dest106;ok.textContent='Partir vers '+(lieuDe(T[d])||lieuProche(T[d])||'cette case');ok.addEventListener('click',()=>{setTimeout(()=>{try{if(window.choixExp)choisirTuile(T[d])}catch(e){}EXPS.dest106=null},30)})}const bx=$('expN');if(bx)bx.addEventListener('click',()=>{if(window.EXPS)EXPS.dest106=null})}catch(e){}return r}}
-{const mc=menuCtx;menuCtx=function(X,Y,titre,L){try{if(S&&!modeHist()&&!K&&!CV.on&&!VP&&Array.isArray(L)){const pt=pick(X,Y),t=pt&&tileAt(pt);if(t&&!t.bare&&(S.t[t.i]||{}).b!=='camp'){const vu=!!(S.t[t.i]||{}).s,A=[];
+{const mc=menuCtx;menuCtx=function(X,Y,titre,L){try{if(S&&!modeHist()&&!($('kons')&&!$('kons').hidden)&&!CV.on&&!VP&&Array.isArray(L)){const pt=pick(X,Y),t=pt&&tileAt(pt);if(t&&!t.bare&&(S.t[t.i]||{}).b!=='camp'){const vu=!!(S.t[t.i]||{}).s,A=[];
  if(vu){A.push(['🏹 Chasser ici',()=>sortie106(t,'chasse')],['🧺 Cueillir ici',()=>sortie106(t,'cueil')])}
- A.push(['🧭 Explorer par ici'+(vu?'':' (inconnu)'),()=>sortie106(t,'explorer')]);
+ if(!vu||T.some(u=>!u.bare&&hd(u,t)<=2&&!(S.t[u.i]||{}).s))A.push(['🧭 Explorer par ici'+(vu?'':' (inconnu)'),()=>sortie106(t,'explorer')]);
  if(S.voieC&&vu&&camps().some(c=>hd(c,t)<=2)){const a=actions(t).find(x=>/defrich|champ|cultiv/i.test(x.id+' '+x.n));if(a)A.push(['🌾 '+a.n,()=>{choisirTuile(t);agir(t,a.id);rafraichir()}])}
  L.unshift(...A)}}}catch(e){}return mc.apply(this,arguments)}}
 // les colons ne fondent un nouveau lieu que près d'une place de la colonie (une ville déjà fondée)
@@ -140,7 +140,8 @@ function rideauMaj106(l,cx,cy,cz,R,H,f,dt,lg){const P=l.geometry.attributes.posi
  toast=function(m){try{if(m===cur&&performance.now()-der<3000)return;if(q.includes(m))return;if(!tm&&performance.now()-der>=3000){cur=m;der=performance.now();t0(m);tm=setTimeout(suivant,3000);return}q.push(m);if(q.length>4)q.shift();if(!tm)tm=setTimeout(suivant,Math.max(0,3000-(performance.now()-der)))}catch(e){t0(m)}}}
 
 // ----- 15. Les personnages de la carte gardent une taille lisible : plus petits vus de loin, plus grands de près -----
-setInterval(()=>{try{if(typeof MF==='undefined'||!MF.L)return;const k=Math.max(.55,Math.min(1.6,1.75-dist*.035));for(const c in MF.L){const f=MF.L[c];if(!f||!f.o)continue;const u=f.o.userData;if(u.s0106==null)u.s0106=f.o.scale.x;const s=u.s0106*k;if(Math.abs(f.o.scale.x-s)>.001)f.o.scale.setScalar(s)}}catch(e){}},150);
+setInterval(()=>{try{if(typeof MF==='undefined'||!MF.L)return;const k=1;// tous les personnages gardent la même taille, quel que soit le zoom (la perspective suffit)
+ for(const c in MF.L){const f=MF.L[c];if(!f||!f.o)continue;const u=f.o.userData;if(u.s0106==null)u.s0106=f.o.scale.x;const s=u.s0106*k;if(Math.abs(f.o.scale.x-s)>.001)f.o.scale.setScalar(s)}}catch(e){}},150);
 
 // ----- 16. Le guide de la Vie : la bulle se pose à côté de la commande à utiliser, qui s'allume ; sans réponse, le guide s'arrête -----
 const CIBLE106=[()=>CV.on?null:$('cvBtn'),()=>document.querySelector('#cvL .pc'),()=>document.querySelector('#cvL .pc'),()=>$('chPa'),()=>document.querySelector('#cvL .pc'),()=>null];

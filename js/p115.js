@@ -23,7 +23,7 @@ function bandeau115(an,t,v){let d=$('etape115');if(d)d.remove();d=document.creat
   let on='';try{on=optsDe(id,e)[k].n}catch(x){}if(etape115(e,id))bandeau115(an,t,on?'Le cours des choses : '+on:v);else try{journal(an+' · '+t+(on?' — '+on:''))}catch(x){}
   try{rafraichir()}catch(x){}setTimeout(()=>{try{modal()}catch(x){}},50);return}}}catch(x){}return md.apply(this,arguments)}}
 // 3. comment jouer en Vie : une seule carte, au début
-function comment115(){if($('comm115'))return;const C=S.voieC;const d=document.createElement('div');d.id='comm115';
+function comment115(){if($('comm115')||BAC||(S&&S.bac))return;try{if(localStorage.getItem('comm115vu'))return;localStorage.setItem('comm115vu','1')}catch(e){}if(window.BTUON||typeof PJ113!=='undefined'&&PJ113.on)return;const C=S.voieC;const d=document.createElement('div');d.id='comm115';
  d.innerHTML='<div class="c115"><small>Vie · comment jouer</small><h2>'+(C?'Votre habitation':'Votre camp')+' vit en temps réel</h2><ul>'+
  '<li><b>La carte</b> : l’île et ce que vous connaissez. Zoomez sur '+(C?'l’habitation':'le camp')+' (ou <kbd>Entrée</kbd>) pour y entrer.</li>'+
  '<li><b>Dans '+(C?'l’habitation':'le camp')+'</b> : touchez quelqu’un pour lui donner une tâche ; les besoins en bas montrent ce qui manque (touchez une ligne pour agir).</li>'+

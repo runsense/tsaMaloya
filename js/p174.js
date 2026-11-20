@@ -8,16 +8,17 @@ function pluieLieu174(x,z){try{const g=LL99({x,z}),h=Math.max(0,alt(x,z)),sais=t
  const k=v=>Math.max(0,Math.min(1,v));let duty,inten,z0;
  if(g.lon>55.6&&g.lat<-21.2){z0='sudSauvage';duty=sais?.85:.8;inten=.8}
  else if(g.lon>55.5){z0='vent';const f=k((g.lat+20.88)/(-21.3+20.88));duty=(.4+.4*f)+(h>350?.08:0);if(!sais)duty*=.85;inten=.6}
- else if(g.lat<-21.12&&g.lon>=55.28&&h>600){z0='hautsSO';duty=sais?.4:.3;inten=.3}
- else if(g.lon<55.45&&h<1300){z0='ouest';duty=sais?.25:0;inten=.45}
- else{z0='centre';duty=sais?.4:.12;inten=.5}
+ else if(g.lon<55.45&&h<350){z0='ouest';duty=sais?.08:0;inten=.4}
+ else if(g.lon<55.45&&h<1300){z0='hautsSO';duty=sais?.5:.35;inten=.15}
+ else if(g.lat<-21.12&&g.lon>=55.28&&h>600&&h<1300){z0='hautsSO';duty=sais?.45:.3;inten=.15}
+ else{z0='centre';duty=sais?.4:.15;inten=.5}
  if(post){if(z0==='ouest'||z0==='hautsSO'||z0==='centre')duty=0;else duty=1}
  return {z:z0,duty:k(duty),inten}}catch(e){return {z:'centre',duty:.2,inten:.5}}}
 function humZone174(x,z){return pluieLieu174(x,z).z}
 function ampPluie174(){try{return S&&!S.fin?pluieLieu174(camT.x,camT.z).duty:0}catch(e){return 0}}
 // une averse par tranche de 50 s : il pleut sur la tranche si son tirage tombe sous la part de temps du lieu ; montée et descente douces
 function averse174(){try{if(!S||S.fin)return 0;const P=pluieLieu174(camT.x,camT.z);if(P.duty<=0)return 0;const t=performance.now()/1000,w=Math.floor(t/50),u=(t/50)-w;
- if(rndH(w*7.31+(S.ns||0)*1.7)>=P.duty)return 0;return P.inten*Math.min(1,u*5,(1-u)*5)}catch(e){return 0}}
+ if(rndH(w*7.31+(S.ns||0)*1.7)>=P.duty)return 0;const fort=P.z==='centre'&&rndH(w*3.9+1.3)<.35?1.6:1;return Math.min(1,P.inten*fort)*Math.min(1,u*5,(1-u)*5)}catch(e){return 0}}
 averseF146=function(){try{if(!S||S.fin)return 0;if(!modeHist())return typeof pluieF106==='function'?pluieF106():0;if(S.cyc&&S.cyc.in<=0)return 0;return averse174()*.7}catch(e){return 0}};
 pluieF106=function(){try{if(!S||S.fin)return 0;const cyc=S.cyc&&S.cyc.in<=0?1:S.cyc&&S.cyc.in===1?.6:0;return Math.min(1,Math.max(cyc,averse174()*.7))}catch(e){return 0}};
 // l'en-tête dit le vrai temps : cyclone quand il est là, et les averses de l'Est en saison sèche

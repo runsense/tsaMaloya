@@ -44,7 +44,7 @@ function tacheTxt(p){if(enGrp(p))return 'dehors';if(p.id===S.garde)return 'garde
  GUIDE.splice(0,GUIDE.length,g1,
   {t:()=>'À droite, vos acteurs. Touchez-en un : sa fiche s’ouvre, avec ce qu’il sait faire et ce qu’il peut apprendre.',ok:()=>CV.selP!=null&&!!ppId(CV.selP),auto:()=>{const p=gensCamp().filter(adulte).find(p=>p.id!==S.garde);if(p){CV.selP=p.id;if(CV.on)cvListe()}}},
   gR,
-  {t:()=>'Mettez-le dans l’équipe de sortie, puis « Préparer la sortie » en bas : choisissez qui part et où, sur la carte.',ok:()=>(S.grp||[]).length>0,auto:()=>{const p=(S.pp||[]).find(p=>adulte(p)&&p.role&&!enGrp(p)&&p.id!==S.garde);if(p)envoyer(p)}},
+  {t:()=>'Envoyez quelqu’un dehors : sur la carte, un lieu puis « Chasser » ou « Cueillir », et vous cochez qui part. (L’équipe de sortie, en bas, n’est qu’un raccourci pour préparer un groupe d’avance.)',ok:()=>(S.grp||[]).length>0,auto:()=>{const p=(S.pp||[]).find(p=>adulte(p)&&p.role&&!enGrp(p)&&p.id!==S.garde);if(p)envoyer(p)}},
   gT,
   {t:()=>'Dehors, le groupe avance seul. Touchez-le sur la carte pour voir ce qu’il fait, ou lui donner une autre destination.',ok:()=>(S.grp||[]).some(g=>g.exp&&(g.exp.j||0)>=2),auto:null},
   gF)}

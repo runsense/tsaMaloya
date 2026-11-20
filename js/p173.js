@@ -13,10 +13,13 @@ setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;NAG173.t=(N
  const now=performance.now()/1000,col=!!S.voieC;
  if(voir){
   // 1. le lagon de l'Ouest (Saint-Gilles, la Saline, Saint-Leu, l'Étang-Salé) : des nageurs et des pêcheurs à pied dans l'eau
-  let n=0;T.forEach(t=>{if(n>=4||!seen(t)||t.alt<=0)return;const g=LL99(t);if(!(g.lon<55.4&&g.lat<-21.02&&g.lat>-21.3))return;if(Math.hypot(t.x-camT.x,t.z-camT.z)>dist*1.1+3)return;const m=mer173(t);if(!m)return;
-   if(rndH(t.i*3.3+Math.floor(now/600))>.8)return;n++;const cx=t.x+(m.x-t.x)*.62,cz=t.z+(m.z-t.z)*.62,dx=m.x-t.x,dz=m.z-t.z;
+  let n=0;T.forEach(t=>{if(n>=2||!seen(t)||t.alt<=0)return;const g=LL99(t);if(!(g.lon<55.4&&g.lat<-21.02&&g.lat>-21.3))return;if(Math.hypot(t.x-camT.x,t.z-camT.z)>dist*1.1+3)return;const m=mer173(t);if(!m)return;
+   if(rndH(t.i*3.3+Math.floor(now/600))>.3)return;n++;const cx=t.x+(m.x-t.x)*.62,cz=t.z+(m.z-t.z)*.62,dx=m.x-t.x,dz=m.z-t.z;
    const a=now*.08+t.i,x=cx+Math.cos(a)*.18,z=cz+Math.sin(a)*.12;place173('lg'+t.i,col?'homme_chemise':'jeune_pagne',.16,'nager',x,-.012,z,-a+Math.PI/2);
-   place173('lp'+t.i,col?'femme_travail':'femme_drapee',.16,'bichique',t.x+dx*.5+dz*.12,0,t.z+dz*.5-dx*.12,Math.atan2(dx,dz))});
+   });
+  // 1b. les pêcheuses de bichiques : à l'embouchure des rivières seulement (c'est là que remontent les bichiques), une par embouchure, les pieds dans l'eau
+  if(window.RIV126){let nb=0;RIV126.forEach((r,ri)=>{if(nb>=3||r.br||!r.P||r.P.length<4)return;let q=null;for(let i=r.P.length-1;i>0;i--){const h=alt(r.P[i][0],r.P[i][1]);if(h>.5&&h<6){q=r.P[i];break}}if(!q)return;const t=tileAt({x:q[0],z:q[1]});if(!t||!seen(t))return;if(Math.hypot(q[0]-camT.x,q[1]-camT.z)>dist*1.1+3)return;if(rndH(ri*5.7+Math.floor(now/700))>.6)return;nb++;
+   const k=r.P.indexOf(q),a2=r.P[Math.min(r.P.length-1,k+2)],dx=a2[0]-q[0],dz=a2[1]-q[1];place173('bq'+ri,col?'femme_travail':'femme_drapee',.16,'bichique',q[0],Math.max(0,alt(q[0],q[1]))*VX-.004,q[1],Math.atan2(dx,dz)+Math.PI)})}
   // 2. les bassins des cascades, près des camps : on s'y baigne, on s'y lave
   if(typeof C147!=='undefined'&&C147.L){let k=0;const cs=typeof camps==='function'?camps():[];C147.L.forEach((G,gi)=>{if(k>=2||!G.visible||G.userData.tourb)return;const bas=G.children.find(c=>c.geometry&&c.geometry.type==='CircleGeometry');if(!bas)return;const p=bas.getWorldPosition(new THREE.Vector3());
     if(Math.hypot(p.x-camT.x,p.z-camT.z)>dist*.9+1.5)return;if(cs.length&&!cs.some(c=>Math.hypot(c.x-p.x,c.z-p.z)<4))return;if(rndH(gi*7.7+Math.floor(now/900))>.7)return;k++;

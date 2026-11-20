@@ -5,7 +5,7 @@
 setInterval(()=>{try{const d=$('drawer');document.querySelectorAll('.tab[data-t]').forEach(x=>x.classList.toggle('on',!!onglet&&x.dataset.t===onglet&&d&&!d.hidden))}catch(e){}},500);
 
 // 2. en zoomant sur un bourg ou un camp, les habitants font à peu près la hauteur d'un mur de case, plus la taille « lisible de loin » des groupes
-{const b0=bat;bat=function(k){b0(k);try{if(typeof LG==='undefined'||!LG.L)return;LG.L.forEach(g=>{const f=MF.L[g.cle];const e=.13/MF.H;if(f&&f.o&&Math.abs(f.o.scale.x-e)>1e-3)f.o.scale.setScalar(e)})}catch(e){}}}
+{const b0=bat;bat=function(k){b0(k);try{if(typeof LG==='undefined'||!LG.L)return;LG.L.forEach(g=>{const f=MF.L[g.cle];const e=1;if(f&&f.o&&Math.abs(f.o.scale.x-e)>1e-3)f.o.scale.setScalar(e)})}catch(e){}}}
 
 // 3. le chef du camp
 // Camp marron : les adultes élisent leur chef. Côté colon, il n'y a pas d'élection du gouverneur dans l'histoire réelle :

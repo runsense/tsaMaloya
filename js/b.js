@@ -537,7 +537,7 @@ function lieuDit(t){return t.cirq?'le cirque de '+t.cirq:'les hauts'}
 
 // ===== Expéditions : la distance coûte, la viande séchée se garde =====
 // Les voies naissent du passage : sentier (vo=1), chemin de charrette (vo=2), radier (pont=1), pont (pont=2)
-function hexPath(a,b){const P=[a];let u=a,g=0;while(u!==b&&g++<80){let best=null,bs=1e9;u.nb.forEach(i=>{const v=T[i];const s=hd(v,b)*10+v.slope/8+(v.bare?6:0)+((S.t[i]||{}).vo?-3:0);if(s<bs){bs=s;best=v}});if(!best||hd(best,b)>=hd(u,b)&&best!==b)break;u=best;P.push(u)}return P}
+function hexPath(a,b){const P=[a];let u=a,g=0;while(u!==b&&g++<80){let best=null,bs=1e9;const d0=hd(u,b);u.nb.forEach(i=>{const v=T[i];if(!v||hd(v,b)>=d0)return;const s=v.slope/8+(v.bare&&v!==b?6:0)+((S.t[i]||{}).vo?-3:0);if(s<bs){bs=s;best=v}});if(!best)break;u=best;P.push(u)}return P}
 function passer(i,w,col,muet){S.pas=S.pas||{};S.pas[i]=(S.pas[i]||0)+w;const o=tl(i),t=T[i];if(col)(S.pasC=S.pasC||{})[i]=1;S.voL=S.voL||{};const dit=k=>{if(muet||S.voL[k]===S.year)return false;S.voL[k]=S.year;return true};const ou=lieuDe(t)||lieuProche(t)||'vos camps';
  if(!o.vo&&S.pas[i]>=4){o.vo=1;o.s=1;if(dit('s'))log(col?'À force d’allers et venues, les colons ont tracé un sentier vers '+ou+'.':'À force de passer par là, vos gens ont tracé un sentier vers '+ou+'. On y va plus vite, mais il se voit.')}
  if(o.vo===1&&S.pas[i]>=12&&S.year>=1730&&t.alt<1100&&t.slope<25&&(col||S.voieC)){o.vo=2;if(dit('r'))log('Le sentier s’élargit : les charrettes passent, c’est un chemin vers '+ou+'.')}
