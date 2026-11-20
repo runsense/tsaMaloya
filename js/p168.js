@@ -64,9 +64,9 @@ function g168Coulees(cx,cz,n,radial,k0){const L=[];for(let i=0;i<n;i++){const a=
 function g168MajCoulees(k){const t=performance.now()/1000;GEN168.obj.forEach(o=>{if(!o.material||!o.material.uniforms||!o.material.uniforms.fr)return;const d=o.userData;o.material.uniforms.fr.value=Math.max(0,Math.min(1,(k-d.debut)/d.duree));o.material.uniforms.t.value=t;
   const pos=o.geometry.attributes.position,P=d.P;for(let i=0;i<P.length;i++){const y=g168Haut(P[i][0],P[i][1])+.04;pos.setY(i*2,y);pos.setY(i*2+1,y)}pos.needsUpdate=true})}
 // ----- 4. les navires -----
-function g168Navire(type){const g=new THREE.Group(),M=c=>new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const L=type==='boutre'?.7:type==='chaloupe'?.22:.9;
+function g168Navire(type){const g=new THREE.Group(),M=c=>new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const L=type==='boutre'?.7:type==='chaloupe'||type==='pirogue'?.22:.9;
  const sh=new THREE.Shape();sh.moveTo(-L/2,0);sh.quadraticCurveTo(-L*.2,-L*.16,L*.35,-L*.1);sh.lineTo(L/2,.04);sh.lineTo(-L/2,.06);const h=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:L*.22,bevelEnabled:false}),M(type==='boutre'?0x7a5232:0x4a3220));h.position.z=-L*.11;h.position.y=L*.1;g.add(h);
- if(type==='chaloupe'){for(let i=0;i<4;i++){const r=new THREE.Mesh(new THREE.CylinderGeometry(.006,.006,.2,4),M(0x3a2a1a));r.rotation.x=Math.PI/2;r.position.set(-.06+i*.04,.12,0);g.add(r)}return g}
+ if(type==='chaloupe'||type==='pirogue')return g;
  const mat=(x,hh)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(.012,.016,hh,6),M(0x3a2a1a));m.position.set(x,L*.1+hh/2,0);g.add(m);return m};
  if(type==='boutre'){mat(.05,.6);const v=new THREE.Shape();v.moveTo(-.32,.12);v.lineTo(.3,.72);v.lineTo(.12,.12);const s=new THREE.Mesh(new THREE.ShapeGeometry(v),M(0xe8dcc0));s.position.y=L*.1;g.add(s)}
  else{const tex=c=>{const cv=document.createElement('canvas');cv.width=cv.height=64;const x=cv.getContext('2d');x.fillStyle='#ece2c8';x.fillRect(0,0,64,64);if(c){x.fillStyle=c;x.fillRect(27,6,10,52);x.fillRect(10,24,44,10)}return new THREE.CanvasTexture(cv)};
