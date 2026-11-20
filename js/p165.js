@@ -44,4 +44,4 @@ setInterval(()=>{try{if(!G165.dern||(typeof VP!=='undefined'&&VP))return;const d
    const u=marche?Math.min(1,Math.max(0,(ph-.2)/.6)):1,x0=a.x+(b.x-a.x)*u,z0=a.z+(b.z-a.z)*u,ry=Math.atan2(b.x-a.x,b.z-a.z);
    M.forEach((p,k)=>{const ox=Math.cos(k*2.1)*.07*(k?1:0)-Math.sin(ry)*k*.05,oz=Math.sin(k*2.1)*.07*(k?1:0)-Math.cos(ry)*k*.05,x=x0+ox,z=z0+oz;
     const mod=p.g==='f'?(p.role==='cha'?'femme_sagaie':'femme_travail'):(p.role==='cha'?'p1a_chasseur':'homme_chemise');
-    mfPoser('gx165_'+g.id+'_'+k,mod,x,Math.max(0,alt(x,z))*VX+.01,z,marche&&u<1?ry:ry+k*1.3,g.exp.inc&&p.id===g.exp.inc.pid&&g.exp.inc.k==='blesse'?'repos_assis':(marche&&u<1?'marche':'repos_debout'))})})}catch(e){}return r}}
+    mfPoser('gx165_'+g.id+'_'+k,mod,x,Math.max(0,alt(x,z))*VX+.01,z,marche&&u<1?ry:ry+k*1.3,g.exp.inc&&p.id===g.exp.inc.pid&&g.exp.inc.k==='blesse'?'assis':g.exp.inc&&g.exp.inc.k==='rencontre'?'cacher':(marche&&u<1?(p.bl?'marche_blesse':'marche'):'repos_debout'))})})}catch(e){}return r}}

@@ -30,7 +30,7 @@ function vpCombat(dt){const V=VP,F=V.fight;if(!F)return;const h=V.h,ch=V.chef,vi
  vivC.forEach(o=>{const e=vivE.sort((a,b)=>Math.hypot(a.x-o.x,a.z-o.z)-Math.hypot(b.x-o.x,b.z-o.z))[0];if(!e)return;const d=Math.hypot(e.x-o.x,e.z-o.z);let tx=o.x,tz=o.z,v=3.4;
   if(o.rc==='bouclier'){const a=Math.atan2(e.x-ch.x,e.z-ch.z);tx=ch.x+Math.sin(a)*1.4;tz=ch.z+Math.cos(a)*1.4}
   else if(o.rc==='tireur'){if(d>20){tx=e.x;tz=e.z}o.cd=(o.cd||1)-dt;if(d<=22&&o.cd<=0){o.cd=2.4;const sk=((o.p.sk||{}).cha||0)+(o.p.role==='cha'?3:0);vpLancer(o,{x:e.x+(Math.random()-.5)*(3-Math.min(2.6,sk*.35)),y:h(e.x,e.z)+.6,z:e.z+(Math.random()-.5)*(3-Math.min(2.6,sk*.35))},24)}}
-  else{tx=e.x;tz=e.z;v=5;if(d<1.8){tx=o.x;tz=o.z;o.cd=(o.cd||1)-dt;if(o.cd<=0){o.cd=1.2;vpClip(o,'sabre');o.lanceT=.7;if(Math.random()<.45+((o.p.sk||{}).gue||0)*.04){e.hp--;if(e.hp<=0)vpEnnemiTombe(e,o.p)}}}}
+  else{tx=e.x;tz=e.z;v=5;if(d<1.8){tx=o.x;tz=o.z;o.cd=(o.cd||1)-dt;if(o.cd<=0){o.cd=1.2;vpClip(o,(o.p&&o.p.id%2)?'baton_coup':'sabre');o.lanceT=.7;if(Math.random()<.45+((o.p.sk||{}).gue||0)*.04){e.hp--;if(e.hp<=0)vpEnnemiTombe(e,o.p)}}}}
   const dx=tx-o.x,dz=tz-o.z,dd=Math.hypot(dx,dz);o.mvF=dd>.3;if(dd>.3){const st=Math.min(dd,v*dt),nx=o.x+dx/dd*st,nz=o.z+dz/dd*st;if(vpLibre(nx,nz)){o.x=nx;o.z=nz}o.ang=Math.atan2(dx,dz)}else o.ang=Math.atan2(e.x-o.x,e.z-o.z)});
  // les sagaies du chef et des tireurs touchent aussi les ennemis
  V.vol=V.vol.filter(s=>{const p=s.m.position;for(const e of vivE){if(e.hp>0&&Math.hypot(e.x-p.x,e.z-p.z)<.7&&p.y-h(e.x,e.z)<2.2&&p.y-h(e.x,e.z)>-.2){e.hp--;V.sc.remove(s.m);if(e.hp<=0)vpEnnemiTombe(e,s.de&&s.de.p);else vpMsg('Touché !');return false}}return true});
