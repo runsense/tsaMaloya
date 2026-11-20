@@ -23,7 +23,7 @@ function colonsSortent137(t){if(!t||COLS137.some(c=>c.t===t.i))return;const a=ar
    const u=(now-c.t0)/1000,sortie=Math.min(1,u/2.2),fin=(c.fin-now)/1000;let x,z,clip='marche',ang;
    if(fin<3){const v=1-fin/3;x=c.bx+(c.ax-c.bx)*v;z=c.bz+(c.az-c.bz)*v;ang=Math.atan2(c.ax-c.bx,c.az-c.bz)}// ils repartent sous l'arbre
    else if(sortie<1){x=c.ax+(c.bx-c.ax)*sortie;z=c.az+(c.bz-c.az)*sortie;ang=Math.atan2(c.bx-c.ax,c.bz-c.az)}
-   else{const w=u*.25+i;x=c.bx+Math.cos(w)*.12;z=c.bz+Math.sin(w)*.09;ang=w+Math.PI/2;clip='chasse_traque'}
+   else{const w=u*.25+i;x=c.bx+Math.cos(w)*.12;z=c.bz+Math.sin(w)*.09;ang=-w;clip='chasse_traque'}
    mfPoser(c.k,c.nm,x,Math.max(0,alt(x,z))*VX+.02,z,ang,clip);const f=MF.L[c.k];if(f&&f.o){f.vu=MF.t;const s=f.o.userData.s0106||f.o.scale.x;const g=fin<3?Math.max(.15,fin/3):Math.max(.15,Math.min(1,u/1.2));f.o.scale.setScalar((f.o.userData.s0106||1)*g*(typeof dist!=='undefined'?Math.max(.55,Math.min(1.6,1.75-dist*.035)):1))}}}catch(e){}return r}}
 // leurs chiens courent devant eux
 {const ap=aniPlaces;aniPlaces=function(k){const L=ap.apply(this,arguments);try{if(k==='chien'&&COLS137.length){const now=performance.now()/1000;COLS137.forEach((c,i)=>{if(i%2)return;const f=MF.L[c.k];if(!f||!f.o||!f.o.visible)return;const p=f.o.position;L.push({x:p.x+Math.cos(now*1.3+i)*.18,z:p.z+Math.sin(now*1.3+i)*.14})})}}catch(e){}return L}}

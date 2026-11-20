@@ -2,16 +2,16 @@
 // Quand la place manque, seules les icônes restent (le nom revient au survol). L'onglet Pouvoirs a sa couleur (violet) et scintille quand un pouvoir est prêt, comme Savoirs.
 (function(){const st=document.createElement('style');st.textContent=`
 #bas .tab{font-size:11px!important;padding:5px 9px!important;letter-spacing:.02em;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;position:relative}
-#bas .tab:hover,#bas .tab:focus-visible{max-width:420px;transform:scale(1.18)!important;z-index:6;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+#bas .tab{transition:transform .15s!important}#bas .tab:hover,#bas .tab:focus-visible{transform:scale(1.15)!important;z-index:6;box-shadow:0 6px 16px rgba(0,0,0,.45)}
 #t-sav::before{content:'📚 '}#t-chr::before{content:'🕰 '}#t-pou::before{content:'✨ '}#t-out::before{content:'⛵ '}#t-fac::before{content:'⚑ '}#t-pp::before{content:'👥 '}#t-jou::before{content:'📜 '}#t-aid::before{content:'❔ '}
 #nvp::before{content:'🆕 '}#auto::before{content:'📖 '}#undo::before{content:'↶ '}#back::before{content:'⏮ '}#sortie::before{content:'🗺 '}
-body.ico157 #bas .tab:not(:hover):not(.on){font-size:0!important;padding:5px 7px!important}body.ico157 #bas .tab:not(:hover):not(.on)::before{font-size:15px}
-body.ico157 #bas .tab:not(:hover):not(.on) .pastille{font-size:10px;position:absolute;top:-3px;right:-3px;padding:0 4px}
+body.ico157 #bas .tab:not(.on){font-size:0!important;padding:5px 7px!important}body.ico157 #bas .tab:not(.on)::before{font-size:15px}
+body.ico157 #bas .tab:not(.on) .pastille{font-size:10px;position:absolute;top:-3px;right:-3px;padding:0 4px}
 #t-pou{border-color:#b98cf0!important;color:#dcc4ff!important}#t-pou.on{background:#b98cf0!important;color:#1a1026!important}
 #t-pou.brille157{animation:pvBr157 1.6s ease-in-out infinite}@keyframes pvBr157{0%,100%{box-shadow:0 0 0 0 rgba(185,140,240,.0)}50%{box-shadow:0 0 0 4px rgba(185,140,240,.55),0 0 18px rgba(185,140,240,.7)}}`;document.head.appendChild(st)})();
 setInterval(()=>{try{const b=document.getElementById('bas');if(!b||b.hidden)return;
  // icônes seules si la barre déborde (on mesure en mode texte)
- const t=document.getElementById('tabs');if(t){document.body.classList.remove('ico157');const trop=t.scrollWidth>t.clientWidth+4||b.scrollHeight>b.clientHeight+6;document.body.classList.toggle('ico157',trop)}
+ const t=document.getElementById('tabs');if(t)t.querySelectorAll('.tab').forEach(x=>{if(!x.title)x.title=x.textContent.trim()});if(t){document.body.classList.remove('ico157');const trop=t.scrollWidth>t.clientWidth+4||b.scrollHeight>b.clientHeight+6;document.body.classList.toggle('ico157',trop)}
  const p=document.getElementById('t-pou');if(p&&typeof pouvDispo==='function')p.classList.toggle('brille157',pouvDispo()>0&&onglet!=='pou')}catch(e){}},700);
 // ----- Histoire : le menu du clic droit ne cache plus les informations du lieu (chasse, cueillette, gibier) : le panneau du lieu reste visible à côté, et le menu se range à sa gauche -----
 {const st=document.createElement('style');st.textContent='body.ctx157 #side{visibility:visible!important;pointer-events:auto!important}';document.head.appendChild(st);
