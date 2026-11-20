@@ -25,7 +25,7 @@ const DUE=(()=>{
   const SOL=()=>H*.78;
   const mkF=(f,xx,s)=>({f,x:xx,y:0,vy:0,s,pv:f.pv+(f===A0?POT:0),cd:0,act:null,at:0,garde:false,stun:0,cds:{},touche:0,aveugle:0,poison:0});
   const G={r:1,ga:0,gb:0,t:60,fini:false,ok:false,proj:[],chiens:[],msg:''};window.__duel=G;
-  let A,B;function round(){A=mkF(A0,W*.3,1);B=mkF(B0,W*.7,-1);G.t=60;G.proj=[];G.chiens=[];dire('Manche '+G.r+' · combattez !',1600)}
+  let A,B;function round(){A=mkF(A0,W*.3,1);B=mkF(B0,W*.7,-1);G.t=60;G.proj=[];G.chiens=[];dire('Manche '+G.r+' · combattez !'+(typeof BAG175!=='undefined'?'<br><i style="font-size:.8em">« '+BAG175.prov[(G.r*3+(Date.now()>>10))%BAG175.prov.length]+' »</i>':''),2200)}
   function dire(h,d){const t=el.querySelector('#duT');t.innerHTML=h;t.classList.add('on');clearTimeout(dire.h);dire.h=setTimeout(()=>t.classList.remove('on'),d||2000)}
   const atk=(c,k)=>k==='p'?{d:7,po:70,dur:.25,cd:.35}:{d:c.f.arme.d,po:c.f.arme.po,dur:.38,cd:c.f.arme.d>=15?.8:.6};
   const coupe=(o,d)=>{o.pv-=d*(1-(o.f.arm||0))*(o.garde?.2:1);o.touche=.15};
