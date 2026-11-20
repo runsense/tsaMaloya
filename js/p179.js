@@ -16,9 +16,9 @@ function gpCasc179(){const L=[];const cand=T.filter(t=>!t.sea&&t.slope>20&&t.alt
  const G=[];for(const t of L){if(G.length>=160)break;if(G.some(g=>Math.hypot(g.position.x-t.x,g.position.z-t.z)<.9))continue;
   const e=.08,gx=alt(t.x+e,t.z)-alt(t.x-e,t.z),gz=alt(t.x,t.z+e)-alt(t.x,t.z-e),gl=Math.hypot(gx,gz)||1,dx=-gx/gl,dz=-gz/gl;
   const hT=Math.max(0,alt(t.x-dx*.18,t.z-dz*.18)),hB=Math.max(0,alt(t.x+dx*.18,t.z+dz*.18)),H=(hT-hB)*VX;if(H<.08)continue;
-  const w=Math.min(.09,.012+t.gp179*.008),g=new THREE.Group();g.position.set(t.x+dx*.18,hB*VX+.005,t.z+dz*.18);g.rotation.y=Math.atan2(dx,dz);
+  const w=Math.min(.16,.026+t.gp179*.014),g=new THREE.Group();g.position.set(t.x+dx*.18,hB*VX+.005,t.z+dz*.18);g.rotation.y=Math.atan2(dx,dz);
   const pg=new THREE.PlaneGeometry(w,H,1,6);pg.translate(0,H/2,0);const m=new THREE.Mesh(pg,eauMat147());m.position.z=-.16;m.rotation.x=-Math.atan2(.36,H)*.55;g.add(m);
-  const br=new THREE.Sprite(new THREE.SpriteMaterial({map:brumeTex147(),transparent:true,opacity:.4,depthWrite:false}));br.scale.set(w*3,w*1.6,1);br.position.y=.02;g.add(br);
+  const br=new THREE.Sprite(new THREE.SpriteMaterial({map:brumeTex147(),transparent:true,opacity:.4,depthWrite:false}));br.scale.set(w*5,w*2.6,1);br.position.y=.03;br.material.opacity=.55;g.add(br);{const ec=new THREE.Mesh(new THREE.PlaneGeometry(w*1.15,Math.min(H*.18,.05)),new THREE.MeshBasicMaterial({color:0xf4f8fa,transparent:true,opacity:.75,depthWrite:false}));ec.position.set(0,.012,-.02);ec.rotation.x=-Math.PI/2.4;g.add(ec);const b2=new THREE.Sprite(new THREE.SpriteMaterial({map:brumeTex147(),transparent:true,opacity:.35,depthWrite:false}));b2.scale.set(w*3.2,w*2,1);b2.position.set(0,H*.35,-.1);g.add(b2)}
   g.userData={t,z0:pluieLieu174(t.x,t.z).z,w};g.visible=false;scene.add(g);G.push(g)}
  return G}
 // 2) la crue des cirques : un large ruban d'eau boueuse sur le fond de vallée, là où les rivières traversent un cirque ; et les grosses rivières qui sortent de leur lit en bas
