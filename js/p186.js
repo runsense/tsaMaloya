@@ -134,9 +134,9 @@ Object.assign(EV,{
  setInterval(()=>{const on=typeof VP!=='undefined'&&VP&&!VP.en2D;h.style.display=on?'block':'none';if(on)h.textContent=document.pointerLockElement?'⎋ Échap deux fois : revenir à la carte':'⎋ Échap : revenir à la carte'},400)}
 // ===== Les groupes vivent au rythme du jour : près du camp (2 cases au plus), ils partent à l'aube, travaillent le jour et rentrent dormir au camp ; plus loin, ils bivouaquent la nuit sans avancer =====
 {let nuit0=null;setInterval(()=>{try{if(!S||S.fin||S.bac||typeof modeHist==='function'&&modeHist()||!S.grp||!S.grp.length)return;const ph=jourPh(),nuit=ph<.22||ph>.8;if(nuit===nuit0)return;nuit0=nuit;
- S.grp.forEach(g=>{const e=g.exp;if(!e||e.but==='camp'||e.but==='explorer')return;const pres=hd(T[e.cap],T[e.home])<=2;
-  if(nuit){if(pres&&(e.etat==='sur place'||e.etat==='aller')){e.nuit=1;e.etat='retour';journal(g.n+' quitte '+(lieuDe(T[g.pos])||'le terrain')+' à la tombée du jour.')}else if(e.etat==='sur place')journal(g.n+' bivouaque pour la nuit.')}
-  else if(e.nuit&&e.etat==='camp'){e.nuit=0;e.etat='aller';journal(g.n+' repart à l’aube '+(EXPB[e.but]?EXPB[e.but][0].toLowerCase():'au travail')+'.')}});try{grpDessin()}catch(x){}}catch(e){}},1500)}
+ S.grp.forEach(g=>{const e=g.exp;if(!e||e.but==='camp')return;const pres=hd(T[e.cap],T[e.home])<=1;
+  if(nuit){if(pres&&(e.etat==='sur place'||e.etat==='aller')){e.nuit=1;e.etat='retour';journal(g.n+' quitte '+(lieuDe(T[g.pos])||'le terrain')+' à la tombée du jour.')}else if(e.etat!=='camp'){e.biv=g.pos;journal(g.n+' s’arrête '+(lieuDe(T[g.pos])?'à '+lieuDe(T[g.pos]):lieuProche(T[g.pos])?'près de '+lieuProche(T[g.pos]):'dans un coin abrité')+' et monte un camp de fortune pour la nuit.')}}
+  else if(e.biv!=null){e.biv=null;journal(g.n+' lève le camp de fortune et reprend la route.')}if(!nuit&&e.nuit&&e.etat==='camp'){e.nuit=0;e.etat='aller';journal(g.n+' repart à l’aube '+(EXPB[e.but]?EXPB[e.but][0].toLowerCase():'au travail')+'.')}});try{grpDessin()}catch(x){}}catch(e){}},1500)}
 // et le travail du jour (gibier, cueillette, pêche) ne se fait que de jour : la nuit, le groupe dort
 {const ej=expJour;expJour=function(){try{const ph=jourPh();if(S&&S.grp&&(ph<.22||ph>.8)){const sv=S.grp.map(g=>g.exp&&g.exp.etat==='sur place'?g:null);sv.forEach(g=>{if(g){g.exp._et=g.exp.etat;g.exp.etat='dort'}});const r=ej.apply(this,arguments);(S.grp||[]).forEach(g=>{if(g.exp&&g.exp.etat==='dort'){g.exp.etat=g.exp._et;delete g.exp._et}});return r}}catch(e){}return ej.apply(this,arguments)}}
 // ===== Fiche d'un acteur au camp : où il est (le feu, le jardin, la réserve…) et un bouton pour l'incarner =====
@@ -283,6 +283,47 @@ function etat186(p){if(!p||!adulte(p))return '';const g=(S.grp||[]).find(g=>g.m.
    else{el.style.borderLeft='5px solid transparent';el.style.background='transparent';el.style.opacity='.62';const s=el.querySelector(':scope>small');if(s&&adulte(p))s.textContent=p.bl?'blessé, se repose':nu?'dort':'ne fait rien';el.title=p.n.split(' ')[0]+(nu?' dort':' ne fait rien')}})}catch(e){}return r}}
 {let AV={},nuAv=null;setInterval(()=>{try{if(!S||S.fin||modeHist()||!S.pp||(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden))return;const nu=nuit186(),fin={};let chg=false;
   S.pp.forEach(p=>{const a=etat186(p),b=AV[p.id];if(b!==undefined&&a!==b){chg=true;const gd=(S.grp||[]).find(g=>g.m.includes(p.id)&&g.exp&&g.exp.etat==='camp');if(b&&!a&&!(nu&&!nuAv)&&!gd&&!(nu&&!g186(p)))(fin[b]=fin[b]||[]).push(p.n.split(/[ ,]/)[0])}AV[p.id]=a});
-  if(nuAv===false&&nu){journal('La nuit tombe : chacun rentre au camp.')}
+  if(nuAv===false&&nu){journal('La nuit tombe : ceux du camp rentrent dormir, les groupes dehors font halte.')}
   Object.entries(fin).forEach(([k,L])=>{const A=ACT186[k];const m=A[2]+' '+(L.length>2?L.slice(0,2).join(', ')+' et '+(L.length-2)+' autre'+(L.length>3?'s':''):L.join(' et '))+(L.length>1?' ont':' a')+' fini de '+A[1]+'.';journal(m);try{toast(m)}catch(e){}});
   nuAv=nu;if(chg&&typeof CV!=='undefined'&&CV.on)try{cvListe()}catch(e){}}catch(e){}},1500)}
+// ===== Survie : la même lecture — chaque poste a la couleur de son travail, les postes vides pâlissent, et on prévient quand un lieu est fini (bois rasé, gibier épuisé) =====
+const KCOL186={bois:'#8a6a44',pierre:'#8a8a8a',vivres:'#c0503a',chasse:'#c0503a',cueil:'#6fae55',peche:'#3f8fd0',culture:'#9ab040',tortues:'#5aa890',oiseaux:'#6fae55',paille:'#c8b060',eau:'#4ab8d8'};
+function kCol186(k){return KCOL186[k]||(String(k).startsWith('bat_')?'#b0a070':'#9a8a6a')}
+{const qd=kQuiDess;kQuiDess=function(){const r=qd.apply(this,arguments);try{const q=$('kQui');if(!q)return r;q.querySelectorAll('[data-qm]').forEach(b=>{const [i,k]=b.dataset.qm.split('|'),row=b.closest('.l');if(!row)return;const v=((K.trav||{})[i]||{})[k]||0,c=kCol186(k);
+   row.style.borderLeft='4px solid '+(v?c:'transparent');row.style.paddingLeft='5px';row.style.background=v?'linear-gradient(90deg,'+c+'50,'+c+'10 80%)':'transparent';row.style.opacity=v?'':'.55'});
+  const lib=q.querySelector('div[style*="margin-top:8px"]');if(lib&&typeof kLibres==='function'&&kLibres()>0)lib.insertAdjacentHTML('afterbegin','<div style="opacity:.75;margin-bottom:3px">'+kLibres()+' personne'+(kLibres()>1?'s':'')+' ne fait rien.</div>')}catch(e){}return r}}
+setInterval(()=>{try{const L=$('kEtq');if(!L||L.hidden||!K)return;L.querySelectorAll('[data-et]').forEach(e=>{const a=(K.trav||{})[e.dataset.et]||{},ks=Object.keys(a).filter(k=>a[k]>0);if(!ks.length)return;const c=kCol186(ks.sort((x,y)=>a[y]-a[x])[0]);if(e._c186!==c){e._c186=c;e.style.boxShadow='inset 4px 0 0 '+c;e.style.background='linear-gradient(90deg,'+c+'66,#f3e6c4 70%)'}})}catch(e){}},600);
+// un lieu fini : on prévient une fois
+{const km=kMois;kMois=function(){const r=km.apply(this,arguments);try{if(!K||K.fin)return r;K.fini186=K.fini186||{};const nm=i=>lieuDe(T[i])||lieuProche(T[i])||'ce lieu';
+  Object.entries(K.trav||{}).forEach(([i,a])=>{const f=K.fini186;
+   if(a.bois&&(K.foret[i]||0)<8&&!f['b'+i]){f['b'+i]=1;const m='🪓 La forêt de '+nm(i)+' est rasée : les bûcherons ont fini, envoyez-les ailleurs.';kLog(m);toast(m)}else if((K.foret[i]||0)>30)delete f['b'+i];
+   const g=(K.gibier||{})[i];if(a.vivres&&g!=null&&g<15&&!f['g'+i]){f['g'+i]=1;const m='🏹 Plus de gibier à '+nm(i)+' : laissez la place se refaire.';kLog(m);toast(m)}else if(g!=null&&g>50)delete f['g'+i]})}catch(e){}return r}}
+// sous la pluie, dans les hauts (au-dessus de 900 m), un groupe avance moitié moins vite
+function lent186(g){try{const t=T[g.pos];return t&&(t.alt||0)>900&&pluieF106()>.35}catch(e){return false}}
+// le camp de fortune se voit la nuit : un abri de branches et un petit feu là où le groupe s'est arrêté
+{const gd=grpDessin;grpDessin=function(){const r=gd.apply(this,arguments);try{if(!S||!S.grp||typeof scene==='undefined')return r;S.grp.forEach(g=>{const e=g.exp;if(!e||e.biv==null)return;const t=T[g.pos];if(!t)return;const y=Math.max(0,alt(t.x,t.z))*VX;
+  const ab=new THREE.Mesh(new THREE.ConeGeometry(.09,.1,4,1,true),new THREE.MeshLambertMaterial({color:0x6a5a3a,side:THREE.DoubleSide}));ab.position.set(t.x+.08,y+.05,t.z);ab.rotation.y=.6;scene.add(ab);GRPM.push(ab);
+  const f=new THREE.Mesh(new THREE.SphereGeometry(.025,8,6),new THREE.MeshBasicMaterial({color:0xffa040}));f.position.set(t.x-.05,y+.025,t.z+.04);scene.add(f);GRPM.push(f);
+  const l=new THREE.PointLight(0xff9040,.8,.8);l.position.set(t.x-.05,y+.1,t.z+.04);scene.add(l);GRPM.push(l)})}catch(e){}return r}}
+// ===== Le sol tel qu'il est dessiné : la carte est faite de triangles, pas d'une surface lisse ; ce qui est posé dessus suit ces triangles =====
+function altTri(x,z){let g=(x+MAR)/ST,h=(z+MAR)/ST;if(g<0||h<0||g>=NX-1||h>=NY-1)return -200;const i=g|0,j=h|0,a=g-i,b=h-j,p=(u,v)=>H[v*NX+u];
+ const A=p(i,j),B=p(i+1,j),D=p(i,j+1),E=p(i+1,j+1);return a+b<=1?A+a*(B-A)+b*(D-A):E+(1-a)*(D-E)+(1-b)*(B-E)}
+// les sentiers : plus de points (au moins deux par triangle) et posés sur les triangles, à peine au-dessus
+{const r0=ruban97;ruban97=function(P,w,hY){try{if(hY&&P.length>1){const Q=[P[0]],pas=ST*.4;for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i],n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/pas));for(let k=1;k<=n;k++)Q.push({x:a.x+(b.x-a.x)*k/n,y:a.y+(b.y-a.y)*k/n,z:a.z+(b.z-a.z)*k/n})}
+  const h0=hY;hY=q=>{const v=h0(q),s=Math.max(0,alt(q.x,q.z))*VX,o=v-s;if(Math.abs(o)>.2||alt(q.x,q.z)<0)return v;return Math.max(0,altTri(q.x,q.z))*VX+Math.min(o,.012)};P=Q}}catch(e){}return r0.call(this,P,w,hY)}}
+// les arbres : posés au plus bas de leur pied, pour que les racines ne restent pas en l'air sur une pente
+try{TREES.forEach(p=>{const r=.05*(p.s||1);let m=1e9;for(let k=0;k<6;k++){const a=k*1.047;m=Math.min(m,altTri(p.x+Math.cos(a)*r,p.z+Math.sin(a)*r))}m=Math.min(m,altTri(p.x,p.z));if(m>5)p.y=Math.max(m*VX+.17-.004,p.y-.025)})}catch(e){}
+// la grotte : une bouche sombre creusée dans la paroi, là où la pente est la plus forte, tournée vers l'aval (plus de rond violet par-dessus)
+function grotte186(t){const G=new THREE.Group();let best=null;for(let r of [.18,.3,.42])for(let k=0;k<16;k++){const a=k/16*6.283,x=t.x+Math.cos(a)*r,z=t.z+Math.sin(a)*r,e=.04,
+  gx=(altTri(x+e,z)-altTri(x-e,z))/(2*e),gz=(altTri(x,z+e)-altTri(x,z-e))/(2*e),pente=Math.hypot(gx,gz);if(!best||pente>best.p)best={x,z,p:pente,gx,gz}}
+ const {x,z}=best,L=Math.hypot(best.gx,best.gz)||1,dx=-best.gx/L,dz=-best.gz/L;// vers l'aval
+ const yb=altTri(x,z)*VX,ang=Math.atan2(dx,dz),R=.075;
+ const roche=new THREE.MeshLambertMaterial({color:0x4a4038}),noir=new THREE.MeshBasicMaterial({color:0x060403,side:THREE.DoubleSide});
+ const bouche=new THREE.Mesh(new THREE.CircleGeometry(R,18,0,Math.PI),noir);bouche.position.set(0,0,0);G.add(bouche);
+ const arche=new THREE.Mesh(new THREE.TorusGeometry(R*1.08,R*.28,5,14,Math.PI),roche);G.add(arche);
+ // le fond qui s'enfonce dans la pente
+ const fond=new THREE.Mesh(new THREE.CylinderGeometry(R,R,.12,14,1,true,0,Math.PI).rotateX(Math.PI/2).rotateZ(Math.PI/2),noir);fond.position.set(0,0,-.06);G.add(fond);
+ [[-1,.3],[1,.25],[-.6,-.2]].forEach(([u,v],i)=>{const c=new THREE.Mesh(new THREE.DodecahedronGeometry(R*(.35+.1*i)),roche);c.position.set(u*R*1.3,R*.15+v*.02,.01);G.add(c)});
+ G.rotation.y=ang;// la face ouverte regarde vers l'aval
+ G.position.set(x-dx*.012,yb-.004,z-dz*.012);// un peu enfoncée dans la paroi
+ return G}

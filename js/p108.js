@@ -31,7 +31,7 @@ function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=
  // les oiseaux : deux vols qui tournent au-dessus
  const nOis=Math.max(1,5-Math.floor((S.oisP106||0)/3));for(let v=0;v<2;v++)for(let i=0;i<nOis;i++){const o=new THREE.Group(),m=viv108Mat(v?0xf2f2ea:0x2a2a2a,{side:THREE.DoubleSide});const ai=[1,-1].map(sg=>{const w=new THREE.Mesh(new THREE.PlaneGeometry(.045,.014),m);w.position.x=sg*.022;o.add(w);return w});const c=new THREE.Mesh(new THREE.SphereGeometry(.008,5,4),m);c.scale.z=2;o.add(c);g.add(o);VIV108.b.push({k:'oiseau',o,v,i,ai})}
  // les cavernes connues : une bouche sombre dans la pente
- try{Object.keys(S.cav97||{}).map(Number).map(i=>T[i]).filter(t=>t&&P.includes(t)).forEach(t=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.12,10,6,0,Math.PI*2,0,Math.PI/2),viv108Mat(0x0e0b09));m.scale.set(1,.8,.5);m.position.set(t.x+.25,t.alt*VX+.02,t.z+.1);g.add(m);const s=viv108Icone('🕳️');s.position.set(t.x+.25,t.alt*VX+.32,t.z+.1);g.add(s)})}catch(e){}
+ try{Object.keys(S.cav97||{}).map(Number).map(i=>T[i]).filter(t=>t&&P.includes(t)).forEach(t=>{g.add(grotte186(t))})}catch(e){}
  // les plantes et pierres de la mystique, là où elles poussent (marrons) : une petite lueur
  try{if(!S.voieC&&typeof ING99!=='undefined'){let n=0;P.forEach(t=>{if(n>14)return;const ok=Object.entries(ING99).find(([q,J])=>{try{return J.ok&&J.ok(t)}catch(e){return false}});if(!ok)return;const s=viv108Icone(ok[1].ic||'🌿');s.position.set(t.x-.2,t.alt*VX+.22,t.z-.15);s.userData.n=ok[1].n;g.add(s);VIV108.o.push(s);n++})}}catch(e){}
  return g}
