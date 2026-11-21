@@ -782,12 +782,13 @@ const TILT186={a:30,P:1600,s:.88};
    if(!d||Math.hypot(px-d.x,py-d.y)>cs*3||now-d.t>3000){d={x:px,y:py,a:u.dir!=null?u.dir:(s===0?-Math.PI/2:Math.PI/2),v:0,t:now};MEM.set(k,d)}
    const dx=px-d.x,dy=py-d.y,dd=Math.hypot(dx,dy);if(u.dir!=null)d.a=u.dir;else if(dd>.3)d.a=Math.atan2(dy,dx);d.v=d.v*.8+Math.min(3,dd)*.2;d.x=px;d.y=py;d.t=now;
    const m=typeof mod185==='function'&&mod185(b,s,0);if(m&&typeof spr185==='function'){const nm=((b&&b.n)||'').toLowerCase();
-    const clip=u.geste||(u.peur>0?'marche_blesse':d.v>.12?'marche':(s===1&&/fusil/.test(nm)?'garde':'repos_debout'));const t=now/1000,ph=t*(clip==='marche'?1.1:1.4)+(u.id.length*.37);
+    const clip=u.geste||(u.peur>0?'marche_blesse':d.v>.12?'marche':(s===1&&/fusil/.test(nm)?'garde':'repos_debout'));const t=now/1000,ph=u.gph!=null?u.gph:t*(clip==='marche'?1.1:1.4)+(u.id.length*.37);
     x.save();x.fillStyle='rgba(0,0,0,.3)';x.beginPath();x.ellipse(px,py+cs*.06,cs*.3,cs*.22,0,0,7);x.fill();x.strokeStyle=s===0?'#e2bd74':'#c03030';x.lineWidth=3;x.beginPath();x.ellipse(px,py+cs*.06,cs*.36,cs*.27,0,0,7);x.stroke();x.restore();
     if(spr185(x,m,clip,'dessus',ph,px,py,cs*2.1,d.a))return}}}catch(e){}return p1.apply(this,arguments)}}
 // 2) les personnages debout sur un plateau incliné : vue « trois-quarts » cuite sous l'angle du plateau, 8 directions
 {const c0=spr185Cuire;spr185Cuire=function(m,clip,vue){if(!/^tq[0-7]$/.test(vue))return c0.apply(this,arguments);const k=m+'|'+clip+'|'+vue;if(SPR185.cache[k])return;SPR185.cache[k]={pret:0};
   SPR185.file.push(()=>spr185Inst(m).then(o=>{if(!o||!spr185Moteur()){SPR185.cache[k].rate=1;return}const S=SPR185;
+   try{if(typeof mxGeste188==='function'&&o.g)mxGeste188(o.g.scene,o.clips,clip)}catch(e){}
    const cl=THREE.AnimationClip.findByName(o.clips,clip)||THREE.AnimationClip.findByName(o.clips,'repos_debout')||THREE.AnimationClip.findByName(o.clips,'garde');if(!cl){S.cache[k].rate=1;return}
    S.S.add(o.grp);o.mx.stopAllAction();const ac=o.mx.clipAction(cl);ac.reset();ac.setLoop(THREE.LoopRepeat,Infinity);ac.play();
    const h=o.h,C=S.C,dir=+vue[2],ang=dir*Math.PI/4,e=(90-TILT186.a)*Math.PI/180;o.grp.position.set(0,-o.y0,0);o.grp.rotation.set(0,Math.atan2(Math.cos(ang),Math.sin(ang)),0);

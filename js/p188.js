@@ -1,7 +1,7 @@
 // ===== p188 : les vrais mouvements de combat (Mixamo), recalés à la volée sur chaque combattant Meshy du duel =====
 // Les coups ne sont plus calculés os par os : chaque coup est un mouvement capté sur une personne (poing, pied, garde, coup reçu, chute).
 const MXD188={};function mxDec188(n){if(MXD188[n])return MXD188[n];const c=MX186[n];if(!c)return null;const d16=(s,k)=>{const b=atob(s),a=new Int16Array(b.length/2);for(let i=0;i<a.length;i++){const lo=b.charCodeAt(i*2),hi=b.charCodeAt(i*2+1);let v=lo|(hi<<8);if(v>32767)v-=65536;a[i]=v}return Float32Array.from(a,x=>x/k)};
- const o={n,F:c.F,fps:c.fps,pk:c.pk,b:{},hip:d16(c.hip,10000)};for(const k in c.b)o.b[k]={dir:c.b[k].dir,q:d16(c.b[k].q,32767)};return MXD188[n]=o}
+ const o={n,F:c.F,fps:c.fps,pk:c.pk,eff:c.eff,b:{},hip:d16(c.hip,10000)};for(const k in c.b)o.b[k]={dir:c.b[k].dir,q:d16(c.b[k].q,32767)};return MXD188[n]=o}
 function mxRecible(scene,c,opt){opt=opt||{};const T=THREE,ENF={Hips:'Spine02',Spine02:'Spine01',Spine01:'Spine',Spine:'neck',neck:'Head',Head:'head_end',LeftShoulder:'LeftArm',LeftArm:'LeftForeArm',LeftForeArm:'LeftHand',LeftHand:'LeftHandMiddle1',RightShoulder:'RightArm',RightArm:'RightForeArm',RightForeArm:'RightHand',RightHand:'RightHandMiddle1',LeftUpLeg:'LeftLeg',LeftLeg:'LeftFoot',LeftFoot:'LeftToeBase',LeftToeBase:'LeftToe_end',RightUpLeg:'RightLeg',RightLeg:'RightFoot',RightFoot:'RightToeBase',RightToeBase:'RightToe_end'};
  const os={};scene.traverse(o=>{if(o.isBone&&!os[o.name])os[o.name]=o});const H=os.Hips;if(!H||!H.parent)return null;
  // la pose de repos : on la lit sur une copie des os, sans toucher à l'animation en cours
@@ -9,7 +9,7 @@ function mxRecible(scene,c,opt){opt=opt||{};const T=THREE,ENF={Hips:'Spine02',Sp
  scene.updateMatrixWorld(true);const s0=new T.Matrix4().copy(scene.matrixWorld).invert();
  const WQ=o=>{const m=new T.Matrix4().multiplyMatrices(s0,o.matrixWorld),p=new T.Vector3(),q=new T.Quaternion(),s=new T.Vector3();m.decompose(p,q,s);return {p,q}};
  const bones=[];H.parent.traverse(o=>{if(o.isBone)bones.push(o)});const R={};bones.forEach(b=>{R[b.uuid]=WQ(b)});const rp=WQ(H.parent);const restL={};bones.forEach(b=>restL[b.uuid]=b.quaternion.clone());
- const corr={};for(const n in c.b){const b=os[n];if(!b)continue;const e=os[ENF[n]];let d=new T.Vector3(0,1,0);if(e)d=R[e.uuid].p.clone().sub(R[b.uuid].p).normalize();const ds=new T.Vector3().fromArray(c.b[n].dir);corr[n]=new T.Quaternion().setFromUnitVectors(d,ds).multiply(R[b.uuid].q)}
+ const corr={};for(const n in c.b){const b=os[n];if(!b)continue;const e=os[ENF[n]];let d=new T.Vector3(0,1,0);if(e){const dd=R[e.uuid].p.clone().sub(R[b.uuid].p);if(dd.lengthSq()>1e-10&&[dd.x,dd.y,dd.z].every(isFinite))d=dd.normalize()}if(![R[b.uuid].q.x,R[b.uuid].q.w].every(isFinite))continue;const ds=new T.Vector3().fromArray(c.b[n].dir);corr[n]=new T.Quaternion().setFromUnitVectors(d,ds).multiply(R[b.uuid].q)}
  const toes=['LeftToe_end','RightToe_end','LeftToeBase','RightToeBase'].map(n=>os[n]).filter(Boolean);const hh=Math.max(.2,R[H.uuid].p.y-(toes.length?Math.min(...toes.map(o=>R[o.uuid].p.y)):0));
  const F=c.F,tt=new Float32Array(F);for(let f=0;f<F;f++)tt[f]=f/c.fps;const vals={};bones.forEach(b=>vals[b.uuid]=new Float32Array(F*4));const hp=new Float32Array(F*3);
  const W={},D=new T.Quaternion(),pinv=new T.Quaternion(),lr=new T.Quaternion(),pi=new T.Matrix4().copy(H.parent.matrixWorld).invert(),sw=scene.matrixWorld;
@@ -26,4 +26,18 @@ const MXSTY188={capoeira:{idle:'Ginga_Variation_3',k1:'Martelo_2',k2:'Chapa_2',k
  escrime:{idle:'Pistol_Idle',p1:'Standing_Torch_Melee_Attack_Stab',p2:'Stable_Sword_Outward_Slash',p3:'Bayonet_Stab'}};
 function mx188Ajoute(o,f){if(typeof MX186==='undefined'||!o||!o.g)return;const st=(f&&f.st)||'';const m={...MXBASE188,...(MXSTY188[st]||{})};if(!st&&o.arme==='sabre')m.p3='Bayonet_Stab';
  const repos=[];o.g.scene.traverse(b=>{if(b.isBone)repos.push([b,b.quaternion.clone(),b.position.clone()])});o.mx188={};
- for(const k in m){const c=mxDec188(m[k]);if(!c)continue;try{const cl=mxRecible(o.g.scene,c,{nom:'mx_'+k,surPlace:k!=='ko'&&k!=='touche'&&k!=='stun',repos});if(cl){o.clips.push(cl);o.mx188[k]={pk:c.pk/c.fps,d:cl.duration}}}catch(e){}}}
+ for(const k in m){const c=mxDec188(m[k]);if(!c)continue;try{const cl=mxRecible(o.g.scene,c,{nom:'mx_'+k,surPlace:k!=='ko'&&k!=='touche'&&k!=='stun',repos});if(cl){o.clips.push(cl);o.mx188[k]={pk:c.pk/c.fps,d:cl.duration,eff:c.eff,nom:'mx_'+k}}}catch(e){}}}
+// ===== Partout ailleurs (vue incarnée de Vie, combats en 3D) : la pose de repos de chaque personnage est notée à sa création,
+// et quand le jeu demande un geste que Mixamo fait mieux, le mouvement capté le remplace, sous le même nom =====
+{const pi0=p3Instance;p3Instance=function(n){return pi0.apply(this,arguments).then(I=>{try{const sc=I.g.scene,r=[];let hum=0;sc.traverse(b=>{if(b.isBone){r.push([b,b.quaternion.clone(),b.position.clone()]);if(b.name==='LeftUpLeg'||b.name==='LeftArm'||b.name==='Head')hum++}});sc.userData.repos=r;sc.userData.mod=n;
+  // seulement les humains (pas les bêtes ni les bâtiments) : la liste des gestes se complète d'elle-même dès qu'un jeu demande un geste capté
+  if(hum>=3&&!/^(ani_|bat_)/.test(String(n))){const A=I.g.animations;Object.defineProperty(A,'__mxRoot',{value:sc,enumerable:false});
+   Object.defineProperty(A,'find',{value:function(pred){try{for(const k in MXGESTE188){if(!(sc.userData.mxg&&sc.userData.mxg[k])&&pred({name:k}))mxGeste188(sc,this,k)}}catch(e){}return Array.prototype.find.call(this,pred)},enumerable:false,writable:true})}}catch(e){}return I})}}
+{const fb=THREE.AnimationClip.findByName;THREE.AnimationClip.findByName=function(L,name){try{if(L&&L.__mxRoot&&MXGESTE188[name])mxGeste188(L.__mxRoot,L,name)}catch(e){}return fb.apply(this,arguments)}}
+// geste demandé par le jeu -> mouvement capté (surPlace : le jeu déplace déjà le personnage)
+const MXGESTE188={course:'Running',chasse_traque:'Accroupi_Avance',cacher:'Crouch_Walk_Right',baton_coup:'Standing_Torch_Melee_Attack_Stab',couteau:'Standing_Torch_Melee_Attack_Stab',chute_mort:'Dying',fusil:'Firing_Rifle',recharge:'Reloading',sabre:'Stable_Sword_Outward_Slash',saut:'Saut_Genou',touche:'Reaction',assassinat:'Assassinat_Lame',etrangler:'Etranglement',tombe_garde:'Garde_Tombe'};
+function mxGeste188(root,anim,c){try{if(!root||!anim||typeof MX186==='undefined')return;const src=MXGESTE188[c];if(!src)return;root.userData.mxg=root.userData.mxg||{};if(root.userData.mxg[c])return;root.userData.mxg[c]=1;const repos=root.userData.repos;if(!repos)return;
+ const d=mxDec188(src);if(!d)return;const cl=mxRecible(root,d,{nom:c,surPlace:true,repos});if(cl)anim.unshift(cl)}catch(e){}}
+const MXVIT188={course:1.38,chasse_traque:1.7};
+if(typeof vpClip==='function'){const v0=vpClip;vpClip=function(o,c){const neuf=o&&o.clip!==c;if(o&&o.root&&o.anim&&neuf)mxGeste188(o.root,o.anim,c);const r=v0.apply(this,arguments);try{if(neuf&&MXVIT188[c]&&o.mx&&o.root.userData.mxg&&o.root.userData.mxg[c]){const a=o.anim.find(x=>x.name===c);if(a)o.mx.clipAction(a).setEffectiveTimeScale(MXVIT188[c])}}catch(e){}return r}}
+if(typeof vpClipE==='function'){const v1=vpClipE;vpClipE=function(o,c){if(o&&o.root&&o.anim&&o.clip!==c)mxGeste188(o.root,o.anim,c);return v1.apply(this,arguments)}}

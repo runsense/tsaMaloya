@@ -92,7 +92,7 @@ function vpBoucle(){if(!VP)return;const now=performance.now(),dt=Math.min(.05,(n
  if(ln>.05){const s=Math.sin(VP.yaw),co=Math.cos(VP.yaw),mx=(fx*co+fz*s)/ln,mz=(-fx*s+fz*co)/ln,nx=ch.x+mx*sp*dt,nz=ch.z+mz*sp*dt;if(vpLibre(nx,nz)&&Math.abs(h(nx,nz)-h(ch.x,ch.z))<sp*dt*1.4+.05){ch.x=clamp(nx,-80,80);ch.z=clamp(nz,-80,80)}ch.ang=Math.atan2(mx,mz)}
  VP.vy-=14*dt;let y0=h(ch.x,ch.z),cy=(ch.y==null?y0:ch.y)+VP.vy*dt;if(cy<=y0){cy=y0;VP.vy=0;VP.sol=true}ch.y=cy;
  VP.bruit=VP.discret>0?0:ln>.05?(VP.ram?.05:VP.acc?.18:run?1:.45):.04;VP.discret=Math.max(0,(VP.discret||0)-dt);VP.voirT=Math.max(0,(VP.voirT||0)-dt);VP.rel=Math.max(0,VP.rel-dt);
- const pose=(o,mv,vit)=>{if(!o.root)return;o.root.position.set(o.x,(o.y!=null?o.y:h(o.x,o.z))-(o===ch&&VP.ram?.55:0),o.z);o.root.rotation.y=o.ang;o.root.scale.y=o===ch&&VP.ram?.55:1;if(o.lanceT>0){o.lanceT-=dt}else vpClip(o,mv?(vit>5?'course':(o===ch&&(VP.acc||VP.ram))||o.tra?'chasse_traque':'marche'):(o===ch&&VP.acc?'cacher':'repos_debout'));if(o.mx)o.mx.update(dt)};
+ const pose=(o,mv,vit)=>{if(!o.root)return;o.root.position.set(o.x,(o.y!=null?o.y:h(o.x,o.z))-(o===ch&&VP.ram?.55:0),o.z);o.root.rotation.y=o.ang;o.root.scale.y=o===ch&&VP.ram?.55:1;if(o.lanceT>0){o.lanceT-=dt}else vpClip(o,o===ch&&!VP.sol?'saut':mv?(vit>5?'course':(o===ch&&(VP.acc||VP.ram))||o.tra?'chasse_traque':'marche'):(o===ch&&VP.acc?'cacher':'repos_debout'));if(o.mx)o.mx.update(dt)};
  pose(ch,ln>.05,sp);
  // les compagnons
  VP.cp.forEach((o,i)=>{if(VP.fight&&!VP.fight.fin){pose(o,!!o.mvF,o.rc==='combat'?5:3.4);return}let tx,tz,v=3.4;o.tra=0;
