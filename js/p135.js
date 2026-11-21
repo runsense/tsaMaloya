@@ -105,7 +105,7 @@ function pression135(k){const z=ZONE135[k]||'foret',C=S.voieC,ps=S.passe||'hist'
    if(!S.disp135i){S.disp135i=1;DISP133.forEach(([k,y])=>{const r=1/(y-1663);S.disp135[k]=Math.max(0,(S.year-1663)*r);if(S.year>=y)S.disp135x[k]=y})}return}
   if(S.year===an)return;const d=S.year-an;an=S.year;
   DISP133.forEach(([k,y])=>{if(S.disp135x[k]!=null)return;const P=pression135(k);S.disp135[k]=(S.disp135[k]||0)+d*P.m/(y-1663);(S.disp135c=S.disp135c||{})[k]=P.cause;
-   if(S.disp135[k]>=1){S.disp135x[k]=S.year}else if(S.year>=y+30&&!(S.disp135v||{})[k]){(S.disp135v=S.disp135v||{})[k]=S.year;try{(S.evq=S.evq||[]).push('surv135_'+k)}catch(e){}}})}catch(e){}},1500)}
+   if(S.disp135[k]>=1){S.disp135x[k]=S.year}else if(S.year>=y+30&&!(S.disp135v||{})[k]){(S.disp135v=S.disp135v||{})[k]=S.year;try{if(EV['surv135_'+k])(S.evq=S.evq||[]).push('surv135_'+k)}catch(e){}}})}catch(e){}},1500)}
 DISP133.forEach(([k,y,t,b,tg])=>{const E=EV['disp133_'+k];if(!E)return;
  Object.defineProperty(E,'y',{configurable:true,get(){return (S&&S.disp135x&&S.disp135x[k]!=null)?S.disp135x[k]:9999}});
  E.si=()=>S&&S.disp135x&&S.disp135x[k]!=null;

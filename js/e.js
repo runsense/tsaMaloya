@@ -47,7 +47,7 @@ const ECH=(()=>{
   let sd=Date.now();const R=()=>{sd=(sd*9301+49297)%233280;return sd/233280};
   const el=document.createElement('div');el.id='ech';el.innerHTML='<canvas></canvas><div class="bh"><b>'+D.n+'</b> · '+D.lieu+' <span id="echI"></span><button class="bt sec" id="echQ">Quitter</button></div><div class="ecv" id="echV"></div><div class="bp" id="echP"></div>';document.body.appendChild(el);
   const cv=el.querySelector('canvas'),x=cv.getContext('2d');let W,H,cs,ox,oy;
-  const G={vue:'carte',map:carte(R),pos:null,arm:D.arm.map(a=>({t:a[0],c:a[1],r:a[2],lv:0})),morts:[],rel:{},or:3,vic:0,fini:false,ok:false,msg:D.t};window.__ech=G;
+  const G={vue:'carte',map:carte(R),pos:null,arm:D.arm.map(a=>({t:a[0],c:a[1],r:a[2],lv:0})),morts:[],rel:{},or:3,vic:0,fini:false,ok:false,msg:D.t};try{if(window.rune186Appl)rune186Appl(G,D,P,k)}catch(e){}window.__ech=G;
   const taille=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;cs=Math.floor(Math.min((W-(W>900?340:20))*.92/N,(H-210)/N,74));ox=W>900?Math.max(20,(W-340-cs*N)/2):(W-cs*N)/2;oy=84;dessin()};
   // ----- la bataille -----
   let B=null;
@@ -103,7 +103,7 @@ const ECH=(()=>{
    // le gouverneur ennemi sonne la clarinette s'il est menacé
    const ke=roiDe('e');if(ke&&B.clarE!==0&&att.has(ke[0]+','+ke[1])){B.clarE=0;D8.forEach(([a,b])=>{const v=dans(ke[0]+a,ke[1]+b)&&B.g[ke[1]+b][ke[0]+a];if(v&&v.s==='e')v.bou=1});G.msg='La clarinette sonne : les soldats autour du chef reprennent courage.';finTour('e');B.tour='j';ui();dessin();return}
    if(!best){finBat(true);return}const pr=jouer(...best);finTour('e');if(verif())return;B.tour='j';if(pr&&pr!=='res')G.msg='Vous perdez : '+P[pr.t].n.toLowerCase()+'.';ui();dessin()}
-  function finBat(ok){if(ok){G.vic++;G.or+=3;if(G.rel.grisgris&&B.mortsB.length){const u=B.mortsB.shift();G.arm.push(u);G.msg='Le gris-gris ramène '+P[u.t].n.toLowerCase()+'.'}G.morts.push(...B.mortsB);const nd=G.map[G.pos[0]][G.pos[1]];if(nd.t==='boss'){G.fini=true;G.ok=true;G.msg='Victoire : '+D.n+'.'}else{G.vue='carte';G.msg='Bataille gagnée. Choisissez la suite du chemin.'}}else{G.fini=true;G.ok=false;G.msg='Votre '+P[D.roi].n.toLowerCase()+' est pris : la campagne s’arrête là.'}B=null;ui();dessin()}
+  function finBat(ok){if(ok){G.vic++;G.or+=3;if(G.rel.grisgris&&B.mortsB.length){const u=B.mortsB.shift();G.arm.push(u);G.msg='Le gris-gris ramène '+P[u.t].n.toLowerCase()+'.'}G.morts.push(...B.mortsB);const nd=G.map[G.pos[0]][G.pos[1]];if(nd.t==='boss'){G.fini=true;G.ok=true;G.msg='Victoire : '+D.n+'.'}else{G.vue='carte';G.msg='Bataille gagnée : +3 or (vous avez '+G.or+' or pour les recrues et les runes). '+(/gris-gris/.test(G.msg||'')?G.msg+' ':'')+'Choisissez la suite du chemin.'}}else{G.fini=true;G.ok=false;G.msg='Votre '+P[D.roi].n.toLowerCase()+' est pris : la campagne s’arrête là.'}B=null;ui();dessin()}
   // ----- la carte -----
   function suivants(){if(!G.pos)return G.map[0].map((n,i)=>[0,i]);const nd=G.map[G.pos[0]][G.pos[1]];return (nd.vers||[]).map(i=>[G.pos[0]+1,i])}
   function aller(r,i){G.pos=[r,i];const nd=G.map[r][i];nd.fait=1;

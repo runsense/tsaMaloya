@@ -183,7 +183,7 @@ function repere186(t){if(typeof scene==='undefined')return;const g=new THREE.Mes
 setInterval(()=>{try{if(window.CV&&CV.on&&CV.selP!=null&&document.querySelector('.eq183'))cvListe()}catch(e){}},2000);
 // ===== La forêt d'origine : l'image satellite est de 2026 (canne, villes) ; au début, les Bas et les pentes sont encore boisés =====
 // Bas (0-400 m) : défrichés surtout pour le café, 1715-1790, puis le reste avec la canne ; mi-pentes (400-900 m) : la canne, 1815-1880.
-function foret187(y){y=y||1663;const L=(a,b,v0,v1)=>y<=a?v0:y>=b?v1:v0+(v1-v0)*(y-a)/(b-a);return {b:y<1790?L(1715,1790,1,.15):L(1790,1860,.15,0),m:L(1815,1880,1,0)}}
+function foret187(y){y=y||1663;try{if(typeof S!=="undefined"&&S&&S.voieC&&S.vo&&typeof voie==='function'&&!(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden)){const c=voie().c;y+=Math.max(-25,Math.min(20,(c-75)*.8))}}catch(e){}const L=(a,b,v0,v1)=>y<=a?v0:y>=b?v1:v0+(v1-v0)*(y-a)/(b-a);return {b:y<1790?L(1715,1790,1,.15):L(1790,1860,.15,0),m:L(1815,1880,1,0)}}
 {let fait=false;setInterval(()=>{try{if(typeof terr==='undefined'||!terr||!terr.material)return;const m=terr.material,U=m.uniforms;
  if(!fait){if(!U||!U.sat||m.fragmentShader.indexOf('float sL=dot(sa.rgb')<0||m.fragmentShader.indexOf('if(satOn>.5){')<0)return;fait=true;
   const xc=((55.53-DEM.lo0)*DEM.kx).toFixed(3),zc=((DEM.la1+21.12)*DEM.ky).toFixed(3),kx=(+DEM.kx).toFixed(3),ky=(+DEM.ky).toFixed(3),[vx,vz]=xz(55.714,-21.244);
@@ -482,9 +482,6 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function rats186(){if(!S)return 1;return Math.min(1.8,1+Math.max(0,(S.year||1663)-1663)/160+(typeof colTiles==='function'?colTiles().length/80:0))}
 try{const p0=pression135;pression135=function(k){const P=p0.apply(this,arguments);try{if(/pigeon|perro|perruche|ibis|oiseau|huppe|etourn|p[ée]trel|papang|r[aâ]le|foulque|merle|chouette|hibou|tuit|zoizo|aigrette|h[ée]ron|canard|sarcelle|tourte|bulbul|caille|sol|dodo|dro/i.test(k)){const r=rats186();P.m*=r;if(r>1.3&&Math.random()<.3)P.cause='les rats des navires mangent les œufs et les petits'}}catch(e){}return P}}catch(e){}
 Object.assign(EV,{
- faune1665:{y:1665,si:()=>S,tag:'Archive',an:'1665-1672',nat:'Fait historique.',t:'Des bêtes qui ne fuient pas',
-  b:'Les premiers venus s’étonnent : les oiseaux se laissent approcher, on les prend à la main ou au bâton. Les tortues de terre couvrent les plaines de l’ouest ; on en charge des chaloupes entières. Rien ici n’a appris à craindre l’homme.',
-  v:'Une île sans prédateur, et soudain des hommes.',h:'Récits des premiers voyageurs, dont Dubois (séjour de 1669 à 1672) : oiseaux qui se laissent prendre à la main, tortues de terre abondantes. Les quantités exactes ne sont pas connues.',o:[{n:'Continuer',d:'',fx:{},hist:1}]},
  cochons1670:{y:1670,si:()=>S,tag:'Archive',an:'XVIIᵉ siècle',nat:'Fait historique.',t:'Les cochons marrons',
   b:'Des cochons et des cabris ont été lâchés sur l’île par les navires de passage, avant même qu’on s’y installe. Ils sont devenus sauvages : on les appelle cochons marrons. Eux fuient l’homme, et ils fouillent la terre, mangent les racines, les œufs, les jeunes pousses de la forêt.',
   v:'Lâchés pour nourrir les marins, ils mangent la forêt.',h:'Introduction précoce de porcs et de chèvres par les navigateurs au XVIIᵉ siècle (fait établi). Les dates précises de lâcher ne sont pas connues.',o:[{n:'Continuer',d:'',fx:{},hist:1}]},
@@ -563,3 +560,148 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 // la fiche de chacun dit ses goûts
 {const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on||CV.selP==null)return r;const p=ppId(CV.selP);const d=$('cvL');if(!p||!d||!adulte(p)||d.querySelector('.gt186'))return r;
   d.insertAdjacentHTML('beforeend','<div class="pc gt186" style="margin-top:6px"><small>🍲 '+p.n.split(' ')[0]+' '+gout186Txt(p)+(p.gout186!=null?' · '+(p.gout186>=.2?'content de la marmite':p.gout186<0?'pas content de la marmite':'ça va'):'')+'.</small></div>')}catch(e){}return r}}
+
+// ===== Ce que les choix font à l'île, sans le dire : on le voit =====
+// 1. Les concessions « du battant des lames au sommet des montagnes » : des bandes de terre qui montent de la côte vers les crêtes, là où la colonie s'installe.
+//    Plus la colonie s'étend, plus il y en a ; c'est dans ces bandes que la forêt tombe.
+{let M=null,cle='';setInterval(()=>{try{if(typeof scene==='undefined'||!S||(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden)){if(M)M.visible=false;return}
+  const C=colTiles().filter(t=>t.alt<250),k=C.length+':'+Math.round((S.year||1663)/10);if(k===cle){if(M)M.visible=true;return}cle=k;if(M){scene.remove(M);M.geometry.dispose()}
+  const [cx,cz]=xz(55.53,-21.12),P=[],vus=new Set();C.forEach(t=>{for(let q=0;q<3;q++){const x0=t.x+(q-1)*.28*Math.cos(t.i),z0=t.z+(q-1)*.28*Math.sin(t.i),key=Math.round(x0*3)+'|'+Math.round(z0*3);if(vus.has(key))continue;vus.add(key);
+   const dx=cx-x0,dz=cz-z0,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L;let px=x0,pz=z0,pa=null;for(let s=0;s<60;s++){const x=x0+ux*s*.2,z=z0+uz*s*.2,a=altTri(x,z);if(a<1){px=x;pz=z;continue}if(a>1600)break;const y=a*VX+.035;if(pa)P.push(pa[0],pa[1],pa[2],x,y,z);pa=[x,y,z]}}});
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));M=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0xe0b070,transparent:true,opacity:.75,depthWrite:false}));M.renderOrder=4;scene.add(M)}catch(e){}},4000)}
+// 2. Quand une espèce s'éteint, on la voit partir : son image monte au-dessus de son pays, pâlit et s'efface
+const ICO186=k=>/tortue/.test(k)?'🐢':/dugong/.test(k)?'🦭':/rousset|chauve/.test(k)?'🦇':/perroq|mascarin/.test(k)?'🦜':/oiseauxeau/.test(k)?'🦆':/solitaire/.test(k)?'🦢':'🐦';
+{let vu=null;setInterval(()=>{try{if(!S||typeof scene==='undefined'||!S.disp135x)return;const L=Object.keys(S.disp135x);if(vu==null){vu=new Set(L);return}L.forEach(k=>{if(vu.has(k))return;vu.add(k);
+  const z=(typeof ZONE135!=='undefined'&&ZONE135[k])||'foret',cand=T.filter(t=>!t.bare&&(z==='cote'?t.alt<60&&t.alt>0:z==='hauts'?t.alt>1400:t.forest&&t.alt>300&&t.alt<1300));const t=cand[Math.floor(Math.random()*cand.length)];if(!t)return;
+  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.font='96px serif';x.textAlign='center';x.textBaseline='middle';x.fillText(ICO186(k),64,70);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));sp.renderOrder=40;sp.scale.set(2.2,2.2,2.2);scene.add(sp);const y0=t.alt*VX+.5,t0=performance.now();
+  (function f(){const u=(performance.now()-t0)/1000;if(u>6){scene.remove(sp);return}requestAnimationFrame(f);sp.position.set(t.x,y0+u*.35,t.z);const g=Math.min(1,u/2.5);sp.material.color.setRGB(1-g*.6,1-g*.6,1-g*.6);sp.material.opacity=u<.4?u/.4:Math.max(0,1-(u-3)/3)})()})}catch(e){}},1500)}
+// ===== Histoire : l'attaque du camp (Épopée) se quitte quand on veut, sans être comptée perdue ; en lecture du conte, elle se laisse d'elle-même au bout de 5 s =====
+function laisse186(){try{if(!BT)return;const f=window.AUTO186;if(window.BAT186){window.BAT186=0;btFermer();if(S&&S.bats&&S.bats.length)combat(T[S.bats.shift()],null);journal('Le camp se défend seul : le terrain, le guet et les Gardiens décident.')}else if(f)btFermer()}catch(e){}}
+{const bq=btFermer;btFermer=function(){const b=BT,f=window.AUTO186;window.AUTO186=null;const r=bq.apply(this,arguments);try{if(f&&b&&!b.fin)f()}catch(e){}return r}}
+{const bo=btOuvrir;btOuvrir=function(k){const conte=typeof autoD==='function'&&!!autoD();const r=bo.apply(this,arguments);try{if(!BT||!(window.BAT186||window.AUTO186))return r;
+  const d=document.createElement('div');d.id='bt186';d.style.cssText='position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99990;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;background:rgba(14,12,10,.88);border:1px solid #e8be5a;border-radius:12px;padding:8px 12px;color:#f3e6c4;font:600 13px system-ui;max-width:calc(100vw - 32px)';
+  d.innerHTML=(conte?'<span id="bt186t">📖 Le conte continue : '+(window.AUTO186&&window.AUTO186.c?window.AUTO186.c:'le camp se défendra seul')+' dans <b>5</b> s</span><button class="bt" id="bt186j">⚔️ Jouer la bataille</button>':'')+'<button class="bt sec" id="bt186q">📖 '+(window.AUTO186&&window.AUTO186.n?window.AUTO186.n:'Laisser le camp se défendre seul')+'</button>';
+  (BT.el||document.body).appendChild(d);d.querySelector('#bt186q').onclick=e=>{e.stopPropagation();laisse186()};
+  if(conte){let n=5,joue=false;d.querySelector('#bt186j').onclick=e=>{e.stopPropagation();joue=true;try{S.autoD=0;if(typeof autoBtn==='function')autoBtn()}catch(e){}const t=d.querySelector('#bt186t');if(t)t.remove();e.target.remove()};
+   const t0=Date.now(),it=setInterval(()=>{if(!BT||!d.isConnected||joue){clearInterval(it);return}n=Math.max(0,5-Math.floor((Date.now()-t0)/1000));const b=d.querySelector('#bt186t b');if(b)b.textContent=n;if(n<=0){clearInterval(it);laisse186()}},250)}}catch(e){}return r}}
+
+// ===== Histoire, côté colon : la bande qui descend sur l'habitation, et le détachement qui monte au camp marron — en Épopée ou laissés au récit =====
+EV.raid186c={sys:1,tag:'Archive',an:'XVIIIᵉ siècle',t:'Une bande descend sur l’habitation',
+ b:'La nuit, les chiens aboient : une bande de marrons descend des Hauts vers le grenier. Ils viennent chercher des vivres, des outils, des fusils, et parfois des gens qui partiront avec eux.',
+ h:'Les « descentes » des marrons sur les habitations sont fréquentes au XVIIIᵉ siècle, surtout de 1730 à 1760 : on y prend du riz, du maïs, des outils, des femmes et des hommes qui choisissent de partir.',
+ o:[{n:'⚔️ Commander la défense',d:'Épopée : on place soi-même les gens de l’habitation.',f:()=>{try{if(typeof btOuvrir==='function'&&!BT){window.AUTO186=raidAuto186;btOuvrir('garde');return}}catch(e){}raidAuto186()}},
+  {n:'Laisser l’habitation se défendre',d:'La cloche, les chiens et les commandeurs décident.',f:()=>raidAuto186()}]};
+EV.assaut186c={sys:1,tag:'Archive',an:'XVIIIᵉ siècle',t:'Le détachement a trouvé un camp',
+ b:'Un détachement payé par la Compagnie revient : il a trouvé un camp marron dans les Hauts, des cases, des jardins, de la fumée. Le commandant de quartier demande s’il faut monter.',
+ h:'La Compagnie paie des primes par marron pris ou tué. Les détachements, souvent menés par des chasseurs comme François Mussard, montent pendant des semaines ; beaucoup rentrent bredouilles.',
+ o:[{n:'⚔️ Commander le détachement',d:'Épopée : monter au camp, face aux embuscades.',f:()=>{try{if(typeof btOuvrir==='function'&&!BT){window.AUTO186=assautAuto186;btOuvrir('assaut');return}}catch(e){}assautAuto186()}},
+  {n:'Laisser le détachement monter',d:'Le terrain et la chance décident.',f:()=>assautAuto186()}]};
+function raidAuto186(){const p=.55+((S.coh||50)-50)/200;if(rnd()<p){fx({coh:2});journal('La cloche a sonné à temps : la bande remonte vers les Hauts sans rien prendre.')}else{const v=Math.round((S.vivres||0)*.3);fx({vivres:-v,coh:-4});journal('La bande a vidé une partie du grenier (vivres −'+v+') et deux esclaves sont partis avec elle.')}try{rafraichir();panneau()}catch(e){}}
+raidAuto186.n='Laisser l’habitation se défendre';raidAuto186.c='l’habitation se défendra seule';
+function assautAuto186(){if(rnd()<.45){S.traque=Math.max(0,(S.traque||0)-8);fx({coh:1});journal('Le détachement a brûlé le camp et ses jardins. La plupart des marrons ont fui plus haut ; on redescend avec quelques captifs et la prime.')}else{fx({coh:-3});journal('Le détachement redescend bredouille : le camp était vide, et une embuscade a fait deux blessés.')}try{rafraichir();panneau()}catch(e){}}
+assautAuto186.n='Laisser le détachement monter';assautAuto186.c='le détachement montera sans vous';
+{let ns0=null;setInterval(()=>{try{if(!S||S.fin||!S.voieC||!modeHist()||(typeof K!=='undefined'&&K))return;if(ns0==null||S.ns<ns0){ns0=S.ns;return}if(S.ns===ns0)return;ns0=S.ns;
+ if(S.year<1715||S.year>=1848||BT||(S.ns||0)<6)return;const q=S.evq||(S.evq=[]);if(q.includes('raid186c')||q.includes('assaut186c'))return;
+ const fort=S.year>=1730&&S.year<=1760;if(rnd()<(fort?.09:.04))q.push('raid186c');else if(rnd()<(fort?.07:.03))q.push('assaut186c')}catch(e){}},1500)}
+// ===== Les Épopées historiques (La Redoute 1810, Saint-Leu 1811) suivent aussi le conte : 5 s, puis l'histoire telle qu'elle s'est passée ;
+//       et côté colon, Saint-Leu se joue du côté de la milice =====
+{const s=BSCEN.stleu1811;if(s)BSCEN.stleu1811c=Object.assign({},s,{def:1,moi:s.eux,eux:s.moi,n:'Saint-Leu, novembre 1811 : la milice',t:'Le 8 novembre 1811, les insurgés d’Élie et Gilles descendent vers le bourg de Saint-Leu. Les propriétaires, les libres de couleur et la milice les attendent. Tenez la route du bourg.'});
+ const H={redoute1810:'Comme dans l’histoire : La Redoute tombe, Saint-Denis capitule, l’île devient anglaise jusqu’en 1815.',stleu1811:'Comme dans l’histoire : la révolte est écrasée ; les meneurs sont pris et exécutés en 1812.',stleu1811c:'Comme dans l’histoire : la milice disperse les insurgés en quelques heures ; les meneurs sont pris et exécutés en 1812.'};
+ const auto=k=>{const f=()=>{try{journal('⚔️ '+H[k])}catch(e){}};f.n='Laisser l’histoire se faire';f.c='l’histoire suivra son cours';return f};
+ const fix=(id,k)=>{const e=EV[id];if(!e||!Array.isArray(e.o))return;const o=e.o.find(x=>x.ep186);if(!o)return;
+  o.f=()=>{const kk=typeof k==='function'?k():k;try{if(typeof btOuvrir==='function'&&!BT){window.AUTO186=auto(kk);btOuvrir(kk);return}}catch(e){}auto(kk)()}};
+ fix('e1810r','redoute1810');fix('e1811',()=>S&&S.voieC?'stleu1811c':'stleu1811');
+ {const e=EV.e1811,o=e&&Array.isArray(e.o)&&e.o.find(x=>x.ep186);if(o){Object.defineProperty(o,'n',{get:()=>S&&S.voieC?'⚔️ Commander la milice de Saint-Leu (Épopée)':'⚔️ Se soulever avec Élie et Gilles (Épopée)',configurable:true});Object.defineProperty(o,'d',{get:()=>S&&S.voieC?'Tenir la route du bourg face aux insurgés.':'Commander les insurgés de Saint-Leu.',configurable:true})}}
+ const bf=btFin;btFin=function(g){const k=BT&&BT.k;const r=bf.apply(this,arguments);try{if(k==='stleu1811c')journal('⚔️ '+(g?H.stleu1811c:'Dans le jeu, les insurgés passent la route du bourg.'))}catch(e){}return r}}
+// une fiche absente de EV dans la file ne bloque plus le conte
+setInterval(()=>{try{if(S&&Array.isArray(S.evq)&&S.evq.some(i=>!EV[i]))S.evq=S.evq.filter(i=>EV[i])}catch(e){}},1000);
+// ===== Vie et Survie : la mystique suit le ciel. Nuit de lune claire : le kabar, le maloya, très forts.
+//       Temps de pluie : les rites autour des plantes et des cultures, africains, malgaches ou indiens, plus forts =====
+function lune186(n){const ph=((n*11)%30)/30;return (1-Math.cos(2*Math.PI*ph))/2}
+const MYS186={dit:{}};
+function mys186Dire(k,m){const n=(typeof S!=='undefined'&&S&&S.jourN)||(typeof K!=='undefined'&&K&&(K.an*12+K.mo))||0;if(MYS186.dit[k]!=null&&n-MYS186.dit[k]<3)return;MYS186.dit[k]=n;try{toast(m)}catch(e){}}
+{const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||!camps().length)return r;
+ const L=lune186(S.jourN||0),pl=typeof pluie==='function'&&pluie(),C=S.voieC,P=(S.pp||[]).filter(p=>!p.mort),nb=o=>P.filter(p=>p.or===o).length,afm=nb('mg')+nb('af'),ind=nb('in'),ka=typeof nBat==='function'?nBat('kabare'):0;
+ S.ciel186={lune:Math.round(L*100),pluie:!!pl};
+ if(!pl&&L>.78){const f=Math.min(5,1+Math.round(afm/4)+(ka?2:0));S.myst=(S.myst||0)+(C?Math.ceil(f/2):f);fx({coh:C?1:2});
+  journal(C?'🌕 Nuit de lune claire : derrière les cases, le roulèr et le kayamb ; le kabar dure jusqu’à l’aube. Mystique +'+Math.ceil(f/2)+'.':'🌕 Nuit de lune claire : le maloya monte au camp, le kabar appelle les ancêtres jusqu’au matin. Mystique +'+f+', cohésion +2.');
+  mys186Dire('lune','🌕 Lune claire : le kabar est très fort cette nuit')}
+ else if(pl&&(afm+ind)>0&&(S.jourN||0)%3===0){const f=Math.min(3,1+Math.round((afm+ind)/6));S.myst=(S.myst||0)+f;const v=Math.min(3,f);S.vivres=(S.vivres||0)+v;
+  const qui=ind>afm?'les engagés indiens font l’offrande aux champs, pour la pluie et la récolte':'les anciens malgaches et africains font le rite des plantes au jardin, pour les ancêtres';
+  journal('🌧️ Il pleut : '+qui+'. Les cultures tiennent mieux (vivres +'+v+'), mystique +'+f+'.');mys186Dire('pluie','🌧️ Pluie : les rites des plantes sont forts')}}catch(e){}return r}}
+{const km=kMois;kMois=function(){const r=km.apply(this,arguments);try{if(!K||K.fin)return r;const pl=[11,0,1,2,3].includes(K.mo)||Math.random()<.2,cl=!pl&&Math.random()<.75,m=K.joueur==='m',R=K.res||(K.res={});
+ K.ciel186={pluie:pl,lune:cl};
+ if(cl){R.com=(R.com||0)+(m?3:1);R.sav=(R.sav||0)+1;kLog(m?'🌕 Pleine lune, ciel clair : le maloya et le kabar sont très forts dans les camps. Communauté +3, savoir +1.':'🌕 Pleine lune claire : on entend le kabar derrière les cases des esclaves. Communauté +1, savoir +1.')}
+ else if(pl){R.viv=(R.viv||0)+2;R.sav=(R.sav||0)+1;kLog('🌧️ Mois de pluie : rites des plantes, malgaches, africains et tamouls, autour des champs. Vivres +2, savoir +1.')}}catch(e){}return r}}
+// ===== Batailles d'escouades (Épopée) : une barre de groupes sous le terrain — un tableau d'une ligne. On prend/dépose les escouades
+//       choisies dans un groupe, un clic choisit tout le groupe, et chaque groupe reçoit les ordres de son camp :
+//       marrons : regrouper / disperser (et la mystique) ; colons : formations d'époque, feu de peloton, baïonnette, abattis =====
+{const st=document.createElement('style');st.textContent='#btGr{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;margin-bottom:4px;border-bottom:1px solid #3a4a40}.btG{flex:0 0 auto;min-width:150px;max-width:330px;white-space:normal;border:1px solid #5a6a50;border-radius:6px;padding:4px 6px;background:#141a16;font-size:11px}.btG.on{border-color:#e8be5a;background:#2a2416}.btG b{cursor:pointer;display:block;margin-bottom:3px}.btG button{font-size:11px;padding:2px 6px;margin:1px;border-radius:4px;border:1px solid #6a7a60;background:#232b25;color:#efe9da;cursor:pointer}.btG button:disabled{opacity:.4;cursor:default}.btG button.on{background:#e8be5a;color:#1a1408}';document.head.appendChild(st)}
+const GRN186=['I','II','III','IV'];
+function gr186Init(){if(!BT||BT.gr)return;BT.gr=[[],[],[],[]];const types=[];BT.S.filter(s=>s.joueur).forEach(s=>{const k=s.T.chien?'chien':s.T.mys?'mys':s.T.feu?'feu':'me';let i=types.indexOf(k);if(i<0&&types.length<4){types.push(k);i=types.length-1}BT.gr[i<0?3:i].push(s.id)});if(types.length===1){const L=BT.gr[0].slice();BT.gr=[[],[],[],[]];L.forEach((id,k)=>BT.gr[k%4].push(id))}}
+{const ai=btAide;btAide=function(){const r=ai.apply(this,arguments);try{setTimeout(()=>{const b=[...document.querySelectorAll('#btAide p,#btAide div,.bx')].find(x=>/Formations/.test(x.innerHTML)&&x.innerHTML.length<3000);if(b&&!/Groupes/.test(b.innerHTML))b.innerHTML=b.innerHTML.replace(/(• <b>Espace)/,'• <b>Groupes</b> (barre du bas, Alt+1 à 4) : « Prendre » met les escouades choisies dans le groupe, un clic sur son nom les choisit toutes ; chaque groupe reçoit ses ordres : regrouper, disperser et la mystique chez les marrons ; formations, feu de peloton, baïonnette et abattis chez les colons.<br>$1')},30)}catch(e){}return r}}
+function gr186Sq(i){return (BT.gr[i]||[]).map(id=>BT.S[id]).filter(s=>s&&btActif(s))}
+function gr186Choisir(i){BT.sel.clear();gr186Sq(i).forEach(s=>BT.sel.add(s.id))}
+function gr186Ordre(i,o){if(!BT||BT.fin)return;gr186Choisir(i);const L=gr186Sq(i);if(!L.length)return btMsg('Ce groupe est vide.');const T=BT.tps;
+ const cx=L.reduce((a,s)=>a+s.x,0)/L.length,cy=L.reduce((a,s)=>a+s.y,0)/L.length;
+ if(o==='reg'){L.forEach((s,k)=>{const a=k/L.length*6.283;s.form='colonne';s.hold=0;s.ord={k:'va',x:cx+Math.cos(a)*22,y:cy+Math.sin(a)*22}});btMsg('Groupe '+GRN186[i]+' : on se regroupe autour du chef.')}
+ else if(o==='disp'){L.forEach((s,k)=>{const a=k/L.length*6.283+.5;s.form='disperse';s.hold=0;s.ord={k:'va',x:clamp(s.x+Math.cos(a)*60,10,BW-10),y:clamp(s.y+Math.sin(a)*60,10,BH-10)}});btMsg('Groupe '+GRN186[i]+' : dispersez-vous dans les arbres !')}
+ else if(BFORM[o]){btForme(o);return}
+ else if(o==='peloton'){L.filter(s=>s.T.feu&&!s.T.chien).forEach(s=>s.form='ligne');btPouvoir('salve');return}
+ else if(o==='bayo'){if((BT.cdB186||0)>T)return btMsg('Les hommes reprennent leur souffle.');BT.cdB186=T+60;const E=BT.S.filter(s=>!s.joueur&&btVivant(s));L.forEach(s=>{s.bayo186=T+25;s.hold=0;const e=E.sort((a,b)=>Math.hypot(a.x-s.x,a.y-s.y)-Math.hypot(b.x-s.x,b.y-s.y))[0];if(e)s.ord={k:'att',t:e.id}});btMsg('« Baïonnette au canon ! » Le groupe '+GRN186[i]+' charge (25 s).','#ffd08a')}
+ else if(o==='abattis'){if((BT.cdA186||0)>T)return btMsg('On n’a plus de bois coupé pour un autre abattis.');BT.cdA186=T+90;L.forEach(s=>{s.frise186=T+40;s.hold=1;s.ord=null});btMsg('Abattis et chevaux de frise : le groupe '+GRN186[i]+' tient derrière (40 s).','#ffd08a')}
+ else if(o==='brume'||o==='peur'){const m=L.find(s=>s.T.mys)||L[0];if((S.myst||0)<2)return btMsg('Pas assez de mystique.');
+  if(o==='brume'){if(BT.brume)return;S.myst-=2;BT.brume={x:m.x,y:m.y,r:170,t:20};btMsg('La brume monte autour du groupe '+GRN186[i]+' : les fusils tirent à l’aveugle (20 s).','#d8c0f0')}
+  else{if((BT.cdP186||0)>T)return btMsg('Les esprits se taisent encore un moment.');S.myst-=2;BT.cdP186=T+45;let n=0;BT.S.forEach(s=>{if(!s.joueur&&btVivant(s)&&Math.hypot(s.x-m.x,s.y-m.y)<200){s.mor-=s.T.chien?35:20;n++}});btMsg(n?'Les cris des esprits autour du groupe '+GRN186[i]+' : '+n+' escouade'+(n>1?'s':'')+' prise'+(n>1?'s':'')+' de peur.':'Personne d’assez près pour entendre les esprits.','#d8c0f0')}}
+ btUI()}
+{const bm=btMelee;btMelee=function(a,b,dt){const T=BT?BT.tps:0;let k=1;if(a.bayo186>T)k*=1.6;if(b.frise186>T)k*=.55;return bm.call(this,a,b,dt*k)}}
+{const bu=btUI;btUI=function(){const r=bu.apply(this,arguments);try{if(!BT)return r;gr186Init();const bas=$('btBas'),sq=$('btSq');if(!bas||!sq)return r;let g=$('btGr');if(!g){g=document.createElement('div');g.id='btGr';bas.insertBefore(g,sq);
+   g.addEventListener('pointerdown',e=>{const t=e.target.closest('[data-g]');if(!t||t.disabled)return;e.preventDefault();e.stopPropagation();const [i,a]=t.dataset.g.split(':'),n=+i;
+    if(a==='sel')gr186Choisir(n);else if(a==='prend'){const ids=[...BT.sel];BT.gr.forEach(G=>{for(const id of ids){const j=G.indexOf(id);if(j>=0)G.splice(j,1)}});BT.gr[n].push(...ids);btMsg(ids.length?ids.length+' escouade'+(ids.length>1?'s':'')+' dans le groupe '+GRN186[n]+'.':'Choisissez d’abord des escouades.')}
+    else if(a==='pose'){const ids=[...BT.sel];BT.gr[n]=BT.gr[n].filter(id=>!ids.includes(id))}else gr186Ordre(n,a);btUI()})}
+  const mar=BT.S.some(s=>s.joueur&&s.cote==='m'),T=BT.tps,my=S.myst||0;
+  g.innerHTML=BT.gr.map((G,i)=>{const L=gr186Sq(i),on=L.length&&L.every(s=>BT.sel.has(s.id)),n=L.reduce((a,s)=>a+s.sold.length,0),mys=mar&&L.length>0,feu=L.some(s=>s.T.feu),dis=L.length?'':' disabled';
+   const ord=mar?'<button data-g="'+i+':reg"'+dis+'>⊕ Regrouper</button><button data-g="'+i+':disp"'+dis+'>∴ Disperser</button>'+(mys?'<button data-g="'+i+':brume"'+(my<2||BT.brume?' disabled':'')+' title="Brume des esprits (2 mystique)">🌫️ Brume</button><button data-g="'+i+':peur"'+(my<2||(BT.cdP186||0)>T?' disabled':'')+' title="Peur des esprits (2 mystique)">👻 Peur</button>':'')
+    :['ligne','colonne','carre','disperse'].map(f=>'<button data-g="'+i+':'+f+'" title="'+BFORM[f][2]+'" class="'+(L.length&&L.every(s=>s.form===f)?'on':'')+'"'+dis+'>'+BFORM[f][0]+' '+(f==='disperse'?'Tirailleurs':BFORM[f][1])+'</button>').join('')+
+     (feu?'<button data-g="'+i+':peloton" title="Tout le groupe en ligne, salve au prochain tir">💥 Feu de peloton</button><button data-g="'+i+':bayo"'+((BT.cdB186||0)>T?' disabled':'')+' title="Charge, corps à corps plus fort 25 s">🗡 Baïonnette</button>':'')+
+     '<button data-g="'+i+':abattis"'+((BT.cdA186||0)>T||!L.length?' disabled':'')+' title="Le groupe tient derrière des abattis : corps à corps ennemi affaibli 40 s">🪵 Abattis</button>';
+   return '<div class="btG'+(on?' on':'')+'"><b data-g="'+i+':sel">Groupe '+GRN186[i]+' · '+L.length+' esc. · '+n+' h.</b><button data-g="'+i+':prend" title="Mettre les escouades choisies dans ce groupe">＋ Prendre</button><button data-g="'+i+':pose" title="Retirer les escouades choisies de ce groupe">－ Déposer</button><br>'+ord+'</div>'}).join('')}catch(e){}return r}}
+addEventListener('keydown',e=>{try{if(!BT||!e.altKey||!/^Digit[1-4]$/.test(e.code))return;e.preventDefault();gr186Choisir(+e.code.slice(5)-1);btUI()}catch(x){}},true);
+// ===== Échecs d'invasion : les runes des régions. Chaque comptoir réussi, chaque campagne gagnée laisse une rune de sa terre
+//       (le zircon de Mauritia pour l'île sœur, l'émeraude de Madagascar, l'or de l'Inde…). Au départ d'une campagne, on en prend deux. =====
+const RUNE186={
+ olivine:{n:'Rune d’olivine',ic:'🟢',reg:'La Réunion',h:'Le sable vert des coulées du Piton de la Fournaise : des cristaux d’olivine.',d:'Pierre de lave (plus de rochers), et un Lanceur de plus.',f:(G,ad)=>{G.rel.lave=1;ad('l')}},
+ zircon:{n:'Rune de zircon de Mauritia',ic:'🔷',reg:'Maurice, l’île sœur',h:'Des zircons de trois milliards d’années, trouvés dans le sable de Maurice, ont révélé Mauritia : un morceau de continent englouti sous l’île (études de 2013 et 2017).',d:'La brume des esprits dès le départ, et une Mystique de plus.',f:(G,ad)=>{G.rel.brume=1;ad('m')}},
+ emeraude:{n:'Rune d’émeraude',ic:'💚',reg:'Madagascar',h:'Les émeraudes de Mananjary, sur la côte est de Madagascar.',d:'Tambour du kabar (guerriers aguerris), et un Guerrier de plus.',f:(G,ad)=>{G.rel.tambour=1;ad('g')}},
+ or:{n:'Rune d’or',ic:'🟡',reg:'Inde, Pondichéry',h:'L’or des champs de Kolar, en Inde du Sud, exploité depuis des siècles.',d:'+5 or au départ.',f:G=>{G.or+=5}},
+ cuivre:{n:'Rune de cuivre',ic:'🟠',reg:'Mozambique',h:'Le cuivre et l’or du Monomotapa, que les marchands de la côte échangeaient.',d:'Gris-gris : le premier des vôtres pris revient.',f:G=>{G.rel.grisgris=1}},
+ diamant:{n:'Rune de diamant',ic:'💎',reg:'Le Cap',h:'Les diamants de Kimberley, découverts en 1867.',d:'Un Éclaireur de plus, et +2 or.',f:(G,ad)=>{ad('e');G.or+=2}},
+ nacre:{n:'Rune de nacre',ic:'🐚',reg:'Comores',h:'La nacre des lagons d’Anjouan et de Mayotte.',d:'Un Pêcheur de plus.',f:(G,ad)=>ad('p')},
+ coco:{n:'Rune du coco de mer',ic:'🥥',reg:'Seychelles',h:'Le coco de mer de Praslin, la plus grosse graine du monde, qu’on croyait née au fond de la mer.',d:'Gris-gris, et +2 or.',f:G=>{G.rel.grisgris=1;G.or+=2}},
+ solitaire:{n:'Rune du solitaire',ic:'🪶',reg:'Rodrigues',h:'Le solitaire de Rodrigues, grand oiseau disparu au XVIIIᵉ siècle.',d:'Une Mystique de plus.',f:(G,ad)=>ad('m')},
+ saphir:{n:'Rune de saphir',ic:'🔵',reg:'Cambodge, Indochine',h:'Les saphirs de Pailin.',d:'La brume dès le départ, et +3 or.',f:G=>{G.rel.brume=1;G.or+=3}},
+ rubis:{n:'Rune de rubis',ic:'🔴',reg:'Birmanie',h:'Les rubis de Mogok, les plus fameux du monde.',d:'Un Éclaireur de plus, et +3 or.',f:(G,ad)=>{ad('e');G.or+=3}},
+ girofle:{n:'Rune de girofle',ic:'🌿',reg:'Insulinde',h:'Le girofle et la muscade des Moluques, que Pierre Poivre fit passer à l’île de France vers 1770.',d:'Tambour du kabar (guerriers aguerris).',f:G=>{G.rel.tambour=1}},
+ ambre:{n:'Rune d’ambre',ic:'🟤',reg:'Haïti et les Antilles',h:'L’ambre d’Hispaniola.',d:'Gris-gris, et un Guerrier de plus.',f:(G,ad)=>{G.rel.grisgris=1;ad('g')}},
+ argent:{n:'Rune d’argent',ic:'⚪',reg:'Amérique',h:'L’argent des mines des Amériques.',d:'+6 or au départ.',f:G=>{G.or+=6}}};
+const RUNEOUT186={maurice:'zircon',mada:'emeraude',inde:'or',mozamb:'cuivre',cap:'diamant',comores:'nacre',seych:'coco',rodr:'solitaire',indo:'saphir',birm:'rubis',insul:'girofle',antilles:'ambre',amerique:'argent'};
+const RUNECAMP186={detache:'olivine',anciens:'olivine',grandport:'zircon',madras:'or'};
+function runes186(){let L={};try{if(typeof S!=='undefined'&&S){S.runes186=S.runes186||{};L=Object.assign({},S.runes186)}}catch(e){}try{Object.assign(L,JSON.parse(localStorage.getItem('runes186')||'{}'))}catch(e){}return L}
+function runeGagne186(k,pourquoi){const r=RUNE186[k];if(!r)return;let neuf=true;try{if(typeof S!=='undefined'&&S){S.runes186=S.runes186||{};neuf=!S.runes186[k];S.runes186[k]=(S.runes186[k]||0)+1}}catch(e){}try{const o=JSON.parse(localStorage.getItem('runes186')||'{}');o[k]=(o[k]||0)+1;localStorage.setItem('runes186',JSON.stringify(o))}catch(e){}
+ try{journal('ᚱ '+r.ic+' '+r.n+' ('+r.reg+')'+(pourquoi?' : '+pourquoi:'')+'. Aux échecs d’invasion : '+r.d.toLowerCase())}catch(e){}if(neuf)try{toast('ᚱ Nouvelle rune : '+r.ic+' '+r.n)}catch(e){}}
+let RUNECH186=[];
+function rune186Appl(G,D,P,k){const col=D.roi==='G',M={g:'s',m:'o',e:'d',l:'c',p:'c'};const ad=t=>{const tt=col?(M[t]||t):t;if(!P[tt])return;const pris=new Set(G.arm.map(u=>u.c+','+u.r));for(let r=0;r<2;r++)for(let c=0;c<8;c++)if(!pris.has(c+','+r)){G.arm.push({t:tt,c,r,lv:0});return}};
+ RUNECH186.forEach(q=>{try{RUNE186[q].f(G,ad)}catch(e){}});if(RUNECH186.length)G.msg=RUNECH186.map(q=>RUNE186[q].ic+' '+RUNE186[q].n).join(' · ')+' — '+G.msg;G.runes186=RUNECH186.slice();RUNECH186=[]}
+{const st=document.createElement('style');st.textContent='#ru186{position:fixed;inset:0;z-index:99995;background:rgba(5,6,8,.9);display:flex;align-items:center;justify-content:center;padding:16px;color:#efe9da;font:14px system-ui}#ru186 .bx{background:#1a1712;border:1px solid #e8be5a;border-radius:12px;max-width:640px;width:100%;max-height:90vh;overflow:auto;padding:16px}#ru186 h3{font:700 20px Alegreya,Georgia,serif;color:#f0c46a;margin:0 0 6px}#ru186 .r{display:flex;gap:10px;align-items:flex-start;border:1px solid #4a4030;border-radius:8px;padding:8px;margin:6px 0;cursor:pointer}#ru186 .r.on{border-color:#e8be5a;background:#2a2416}#ru186 .r i{font-style:normal;font-size:24px}#ru186 small{display:block;opacity:.7;font-size:12px}';document.head.appendChild(st)}
+{const e0=window.ouvrirEchecs;window.ouvrirEchecs=ouvrirEchecs=function(k,fin){const L=runes186(),ks=Object.keys(L).filter(q=>RUNE186[q]),self=this,args=arguments;
+  const fin2=r=>{try{if(r&&r.ok&&RUNECAMP186[k])runeGagne186(RUNECAMP186[k],'campagne gagnée : '+((ECH.C[k]||{}).n||k));bilan186(k,r)}catch(e){}if(fin)fin(r)};
+  if(!ks.length){RUNECH186=[];return e0.call(self,k,fin2)}
+  const d=document.createElement('div');d.id='ru186';const ch=new Set();
+  d.innerHTML='<div class="bx"><h3>ᚱ Vos runes</h3><p style="opacity:.8;margin:0 0 6px">Gagnées dans les comptoirs et les campagnes. Prenez-en deux au plus pour cette campagne.</p>'+ks.map(q=>{const r=RUNE186[q];return '<div class="r" data-q="'+q+'"><i>'+r.ic+'</i><div><b>'+r.n+'</b> · '+r.reg+(L[q]>1?' ×'+L[q]:'')+'<br>'+r.d+'<small>'+r.h+'</small></div></div>'}).join('')+'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="bt sec" data-x="0">Sans rune</button><button class="bt" data-x="1">Partir</button></div></div>';
+  document.body.appendChild(d);d.onclick=e=>{const r=e.target.closest('[data-q]');if(r){const q=r.dataset.q;if(ch.has(q))ch.delete(q);else if(ch.size<2)ch.add(q);d.querySelectorAll('[data-q]').forEach(x=>x.classList.toggle('on',ch.has(x.dataset.q)));return}const x=e.target.closest('[data-x]');if(!x)return;RUNECH186=x.dataset.x==='1'?[...ch]:[];d.remove();e0.call(self,k,fin2)}}}
+function bilan186(k,r){try{const c=ECH.C[k]||{},ok=r&&r.ok,v=(r&&r.victoires)||0,R=RUNECAMP186[k]&&RUNE186[RUNECAMP186[k]];const d=document.createElement('div');d.id='ru186';
+  d.innerHTML='<div class="bx"><h3>'+(ok?'Victoire':'La campagne s’arrête')+' · '+(c.n||'')+'</h3><p>'+v+' bataille'+(v>1?'s':'')+' gagnée'+(v>1?'s':'')+' · '+v*3+' or pris aux soldats et dépensé en chemin.</p>'+(ok&&R?'<p>ᚱ Vous gagnez la <b>'+R.ic+' '+R.n+'</b> ('+R.reg+') : '+R.d+'<br><small>'+R.h+'</small></p>':'')+(!ok?'<p style="opacity:.8">Les runes et l’or de cette campagne sont perdus ; celles déjà gagnées vous restent.</p>':'')+'<div style="text-align:right"><button class="bt">Continuer</button></div></div>';
+  document.body.appendChild(d);d.querySelector('button').onclick=()=>d.remove();setTimeout(()=>{try{if(typeof autoD==='function'&&autoD())d.remove()}catch(e){}},5000)}catch(e){}}
+// un comptoir : la première quête réussie y laisse sa rune
+setInterval(()=>{try{if(!S||!S.cp)return;S.runeCp186=S.runeCp186||{};Object.keys(S.cp).forEach(k=>{const c=S.cp[k];if(!c||!c.qa||S.runeCp186[k]||!RUNEOUT186[k])return;if(Object.keys(c.qa).length){S.runeCp186[k]=1;runeGagne186(RUNEOUT186[k],'quête réussie à '+((typeof OUT!=='undefined'&&OUT[k]&&OUT[k].n)||k))}})}catch(e){}},2000);
