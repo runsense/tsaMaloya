@@ -327,3 +327,237 @@ function grotte186(t){const G=new THREE.Group();let best=null;for(let r of [.18,
  G.rotation.y=ang;// la face ouverte regarde vers l'aval
  G.position.set(x-dx*.012,yb-.004,z-dz*.012);// un peu enfoncée dans la paroi
  return G}
+// ===== La lave agrandit l'île : de temps en temps, une coulée du Piton de la Fournaise atteint la mer dans le Grand Brûlé =====
+// Depuis le XVIIᵉ siècle, la lave a touché l'océan une trentaine de fois (synthèse reçue, à vérifier) : environ une fois tous les 13 ans.
+// Les dates exactes avant 1977 ne sont pas sûres : dans le jeu, ces coulées sont tirées au sort à ce rythme, et dites inventées.
+// Quand une coulée arrive à la mer : la vue va sur la côte, tourne autour 10 secondes, puis revient ; une petite avancée de lave noire reste sur la côte.
+function lavePt186(){for(let n=0;n<20;n++){const la=-21.215-Math.random()*.1;let prev=null;for(let lo=55.74;lo<55.86;lo+=.002){const [x,z]=xz(lo,la),a=alt(x,z);if(a<=0&&prev){return {x,z,xi:prev.x,zi:prev.z,la}}prev={x,z}}}return null}
+function laveDessin186(){try{if(typeof scene==='undefined')return;if(LAV186)scene.remove(LAV186);LAV186=new THREE.Group();(S.lave186||[]).forEach(d=>{const m=new THREE.Mesh(new THREE.CircleGeometry(d.r,14).rotateX(-Math.PI/2),new THREE.MeshLambertMaterial({color:0x1c1a19}));m.scale.set(1,1,.7);m.rotation.y=d.a||0;m.position.set(d.x,.004,d.z);LAV186.add(m)});scene.add(LAV186)}catch(e){}}
+let LAV186=null;
+function laveMer186(force){if(!S||S.fin||(!force&&(S.year<1663||S.year>1946)))return;const P=lavePt186();if(!P)return;const ha=Math.round(2+Math.random()*Math.random()*30);
+ const dx=P.x-P.xi,dz=P.z-P.zi,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L,r=Math.sqrt(ha/100)/.454*.55;// 1 unité ≈ 454 m
+ const d={x:P.x+ux*r*.6,z:P.z+uz*r*.6,r,a:Math.atan2(ux,uz),y:S.year,ha};(S.lave186=S.lave186||[]).push(d);laveDessin186();
+ const lieu=P.la<-21.27?'vers la pointe du Tremblet':P.la<-21.24?'au milieu du Grand Brûlé':'vers le Bois Blanc, au nord du Grand Brûlé';
+ journal('Éruption : la lave atteint la mer '+lieu+'. L’île gagne environ '+ha+' hectares. (Inventé pour le jeu, au rythme réel des coulées.)');
+ // la coulée qui descend, rouge, puis la vapeur
+ const G=new THREE.Group();scene.add(G);const pts=[];for(let k=0;k<=24;k++){const f=k/24,x=P.x-ux*(1-f)*4,z=P.z-uz*(1-f)*4+Math.sin(f*7)*.08;pts.push(new THREE.Vector3(x,Math.max(0,alt(x,z))*VX+.02,z))}
+ const tube=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),60,.05,6,false),new THREE.MeshBasicMaterial({color:0xff5a1a}));G.add(tube);const lum=new THREE.PointLight(0xff6020,2,3);lum.position.set(P.x,.3,P.z);G.add(lum);
+ const V=[];for(let k=0;k<14;k++){const m=new THREE.Mesh(new THREE.SphereGeometry(.06+Math.random()*.06,8,6),new THREE.MeshBasicMaterial({color:0xf4f4f0,transparent:true,opacity:.6,depthWrite:false}));m.userData={o:Math.random(),dx:(Math.random()-.5)*.3,dz:(Math.random()-.5)*.3};G.add(m);V.push(m)}
+ // la vue : on va voir, on tourne autour, on revient
+ const sv={t:camT.clone(),dist,az,pol};camT.set(P.x,0,P.z);dist=5;pol=.75;const az0=az,t0=performance.now();
+ let b=$('lav186');if(!b){b=document.createElement('div');b.id='lav186';b.style.cssText='position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:9500;background:#1a0e08e8;border:1px solid #ff7a3a;border-radius:10px;padding:9px 16px;color:#f8e8d8;font:14px Alegreya,Georgia,serif;text-align:center;max-width:520px;pointer-events:none';document.body.appendChild(b)}
+ b.innerHTML='<b style="color:#ffb070">🌋 '+S.year+' — la lave atteint la mer</b><br>'+lieu[0].toUpperCase()+lieu.slice(1)+' : l’île gagne environ '+ha+' hectares de roche neuve.<br><small style="opacity:.8">Inventé pour le jeu : la date et la surface sont tirées au sort, au rythme réel d’une coulée en mer tous les 13 ans environ.</small>';b.hidden=false;
+ (function f(){const u=(performance.now()-t0)/1000;if(u>10){scene.remove(G);G.traverse(o=>{if(o.geometry)o.geometry.dispose()});camT.copy(sv.t);dist=sv.dist;az=sv.az;pol=sv.pol;b.hidden=true;return}requestAnimationFrame(f);az=az0+u*.25;
+  tube.material.color.setHSL(.04,1,.55-.35*Math.max(0,u-6)/4);V.forEach(m=>{const d=m.userData,w=(u*.35+d.o)%1;m.position.set(P.x+d.dx*w*2,w*1.2,P.z+d.dz*w*2);m.material.opacity=.6*(1-w)})})()}
+// le tirage : à chaque saison, environ une chance sur 26 (deux saisons par an, une coulée en mer tous les 13 ans)
+{let ns0=null;setInterval(()=>{try{if(!S||S.fin||modeHist()===false&&false)return;if(ns0==null){ns0=S.ns;laveDessin186();return}if(S.ns===ns0)return;ns0=S.ns;if(Math.random()<1/26)setTimeout(()=>laveMer186(),2500)}catch(e){}},1000)}
+// au chargement d'une partie, les avancées déjà faites se redessinent
+{let n0=-1;setInterval(()=>{try{const n=S&&S.lave186?S.lave186.length:0;if(n!==n0){n0=n;laveDessin186()}}catch(e){}},3000)}
+// ===== Vie : comment on prend — chasser tout ou laisser les petits, tout cueillir ou laisser les jeunes plants, raser ou tailler, vider la rivière ou pêcher convenablement =====
+// Comme le « Ménager / Vider » de la Survie : prendre tout rapporte plus tout de suite, mais la place s'épuise vite et met longtemps à revenir.
+const POL186={chasse:[['menager','🐣 Laisser les petits','On ne tire ni les femelles pleines ni les petits : un peu moins de viande, le gibier reste'],['tout','🔥 Chasser tout','Tout ce qui bouge : plus de viande tout de suite, la place se vide']],
+ cueil:[['menager','🌱 Laisser les jeunes plants','On prend les fruits, on laisse les pieds : la place repousse'],['tout','🔥 Tout cueillir','On arrache tout : plus aujourd’hui, rien dans un mois']],
+ bois:[['menager','✂️ Tailler','On coupe les branches, le tronc reste : peu de bois, la forêt tient'],['tout','🪓 Raser','On abat les troncs : beaucoup de bois, la forêt recule']],
+ peche:[['menager','🎣 Pêcher convenablement','Lignes, nasses : on laisse les petits poissons'],['tout','🔥 Vider la rivière, le lagon','On barre, on assèche, on prend tout : la rivière reste vide longtemps']]};
+function pol186(k){return ((S&&S.pol186)||{})[k]||'menager'}
+function bois186(t){return t.forest||/Savane/.test(t.biome)?((S.bois186||{})[t.i]??1):0}
+function eau186(t){return !!(t.riv||t.alt<25||(t.nb||[]).some(n=>T[n]&&T[n].alt<=0))}
+function pois186(t){return eau186(t)?((S.pois186||{})[t.i]??1):0}
+let J186=false;
+{const gu=gibUse;gibUse=function(t){const r=gu.apply(this,arguments);try{if(J186){const m=pol186('chasse');if(m==='tout'){gu.call(this,t);S.vivres=(S.vivres||0)+.9}else{S.gibP[t.i]=Math.max(0,(S.gibP[t.i]||0)-.05);S.vivres=Math.max(0,(S.vivres||0)-.4)}}}catch(e){}return r}}
+{const ru=resUse;resUse=function(t){const r0=resR(t),r=ru.apply(this,arguments);try{if(J186){const m=pol186('cueil');if(m==='tout'){ru.call(this,t);ru.call(this,t);S.vivres=(S.vivres||0)+.45*r0}else{S.resR[t.i]=Math.min(1,resR(t)+.02);S.vivres=Math.max(0,(S.vivres||0)-.15*r0)}}}catch(e){}return r}}
+{const jt=jourTick;jourTick=function(){J186=true;let r;try{r=jt.apply(this,arguments)}finally{J186=false}
+ try{if(!S||modeHist()||S.fin||!camps().length)return r;S.bois186=S.bois186||{};S.pois186=S.pois186||{};const B={},P={};
+  (S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)).forEach(p=>{const k=tacheDe(p);if(k!=='bois'&&k!=='peche')return;const t=T[(p.lieu!=null)?p.lieu:campDe(p)];if(!t)return;(k==='bois'?B:P)[t.i]=((k==='bois'?B:P)[t.i]||0)+1});
+  Object.entries(B).forEach(([i,n])=>{const t=T[i],f=bois186(t);if(!(t.forest||/Savane/.test(t.biome)))return;const m=pol186('bois');
+   S.res.bois=Math.max(0,(S.res.bois||0)+(m==='tout'?.35*n*f:-.15*n)-.5*n*(1-f));S.bois186[i]=Math.max(0,f-(m==='tout'?.035:.006)*n);
+   if(S.bois186[i]<.15&&f>=.15){const msg='🪓 La forêt de '+(lieuDe(t)||lieuProche(t)||'ce lieu')+' est rasée : il n’y a plus de bois à couper.';journal(msg);try{toast(msg)}catch(e){}}});
+  Object.entries(P).forEach(([i,n])=>{const t=T[i],f=pois186(t);if(!eau186(t))return;const m=pol186('peche');
+   S.vivres=Math.max(0,(S.vivres||0)+(m==='tout'?.5*n*f:-.1*n)-.45*n*(1-f));S.pois186[i]=Math.max(.02,f-(m==='tout'?.09:.012)*n);
+   if(S.pois186[i]<.2&&f>=.2){const msg='🐟 '+(lieuDe(t)||'La rivière')+' est vidée : plus de poisson pour longtemps.';journal(msg);try{toast(msg)}catch(e){}}});
+  // ça revient, lentement ; plus vite quand on a ménagé
+  Object.keys(S.bois186).forEach(i=>{if(!B[i]){S.bois186[i]=Math.min(1,S.bois186[i]+(S.bois186[i]>.3?.004:.0015));if(S.bois186[i]>=1)delete S.bois186[i]}});
+  Object.keys(S.pois186).forEach(i=>{if(!P[i]){S.pois186[i]=Math.min(1,S.pois186[i]+(S.pois186[i]>.3?.02:.006));if(S.pois186[i]>=1)delete S.pois186[i]}})}catch(e){}return r}}
+// les arbres coupés disparaissent de la carte
+
+// dans le camp : les quatre interrupteurs
+function pol186Html(){return '<div class="pc pol186" style="margin-top:8px"><b>Comment on prend</b><small style="display:block;opacity:.8;margin-bottom:4px">Pour tout le camp. Prendre tout rapporte plus aujourd’hui, mais la place s’épuise et met longtemps à revenir.</small>'+
+ Object.entries(POL186).map(([k,L])=>'<div style="display:flex;gap:4px;margin:3px 0;flex-wrap:wrap">'+L.map(([v,n,d])=>'<button class="bt'+(pol186(k)===v?'':' sec')+'" data-pol="'+k+'|'+v+'" title="'+d+'" style="font-size:11px;padding:3px 8px">'+n+'</button>').join('')+'</div>').join('')+'</div>'}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-pol]');if(!b||!S)return;e.stopPropagation();const [k,v]=b.dataset.pol.split('|');S.pol186=S.pol186||{};S.pol186[k]=v;try{sauve()}catch(x){}const L=POL186[k].find(x=>x[0]===v);toast(L[1]+' : '+L[2]+'.');document.querySelectorAll('[data-pol^="'+k+'|"]').forEach(x=>x.classList.toggle('sec',x.dataset.pol!==b.dataset.pol))},true);
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on||CV.selP!=null)return r;const d=$('cvL');if(d&&!d.querySelector('.pol186'))d.insertAdjacentHTML('beforeend',pol186Html())}catch(e){}return r}}
+// un clic sur une case, en Vie : ce qu'il reste à y prendre
+function reste186(t){const o=S.t[t.i]||{};if(!o.s||t.bare&&!eau186(t))return '';const bar=(n,v,c)=>'<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span style="min-width:74px">'+n+'</span><span style="flex:1;height:6px;background:#0006;border-radius:3px"><i style="display:block;height:6px;border-radius:3px;width:'+Math.round(v*100)+'%;background:'+(v<.3?'#e87b5a':c)+'"></i></span><small style="min-width:30px;text-align:right">'+Math.round(v*100)+' %</small></div>';
+ let h='';const g=Math.min(1,(typeof lieuGib135==='function'?lieuGib135(t)/1.2:1)*gibR(t));if(!t.bare)h+=bar('🏹 Gibier',g,'#c0503a');if(!t.bare)h+=bar('🧺 Plantes',resR(t),'#6fae55');if(t.forest||/Savane/.test(t.biome))h+=bar('🪓 Bois',bois186(t),'#8a6a44');if(eau186(t))h+=bar('🐟 Poisson',pois186(t),'#3f8fd0');return h}
+{const ct=choisirTuile;choisirTuile=function(t){const r=ct.apply(this,arguments);try{if(!S||modeHist()||S.fin||!t||window.choixExp||window.choixLieu||(typeof CV!=='undefined'&&CV.on))return r;const h=reste186(t);if(!h)return r;
+  let d=$('reste186');if(!d){d=document.createElement('div');d.id='reste186';d.style.cssText='position:fixed;right:16px;bottom:120px;z-index:8500;background:#1a140ce8;border:1px solid #e8be5a88;border-radius:10px;padding:10px 12px;color:#f4ead6;font:12px Montserrat,system-ui,sans-serif;width:250px';document.body.appendChild(d);d.onclick=()=>d.hidden=true}
+  d.innerHTML='<b style="font-size:13px">'+(lieuDe(t)||lieuProche(t)||t.biome)+'</b><small style="float:right;opacity:.6">✕</small><div style="opacity:.75;margin:2px 0 6px">Ce qu’il reste à prendre</div>'+h;d.hidden=false;clearTimeout(d._t);d._t=setTimeout(()=>d.hidden=true,9000)}catch(e){}return r}}
+// ===== Vie : le jardin du camp, les semences, et l'espionnage (avec son ladilafé) =====
+// Chaque camp a son petit jardin autour des cases. Bouturer (songes, patates douces, prises dans la forêt) : prêt en 20 jours.
+// Semer (maïs, grains) : 40 jours, mais rend le double ; il faut des semences, et un grenier ou un magasin pour les préparer et les garder.
+// Les colons ont les semences des navires. Les marrons, eux, savent cultiver (beaucoup viennent de Madagascar), mais n'ont pas de graines : il faut les prendre en bas.
+const JC186={bouture:{n:'Bouturer',ic:'🌿',j:20,v:6,d:'Songes et patates douces prises en forêt, replantées : prêt en 20 jours.'},semis:{n:'Semer',ic:'🌽',j:40,v:13,d:'Maïs et grains semés en terre : 40 jours, mais deux fois plus. Une semence par semis.'}};
+function jc186(ci){S.jc186=S.jc186||{};return S.jc186[ci]}
+function ent186(){return nBat('grenier')+nBat('magasin')>0}
+function jcPeutSemer(){return (S.graines186||0)>=1&&ent186()}
+function jcLancer(ci,mode){if(mode==='semis'){if(!jcPeutSemer()){toast(!ent186()?'Il faut un grenier'+(S.voieC?' ou un magasin':'')+' pour préparer et garder les semences.':'Il n’y a pas de semences. '+(S.voieC?'Elles arrivent avec les navires.':'Il faut en prendre chez les colons : descente ou espion.'));return}S.graines186--}
+ S.jc186=S.jc186||{};S.jc186[ci]={mode,j:0};journal((S.voieC?'On ':'Au camp, on ')+(mode==='semis'?'sème le maïs':'replante des boutures de songe et de patate')+' autour des cases.');try{sauve()}catch(e){}try{cvListe()}catch(e){}}
+// les semences de départ : les colons en ont ; à chaque année, un navire en apporte
+{const nv=nouvelle;nouvelle=function(){const r=nv.apply(this,arguments);try{if(S){S.graines186=S.voieC?4:0}}catch(e){}return r}}
+{const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||!camps().length)return r;if(S.graines186==null)S.graines186=S.voieC?4:0;
+  camps().forEach(c=>{const J=jc186(c.i);if(!J)return;J.j++;const M=JC186[J.mode];if(J.j>=M.j){const v=M.v+(S.sv&&S.sv.songes?2:0);S.vivres=(S.vivres||0)+v;
+   try{D186.g=1}catch(x){}let m='🌱 Récolte du jardin'+(lieuDe(c)?' de '+lieuDe(c):'')+' : '+v+' vivres.';if(J.mode==='semis'&&ent186()){const g=1+(Math.random()<.6?1:0);S.graines186=(S.graines186||0)+g;m+=' On garde '+g+' semence'+(g>1?'s':'')+' pour la prochaine fois.'}
+   journal(m);try{toast(m)}catch(e){}delete S.jc186[c.i];if(J.mode==='bouture'||jcPeutSemer())jcLancer(c.i,J.mode==='semis'&&jcPeutSemer()?'semis':'bouture')}});
+  if(S.voieC&&(S.jourN||0)%60===0)S.graines186=(S.graines186||0)+2;
+  // les espions en route
+  (S.pp||[]).forEach(p=>{if(p.esp186&&(S.jourN||0)>=p.esp186.fin)esp186Retour(p)})}catch(e){}return r}}
+// l'espion : un marron (ou, côté colon, un esclave de confiance) part plusieurs jours
+// Ladilafé : en créole réunionnais, le « on-dit », les ragots qui courent d'une case à l'autre. L'espion revient et raconte : tout le camp en parle, et ça finit par s'entendre en bas.
+function esp186Partir(p){if(!p||p.esp186)return;p.esp186={fin:(S.jourN||0)+8+Math.floor(Math.random()*5),t0:p.tache};p.tache='repos';
+ journal('🕵️ '+p.n.split(' ')[0]+' part '+(S.voieC?'chez les marrons, se faire passer pour un fugitif':'vers les habitations, se faire passer pour un esclave d’ailleurs')+'. Il revient dans une dizaine de jours.');try{sauve();cvListe()}catch(e){}}
+function esp186Retour(p){const e=p.esp186;delete p.esp186;p.tache=e.t0&&e.t0!=='repos'?e.t0:null;const nm=p.n.split(' ')[0],r=Math.random();
+ if(!S.voieC){if(r<.12){S.traque=(S.traque||0)+10;S.pp=S.pp.filter(q=>q!==p);const m='🕵️ '+nm+' a été reconnu et repris. Les chasseurs savent maintenant d’où il venait (traque +10).';journal(m);toast(m);return}
+  const H=colTiles().filter(t=>camps().some(c=>hd(c,t)<=9));H.forEach(t=>{try{ouvrir(t,1)}catch(x){}});const g=2+Math.floor(Math.random()*3);S.graines186=(S.graines186||0)+g;S.semis186=1;
+  const ld=4+Math.floor(Math.random()*5);S.traque=(S.traque||0)+ld;
+  const m='🕵️ '+nm+' revient : '+(H.length?H.length+' habitation'+(H.length>1?'s':'')+' repérée'+(H.length>1?'s':'')+' sur la carte, ':'')+g+' poignées de semences volées. Mais il raconte, on en parle de case en case : le ladilafé descend jusqu’en bas (traque +'+ld+').';journal(m);toast(m)}
+ else{if(r<.25){S.pp=S.pp.filter(q=>q!==p);const m='🕵️ '+nm+' n’est pas revenu : il est resté avec les marrons.';journal(m);toast(m);return}
+  const M=T.filter(t=>(S.t[t.i]||{}).mc||(typeof MC!=='undefined'&&MC&&MC.includes&&MC.includes(t.i)));const vus=T.filter(t=>t.alt>700&&!t.bare&&camps().some(c=>hd(c,t)<=8)&&Math.random()<.15);vus.forEach(t=>{try{ouvrir(t,1)}catch(x){}});
+  S.traque=Math.max(0,(S.traque||0)-3);const m='🕵️ '+nm+' revient des Hauts et dit ce qu’il a vu : des sentiers, des fumées. Mais à l’habitation, tout le monde le sait le soir même : le ladilafé prévient aussi les marrons.';journal(m);toast(m)}
+ try{sauve();peindre();cvListe()}catch(x){}}
+// dans le camp : le jardin, les semences, l'espion
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on||CV.selP!=null||CV.camp==null)return r;const d=$('cvL');if(!d||d.querySelector('.jc186'))return r;const ci=CV.camp,J=jc186(ci);
+  let h='<div class="pc jc186" style="margin-top:8px"><b>🌱 Le jardin du camp</b> <small style="opacity:.75">· semences : '+(S.graines186||0)+(ent186()?'':' · pas de grenier')+'</small>';
+  if(J){const M=JC186[J.mode],u=Math.min(1,J.j/M.j);h+='<div style="margin:4px 0"><small>'+M.ic+' '+(J.mode==='semis'?'Maïs semé':'Boutures replantées')+' · récolte dans '+Math.max(1,M.j-J.j)+' jours</small><div style="height:6px;background:#0006;border-radius:3px"><i style="display:block;height:6px;border-radius:3px;width:'+Math.round(u*100)+'%;background:#9ab040"></i></div></div>'}
+  else h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">'+Object.entries(JC186).map(([k,M])=>'<button class="bt'+(k==='semis'&&!jcPeutSemer()?' sec':'')+'" data-jc="'+ci+'|'+k+'" title="'+M.d+'" style="font-size:11px;padding:3px 8px">'+M.ic+' '+M.n+'</button>').join('')+'</div>';
+  if(!S.voieC&&!(S.graines186>0))h+='<small style="display:block;opacity:.75;margin-top:3px">Vous savez cultiver, mais n’avez pas de graines : elles sont en bas, chez les colons.</small>';
+  const libres=(S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)&&!p.esp186&&campDe(p)===ci&&(S.voieC?p.st==='esclave':true));const parti=(S.pp||[]).filter(p=>p.esp186);
+  h+='<div style="margin-top:8px"><b>🕵️ Espionner</b> <small style="opacity:.75">'+(S.voieC?'envoyer un esclave de confiance chez les marrons':'envoyer quelqu’un vers les habitations')+'</small>'+
+   (parti.length?'<small style="display:block">En route : '+parti.map(p=>p.n.split(' ')[0]+' (retour dans '+Math.max(1,p.esp186.fin-(S.jourN||0))+' j)').join(', ')+'</small>':'')+
+   '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:3px">'+libres.slice(0,5).map(p=>'<button class="bt sec" data-esp="'+p.id+'" style="font-size:11px;padding:3px 8px">'+p.n.split(' ')[0]+'</button>').join('')+'</div>'+
+   '<small style="display:block;opacity:.7;margin-top:3px">'+(S.voieC?'Il peut rester avec eux. ':'Il rapporte des semences et repère les habitations, mais il parle : ')+'<i title="En créole réunionnais : le « on-dit », les ragots qui courent d’une case à l’autre.">ladilafé</i>'+(S.voieC?' : à l’habitation, tout se sait, et les marrons l’apprennent aussi.':' : on en parle partout, et la traque monte.')+'</small></div></div>';
+  d.insertAdjacentHTML('beforeend',h)}catch(e){}return r}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-jc],[data-esp]');if(!b||!S)return;e.stopPropagation();if(b.dataset.jc){const [ci,k]=b.dataset.jc.split('|');jcLancer(+ci,k)}else{const p=ppId(+b.dataset.esp);if(p)esp186Partir(p)}},true);
+// le jardin se voit autour des cases : rangées nettes chez les colons, petites parcelles cachées sous les arbres chez les marrons
+{let G186=null,cle='';setInterval(()=>{try{if(typeof scene==='undefined'||!S||modeHist())return;const k=JSON.stringify(S.jc186||{})+S.voieC;if(k===cle)return;cle=k;if(G186){scene.remove(G186);G186.traverse(o=>{if(o.geometry)o.geometry.dispose()})}G186=new THREE.Group();
+  camps().forEach(c=>{const J=jc186(c.i);if(!J)return;const u=Math.min(1,J.j/JC186[J.mode].j),col=S.voieC;const n=col?3:4;for(let q=0;q<n;q++){const a=q*(col?.5:1.6)+c.i,R=col?.38:.42+.08*(q%2),x=c.x+Math.cos(a)*R,z=c.z+Math.sin(a)*R,w=col?.16:.07,l=col?.24:.09,y=Math.max(0,alt(x,z))*VX+.006;
+   const sol=new THREE.Mesh(new THREE.PlaneGeometry(w,l).rotateX(-Math.PI/2),new THREE.MeshLambertMaterial({color:0x6b4a2a}));sol.position.set(x,y,z);sol.rotation.y=a;G186.add(sol);
+   const rangs=col?4:2;for(let k=0;k<rangs;k++){const p=new THREE.Mesh(new THREE.BoxGeometry(w*.12,.004+.03*u,l*.9),new THREE.MeshLambertMaterial({color:J.mode==='semis'?0x9ab040:0x4a8a3a}));p.position.set(x+Math.cos(a)*(-w/2+w*(k+.5)/rangs),y+.002+.015*u,z-Math.sin(a)*(-w/2+w*(k+.5)/rangs));p.rotation.y=a;G186.add(p)}}});scene.add(G186)}catch(e){}},2000)}
+// une descente rapporte aussi des semences
+{const g0=agir;agir=function(t,id){const av=S&&S.graines186;const r=g0.apply(this,arguments);try{if(r!==false&&id==='descente'&&S&&!S.voieC){const g=1+Math.floor(Math.random()*3);S.graines186=(av||0)+g;journal('Dans le sac de la descente : '+g+' poignée'+(g>1?'s':'')+' de maïs à semer.')}}catch(e){}return r}}
+// ===== Vie : les techniques de chasse et de pêche, et ce qu'on mange =====
+// Chaque chasseur, chaque pêcheur, a sa technique : elle dépend du lieu (rivière, embouchure, lagon, large), des outils (fusil, canot) et de la saison.
+// Certaines laissent la journée libre (pièges, lignes posées) : on pose le matin, on relève le soir, et entre-temps on cueille.
+// Manger varié tient le moral ; toujours la même chose le fait baisser. Les colons tiennent à leur pain, leur riz et leur viande ; les marrons à la rivière et à la forêt.
+const TECH186={
+ chasse:{sagaie:['🗡️ Sagaie et chiens','viande',t=>!t.bare,1,'Cabris et cochons marrons, rabattus par les chiens.'],
+  fusil:['🔫 Fusil','viande',t=>!t.bare&&((S.fu||0)>0||S.voieC),1.5,'Plus sûr, mais le coup de feu s’entend de loin'+(S&&!S.voieC?' : la traque monte.':'.')],
+  pieges:['🪤 Pièges et collets','oiseaux',t=>!t.bare,.7,'Posés le matin, relevés le soir : oiseaux, tangues, merles. Entre-temps, on cueille.',1],
+  tangue:['🦔 Chiens à tangues','viande',t=>!t.bare&&t.alt<1300,1.2,'Les tangues, en saison des pluies ; en saison sèche elles dorment sous terre.']},
+ peche:{roches:['✋ Sous les roches','riviere',t=>!!t.riv,.8,'Camarons, chevrettes, zanguilles cachés sous les galets : on les cherche à la main.'],
+  lignes:['🪝 Lignes posées','riviere',t=>!!t.riv||eau186(t),.9,'Des dizaines de lignes tout le long de la rivière ; on revient les relever le soir. Entre-temps, on cueille.',1],
+  vouve:['🧺 Vouves à bichiques','bichique',t=>!!t.riv&&t.alt<80,1.6,'Nasses de bambou à l’embouchure : les bichiques remontent la rivière en saison chaude. Le reste de l’année, presque rien.'],
+  lagon:['🐙 Au lagon, à pied','mer',t=>t.alt<25&&!t.riv,1,'Ourites, macabits, coquillages, à marée basse.'],
+  canot:['🛶 En canot, au large','mer',t=>t.alt<25,1.4,'Les poissons du large. On se voit de loin depuis la côte'+(S&&!S.voieC?' : risqué pour des marrons.':'.')]}};
+function tech186(p,k){const t=T[p.lieu!=null?p.lieu:campDe(p)];const L=TECH186[k]||{},ok=Object.keys(L).filter(x=>t&&L[x][2](t));if(p.tech186&&ok.includes(p.tech186))return p.tech186;return ok[0]||null}
+function repas186(cat){S.rep186=S.rep186||{};S.rep186[cat]=S.jourN||0}
+{const jt=jourTick;jourTick=function(){const v0=S&&S.vivres;const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||!camps().length)return r;const pl=pluie();
+  (S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)&&!p.esp186).forEach(p=>{const k=tacheDe(p);if(k==='cueil'){repas186('plantes');return}if(k!=='chasse'&&k!=='peche')return;const te=tech186(p,k);if(!te)return;const D=TECH186[k][te],t=T[p.lieu!=null?p.lieu:campDe(p)];
+   let m=D[3];if(te==='vouve')m=pl?1.6:.25;if(te==='tangue'&&!pl)m=.3;const base=k==='chasse'?.6*gibR(t):.45*pois186(t);S.vivres=Math.max(0,(S.vivres||0)+base*(m-1));
+   if(Math.random()<.6)repas186(D[1]);if(D[5]){S.vivres+=.3*resR(t);repas186('plantes')}
+   if(!S.voieC&&(te==='fusil'||te==='canot')&&Math.random()<.25)S.traque=Math.min(100,(S.traque||0)+1)});
+  if(Object.values(S.jc186||{}).length||nBat('etable'))repas186(nBat('etable')?'viande':'culture');
+  // le moral selon ce qu'on mange (sur les 8 derniers jours)
+  const j=S.jourN||0,R=S.rep186||{},vus=Object.keys(R).filter(c=>j-R[c]<=8),C=S.voieC;let d=(vus.length-2.5)*.15;
+  if(C&&!vus.includes('culture'))d-=.25;if(C&&!vus.includes('viande'))d-=.15;if(!C&&(vus.includes('riviere')||vus.includes('bichique')))d+=.1;
+  fx({coh:d});S.var186=vus;if(j%10===0){if(vus.length<=1)journal(C?'À l’habitation, on se plaint : toujours la même chose dans l’assiette.':'Au camp, on rouspète : encore et toujours la même chose à manger.');else if(vus.length>=4)journal('On mange bien ces jours-ci : '+vus.length+' sortes de nourriture. Le moral est bon.')}}catch(e){}return r}}
+const CAT186={viande:'🍖 viande',oiseaux:'🐦 oiseaux',riviere:'🦐 rivière',bichique:'🐟 bichiques',mer:'🐙 mer',plantes:'🥬 brèdes, fruits',culture:'🌽 maïs, riz, pain'};
+// dans la fiche d'un chasseur ou d'un pêcheur : choisir sa technique ; dans le camp : ce qu'on a mangé
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on)return r;const d=$('cvL');if(!d)return r;
+  if(CV.selP!=null){const p=ppId(CV.selP);if(!p||d.querySelector('.te186'))return r;const k=tacheDe(p);if(k!=='chasse'&&k!=='peche')return r;const t=T[p.lieu!=null?p.lieu:campDe(p)],L=TECH186[k],cur=tech186(p,k);
+   d.insertAdjacentHTML('beforeend','<div class="pc te186" style="margin-top:8px"><b>'+(k==='chasse'?'Comment il chasse':'Comment il pêche')+'</b><small style="display:block;opacity:.75">'+(lieuDe(t)||lieuProche(t)||'ici')+' : on ne peut pas tout faire partout.</small>'+
+    Object.entries(L).map(([x,D])=>{const ok=t&&D[2](t);return '<button class="bt'+(x===cur?'':' sec')+'" data-te="'+p.id+'|'+x+'" '+(ok?'':'disabled ')+'title="'+D[4]+(ok?'':' — pas possible ici')+'" style="font-size:11px;padding:3px 8px;margin:2px;'+(ok?'':'opacity:.4')+'">'+D[0]+'</button>'}).join('')+'<small style="display:block;margin-top:3px">'+(cur?L[cur][4]:'Rien de possible ici.')+'</small></div>')}
+  else if(!d.querySelector('.rep186')){const v=S.var186||[];d.insertAdjacentHTML('beforeend','<div class="pc rep186" style="margin-top:8px"><b>🍲 Ce qu’on a mangé ces jours-ci</b><div style="margin-top:3px">'+(v.length?v.map(c=>CAT186[c]||c).join(' · '):'<small>pas grand-chose</small>')+'</div><small style="opacity:.75">'+(v.length>=4?'Repas variés : le moral tient.':v.length<=1?'Toujours la même chose : le moral baisse.':'Un peu de variété ferait du bien.')+(S.voieC?' Les colons veulent leur pain, leur riz et leur viande.':'')+'</small></div>')}}catch(e){}return r}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-te]');if(!b||!S)return;e.stopPropagation();const [id,x]=b.dataset.te.split('|'),p=ppId(+id);if(!p)return;p.tech186=x;const k=tacheDe(p);toast(p.n.split(' ')[0]+' : '+TECH186[k][x][0]+'.');try{sauve();cvListe()}catch(_){}},true);
+// ===== Vie : ce qu'on mange fait l'humeur ; chasser et pêcher, chacun avec sa technique =====
+// 1. Manger varié : viande, poisson, plantes, grains du jardin, bétail. Toujours la même chose : la cohésion baisse. Varié : elle monte.
+//    Les colons tiennent aux grains (riz, maïs, pain) et à la viande d'élevage ; les marrons aux songes, aux brèdes et au gibier.
+var D186={};
+const DIET186=[['v','🍖','gibier'],['p','🐟','poisson'],['f','🥬','brèdes, fruits'],['g','🌽','grains du jardin'],['b','🐄','bétail']];
+{const gu=gibUse;gibUse=function(t){if(J186)D186.v=1;return gu.apply(this,arguments)}}
+{const ru=resUse;resUse=function(t){if(J186)D186.f=1;return ru.apply(this,arguments)}}
+function diet186(){const H=S.dj186||[],k={};H.forEach(d=>Object.keys(d).forEach(x=>{if(d[x])k[x]=1}));return k}
+{const jt=jourTick;jourTick=function(){D186={};const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||!camps().length)return r;
+  if((S.pp||[]).some(p=>adulte(p)&&!enGrp(p)&&!p.esp186&&tacheDe(p)==='peche'))D186.p=1;if((S.bet||0)>0||nBat('etable')>0)D186.b=1;
+  (S.grp||[]).forEach(g=>{const e=g.exp;if(e&&e.charge>0){if(e.but==='chasse')D186.v=1;if(e.but==='peche')D186.p=1;if(e.but==='cueil')D186.f=1}});
+  S.dj186=(S.dj186||[]);S.dj186.push(D186);if(S.dj186.length>10)S.dj186.shift();const k=diet186(),n=nbase186(k),C=S.voieC;
+  let d=n<=1?-.4:n===2?0:n===3?.2:.35;if(C&&!k.g&&!k.b&&S.dj186.length>=10)d-=.25;if(!C&&!k.f&&S.dj186.length>=10)d-=.15;S.coh=Math.max(0,Math.min(100,(S.coh||0)+d));
+  if((S.jourN||0)%6===0&&S.dj186.length>=6){if(n<=1)journal('🍲 Toujours la même chose dans la marmite : on râle, la cohésion baisse.');else if(C&&!k.g&&!k.b)journal('🍲 Les colons réclament du riz, du pain, de la viande de leurs bêtes.');else if(n>=4)journal('🍲 On mange varié ces jours-ci : le camp est de bonne humeur.')}}catch(e){}return r}}
+// 2. La chasse : avec quoi on chasse (pour tout le camp). On ne peut pas tout emporter : un seul équipement à la fois.
+const CHT186={sagaie:['🗡️','Sagaie et bâton','Cabris et cochons, à la course et à l’affût. Le plus simple.',()=>true],
+ chiens:['🐕','Avec les chiens','Les chiens lèvent les cochons marrons : bien plus de viande, mais il faut des chiens.',()=>(S.rb||0)>0||nBat('chenil')>0||(S.chien186||0)>0],
+ fusil:['🔫','Au fusil','Le plus sûr pour la grosse bête ; le coup s’entend de loin.',()=>(S.fu||0)>0],
+ pieges:['🪤','Pièges et collets','Posés au matin, relevés le soir : oiseaux, tangues. Moins de viande, mais entre les deux on cueille.',()=>true]};
+function cht186(){const k=(S.cht186)||'sagaie';return CHT186[k]&&CHT186[k][3]()?k:'sagaie'}
+{const gu=gibUse;gibUse=function(t){const r=gu.apply(this,arguments);try{if(J186){const k=cht186();if(k==='chiens')S.vivres+=.7;else if(k==='fusil'){S.vivres+=.9;gu.call(this,t);if(!S.voieC)S.traque=(S.traque||0)+.4}else if(k==='pieges'){S.vivres=Math.max(0,S.vivres-.6)}}}catch(e){}return r}}
+{const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||cht186()!=='pieges')return r;(S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)&&!p.esp186&&tacheDe(p)==='chasse').forEach(p=>{const t=T[p.lieu!=null?p.lieu:campDe(p)];if(!t)return;const v=.35*resR(t)+.4*gibR(t);S.vivres+=v;D186.v=1;D186.f=1})}catch(e){}return r}}
+// 3. La pêche : chaque poisson a sa technique, et chaque endroit les siennes
+const PTECH186={camaron:['🦐','Camarons sous les roches','À la main et à la nasse de vacoa, en retournant les pierres des bassins.',t=>t.riv,1],
+ zanguille:['🐍','Zanguilles à la ligne de fond','Des dizaines de lignes posées le soir le long de la rivière, relevées à l’aube.',t=>t.riv,1.15],
+ cabot:['🪨','Cabots sous les galets','À la fourche ou à la main, dans le courant.',t=>t.riv,.85],
+ bichique:['🧺','Bichiques à la vouve','Les nasses de bambou à l’embouchure, quand les bichiques remontent (saison des pluies).',t=>t.riv&&t.alt<60,0],
+ fond:['🛶','Poissons de fond, en pirogue','Une ligne lestée au large, depuis la pirogue. Il faut une pirogue.',t=>t.alt<30&&!t.riv,1.4],
+ lagon:['🐙','Au lagon','Filet, harpon, poulpes sous les coraux.',t=>t.alt<20&&!t.riv,1.05]};
+function ptOk186(t){return Object.entries(PTECH186).filter(([k,v])=>v[3](t))}
+function ptech186(t){const k=(S.pt186||{})[t.i];const L=ptOk186(t);return L.find(x=>x[0]===k)?k:(L[0]||[])[0]}
+{const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin)return r;(S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)&&!p.esp186&&tacheDe(p)==='peche').forEach(p=>{const t=T[p.lieu!=null?p.lieu:campDe(p)];if(!t)return;const k=ptech186(t);if(!k)return;
+  let m=PTECH186[k][4];if(k==='bichique')m=pluie()?2.4:.2;if(k==='fond'&&!(S.pirogue186>0))m=.3;S.vivres=Math.max(0,S.vivres+.45*(m-1)*pois186(t))})}catch(e){}return r}}
+// le choix de la technique, sur la carte de la case
+{const r0=reste186;reste186=function(t){let h=r0(t);try{if(!eau186(t)||!S)return h;const L=ptOk186(t);if(!L.length)return h;const cur=ptech186(t);
+  h+='<div style="margin-top:6px;opacity:.8">Comment on pêche ici :</div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+L.map(([k,v])=>'<button class="bt'+(k===cur?'':' sec')+'" data-pt="'+t.i+'|'+k+'" title="'+v[2]+'" style="font-size:10px;padding:2px 6px">'+v[0]+' '+v[1]+'</button>').join('')+'</div>'+
+   (L.some(x=>x[0]==='fond')&&!(S.pirogue186>0)?'<button class="bt sec" data-pir="1" style="font-size:10px;padding:2px 6px;margin-top:3px" title="3 bois">🛶 Creuser une pirogue (3 bois)</button>':'')}catch(e){}return h}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-pt],[data-pir],[data-cht]');if(!b||!S)return;e.stopPropagation();
+ if(b.dataset.pt){const [i,k]=b.dataset.pt.split('|');S.pt186=S.pt186||{};S.pt186[i]=k;toast(PTECH186[k][0]+' '+PTECH186[k][1]+' : '+PTECH186[k][2]);try{choisirTuile(T[+i])}catch(x){}}
+ else if(b.dataset.pir){if((S.res.bois||0)<3){toast('Il faut 3 bois.');return}S.res.bois-=3;S.pirogue186=(S.pirogue186||0)+1;journal('🛶 On creuse une pirogue dans un tronc : on pourra pêcher au large.');toast('🛶 Pirogue prête.')}
+ else if(b.dataset.cht){const k=b.dataset.cht;if(!CHT186[k][3]()){toast(k==='chiens'?'Il faut des chiens.':'Il faut un fusil.');return}S.cht186=k;toast(CHT186[k][0]+' '+CHT186[k][1]+' : '+CHT186[k][2])}
+ try{sauve();if(typeof CV!=='undefined'&&CV.on)cvListe()}catch(x){}},true);
+// dans le camp : ce qu'on mange, et avec quoi on chasse
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on||CV.selP!=null)return r;const d=$('cvL');if(!d||d.querySelector('.diet186'))return r;const k=diet186(),n=nbase186(k);
+  d.insertAdjacentHTML('beforeend','<div class="pc diet186" style="margin-top:8px"><b>🍲 Ce qu’on mange</b> <small style="opacity:.75">· 10 derniers jours</small><div style="font-size:18px;margin:3px 0">'+DIET186.map(([c,ic,nm])=>'<span title="'+nm+'" style="opacity:'+(k[c]?1:.22)+'">'+ic+'</span>').join(' ')+'</div><small>'+(n<=1?'Toujours la même chose : on râle.':n===2?'Un peu monotone.':n===3?'Assez varié : ça va.':'Varié : tout le monde est content.')+(S.voieC&&!k.g&&!k.b?' Les colons veulent du riz, du pain, leurs bêtes.':'')+'</small>'+
+   '<div style="margin-top:7px"><b>Avec quoi on chasse</b><div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+Object.entries(CHT186).map(([c,v])=>'<button class="bt'+(cht186()===c?'':' sec')+'" data-cht="'+c+'" title="'+v[2]+(v[3]()?'':' (indisponible)')+'" style="font-size:11px;padding:3px 7px;'+(v[3]()?'':'opacity:.45')+'">'+v[0]+' '+v[1]+'</button>').join('')+'</div></div></div>')}catch(e){}return r}}
+// ===== Les bêtes de l'île et ceux qui arrivent : la faune qui ne fuyait pas, les cochons lâchés, les rats des navires =====
+// Les rats montent avec les années et la colonie : ils mangent les œufs et les petits des oiseaux qui nichent (papangue, pétrels, pigeons…).
+function rats186(){if(!S)return 1;return Math.min(1.8,1+Math.max(0,(S.year||1663)-1663)/160+(typeof colTiles==='function'?colTiles().length/80:0))}
+try{const p0=pression135;pression135=function(k){const P=p0.apply(this,arguments);try{if(/pigeon|perro|perruche|ibis|oiseau|huppe|etourn|p[ée]trel|papang|r[aâ]le|foulque|merle|chouette|hibou|tuit|zoizo|aigrette|h[ée]ron|canard|sarcelle|tourte|bulbul|caille|sol|dodo|dro/i.test(k)){const r=rats186();P.m*=r;if(r>1.3&&Math.random()<.3)P.cause='les rats des navires mangent les œufs et les petits'}}catch(e){}return P}}catch(e){}
+Object.assign(EV,{
+ faune1665:{y:1665,si:()=>S,tag:'Archive',an:'1665-1672',nat:'Fait historique.',t:'Des bêtes qui ne fuient pas',
+  b:'Les premiers venus s’étonnent : les oiseaux se laissent approcher, on les prend à la main ou au bâton. Les tortues de terre couvrent les plaines de l’ouest ; on en charge des chaloupes entières. Rien ici n’a appris à craindre l’homme.',
+  v:'Une île sans prédateur, et soudain des hommes.',h:'Récits des premiers voyageurs, dont Dubois (séjour de 1669 à 1672) : oiseaux qui se laissent prendre à la main, tortues de terre abondantes. Les quantités exactes ne sont pas connues.',o:[{n:'Continuer',d:'',fx:{},hist:1}]},
+ cochons1670:{y:1670,si:()=>S,tag:'Archive',an:'XVIIᵉ siècle',nat:'Fait historique.',t:'Les cochons marrons',
+  b:'Des cochons et des cabris ont été lâchés sur l’île par les navires de passage, avant même qu’on s’y installe. Ils sont devenus sauvages : on les appelle cochons marrons. Eux fuient l’homme, et ils fouillent la terre, mangent les racines, les œufs, les jeunes pousses de la forêt.',
+  v:'Lâchés pour nourrir les marins, ils mangent la forêt.',h:'Introduction précoce de porcs et de chèvres par les navigateurs au XVIIᵉ siècle (fait établi). Les dates précises de lâcher ne sont pas connues.',o:[{n:'Continuer',d:'',fx:{},hist:1}]},
+ rats1700:{y:1700,si:()=>S,tag:'Archive',an:'XVIIᵉ - XVIIIᵉ siècles',nat:'Fait historique.',t:'Les rats des navires',
+  b:'Avec chaque navire descendent des rats. Ils pullulent dans les magasins, les champs, la forêt. Ils grimpent aux nids : les œufs et les petits des oiseaux qui nichent ici, papangue, pétrels, pigeons, n’ont jamais connu pareil ennemi. Des espèces s’éteignent sans qu’on les ait chassées.',
+  v:'Le plus petit des envahisseurs fait le plus de dégâts.',h:'Rats introduits par les navires (fait établi) ; leur prédation sur les œufs et les poussins est une cause reconnue du déclin des oiseaux nicheurs des îles, dont les pétrels de La Réunion. La chronologie précise de l’arrivée des rats à Bourbon n’est pas connue.',o:[{n:'Continuer',d:'',fx:{},hist:1}]}});
+// ===== Les goûts de chacun : le chasseur veut de la viande, la cueilleuse des brèdes et du poisson ; tout le monde aime les bichiques, et beaucoup les camarons =====
+// Zourite (poulpe) et chevakines (toutes petites crevettes) : le manger des pauvres, plutôt chez les marrons ; les colons en mangent en rechignant.
+// Les rivières des Bas et les embouchures sont surtout aux colons : un marron qui y pêche se fait voir.
+PTECH186.chevakine=['🦐','Chevakines au tamis','Les toutes petites crevettes des bassins, prises au tamis ou à la moustiquaire : le manger des pauvres.',t=>t.riv,.75];
+DIET186.push(['bi','🐟✨','bichiques'],['ca','🦐','camarons'],['zo','🐙','zourite'],['ch','🥣','chevakines']);
+{const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin)return r;
+  (S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)&&!p.esp186&&tacheDe(p)==='peche').forEach(p=>{const t=T[p.lieu!=null?p.lieu:campDe(p)];if(!t)return;const k=ptech186(t);
+   if(k==='bichique'&&pluie())D186.bi=1;if(k==='camaron')D186.ca=1;if(k==='lagon')D186.zo=1;if(k==='chevakine')D186.ch=1;
+   // les marrons dans les rivières des Bas et aux embouchures : le pays des colons
+   if(!S.voieC&&t.alt<300&&(k==='bichique'||colTiles().some(c=>hd(c,t)<=2))){S.traque=(S.traque||0)+.3;if(Math.random()<.08)journal('🐟 '+p.n.split(' ')[0]+' pêche '+(k==='bichique'?'à l’embouchure':'dans la rivière des Bas')+' : c’est le pays des colons, on l’a vu.')}});
+  // l'humeur de chacun selon ses goûts
+  const k=diet186();let som=0,n=0;(S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)).forEach(p=>{const tk=tacheDe(p),ch=p.role==='cha'||tk==='chasse',cu=p.role==='cue'||tk==='cueil'||tk==='peche';let h=0;
+   if(ch)h+=k.v?.3:-.4;if(cu)h+=(k.f?.2:-.2)+(k.p||k.ca||k.bi?.2:-.15);if(k.bi)h+=.35;if(k.ca)h+=.15;if(S.voieC&&(k.zo||k.ch)&&p.st!=='esclave')h-=.1;
+   p.gout186=h;som+=h;n++});if(n){S.coh=Math.max(0,Math.min(100,(S.coh||0)+som/n*.4))}}catch(e){}return r}}
+function gout186Txt(p){const tk=tacheDe(p),ch=p.role==='cha'||tk==='chasse',cu=p.role==='cue'||tk==='cueil'||tk==='peche';return ch?'aime la viande':cu?'aime les brèdes et le poisson':'aime ce qui change'}
+// dans le panneau du camp : qui n'est pas content de la marmite
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on||CV.selP!=null)return r;const b=document.querySelector('#cvL .diet186');if(!b||b.querySelector('.g186'))return r;
+  const M=(S.pp||[]).filter(p=>adulte(p)&&!enGrp(p)&&p.gout186!=null&&p.gout186<0).slice(0,4);const k=diet186();
+  b.insertAdjacentHTML('beforeend','<small class="g186" style="display:block;margin-top:4px">'+(k.bi?'Des bichiques : tout le monde est content. ':'')+(M.length?'Pas contents : '+M.map(p=>p.n.split(' ')[0]+' ('+gout186Txt(p)+')').join(', ')+'.':'')+'</small>')}catch(e){}return r}}
+// la fiche de chacun dit ses goûts
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on||CV.selP==null)return r;const p=ppId(CV.selP);const d=$('cvL');if(!p||!d||!adulte(p)||d.querySelector('.gt186'))return r;
+  d.insertAdjacentHTML('beforeend','<div class="pc gt186" style="margin-top:6px"><small>🍲 '+p.n.split(' ')[0]+' '+gout186Txt(p)+' ; comme tout le monde ici, les bichiques'+(p.gout186!=null?' · '+(p.gout186>=.2?'content de ce qu’on mange':p.gout186<0?'pas content de ce qu’on mange':'ça va'):'')+'.</small></div>')}catch(e){}return r}}
+
+function nbase186(k){return ['v','p','f','g','b'].filter(x=>k[x]||(x==='p'&&(k.ca||k.bi||k.zo||k.ch))).length}
