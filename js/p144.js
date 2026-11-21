@@ -67,10 +67,12 @@ setInterval(()=>{try{if(!S||typeof scene==='undefined'||K||(typeof VP!=='undefin
    if(nB<16&&t.forest&&!o.c&&h(t,17)<.4){nB++;met('sk_branche',{h:.18,long:true},t.x+(h(t,19)-.5)*.6,t.z+(h(t,20)-.5)*.6,h(t,21)*6.28,1)}})}catch(e){}},700);
 // les rochers du décor (blocs noirs à facettes) prennent la forme et la texture du rocher scanné, à la même taille
 setTimeout(function roc144(){try{if(typeof MOD==='undefined'||!MOD.rocher||!MOD.rocher.geometry){setTimeout(roc144,2000);return}
- inst144('sk_pierre',{h:1,long:true}).then(r=>{let me=null;r.w.updateMatrixWorld(true);r.w.traverse(o=>{if(o.isMesh&&!me)me=o});if(!me)return;
-  const g=me.geometry.clone();g.applyMatrix4(me.matrixWorld);g.computeBoundingBox();const ob=MOD.rocher.geometry.boundingBox||(MOD.rocher.geometry.computeBoundingBox(),MOD.rocher.geometry.boundingBox),os=ob.getSize(new THREE.Vector3()),b=g.boundingBox,s=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
+ inst144('sk_pierre',{h:1,long:true}).then(r=>{let me=null;const roc=[];r.w.updateMatrixWorld(true);r.w.traverse(o=>{if(o.isMesh){if(!me)me=o;const mn=(o.material&&o.material.name)||'';if(/Rock|Stone/i.test(mn+' '+o.name))roc.push(o)}});if(!me)return;
+  // le rocher est fait de deux morceaux : on les réunit (avant, un seul était pris, d'où les trous)
+  const L=(roc.length?roc:[me]).map(o=>{let q=o.geometry.clone();q.applyMatrix4(o.matrixWorld);if(q.index)q=q.toNonIndexed();return q});me=roc[0]||me;
+  const g=new THREE.BufferGeometry();['position','normal','uv'].forEach(k=>{if(!L.every(q=>q.attributes[k]))return;const it=L[0].attributes[k].itemSize,arr=new Float32Array(L.reduce((n,q)=>n+q.attributes[k].array.length,0));let o=0;L.forEach(q=>{arr.set(q.attributes[k].array,o);o+=q.attributes[k].array.length});g.setAttribute(k,new THREE.BufferAttribute(arr,it))});g.computeBoundingBox();const ob=MOD.rocher.geometry.boundingBox||(MOD.rocher.geometry.computeBoundingBox(),MOD.rocher.geometry.boundingBox),os=ob.getSize(new THREE.Vector3()),b=g.boundingBox,s=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
   g.translate(-c.x,-b.min.y,-c.z);const k=Math.max(os.x,os.z)/Math.max(s.x,s.z);g.scale(k,k*1.1,k);const n=g.attributes.position.count;g.setAttribute('color',new THREE.Float32BufferAttribute(new Float32Array(n*3).fill(1),3));
-  const m=me.material.clone();m.vertexColors=true;if(m.color)m.color.multiplyScalar(2.3);m.needsUpdate=true;const vieux=MOD.rocher.geometry;MOD.rocher.geometry=g;MOD.rocher.material=m;
+  const m=me.material.clone();m.vertexColors=true;if(m.color)m.color.multiplyScalar(1.5);m.side=THREE.DoubleSide;m.transparent=false;m.opacity=1;m.alphaTest=0;m.depthWrite=true;if(m.map)m.map.premultiplyAlpha=false;m.needsUpdate=true;const vieux=MOD.rocher.geometry;MOD.rocher.geometry=g;MOD.rocher.material=m;
   // les copies déjà posées sur la carte et dans les lieux suivent
   scene.traverse(o=>{if(o.isInstancedMesh&&o.geometry===vieux){o.geometry=g;o.material=m}})}).catch(()=>{})}catch(e){}},3000);
 

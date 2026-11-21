@@ -33,7 +33,7 @@ function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=
  // les cavernes connues : une bouche sombre dans la pente
  try{Object.keys(S.cav97||{}).map(Number).map(i=>T[i]).filter(t=>t&&P.includes(t)).forEach(t=>{g.add(grotte186(t))})}catch(e){}
  // les plantes et pierres de la mystique, là où elles poussent (marrons) : une petite lueur
- try{if(!S.voieC&&typeof ING99!=='undefined'){let n=0;P.forEach(t=>{if(n>14)return;const ok=Object.entries(ING99).find(([q,J])=>{try{return J.ok&&J.ok(t)}catch(e){return false}});if(!ok)return;const s=viv108Icone(ok[1].ic||'🌿');s.position.set(t.x-.2,t.alt*VX+.22,t.z-.15);s.userData.n=ok[1].n;g.add(s);VIV108.o.push(s);n++})}}catch(e){}
+ try{if(!S.voieC&&typeof ING99!=='undefined'){let n=0;P.forEach(t=>{if(n>14)return;const ok=Object.entries(ING99).find(([q,J])=>{try{return J.ok&&J.ok(t)}catch(e){return false}});if(!ok)return;const s=viv108Icone(ok[1].ic||'🌿');s.position.set(t.x-.2,t.alt*VX+.22,t.z-.15);s.userData.n=ok[1].n;s.userData.ing=ok[0];g.add(s);VIV108.o.push(s);n++})}}catch(e){}
  return g}
 setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin||K||VP){if(VIV108.g)VIV108.g.visible=false;return}const on=dist<10;if(!on){if(VIV108.g)VIV108.g.visible=false;return}
  const cle=Math.round(camT.x/4)+'|'+Math.round(camT.z/4)+'|'+Math.round(dist/4)+'|'+Object.keys(S.cav97||{}).length+'|'+(pluie()?1:0)+'|'+(S.cyc&&S.cyc.in<=0?1:0)+'|'+(S.gib106||0);if(cle!==VIV108.cle){VIV108.cle=cle;if(VIV108.g){scene.remove(VIV108.g);VIV108.g.traverse(o=>{if(o.geometry)o.geometry.dispose()})}VIV108.g=viv108Bati();scene.add(VIV108.g)}VIV108.g.visible=true}catch(e){}},700);
