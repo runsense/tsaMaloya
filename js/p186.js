@@ -56,7 +56,7 @@ Object.assign(EV,{
   b:'La République retire des colonies les monnaies étrangères. Il circule alors quelque 800 000 kervéguens, bien plus que les 227 000 venus d’Autriche : la fausse monnaie a prospéré. Du jour au lendemain, les petites gens et les boutiquiers ne savent plus ce que vaut ce qu’ils ont en poche ; certains font faillite. L’héritier Kervéguen devra rembourser les pièces importées par son père.',
   v:'Quand la monnaie d’un homme s’effondre.',h:'Portail de l’esclavage de La Réunion, « La maison Kervéguen ».',o:[{n:'Continuer',d:'',fx:{},hist:1}]}});
 // ===== Les personnages 3D se chargent d'avance, en tâche de fond, pour qu'ils soient prêts quand un petit jeu ou la carte en a besoin (surtout la version GitHub, qui les télécharge) =====
-setTimeout(()=>{try{if(typeof p3Charge!=='function')return;const L=['p1a_chasseur','milicien','jeune_pagne','femme_sagaie','homme_chemise','jeune_colon','p7_colon','commandeur','mystique','indien','indienne','pretre','femme_travail','femme_drapee','vieux','vieille','colone','servante','p6_enfant','enfant_colon'];let i=0;const go=()=>{if(i>=L.length)return;const n=L[i++];Promise.resolve(p3Charge(n)).catch(()=>{}).then(()=>setTimeout(go,400))};go()}catch(e){}},2500);
+(function att(){if(typeof S==='undefined'||!S||!S.year){setTimeout(att,2000);return}setTimeout(()=>{try{if(typeof p3Charge!=='function')return;const L=['p1a_chasseur','milicien','jeune_pagne','femme_sagaie','homme_chemise','jeune_colon','p7_colon','commandeur','mystique','indien','indienne','pretre','femme_travail','femme_drapee','vieux','vieille','colone','servante','p6_enfant','enfant_colon'];let i=0;const go=()=>{if(i>=L.length)return;const n=L[i++];Promise.resolve(p3Charge(n)).catch(()=>{}).then(()=>setTimeout(go,700))};go()}catch(e){}},6000)})();
 // ===== La cavadee : les dévots de la procession sont les vrais personnages (engagés tamouls), qui marchent avec leur arceau =====
 {const lj=leg104Jouer;const cav=(n0)=>{try{if(!A104.g||A104.k!=='cavadee'&&!A104.g.children.some(c=>c.isGroup&&c.children.some(m=>m.geometry&&m.geometry.type==='TorusGeometry'))){if(n0<30)setTimeout(()=>cav(n0+1),150);return}if(A104.g.userData.cav186)return;A104.g.userData.cav186=1;const g=A104.g,M=[];
  const figs=g.children.filter(c=>c.isGroup&&c.children.some(m=>m.geometry&&m.geometry.type==='ConeGeometry'));
@@ -741,3 +741,112 @@ try{if(typeof CPH!=='undefined')CPH.maurice=[[1598,'Les Hollandais la nomment Ma
  function mauPanneau(){const y=S.year||1700,L=(CPH.maurice||[]);const d=document.createElement('div');d.id='ru186';
   d.innerHTML='<div class="bx"><h3>🏝 Maurice, l’île sœur — en '+y+'</h3><p style="opacity:.85">À 175 km à l’est-nord-est. Mêmes volcans, mêmes oiseaux disparus, mêmes chaînes, mêmes fuites dans les bois. Ici le maloya, là-bas le séga.</p>'+L.map(([a,t])=>'<p style="margin:4px 0;'+(a<=y?'':'opacity:.35')+'"><b>'+a+'</b> '+(a<=y?t:'…')+'</p>').join('')+'<div style="text-align:right;margin-top:8px"><button class="bt">Fermer</button></div></div>';document.body.appendChild(d);d.querySelector('button').onclick=()=>d.remove()}
  addEventListener('click',e=>{try{if(!SPR||!SPR.visible||typeof camera==='undefined'||e.target.tagName!=='CANVAS')return;const r=e.target.getBoundingClientRect(),v=SPR.position.clone().project(camera),X=(v.x+1)/2*r.width+r.left,Y=(1-v.y)/2*r.height+r.top,w=SPR.scale.x/ (dist||1)*r.height*.6;if(Math.abs(e.clientX-X)<Math.max(60,w)&&Math.abs(e.clientY-Y)<30)mauPanneau()}catch(x){}},true)}
+// ===== Échecs d'invasion : une logique qui oriente le but. La campagne proposée suit le chemin de la partie (l'histoire réelle ou l'utopie),
+//       et la victoire ou la défaite a des retombées différentes selon ce chemin =====
+function uto186(){try{if(typeof S==='undefined'||!S)return null;const br=S.br||{};return ['maur','angl','lib','abol','roy','anc','centre','ombre','comp','cafe','cors','sir','arab','vichy','polit'].find(k=>br[k])||null}catch(e){return null}}
+const UTON186={maur:'les îles sœurs',angl:'l’île anglaise',lib:'l’île des marrons libres',abol:'l’abolition avant l’heure',roy:'le royaume des Hauts',anc:'la voie des anciens',centre:'l’île centre du monde',ombre:'l’ombre',comp:'la Compagnie triomphante',cafe:'la fortune du café',cors:'la république corsaire',sir:'le peuple des sirènes',arab:'les marchands arabes',vichy:'l’île de Vichy',polit:'la politique'};
+// quelle campagne compte pour ce chemin
+function campVers186(k){const u=uto186();if(!u)return k;const M={maur:'grandport',angl:'grandport',cors:'grandport',comp:'madras',cafe:'madras',arab:'madras',anc:'anciens',centre:'anciens',ombre:'anciens',sir:'anciens'};return M[u]&&ECH.C[M[u]]?M[u]:k}
+// retombées : [effets, texte] pour v(ictoire) et d(éfaite), selon le chemin (h = histoire réelle, par défaut)
+const RET186={
+ detache:{h:{v:[{traque:-8},'Le détachement redescend : la traque recule, on récupère des fusils.',{fu:2}],d:[{traque:8,coh:-4},'Le détachement passe : la traque monte, des gens sont repris.']},
+  lib:{v:[{traque:-12,coh:4},'L’île des marrons libres tient ses Hauts : plus aucun détachement n’ose monter cette saison.',{fu:3}],d:[{traque:10,coh:-6},'La liberté recule : il faudra remonter plus haut.']},
+  abol:{v:[{coh:5},'La nouvelle court jusqu’aux habitations : des esclaves partent rejoindre les Hauts.',{gens:2}],d:[{coh:-5},'Les maîtres reprennent courage.']},
+  roy:{v:[{coh:5,traque:-6},'Le roi des Hauts est acclamé dans tous les camps.'],d:[{coh:-6},'On murmure contre le roi.']}},
+ grandport:{h:{v:[{coh:3},'Comme en août 1810 : la passe tient, la flotte anglaise est battue à Grand Port. (En décembre, l’île tombera quand même.)'],d:[{coh:-3},'Uchronie : Grand Port est perdue, les Anglais prennent l’île de France plus tôt.']},
+  angl:{v:[{coh:2},'Les Anglais reculent : l’île anglaise attendra encore un peu.'],d:[{coh:4},'Les Anglais tiennent la passe : votre chemin vers l’île anglaise s’ouvre plus vite.']},
+  maur:{v:[{coh:4},'Dans le désordre de la bataille, les marrons du Morne ramassent les fusils abandonnés : les îles sœurs s’arment.',{fu:3,myst:2}],d:[{coh:-2},'Les marrons du Morne se cachent : la bataille a fait monter les patrouilles.']},
+  cors:{v:[{coh:4,vivres:8},'Les corsaires de la république se partagent les prises anglaises.'],d:[{vivres:-6},'La république corsaire perd des navires.']}},
+ madras:{h:{v:[{coh:2,vivres:6},'Comme en 1746 : Madras tombe. La Bourdonnais rentre en gloire… puis en disgrâce, accusé d’avoir rendu la ville contre une rançon.'],d:[{coh:-2},'Uchronie : le siège échoue, l’escadre revient vide.']},
+  comp:{v:[{coh:3,vivres:10},'La Compagnie triomphe : l’or de Madras finance les habitations de Bourbon.'],d:[{coh:-4},'La Compagnie perd la face : les actionnaires grondent.']},
+  cafe:{v:[{vivres:8},'Les navires rapportent des plants et de l’argent : le café s’étend dans les Hauts.'],d:[{vivres:-4},'Le café attendra.']},
+  arab:{v:[{vivres:6,coh:2},'Les marchands arabes ouvrent la route de Madras à vos navires.'],d:[{coh:-2},'La route se ferme.']}},
+ anciens:{h:{v:[{},'Le rêve finit au matin : on s’en souvient longtemps au camp.',{myst:2}],d:[{},'Le rêve se brouille.']},
+  anc:{v:[{coh:3},'Le peuple d’Hanuman tient le pilier : la voie des anciens s’élargit.',{myst:6}],d:[{coh:-3},'Le pilier tremble.',{myst:-3}]},
+  centre:{v:[{coh:3},'L’île centre du monde tient son pilier.',{myst:6}],d:[{coh:-3},'Le centre vacille.',{myst:-3}]},
+  ombre:{v:[{},'L’ombre recule pour un temps.',{myst:4}],d:[{coh:-5},'L’ombre gagne du terrain.']},
+  sir:{v:[{coh:2},'Les sirènes chantent sous les falaises : le pont des profondeurs se rapproche.',{myst:5}],d:[{},'La mer se tait.']}}};
+function retombe186(k,ok){try{if(typeof S==='undefined'||!S||!S.year||(typeof K!=='undefined'&&K))return null;const T=RET186[k];if(!T)return null;const u=uto186(),R=(u&&T[u])||T.h,r=R[ok?'v':'d'];if(!r)return null;
+  if(r[0])fx(r[0]);const x=r[2]||{};if(x.fu)S.fu=(S.fu||0)+x.fu;if(x.myst)S.myst=Math.max(0,(S.myst||0)+x.myst);if(x.gens)S.gens=(S.gens||0)+x.gens;
+  const t=(u&&T[u]?'('+UTON186[u]+') ':'')+r[1];try{journal('⚔️ '+t)}catch(e){}try{rafraichir()}catch(e){}return t}catch(e){return null}}
+function enjeu186(k){const T=RET186[k];if(!T)return '';const u=uto186(),R=(u&&T[u])||T.h;return '<p style="margin:6px 0;padding:6px 8px;border-left:3px solid #e8be5a;background:#2a2416"><b>Ce qui est en jeu'+(u&&T[u]?' pour '+UTON186[u]:'')+'</b><br>✔ '+R.v[1]+'<br>✘ '+R.d[1]+'</p>'}
+// la campagne est choisie selon le chemin ; l'enjeu s'affiche avant de partir ; les retombées s'appliquent à la fin
+{const e1=window.ouvrirEchecs;window.ouvrirEchecs=ouvrirEchecs=function(k,fin){let kk=k;try{if(typeof S!=='undefined'&&S&&S.year){kk=campVers186(k);if(kk!==k)try{toast('Votre chemin mène vers '+UTON186[uto186()]+' : la campagne « '+ECH.C[kk].n+' » compte plus que celle-là.')}catch(e){}}}catch(e){}
+  const fin2=r=>{let t=null;try{t=retombe186(kk,r&&r.ok)}catch(e){}if(t)setTimeout(()=>{try{const d=document.querySelector('#ru186 .bx');if(d){const p=document.createElement('p');p.innerHTML='<b>Pour votre île :</b> '+t;d.insertBefore(p,d.lastElementChild)}}catch(e){}},50);if(fin)fin(r)};
+  const r=e1.call(this,kk,fin2);setTimeout(()=>{try{const b=document.querySelector('#ru186 .bx');if(b&&!b.querySelector('.enj186')){const d=document.createElement('div');d.className='enj186';d.innerHTML=enjeu186(kk);b.insertBefore(d,b.children[2]||null)}else if(!b){const h=enjeu186(kk);if(h&&typeof S!=='undefined'&&S&&S.year){const d=document.createElement('div');d.style.cssText='position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:99996;max-width:min(560px,calc(100vw - 32px));color:#efe9da;font:13px system-ui;background:#1a1712;border:1px solid #e8be5a;border-radius:10px;padding:4px 8px;pointer-events:none';d.innerHTML=h;document.body.appendChild(d);setTimeout(()=>d.remove(),9000)}}}catch(e){}},30);return r}}
+// ===== Petits jeux harmonisés (2) : les personnages s'orientent vers où ils vont, font leurs gestes ; les plateaux vus de dessus
+//       sont inclinés en 3D (CSS), et les personnages s'y tiennent debout, vus sous le même angle ; Échap quitte toujours =====
+const TILT186={a:30,P:1600,s:.88};
+// 1) la mémoire de direction ne dépend plus de l'objet passé à chaque image (le commando en recrée un neuf à chaque fois)
+{const p1=perso97,MEM=new Map();perso97=function(x,u,b,px,py,s,cs,G){try{if(u&&u.id!=null&&typeof u.id==='string'){const k=s+':'+u.id;let d=MEM.get(k);const now=performance.now();
+   if(!d||Math.hypot(px-d.x,py-d.y)>cs*3||now-d.t>3000){d={x:px,y:py,a:u.dir!=null?u.dir:(s===0?-Math.PI/2:Math.PI/2),v:0,t:now};MEM.set(k,d)}
+   const dx=px-d.x,dy=py-d.y,dd=Math.hypot(dx,dy);if(u.dir!=null)d.a=u.dir;else if(dd>.3)d.a=Math.atan2(dy,dx);d.v=d.v*.8+Math.min(3,dd)*.2;d.x=px;d.y=py;d.t=now;
+   const m=typeof mod185==='function'&&mod185(b,s,0);if(m&&typeof spr185==='function'){const nm=((b&&b.n)||'').toLowerCase();
+    const clip=u.geste||(u.peur>0?'marche_blesse':d.v>.12?'marche':(s===1&&/fusil/.test(nm)?'garde':'repos_debout'));const t=now/1000,ph=t*(clip==='marche'?1.1:1.4)+(u.id.length*.37);
+    x.save();x.fillStyle='rgba(0,0,0,.3)';x.beginPath();x.ellipse(px,py+cs*.06,cs*.3,cs*.22,0,0,7);x.fill();x.strokeStyle=s===0?'#e2bd74':'#c03030';x.lineWidth=3;x.beginPath();x.ellipse(px,py+cs*.06,cs*.36,cs*.27,0,0,7);x.stroke();x.restore();
+    if(spr185(x,m,clip,'dessus',ph,px,py,cs*2.1,d.a))return}}}catch(e){}return p1.apply(this,arguments)}}
+// 2) les personnages debout sur un plateau incliné : vue « trois-quarts » cuite sous l'angle du plateau, 8 directions
+{const c0=spr185Cuire;spr185Cuire=function(m,clip,vue){if(!/^tq[0-7]$/.test(vue))return c0.apply(this,arguments);const k=m+'|'+clip+'|'+vue;if(SPR185.cache[k])return;SPR185.cache[k]={pret:0};
+  SPR185.file.push(()=>spr185Inst(m).then(o=>{if(!o||!spr185Moteur()){SPR185.cache[k].rate=1;return}const S=SPR185;
+   const cl=THREE.AnimationClip.findByName(o.clips,clip)||THREE.AnimationClip.findByName(o.clips,'repos_debout')||THREE.AnimationClip.findByName(o.clips,'garde');if(!cl){S.cache[k].rate=1;return}
+   S.S.add(o.grp);o.mx.stopAllAction();const ac=o.mx.clipAction(cl);ac.reset();ac.setLoop(THREE.LoopRepeat,Infinity);ac.play();
+   const h=o.h,C=S.C,dir=+vue[2],ang=dir*Math.PI/4,e=(90-TILT186.a)*Math.PI/180;o.grp.position.set(0,-o.y0,0);o.grp.rotation.set(0,Math.atan2(Math.cos(ang),Math.sin(ang)),0);
+   const top=h*Math.cos(e)+h*.12,bot=-h*.28,half=(top-bot)/2;C.left=-half;C.right=half;C.top=top;C.bottom=bot;C.position.set(0,Math.sin(e)*h*4,Math.cos(e)*h*4);C.up.set(0,1,0);C.lookAt(0,0,0);C.updateProjectionMatrix();
+   const F=[];for(let f=0;f<S.N;f++){ac.time=cl.duration*f/S.N;o.mx.update(0);S.R.render(S.S,C);const c=document.createElement('canvas');c.width=c.height=S.SZ;c.getContext('2d').drawImage(S.cv,0,0);F.push(c)}
+   S.S.remove(o.grp);o.mx.stopAllAction();S.cache[k]={pret:1,F,dur:cl.duration,pied:top/(top-bot),fig:h*Math.cos(e)/(top-bot)}}).catch(()=>{SPR185.cache[k].rate=1}))}}
+{const s0=spr185;spr185=function(x,m,clip,vue,phase,X,Y,taille,ang){const a=x&&x.canvas&&x.canvas.__t186;if(!a||vue!=='dessus')return s0.apply(this,arguments);
+  const dir=((Math.round((ang||0)/(Math.PI/4))%8)+8)%8,v='tq'+dir,k=m+'|'+clip+'|'+v,c=SPR185.cache[k];if(!c){spr185Cuire(m,clip,v);return s0.apply(this,arguments)}if(!c.pret)return s0.apply(this,arguments);
+  const F=c.F[Math.floor(((phase%1)+1)%1*c.F.length)%c.F.length],kv=1/Math.cos(a*Math.PI/180),haut=taille*.62,Sz=haut/c.fig;
+  if(!F||!isFinite(Sz)||!isFinite(X)||!isFinite(Y))return s0.apply(this,arguments);x.save();try{x.translate(X,Y+taille*.08);x.scale(1,kv);x.drawImage(F,-Sz/2,-Sz*c.pied,Sz,Sz)}finally{x.restore()}return true}}
+// 3) l'inclinaison CSS d'un plateau, avec les clics et la souris remis à leur place sur le plateau
+function tilt186(cv){if(!cv||cv.__t186)return;const A=TILT186.a,P=TILT186.P,Sc=TILT186.s;cv.__t186=A;const TR='perspective('+P+'px) rotateX('+A+'deg) scale('+Sc+')';cv.style.transformOrigin='50% 50%';cv.style.transform=TR;
+ let fake=null;cv.getBoundingClientRect=function(){if(fake)return fake;return Element.prototype.getBoundingClientRect.call(this)};
+ const lay=()=>{cv.style.transform='none';const r=Element.prototype.getBoundingClientRect.call(cv);cv.style.transform=TR;return r};const SYN=new WeakSet(),a=A*Math.PI/180;
+ const map=e=>{const L=lay(),W=L.width,H=L.height,cx=L.left+W/2,cy=L.top+H/2,sx=e.clientX-cx,sy=e.clientY-cy;const Y=sy*P/(P*Math.cos(a)+sy*Math.sin(a)),X=sx*(P-Y*Math.sin(a))/P;return [L,cx+X/Sc,cy+Y/Sc]};
+ ['pointerdown','pointermove','pointerup','click','mousedown','mousemove','mouseup','contextmenu','dblclick','wheel'].forEach(t=>cv.addEventListener(t,e=>{if(SYN.has(e))return;e.stopImmediatePropagation();
+   const [L,X,Y]=map(e),init={bubbles:true,cancelable:true,composed:true,clientX:X,clientY:Y,screenX:e.screenX,screenY:e.screenY,button:e.button,buttons:e.buttons,shiftKey:e.shiftKey,ctrlKey:e.ctrlKey,altKey:e.altKey,metaKey:e.metaKey,pointerId:e.pointerId,pointerType:e.pointerType,isPrimary:e.isPrimary,deltaX:e.deltaX,deltaY:e.deltaY,deltaMode:e.deltaMode};
+   let n;try{n=new e.constructor(t,init)}catch(x){n=new MouseEvent(t,init)}SYN.add(n);fake=L;try{cv.dispatchEvent(n)}finally{fake=null}if(n.defaultPrevented&&e.cancelable)e.preventDefault()},true))}
+// les plateaux vus de dessus : commando (comptoirs), aventure (donjons des tunnels de lave, missions)
+new MutationObserver(()=>{try{['cmd','avt'].forEach(id=>{const cv=document.querySelector('#'+id+' canvas');if(cv&&!cv.__t186)tilt186(cv)})}catch(e){}}).observe(document.body,{childList:true,subtree:false});
+// 4) Échap quitte toujours le petit jeu ouvert (le bouton Quitter / Ressortir / Fermer du jeu au premier plan)
+addEventListener('keydown',e=>{if(e.key!=='Escape')return;try{const L=[...document.querySelectorAll('body > div')].filter(d=>{const s=getComputedStyle(d);return d.offsetParent!==null||s.position==='fixed'}).filter(d=>getComputedStyle(d).position==='fixed'&&d.offsetWidth>innerWidth*.6&&d.offsetHeight>innerHeight*.6);
+  const top=L.sort((a,b)=>(+getComputedStyle(b).zIndex||0)-(+getComputedStyle(a).zIndex||0))[0];if(!top)return;const b=[...top.querySelectorAll('button,[data-b="q"]')].find(x=>x.offsetParent!==null&&/^\s*(✕|×|Quitter|Ressortir|Fermer|Abandonner|Sortir|Retour)/i.test(x.textContent||''));if(b){b.click();e.preventDefault()}}catch(x){}},false);
+// ===== Vie : la garde de l'habitation en 3D. Quand l'alarme sonne (une bande descend des Hauts), on incarne le maître (ou le chef
+//       du camp, côté marron) dans la vue personnage : on tient le grenier. Version défensive : les gens restent à leur poste
+//       autour du grenier, les assaillants arrivent par vagues depuis l'amont ; la cloche rameute (une fois) ; chez les marrons,
+//       la mystique aide toujours. Victoire : vagues repoussées ; défaite : le grenier est pillé. =====
+const GH186={};
+function gardeHab186(){try{if(!S||modeHist()||VP||!camps().length)return false;vpOuvrir();let n=0;const go=()=>{if(!VP){if(n++<200)setTimeout(go,300);return}gardeDebut186()};setTimeout(go,300);return true}catch(e){return false}}
+function gardeDebut186(){const V=VP;if(!V||V.fight)return;const colo=!!S.voieC,h=V.h;
+ // l'amont : la direction où le sol monte le plus, depuis le grenier (la position du chef à l'ouverture)
+ const P={x:V.chef.x,z:V.chef.z};let best=0,ba=0;for(let k=0;k<12;k++){const a=k/12*6.283,y=h(P.x+Math.sin(a)*30,P.z+Math.cos(a)*30);if(k===0||y>best){best=y;ba=a}}
+ V.garde186={P,a:ba,vague:0,nv:3,cloche:0,fin:0};V.fight={E:[],t0:V.tps,brume:0,fin:0};gardeVague186();
+ V.cp.forEach((o,i)=>{o.hp=Math.max(o.hp||3,3);o.rc=i%3===0?'bouclier':i%3===1?'tireur':'combat';const a=ba+(i-(V.cp.length-1)/2)*.7;o.poste186={x:P.x+Math.sin(a)*4.5,z:P.z+Math.cos(a)*4.5}});
+ vpRolesUI(colo?'🔔 L’alarme ! Une bande descend des Hauts vers le grenier.':'🔔 Le guetteur crie : le détachement monte vers le camp !');gardeUI186();try{if(typeof jouerMoment==='function')jouerMoment('alerte')}catch(e){}
+ vpMsg(colo?'Tenez le grenier : vos gens restent à leur poste. Trois vagues.':'Tenez le camp : trois vagues. La mystique est avec vous.')}
+function gardeVague186(){const V=VP,G=V&&V.garde186;if(!G||G.vague>=G.nv)return;G.vague++;const colo=!!S.voieC,n=2+G.vague,nm=colo?['p1a_chasseur','jeune_pagne','femme_sagaie']:['milicien','p7_colon','homme_chemise'];
+ for(let i=0;i<n;i++){const a=G.a+(i-n/2)*.18+(Math.random()-.5)*.2,d=30+Math.random()*4;const o={n:nm[i%nm.length],x:G.P.x+Math.sin(a)*d,z:G.P.z+Math.cos(a)*d,ang:0,hp:colo?2:3,cd:3+Math.random()*2,root:null,mx:null,clip:'',arme:colo?(i%3===0?'fusil':'sagaie'):(i%2?'fusil':'sabre')};
+  p3Charge(o.n);const at=()=>{if(!VP||!V.fight)return;if(!P3.buf[o.n]){setTimeout(at,300);return}p3Instance(o.n).then(I=>{if(!VP)return;o.root=I.g.scene;o.anim=I.g.animations;o.mx=I.mx;V.sc.add(o.root)}).catch(()=>{})};at();V.fight.E.push(o)}
+ vpMsg('Vague '+G.vague+' sur '+G.nv+' : '+n+' '+(colo?'marrons':'chasseurs')+' descendent'+(colo?' des Hauts.':' le sentier.'));gardeUI186()}
+function gardeUI186(){const V=VP,G=V&&V.garde186;let d=$('gh186');if(!G){if(d)d.remove();return}if(!d){d=document.createElement('div');d.id='gh186';d.style.cssText='position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:9700;display:flex;gap:8px;align-items:center;background:rgba(14,12,10,.85);border:1px solid #e8be5a;border-radius:10px;padding:6px 10px;color:#f3e6c4;font:600 13px system-ui';document.body.appendChild(d);
+  d.addEventListener('click',e=>{const b=e.target.closest('[data-gh]');if(!b||b.disabled)return;e.stopPropagation();const k=b.dataset.gh;
+   if(k==='cloche'&&!G.cloche){G.cloche=1;V.hp=Math.min(5,V.hp+1);V.cp.forEach(o=>{if(o.hp>0)o.hp++});(V.fight.E||[]).forEach(e=>{e.cd+=3});vpMsg(S.voieC?'🔔 La cloche sonne : les commandeurs et les chiens accourent ; la bande hésite.':'🥁 Le tambour appelle : les autres camps envoient du monde ; le détachement hésite.')}
+   if(k==='brume'){if((S.myst||0)<2)return vpMsg('Pas assez de mystique.');S.myst-=2;V.fight.brume=15;vpMsg('La brume monte de la ravine : les fusils ne voient plus rien (15 s).')}
+   if(k==='q'){G.fin=1;try{gardeFin186(false,true)}catch(x){}}gardeUI186()})}
+ const viv=(V.fight&&V.fight.E||[]).filter(e=>e.hp>0).length;
+ d.innerHTML='<span>🏚 Vague '+G.vague+'/'+G.nv+' · '+viv+' en vue · ❤ '+Math.max(0,V.hp)+'</span><button class="bt sec" data-gh="cloche"'+(G.cloche?' disabled':'')+'>'+(S.voieC?'🔔 Sonner la cloche':'🥁 Battre le tambour')+'</button>'+(!S.voieC?'<button class="bt sec" data-gh="brume"'+((S.myst||0)<2?' disabled':'')+'>🌫️ Brume (2)</button>':'')+'<button class="bt sec" data-gh="q">Laisser faire</button>'}
+function gardeFin186(gagne,laisse){const V=VP,G=V&&V.garde186;if(!G)return;V.garde186=null;const d=$('gh186');if(d)d.remove();
+ if(laisse){try{if(V.fight){V.fight.fin=1;V.fight.E.forEach(e=>{if(e.root)V.sc.remove(e.root)});V.fight=null}}catch(e){}raidAuto186();vpMsg('Vous laissez faire les autres.');return}
+ if(gagne){fx({coh:3});journal(S.voieC?'🔔 La garde de l’habitation a tenu : les trois vagues sont reparties vers les Hauts.':'Le camp a tenu : le détachement redescend.')}
+ else{const v=Math.round((S.vivres||0)*.3);fx({vivres:-v,coh:-4});journal(S.voieC?'Le grenier est pillé : vivres −'+v+'.':'Le camp est pillé : vivres −'+v+'.')}}
+// la boucle : les gens tiennent leur poste autour du grenier ; la vague suivante arrive quand la précédente faiblit ; la fin
+{const vc=vpCombat;vpCombat=function(dt){const V=VP,G=V&&V.garde186;if(G&&V.fight&&!V.fight.fin){const viv=V.fight.E.filter(e=>e.hp>0).length;if(viv<=1&&G.vague<G.nv)gardeVague186();
+  // l'assaillant vise le grenier quand personne n'est plus près
+  }
+ const r=vc.apply(this,arguments);try{if(G&&V.garde186){V.cp.forEach(o=>{if(o.hp<=0||!o.poste186)return;const dx=o.poste186.x-o.x,dz=o.poste186.z-o.z,d=Math.hypot(dx,dz);if(d>(o.rc==='combat'?7:3)){const st=Math.min(d-2,3*dt);o.x+=dx/d*st;o.z+=dz/d*st}});
+   if(V.fight&&V.fight.fin&&!G.fin){G.fin=1;gardeFin186(V.hp>0)}gardeUI186()}}catch(e){}return r}}
+// déclencheur : en Vie, côté colon (et marron), l'alarme peut sonner quand la traque est forte ; on choisit de défendre en personnage ou de laisser faire
+EV.garde186={sys:1,tag:'Archive',an:'',get t(){return S&&S.voieC?'L’alarme sur l’habitation':'Le guetteur crie'},get b(){return S&&S.voieC?'Les chiens aboient dans la nuit : une bande de marrons descend des Hauts vers le grenier.':'Un détachement de chasseurs a trouvé le sentier : il monte vers le camp.'},
+ o:[{n:'🛡️ Défendre en personnage (3D)',d:'Vous tenez le grenier vous-même, avec vos gens, vague après vague.',fx:{},f:()=>{if(!gardeHab186())raidAuto186()}},{n:'Laisser faire',d:'La cloche, les chiens et les commandeurs décident.',fx:{},f:()=>raidAuto186()}]};
+{const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||!camps().length||VP)return r;const q=S.evq||(S.evq=[]);if(q.includes('garde186'))return r;
+  const tq=S.traque||0,p=S.voieC?(S.year>=1730&&S.year<1848?.025:.008):(tq>50?.03:0);if(Math.random()<p)q.push('garde186')}catch(e){}return r}}

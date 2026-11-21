@@ -2,7 +2,7 @@
 // ===== p135 : les envoyés partent tout de suite et marchent sans glisser ; un vrai feu ; des oiseaux qui volent =====
 // 1) Les modèles des envoyés sont chargés d'avance : ils apparaissent dès qu'on les envoie (avant, ils n'apparaissaient qu'au milieu du trajet).
 // 2) La marche suit la distance réelle et l'animation des jambes suit la vitesse : plus de glissade.
-{const pre=()=>{try{if(typeof p3Charge!=='function'||!window.S&&typeof S==='undefined')return;['p1a_chasseur','femme_sagaie','jeune_pagne','homme_chemise','femme_travail'].forEach(n=>p3Charge(n))}catch(e){}};setTimeout(pre,4000);setInterval(pre,30000)}
+{const pre=()=>{try{if(typeof p3Charge!=='function'||typeof S==='undefined'||!S)return;['p1a_chasseur','femme_sagaie','jeune_pagne','homme_chemise','femme_travail'].forEach(n=>p3Charge(n))}catch(e){}};setTimeout(pre,4000);setInterval(pre,30000)}
 {const VN=.5;// vitesse de marche naturelle, en unités de carte par seconde, pour un personnage à l'échelle 1
  const p0=MARCHE75.push.bind(MARCHE75);MARCHE75.push=function(w){try{let L=0;for(let i=1;i<w.P.length;i++){const a=T[w.P[i-1]],b=T[w.P[i]];L+=Math.hypot(b.x-a.x,b.z-a.z)}w.dur=Math.max(2500,Math.min(26000,L/(VN*1.15)*1000))}catch(e){}
   // les modèles sont prêts tout de suite : on les crée dès le départ, au camp
