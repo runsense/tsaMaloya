@@ -173,7 +173,7 @@ addEventListener('keydown',e=>{if(e.key==='+'||e.key==='='||e.code==='NumpadAdd'
 // ===== Vie : ceux qui ont un travail du dehors (chasse, cueillette, bois, paille, pierre) mais pas encore de lieu en reçoivent un tout seul, le meilleur à deux cases du camp ; on les voit partir le matin et rentrer le soir =====
 setInterval(()=>{try{if(!S||S.fin||S.bac||typeof modeHist!=='function'||modeHist()||typeof lieuOK!=='function'||typeof TLIEU==='undefined')return;let n=0;
  (S.pp||[]).forEach(p=>{if(n>=6||!adulte(p)||enGrp(p)||p.id===S.garde||p.lieu!=null)return;const k=tacheDe(p);if(!TLIEU.includes(k))return;const c=T[campDe(p)];if(!c)return;
-  const C=T.filter(t=>hd(c,t)<=2&&lieuOK(p,k,t));if(!C.length)return;const note=t=>(k==='chasse'&&typeof gibR==='function'?gibR(t):k==='cueil'&&typeof resR==='function'?resR(t):k==='bois'?(t.forest?1:0):1)-hd(c,t)*.05+Math.random()*.05;
+  const C=T.filter(t=>hd(c,t)<=2&&lieuOK(p,k,t));if(!C.length)return;const note=t=>(k==='chasse'&&typeof gibR==='function'?gibR(t):k==='cueil'&&typeof resR==='function'?resR(t):k==='bois'?(t.forest?1:0):1)-hd(c,t)*.05+Math.random()*.05-gene186(t,c,k);
   const best=C.sort((a,b)=>note(b)-note(a))[0];p.lieu=best.i;n++});
  if(n){try{if(typeof sauve==='function')sauve();if(window.CV&&CV.on)cvListe()}catch(e){}}}catch(e){}},3000);
 // un repère qui pulse quelques secondes sur la case montrée (« Voir où il est »)
@@ -181,3 +181,108 @@ function repere186(t){if(typeof scene==='undefined')return;const g=new THREE.Mes
  const f=()=>{const u=(performance.now()-t0)/1000;if(u>5){scene.remove(g);return}const k=1+(u%1)*1.6;g.scale.set(k,k,k);g.material.opacity=1-(u%1);requestAnimationFrame(f)};f()}
 // la fiche se rafraîchit pendant que le groupe marche (la jauge avance)
 setInterval(()=>{try{if(window.CV&&CV.on&&CV.selP!=null&&document.querySelector('.eq183'))cvListe()}catch(e){}},2000);
+// ===== La forêt d'origine : l'image satellite est de 2026 (canne, villes) ; au début, les Bas et les pentes sont encore boisés =====
+// Bas (0-400 m) : défrichés surtout pour le café, 1715-1790, puis le reste avec la canne ; mi-pentes (400-900 m) : la canne, 1815-1880.
+function foret187(y){y=y||1663;const L=(a,b,v0,v1)=>y<=a?v0:y>=b?v1:v0+(v1-v0)*(y-a)/(b-a);return {b:y<1790?L(1715,1790,1,.15):L(1790,1860,.15,0),m:L(1815,1880,1,0)}}
+{let fait=false;setInterval(()=>{try{if(typeof terr==='undefined'||!terr||!terr.material)return;const m=terr.material,U=m.uniforms;
+ if(!fait){if(!U||!U.sat||m.fragmentShader.indexOf('float sL=dot(sa.rgb')<0||m.fragmentShader.indexOf('if(satOn>.5){')<0)return;fait=true;
+  const xc=((55.53-DEM.lo0)*DEM.kx).toFixed(3),zc=((DEM.la1+21.12)*DEM.ky).toFixed(3),kx=(+DEM.kx).toFixed(3),ky=(+DEM.ky).toFixed(3),[vx,vz]=xz(55.714,-21.244);
+  U.f0B={value:1};U.f0M={value:1};
+  m.fragmentShader=m.fragmentShader.replace('uniform sampler2D sat;','uniform sampler2D sat;uniform float f0B,f0M;').replace('if(satOn>.5){',
+   'float f0=0.,west=0.;vec3 fc=vec3(0.);{float hA=vP.y/'+VX.toFixed(5)+';vec2 dw=vec2((vP.x-'+xc+')/'+kx+',-(vP.z-'+zc+')/'+ky+');float ang=degrees(atan(dw.y,dw.x));if(ang<0.)ang+=360.;'+
+   'west=step(128.,ang)*step(ang,257.)*(1.-smoothstep(600.,800.,hA));float bas=(1.-smoothstep(350.,500.,hA))*smoothstep(.3,3.,hA);float mi=(1.-smoothstep(850.,1100.,hA))*smoothstep(350.,500.,hA);'+
+   'float lav=1.-smoothstep(3.5,6.,distance(vP.xz,vec2('+vx.toFixed(2)+','+vz.toFixed(2)+')));float jeu=max(smoothstep(0.,.03,C.g-C.r),west);'+
+   'f0=(bas*f0B+mi*f0M)*jeu*(1.-lav);fc=mix(vec3(.022,.085,.018),vec3(.05,.085,.022),west)*(.85+.3*fb(vP.xz*3.1));C=mix(C,vec3(.5,.72,.28)*dot(C,vec3(.3,.59,.11))*1.15,f0*west*.85);}if(satOn>.5){')
+  m.fragmentShader=m.fragmentShader.replace('float sL=dot(sa.rgb','sa.rgb=mix(sa.rgb,fc*clamp(dot(sa.rgb,vec3(.3,.59,.11))/.06,.65,1.5),f0*.85);float sL=dot(sa.rgb');m.needsUpdate=true;return}
+ if(U.f0B){const ko=typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden;if(!ko&&(typeof S==='undefined'||!S))return;const f=foret187(ko?K.an:S.year);U.f0B.value=f.b;U.f0M.value=f.m}}catch(e){}},700)}
+// ===== Ceux qu'on envoie travailler seuls font leur geste sur place : le chasseur traque puis lance, le cueilleur se baisse, le bûcheron coupe =====
+const GESTE186={chasse:[['chasse_traque',5],['sagaie',1.6],['cueillir_sol',1.4]],cueil:[['cueillir_sol',4],['repos_debout',1.5]],paille:[['paille',4],['cueillir_sol',2],['repos_debout',1]],bois:[['bois',4],['baton_coup',3],['repos_debout',1]],
+ pierre:[['pierre',4],['pierre_soulever',3],['repos_debout',1]],peche:[['bichique',4],['guetteur',2.5],['sagaie',1.5]],eau:[['eau',4],['repos_debout',1]]};
+{const mp=mfPoser;mfPoser=function(cle,n,x,y,z,ry,clip){try{if(typeof cle==='string'&&cle.startsWith('w106_')&&clip!=='marche'){const p=ppId(+cle.slice(5));const tk=p&&(typeof tacheDe==='function'?tacheDe(p):p.tache),L=GESTE186[tk];
+  if(L){const f=MF.L[cle],A=(f&&f.o&&f.o.userData.anim)||[],ok=L.filter(c=>A.some(a=>a.name===c[0]));if(ok.length){const tot=ok.reduce((s,c)=>s+c[1],0);let t=(performance.now()/1000+(p.id*1.7))%tot;for(const c of ok){if(t<c[1]){clip=c[0];break}t-=c[1]}
+   // sur place, il ne glisse plus : il reste où il travaille
+   if(f&&f.o&&f.o.userData.pos186&&clip!=='chasse_traque'){x=f.o.userData.pos186[0];z=f.o.userData.pos186[1];y=f.o.userData.pos186[2]}else if(f&&f.o)f.o.userData.pos186=[x,z,y]}}}}catch(e){}return mp.call(this,cle,n,x,y,z,ry,clip)}}
+
+// on ne chasse ni ne cueille au pied d'un autre camp ou d'un quartier de colons : le gibier a fui, et on y serait vu
+function gene186(t,c,k){let g=0;try{camps().forEach(q=>{if(q.i!==c.i&&hd(q,t)<=1)g+=k==='chasse'?3:1});if(k==='chasse'&&hd(c,t)<2)g+=.6;
+ if(!S.voieC&&typeof VILLES!=='undefined')VILLES.forEach(v=>{if(S.year>=v[0]){const u=near(v[1],v[2]);if(u&&hd(u,t)<=2)g+=4}})}catch(e){}return g}
+// les lieux déjà donnés au pied d'un autre camp sont revus une fois
+setTimeout(function re186(){try{if(S&&!S.fin&&!modeHist()&&!S.relieu186){S.relieu186=1;(S.pp||[]).forEach(p=>{if(p.lieu==null)return;const k=tacheDe(p),c=T[campDe(p)];if(!c||!['chasse','cueil'].includes(k))return;if(gene186(T[p.lieu],c,k)>=1)p.lieu=null})}}catch(e){}setTimeout(re186,5000)},5000);
+// ===== Vue incarnée : crier à l'aide (touche H). Les gens du camp tout proche accourent ; au camp même, les deux plus proches viennent avec vous =====
+function aide186(){const V=VP;if(!V)return;if(V.aide186!=null&&V.tps-V.aide186<45){vpMsg('Vous avez déjà appelé : ils arrivent, ou personne n’a entendu.');return}V.aide186=V.tps;const ch=V.chef,nm=o=>o.p.n.split(/[ ,]/)[0];let A=[];
+ const vil=(V.vil||[]).filter(o=>adulte(o.p)&&o.p.id!==(V.G.chef||{}).id).sort((a,b)=>Math.hypot(a.x-ch.x,a.z-ch.z)-Math.hypot(b.x-ch.x,b.z-ch.z)).slice(0,2);
+ vil.forEach(o=>{vpOrdreVil(o,'suivre');A.push(o)});
+ if(!A.length){const c=camps().filter(c=>hd(c,V.t)<=2).sort((a,b)=>hd(a,V.t)-hd(b,V.t))[0];
+  if(c){const deja=new Set([(V.G.chef||{}).id,...(V.cp||[]).map(o=>o.p&&o.p.id)]);const P=(S.pp||[]).filter(p=>adulte(p)&&campDe(p)===c.i&&!enGrp(p)&&!deja.has(p.id)&&p.id!==S.garde).sort((a,b)=>(b.role==='cha')-(a.role==='cha')||((b.sk||{}).gue||0)-((a.sk||{}).gue||0)).slice(0,hd(c,V.t)<=1?3:2);
+   P.forEach((p,i)=>{const a=V.yaw+Math.PI+(i-1)*.5,d=22+i*3,x=ch.x+Math.sin(a)*d,z=ch.z+Math.cos(a)*d;const o={p,n:mfModeleDe(p),root:null,mx:null,clip:'',x,z,ang:0,role:'comp',cd:2,hp:3,ord:null};vpModele(o);V.cp.push(o);if(V.troupe)V.troupe.push(o);A.push(o)})}}
+ if(!A.length){vpMsg('Votre cri se perd dans les bois : aucun camp n’est assez près pour l’entendre.');return}
+ if(V.fight)A.forEach(o=>{o.hp=o.hp||3;o.rc=vpRoleAuto(o.p)});
+ vpMsg('Vous criez à l’aide ! '+A.map(nm).join(', ')+(A.length>1?' accourent.':' accourt.'));try{vpSelUI()}catch(e){}try{if(V.fight)vpRolesUI('Les renforts arrivent')}catch(e){}}
+addEventListener('keydown',e=>{try{if(typeof VP==='undefined'||!VP||e.repeat)return;const tg=e.target;if(tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'))return;if(e.code==='KeyH'){e.preventDefault();e.stopPropagation();aide186()}}catch(_){}},true);
+setInterval(()=>{try{if(typeof VP==='undefined'||!VP)return;const H=$('vpH');if(H&&!H.querySelector('.h186'))H.insertAdjacentHTML('beforeend','<small class="h186"><br>H : crier à l’aide (le camp proche accourt)</small>')}catch(e){}},1000);
+// les ennemis qui courent : l'élan de la course sur la marche, accélérée (certains modèles n'ont pas de vraie course)
+{const vc=vpClipE;vpClipE=function(o,c){if(c==='course'&&o&&o.anim&&!/^p1a|^femme|^jeune_pagne/.test(o.n||'')){if(o.clip==='course')return;const r=vc.call(this,o,'marche');try{if(o.mx){o.mx._actions.forEach(a=>a.timeScale=1.7)}}catch(e){}o.clip='course';return r}try{if(o&&o.mx&&c!=='course')o.mx._actions.forEach(a=>a.timeScale=1)}catch(e){}return vc.apply(this,arguments)}}
+// ===== Survie : les cultures poussent, puis on récolte d'un coup ; la récolte va à l'entrepôt, qui craint le cyclone et où elle finit par pourrir =====
+// Avant : « Cultiver » rendait un peu de vivres chaque année, comme la chasse. Désormais : 6 mois de pousse, rien avant, beaucoup à la fin.
+// L'entrepôt : le magasin (colons) ou le grenier (marrons). Sans lui, presque tout pourrit. Ce qui n'est ni mangé, ni vendu à la Compagnie, ni transformé, pourrit au bout de 6 mois.
+const CU187={M:6,parN:3,rend:2.4,cap:30,capSans:8,vieux:6};
+try{KACT.culture.r='cult';KACT.culture.d='Six mois de pousse : rien avant, une grosse récolte à la fin, si le cyclone, les rats ou l’abandon ne la prennent pas.'}catch(e){}
+function cu187Prep(){K.cu=K.cu||{};K.stk=K.stk||[]}
+function cu187Ent(){return Object.values(K.b||{}).flat().filter(x=>x.f===K.joueur&&(x.k==='magasin'||x.k==='grenier'))}
+function cu187Cap(){const E=cu187Ent();return E.length?E.filter(x=>!x.abime).length*CU187.cap+E.filter(x=>x.abime).length*CU187.cap*.3:CU187.capSans}
+function cu187Stock(){return (K.stk||[]).reduce((s,l)=>s+l.q,0)}
+function cu187NomE(){return K.joueur==='c'?'magasin':'grenier'}
+function cu187Range(q,d){const place=Math.max(0,cu187Cap()-cu187Stock()),r=Math.min(q,place),perdu=q-r;if(r>0)K.stk.push({q:Math.round(r*10)/10,age:0,d});return perdu}
+// chaque mois
+function cu187Mois(){if(!K||K.fin)return;cu187Prep();const lieu=i=>lieuDe(T[i])?'à '+lieuDe(T[i]):lieuProche(T[i])?'près de '+lieuProche(T[i]):'au champ';
+ // la pousse
+ Object.keys(K.cu).forEach(i=>{if(!((K.trav[i]||{}).culture))K.cu[i].n=0});
+ Object.entries(K.trav||{}).forEach(([i,a])=>{const n=a.culture||0;if(!n)return;const c=K.cu[i]=K.cu[i]||{m:0,n:0,nn:0};c.n=n;c.nn=(c.nn||0)+n;c.mo=(c.mo||0)+1;
+  c.m+=Math.min(1,n/CU187.parN)*(typeof kA==='function'&&kA('pluies')?1.15:1);
+  if(Math.random()<.025&&c.m>1){c.m*=.5;kLog('Les rats et les oiseaux ont mangé la moitié du champ '+lieu(i).replace(/^à /,'de ')+'.')}
+  if(c.m>=CU187.M){const moy=c.nn/Math.max(1,c.mo),q=moy*KACT.culture.k*CU187.rend*kLoin(T[i]);const perdu=cu187Range(q,K.an+'-'+K.mo);
+   kLog('Récolte '+lieu(i)+' : '+Math.round(q)+' vivres'+(perdu>.5?', dont '+Math.round(perdu)+' qui pourrissent faute de place dans le '+cu187NomE():' rangés au '+cu187NomE())+'.');try{toast('🌾 Récolte : '+Math.round(q)+' vivres')}catch(e){}delete K.cu[i]}});
+ // champ laissé sans bras : il se perd
+ Object.entries(K.cu).forEach(([i,c])=>{if(!c.n){c.m-=1;if(c.m<=0){delete K.cu[i];kLog('Personne n’a soigné le champ '+lieu(i).replace(/^à /,'de ')+' : la récolte est perdue.')}}});
+ // l'entrepôt : on y mange d'abord le plus vieux ; les vieux lots pourrissent ; un toit abîmé laisse entrer la pluie
+ let faim=0;try{faim=Math.max(0,(kBilan().mange||0)/12)}catch(e){}
+ K.stk.sort((a,b)=>b.age-a.age);for(const l of K.stk){if(faim<=0)break;const p=Math.min(l.q,faim);l.q-=p;faim-=p;K.res.viv=(K.res.viv||0)+p}
+ let pourri=0;const pluie=[11,0,1,2,3].includes(K.mo),trou=cu187Ent().some(x=>x.abime);
+ K.stk.forEach(l=>{l.age++;let r=0;if(l.age>CU187.vieux)r=.25;if(trou&&pluie)r=Math.max(r,.12);if(r){const p=l.q*r;l.q-=p;pourri+=p}});
+ K.stk=K.stk.filter(l=>l.q>.2);if(pourri>=1)kLog(Math.round(pourri)+' vivres ont pourri dans le '+cu187NomE()+(trou&&pluie?' (le toit abîmé laisse passer la pluie)':'')+'.')}
+{const km=kMois;kMois=function(){const r=km.apply(this,arguments);try{cu187Mois()}catch(e){}return r}}
+// le cyclone : il couche les champs et peut crever l'entrepôt
+{const kc=kCycFrappe;kCycFrappe=function(f){const r=kc.apply(this,arguments);try{cu187Prep();const C=K.cyc;if(!C)return r;let champs=0,stp=0;
+  Object.entries(K.cu).forEach(([i,c])=>{if(distSeg(T[i],C.a,C.b)>6+f*2)return;if(c.m>=CU187.M*.7){const q=(c.nn/Math.max(1,c.mo))*KACT.culture.k*CU187.rend*.3;cu187Range(q,'');kLog('Le vent couche le champ de '+(lieuDe(T[i])||lieuProche(T[i])||'')+' : on sauve à peine '+Math.round(q)+' vivres.')}champs++;delete K.cu[i]});
+  Object.keys(K.b).forEach(i=>{if(distSeg(T[i],C.a,C.b)>6+f*2)return;(K.b[i]||[]).forEach(x=>{if(x.f===K.joueur&&(x.k==='magasin'||x.k==='grenier')&&!x.abime&&Math.random()<.2*f){x.abime=1;stp=1}})});
+  if(stp){let p=0;K.stk.forEach(l=>{const d=l.q*.4;l.q-=d;p+=d});kLog('Le toit du '+cu187NomE()+' s’envole : '+Math.round(p)+' vivres perdus. Réparez-le vite, la pluie va entrer.')}
+  if(champs)kLog(champs+' champ'+(champs>1?'s':'')+' couché'+(champs>1?'s':'')+' par le cyclone.')}catch(e){}return r}}
+// vendre à la Compagnie (colons) ; transformer pour garder (tous)
+function cu187Vendre(){const q=cu187Stock();if(q<1)return;const prix=K.an<1767?.45:.55;K.res.com=(K.res.com||0)+Math.round(q*prix*10)/10;K.stk=[];kLog('Vendu '+Math.round(q)+' vivres '+(K.an<1767?'à la Compagnie des Indes':'aux négociants du port')+' : +'+Math.round(q*prix)+' commerce.');kSauve();kRendu()}
+function cu187Transformer(){const q=Math.min(cu187Stock(),20);if(q<2){toast('Rien à transformer.');return}if((K.res.bois||0)<1){toast('Il faut 1 bois pour le feu (fumer, sécher, cuire).');return}K.res.bois-=1;
+ let r=q;K.stk.sort((a,b)=>b.age-a.age);for(const l of K.stk){const p=Math.min(l.q,r);l.q-=p;r-=p;if(r<=0)break}K.stk=K.stk.filter(l=>l.q>.2);const g=Math.round(q*.7*10)/10;K.res.viv=(K.res.viv||0)+g;
+ kLog((K.joueur==='c'?'Salaisons et farine de manioc':'Maïs séché, farine de manioc, viande boucanée')+' : '+Math.round(q)+' vivres transformés en '+Math.round(g)+' qui ne pourriront plus.');kSauve();kRendu()}
+{const kp=kPanneau;kPanneau=function(){const r=kp.apply(this,arguments);try{if(!K||K.fin)return r;cu187Prep();const A=$('kA');if(!A)return r;const st=cu187Stock(),cap=cu187Cap(),E=cu187Ent(),vieux=K.stk.filter(l=>l.age>=CU187.vieux-1).reduce((s,l)=>s+l.q,0);
+  const C=Object.entries(K.cu);if(!C.length&&!st&&!Object.values(K.trav||{}).some(a=>a.culture))return r;
+  const d=document.createElement('div');d.className='pc';d.innerHTML='<h4>🌾 Récoltes et '+cu187NomE()+'</h4>'+
+   (C.length?C.map(([i,c])=>{const u=Math.min(1,c.m/CU187.M);return '<div style="margin:3px 0"><small>'+(lieuDe(T[i])||lieuProche(T[i])||'Champ')+' · '+(c.n||0)+' aux champs'+(c.n<CU187.parN&&c.n?' (pousse lente : '+CU187.parN+' bras pour bien faire)':!c.n?' — <b style="color:#e87b5a">abandonné</b>':'')+'</small><div style="height:6px;background:#0006;border-radius:3px"><i style="display:block;height:6px;border-radius:3px;width:'+Math.round(u*100)+'%;background:'+(u>.7?'#e8be5a':'#7fc36a')+'"></i></div><small>récolte dans ~'+Math.max(1,Math.ceil((CU187.M-c.m)/Math.max(.34,Math.min(1,(c.n||0)/CU187.parN))))+' mois</small></div>'}).join(''):'<small>Aucun champ en pousse.</small>')+
+   '<div style="margin-top:6px"><small>Entrepôt : <b>'+Math.round(st)+'</b> / '+Math.round(cap)+' vivres'+(E.length?(E.some(x=>x.abime)?' · <b style="color:#e87b5a">toit abîmé : réparez-le</b>':''):' · <b style="color:#e87b5a">pas de '+cu187NomE()+' : la récolte pourrit</b>')+(vieux>=1?' · '+Math.round(vieux)+' vont bientôt pourrir':'')+'</small></div>'+
+   (st>=1?'<div style="margin-top:4px">'+(K.joueur==='c'?'<button class="bt" id="cu187v">💰 Vendre '+(K.an<1767?'à la Compagnie':'au port')+'</button> ':'')+'<button class="bt" id="cu187t" title="Fumer, sécher, faire la farine : 1 bois, on perd 30 %, mais ça ne pourrit plus">🔥 Transformer pour garder</button></div>':'');
+  A.appendChild(d);const v=$('cu187v');if(v)v.onclick=cu187Vendre;const t=$('cu187t');if(t)t.onclick=cu187Transformer}catch(e){}return r}}
+// le bilan annoncé ne compte plus la culture comme un revenu régulier (elle vient d'un coup, à la récolte) : c'est déjà le cas, KACT.culture.r n'est plus 'viv'
+// ===== Vie : chaque fiche prend la couleur de ce que fait la personne ; vide quand elle ne fait rien ; une alerte quand elle a fini =====
+const ACT186={chasse:['#c0503a','chasser','🏹'],cueil:['#6fae55','cueillir','🧺'],peche:['#3f8fd0','pêcher','🎣'],bois:['#8a6a44','couper du bois','🪓'],paille:['#c8b060','couper la paille','🌾'],eau:['#4ab8d8','chercher l’eau','💧'],
+ pierre:['#8a8a8a','tirer la pierre','🪨'],garde:['#e8be5a','monter la garde','👁️'],soin:['#c47ad8','soigner','🌿'],cuisine:['#e8904a','cuisiner','🍲'],explorer:['#9a7ae8','explorer','🧭'],camp:['#b0a070','chercher où s’installer','⛺']};
+function g186(p){return (S.grp||[]).some(g=>g.m.includes(p.id))}
+function nuit186(){try{const ph=jourPh();return ph<.22||ph>.8}catch(e){return false}}
+function etat186(p){if(!p||!adulte(p))return '';const g=(S.grp||[]).find(g=>g.m.includes(p.id));if(g){const e=g.exp;if(e&&e.etat&&e.etat!=='camp')return ACT186[e.but]?e.but:'explorer';return ''}
+ if(nuit186()||p.bl)return '';const t=tacheDe(p);return t&&t!=='repos'&&ACT186[t]?t:''}
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on)return r;const nu=nuit186();
+  document.querySelectorAll('#cvL .ac[data-pid]').forEach(el=>{const p=ppId(+el.dataset.pid);if(!p)return;const a=etat186(p),A=ACT186[a];
+   if(A){el.style.borderLeft='5px solid '+A[0];el.style.background='linear-gradient(90deg,'+A[0]+'55,'+A[0]+'14 75%)';el.style.opacity='';el.title=p.n.split(' ')[0]+' est en train de '+A[1]}
+   else{el.style.borderLeft='5px solid transparent';el.style.background='transparent';el.style.opacity='.62';const s=el.querySelector(':scope>small');if(s&&adulte(p))s.textContent=p.bl?'blessé, se repose':nu?'dort':'ne fait rien';el.title=p.n.split(' ')[0]+(nu?' dort':' ne fait rien')}})}catch(e){}return r}}
+{let AV={},nuAv=null;setInterval(()=>{try{if(!S||S.fin||modeHist()||!S.pp||(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden))return;const nu=nuit186(),fin={};let chg=false;
+  S.pp.forEach(p=>{const a=etat186(p),b=AV[p.id];if(b!==undefined&&a!==b){chg=true;const gd=(S.grp||[]).find(g=>g.m.includes(p.id)&&g.exp&&g.exp.etat==='camp');if(b&&!a&&!(nu&&!nuAv)&&!gd&&!(nu&&!g186(p)))(fin[b]=fin[b]||[]).push(p.n.split(/[ ,]/)[0])}AV[p.id]=a});
+  if(nuAv===false&&nu){journal('La nuit tombe : chacun rentre au camp.')}
+  Object.entries(fin).forEach(([k,L])=>{const A=ACT186[k];const m=A[2]+' '+(L.length>2?L.slice(0,2).join(', ')+' et '+(L.length-2)+' autre'+(L.length>3?'s':''):L.join(' et '))+(L.length>1?' ont':' a')+' fini de '+A[1]+'.';journal(m);try{toast(m)}catch(e){}});
+  nuAv=nu;if(chg&&typeof CV!=='undefined'&&CV.on)try{cvListe()}catch(e){}}catch(e){}},1500)}

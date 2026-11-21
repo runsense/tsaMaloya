@@ -15,7 +15,7 @@ function chien121(){const g=new THREE.Group(),M=new THREE.MeshLambertMaterial({c
    else if(o.isInstancedMesh&&g&&g.type==='IcosahedronGeometry'){o.geometry=new THREE.IcosahedronGeometry(1,1);const tx=tex121('feuille');tx.repeat.set(2,2);o.material.map=tx;o.material.color.multiplyScalar(1.4);o.material.needsUpdate=true}});
   // le sous-bois : touffes d'herbe et fougères au sol
   {const h=F.h,M=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),SC=new THREE.Vector3(),n1=t&&t.bare?60:500,n2=t&&t.forest?160:40;
-   const he=new THREE.InstancedMesh(new THREE.ConeGeometry(.12,.45,4).translate(0,.22,0),new THREE.MeshLambertMaterial({color:t&&t.alt>1500?0x7a8a4a:0x5a8a3a}),n1);
+   const he=new THREE.InstancedMesh(touffe109(.5),new THREE.MeshLambertMaterial({color:t&&t.alt>1500?0x7a8a4a:0x5a8a3a,side:THREE.DoubleSide}),n1);
    const fo=new THREE.InstancedMesh(new THREE.ConeGeometry(.55,.5,7,1,true).translate(0,.25,0),new THREE.MeshLambertMaterial({color:0x3f7a34,side:THREE.DoubleSide}),n2);
    for(let i=0;i<n1;i++){const x=(rnd()-.5)*150,z=(rnd()-.5)*150,s=.6+rnd()*.9;M.compose(V.set(x,h(x,z),z),Q.setFromAxisAngle(SC.set(0,1,0),rnd()*6),SC.set(s,s*(.8+rnd()*.6),s).clone());he.setMatrixAt(i,M)}
    for(let i=0;i<n2;i++){const x=(rnd()-.5)*150,z=(rnd()-.5)*150,s=.7+rnd()*1.2;M.compose(V.set(x,h(x,z),z),Q.setFromAxisAngle(SC.set(0,1,0),rnd()*6),SC.set(s,s*.8,s).clone());fo.setMatrixAt(i,M)}

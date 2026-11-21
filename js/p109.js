@@ -6,7 +6,7 @@ function vpSol109(){const V=VP;if(!V||!V.sc||V.sol109||typeof V.h!=='function')r
  const mk=(geo,mat,n,f)=>{const im=new THREE.InstancedMesh(geo,mat,n);for(let i=0;i<n;i++){const a=f(i);P.set(a.x,V.h(a.x,a.z)+(a.y||0),a.z);E.set(a.rx||0,a.ry||0,a.rz||0);Q.setFromEuler(E);Sc.setScalar(a.s||1);M.compose(P,Q,Sc);im.setMatrixAt(i,M)}im.instanceMatrix.needsUpdate=true;V.sc.add(im);return im};
  const L=c=>new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide,emissive:new THREE.Color(c).multiplyScalar(.35)});
  const pt=()=>{const a=Math.random()*6.28,r=4+Math.sqrt(Math.random())*R;return {x:Math.cos(a)*r,z:-30+Math.sin(a)*r}};
- mk(new THREE.ConeGeometry(.05,.5,3),L(0x6a8a3a),2200,()=>{const p=pt();return {...p,y:.2,ry:rd(0,6),rz:rd(-.3,.3),s:rd(.6,1.4)}});
+ mk(touffe109(),L(0x6a8a3a),2200,()=>{const p=pt();return {...p,y:-.02,ry:rd(0,6),s:rd(.6,1.4)}});
  const fg=new THREE.PlaneGeometry(.18,.9);fg.translate(0,.45,0);mk(fg,L(0x4f7d2c),900,i=>{const p=pt();return {...p,ry:rd(0,6),rx:rd(-.8,-.3),s:rd(.7,1.3)}});
  const tr=new THREE.CylinderGeometry(.09,.13,2.6,6);tr.translate(0,1.3,0);const n=70;const pts=[...Array(n)].map(pt);mk(tr,L(0x3a2a1a),n,i=>({...pts[i],s:rd(.7,1.4)}));
  const fr=new THREE.PlaneGeometry(.5,2.2);fr.translate(0,1.1,0);mk(fr,L(0x3f7a2c),n*8,i=>{const b=pts[Math.floor(i/8)],k=i%8;return {x:b.x,z:b.z,y:2.4,ry:k/8*6.28,rx:-1.2,s:rd(.8,1.2)}});
@@ -32,3 +32,10 @@ setInterval(()=>{try{if(!VP){const d=$('hud109');if(d)d.remove();return}vpSol109
  const suivante=()=>{if(i>=ph.length){tmr=setTimeout(()=>prologue(k+1),1800);return}const sp=document.createElement('span');sp.innerHTML=ph[i]+' ';sp.style.cssText='opacity:0;transition:opacity .9s';p.appendChild(sp);requestAnimationFrame(()=>sp.style.opacity=1);tmr=setTimeout(suivante,lire(ph[i]));i++};suivante();
  (function an(){if(!bar.isConnected)return;bar.style.transform='scaleX('+Math.min(1,(performance.now()-t0)/tot)+')';requestAnimationFrame(an)})();
  const ps=$('ps');if(ps)ps.addEventListener('click',()=>clearTimeout(tmr),true)}catch(e){}return r}}
+
+// une touffe d'herbe : 7 brins fins, courbés vers l'extérieur (au lieu d'un cône pointu)
+function touffe109(h){h=h||.5;const P=[],N=7;for(let i=0;i<N;i++){const a=i/N*6.283+Math.sin(i*7.1)*.4,l=h*(.65+.35*Math.abs(Math.sin(i*3.7))),w=.022,inc=.25+.2*Math.abs(Math.cos(i*2.3));
+ const cx=Math.cos(a),cz=Math.sin(a),px=-cz*w,pz=cx*w,o=.03;
+ const b0=[cx*o+px,0,cz*o+pz],b1=[cx*o-px,0,cz*o-pz],m0=[cx*(o+l*inc*.45)+px*.6,l*.55,cz*(o+l*inc*.45)+pz*.6],m1=[cx*(o+l*inc*.45)-px*.6,l*.55,cz*(o+l*inc*.45)-pz*.6],tp=[cx*(o+l*inc),l,cz*(o+l*inc)];
+ P.push(...b0,...b1,...m0, ...b1,...m1,...m0, ...m0,...m1,...tp)}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.computeVertexNormals();return g}
