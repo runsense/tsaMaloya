@@ -1,6 +1,6 @@
 
 // ===== Jeu : les sorties se préparent au camp, la carte ne fait qu'informer =====
-const EXPB={chasse:['Chasser','chasse'],cueil:['Cueillir','cueille'],explorer:['Explorer','explore'],camp:['Fonder un camp','cherche où s’installer']};
+const EXPB={chasse:['Chasser','chasse'],cueil:['Cueillir','cueille'],peche:['Pêcher','pêche'],explorer:['Explorer','explore'],camp:['Fonder un camp','cherche où s’installer']};
 const expConso=n=>.25*n;                 // vivres mangés par jour, pour tout le groupe
 const expJours=(prov,n)=>Math.floor(prov/Math.max(.25,expConso(n)))+1;  // on trouve toujours un peu à manger en route
 const expPortee=(prov,n)=>Math.max(1,Math.floor(expJours(prov,n)/2)); // aller et retour, une case par jour
@@ -50,6 +50,7 @@ function expJour(){if(!S||modeHist()||!grpOn()||!S.grp)return;const fini=[];
   else if(e.etat==='sur place'){e.sur++;const t=ici;
    if(e.but==='chasse'){const f=(typeof trpF==='function'?trpF(t):.5)*(typeof gibR==='function'?gibR(t):1),ok=rnd()<.25+f*.5+(S.sv&&S.sv.papangue?.1:0);if(ok){e.charge+=2;if(typeof gibUse==='function')gibUse(t);journal(g.n+' a pris du gibier'+(lieuDe(t)?' vers '+lieuDe(t):'')+'.')}}
    else if(e.but==='cueil'){const r=typeof resR==='function'?resR(t):1;e.charge+=1.2*r;if(typeof resUse==='function'){resUse(t);resUse(t)}}
+   else if(e.but==='peche'){const eau=t.riv||t.nb.some(n=>T[n]&&T[n].bare);e.charge+=eau?1.6:.3;if(eau&&rnd()<.3)journal(g.n+' rapporte du poisson'+(lieuDe(t)?' de '+lieuDe(t):'')+'.')}
    else if(e.but==='explorer'){ouvrir(t,2);journal(g.n+' explore les environs'+(lieuDe(t)?' de '+lieuDe(t):'')+' : de nouvelles terres apparaissent.');e.etat='retour'}
    else if(e.but==='camp'){const o=S.t[t.i]||{};if(camps().some(c=>hd(c,t)<3)){journal(g.n+' trouve qu’un camp est déjà trop proche : il rentre.');e.etat='retour'}else{const k=tl(t.i);k.b='camp';k.s=1;ouvrir(t,1);M.forEach(p=>p.camp=t.i);journal(g.n+' s’installe : un nouveau camp vit désormais '+(lieuDe(t)?'à '+lieuDe(t):'ici')+'.');log(g.n+' fonde un nouveau camp.');fini.push(i);return}}}
   else if(e.etat==='retour'){if(g.pos===e.home){S.vivres+=e.charge+e.prov;M.forEach(p=>{p.xp=(p.xp||0)+1+e.sur*.3});journal(g.n+' rentre au camp'+(e.charge>=1?' avec '+Math.round(e.charge)+' vivres':'')+'.');log(g.n+' est rentré'+(e.charge>=1?' : +'+Math.round(e.charge)+' vivres.':'.'));fini.push(i);return}pas(e.home)}});

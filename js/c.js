@@ -1923,7 +1923,7 @@ function jourTick(){if(!S||modeHist()||S.fin||!camps().length)return;S.jourN=(S.
  if(S.jour&&S.jour.length)d.insertAdjacentHTML('beforeend','<div class="pc"><b>Aujourd’hui</b><br><small>'+S.jour.slice(0,6).join('<br>')+'</small></div>')}}
 // zoomer sur son camp, ou « Zoomer sur le lieu », ouvre la vie du camp
 {const ol=ouvrirLieu;ouvrirLieu=function(t){if(S&&!modeHist()&&grpOn()&&t&&(S.t[t.i]||{}).b==='camp'&&!(window.CAMPMAP128&&CV.on)){cvOuvrir(t.i);return}return ol(t)}}
-{let bloq=0;const b17=bat;bat=function(k){b17(k);if(!S||modeHist()||!grpOn()||CV.on||typeof dist==='undefined'||typeof camT==='undefined')return;if(dist>7)bloq=0;if(bloq||dist>4.3)return;const c=camps().find(c=>Math.hypot(c.x-camT.x,c.z-camT.z)<1.3);if(c){bloq=1;cvOuvrir(c.i)}}}
+{let bloq=0;const b17=bat;bat=function(k){b17(k);if(!S||modeHist()||!grpOn()||CV.on||typeof dist==='undefined'||typeof camT==='undefined')return;if(dist>7)bloq=0;if(bloq||dist>4.3)return;if(performance.now()-(window.ZOOMT||0)>1500)return;const c=camps().find(c=>Math.hypot(c.x-camT.x,c.z-camT.z)<1.3);if(c){bloq=1;cvOuvrir(c.i)}}}
 
 // le bouton du conte : lisible, sans halo rose
 {const st=document.createElement('style');st.textContent='#auto{color:#f0e6d0!important;background:#2a2620!important;border:1px solid #6a5a3a!important;animation:none!important;box-shadow:none!important}#auto.on{background:#2e5a4a!important;border-color:#8ad0a0!important}#auto.autre{border-color:#d08a6a!important}';document.head.appendChild(st)}

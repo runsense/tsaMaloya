@@ -101,3 +101,83 @@ Object.assign(EV,{
  adzire1846:{y:1846,si:()=>S,tag:'Archive',an:'1846',nat:'Fait historique (rapports de police) ; son histoire a ensuite été romancée.',t:'Adzire, qui nourrissait les marrons',
   b:'Des rapports de police signalent une femme, Adzire, accusée de ravitailler les marrons dans les Hauts. Deux ans avant l’abolition, le marronnage continue, et ceux qui restent en bas l’aident en secret.',
   v:'Le marronnage vit aussi grâce à ceux qui restent.',h:'Portail de l’esclavage de La Réunion, « Les femmes marronnes à La Réunion » : rapports de police de 1846 ; histoire romancée plus tard par Firmin Lacpatia.',o:[{n:'Continuer',d:'',fx:{},hist:1}]}});
+// ===== Vie : un guide « Que faire ? » en tête de la liste des acteurs, et le travail de chacun écrit en clair sur sa ligne =====
+{const st=document.createElement('style');st.textContent='#g186{margin:0 0 8px;padding:8px 10px;border:1px solid #e8be5a55;border-radius:8px;background:rgba(232,190,90,.07);font-size:13px;line-height:1.45}#g186 b.t{color:#e8be5a;display:block;margin-bottom:4px}#g186 div{margin:3px 0}#cvL .ac .tx186{display:block;font-size:11.5px;opacity:.85;margin-top:1px}#cvL .ac .tx186.libre{color:#e8be5a;opacity:1}';document.head.appendChild(st);
+ const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{const d=$('cvL');if(!d||!S||typeof modeHist==='function'&&modeHist())return r;
+  // le travail de chacun, en clair
+  d.querySelectorAll('.ac[data-pid]').forEach(row=>{if(row.querySelector('.tx186'))return;const p=ppId(+row.dataset.pid);if(!p)return;const t=tacheTxt(p),libre=/repos|au repos/.test(t)&&p.id!==S.garde;const s=document.createElement('small');s.className='tx186'+(libre?' libre':'');s.textContent=libre?'→ sans travail : touchez pour lui donner un ordre':'→ '+t+(p.lieu!=null&&T[p.lieu]&&typeof lieuDe==='function'&&lieuDe(T[p.lieu])?' · '+lieuDe(T[p.lieu]):'');row.appendChild(s)});
+  // le guide
+  if(CV.selP==null&&!$('g186')){const P=(S.pp||[]).filter(p=>campDe(p)===CV.camp&&adulte(p)),libres=P.filter(p=>p.id!==S.garde&&!enGrp(p)&&/repos/.test(tacheTxt(p))).length;let b=0;try{b=bilan()}catch(e){}
+   const vus=T.filter(t=>(S.t[t.i]||{}).s).length,L=[];
+   L.push(b<0?'⚠️ <b>Nourrir le camp</b> : les vivres baissent ('+b.toFixed(1)+' par saison). Touchez une personne, puis <b>Chasser</b>, <b>Cueillir</b> ou <b>Pêcher</b> dans ses ordres.':'✔ <b>Vivres</b> : ils montent (+'+b.toFixed(1)+' par saison).');
+   if(libres)L.push('👉 <b>'+libres+' personne'+(libres>1?'s':'')+' sans travail</b> (en jaune) : donnez-leur un ordre, ou mettez-les dans l’équipe de sortie.');
+   L.push(vus<40?'🧭 <b>Explorer</b> : sur la carte, clic droit sur une case au bord du connu → <b>Explorer par ici</b>, et cochez qui part. On y trouve gibier, eau, abris et autres camps.':'🧭 <b>Explorer</b> : '+vus+' cases connues. Continuez vers les cirques et les sommets.');
+   L.push(S.voieC?'🏠 <b>Établir l’habitation</b> : gardez du monde au travail, et ouvrez « Construire » pour bâtir cases, grenier et champs.':'🏕️ <b>Tenir le camp</b> : un garde veille toujours ; formez des chasseurs et des guérisseurs (expérience → étoiles), et gardez la cohésion.');
+   const g=document.createElement('div');g.id='g186';g.innerHTML='<b class="t">Que faire maintenant ?</b>'+L.map(x=>'<div>'+x+'</div>').join('');const tete=d.querySelector('p.note');(tete||d.firstChild)?(tete||d.firstChild).after(g):d.prepend(g)}}catch(e){}return r}}
+// ===== Les groupes sur la carte : l'étiquette ne reste plus collée ; un clic sur un groupe ouvre ses choix (dont « incarner », qui se faisait par double-clic sans le savoir) =====
+{let tm=performance.now();addEventListener('pointermove',e=>{tm=performance.now();const d=$('tip97');if(d&&d.style.display!=='none'&&e.target&&e.target.id!=='c')d.style.display='none'},true);
+ setInterval(()=>{const d=$('tip97');if(d&&d.style.display!=='none'&&((typeof VP!=='undefined'&&VP)||performance.now()-tm>2500||$('mCtx')))d.style.display='none'},400);
+ addEventListener('click',e=>{try{if(!S||e.target.id!=='c'||(typeof VP!=='undefined'&&VP))return;const d=$('tip97');if(!d||d.style.display==='none')return;const m=/^<b>([^<]+)<\/b>/.exec(d.innerHTML);if(!m)return;const g=(S.grp||[]).find(q=>q.n===m[1]);if(!g)return;
+  setTimeout(()=>{const e2=g.exp,ici=T[g.pos],L=[];
+   L.push(['👣 Marcher avec eux (incarner)',()=>{try{ouvrirLieu(ici)}catch(x){}},'Vous voyez le groupe de près et le dirigez. (Raccourci : double-clic sur une case.)']);
+   if(e2&&e2.etat!=='retour')L.push(['↩ Les rappeler au camp',()=>{e2.etat='retour';journal(g.n+' reçoit l’ordre de rentrer.');try{grpDessin();rafraichir()}catch(x){}},'Ils reviennent avec ce qu’ils ont trouvé.']);
+   if(e2)L.push(['🏹 Chasser ici',()=>{e2.but='chasse';e2.cap=g.pos;e2.etat='sur place';toast(g.n+' chasse ici.')},''],['🧺 Cueillir ici',()=>{e2.but='cueil';e2.cap=g.pos;e2.etat='sur place';toast(g.n+' cueille ici.')},''],...((ici.riv||ici.nb.some(n=>T[n]&&T[n].bare))?[['🎣 Pêcher ici',()=>{e2.but='peche';e2.cap=g.pos;e2.etat='sur place';toast(g.n+' pêche ici.')},'']]:[]),['🧭 Explorer autour',()=>{e2.but='explorer';try{ouvrir(ici,2)}catch(x){}toast(g.n+' explore les environs.')},'']);
+   L.push(['📋 Voir le groupe',()=>{S.gSel=S.grp.indexOf(g);choisirTuile(ici);document.body.classList.remove('ctx157')},'Ses membres, ses vivres, sa route.']);
+   menuCtx(e.clientX,e.clientY,g.n+' · '+((e2&&e2.etat)||'dehors')+(e2&&e2.but?' · '+e2.but:''),L)},20)}catch(x){}},true)}
+// le panonceau de travail (le panier, l'arc…) dit en clair ce qu'on y fait
+{const MOT={'🏹':'chasse','🧺':'cueillette','🪓':'bois','🌾':'paille','🪨':'pierre','🎣':'pêche','💧':'eau'};
+ travTex153=function(ic,n){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');x.fillStyle='rgba(251,247,236,.94)';x.strokeStyle='#14110c';x.lineWidth=5;x.beginPath();x.roundRect?x.roundRect(8,14,240,100,24):x.rect(8,14,240,100);x.fill();x.stroke();
+  x.textAlign='center';x.textBaseline='middle';x.fillStyle='#14110c';x.font='52px system-ui';x.fillText(ic+' '+n,128,52);x.font='600 26px system-ui';x.fillText((n+' à la '+(MOT[ic]||'tâche')).replace('à la bois','au bois').replace('à la eau','à l’eau'),128,94);return new THREE.CanvasTexture(c)}}
+// ===== Vue incarnée : un rappel permanent « Échap : revenir à la carte », cliquable =====
+{const h=document.createElement('button');h.id='esc186';h.textContent='⎋ Échap : revenir à la carte';h.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:10px;z-index:9400;background:#1a140ce0;color:#f4ead6;border:1px solid #e8be5a88;border-radius:999px;padding:5px 12px;font:600 12px Montserrat,system-ui,sans-serif;cursor:pointer;display:none';
+ h.onclick=()=>{try{if(typeof vpQuitter==='function')vpQuitter()}catch(e){}};document.body.appendChild(h);
+ setInterval(()=>{const on=typeof VP!=='undefined'&&VP&&!VP.en2D;h.style.display=on?'block':'none';if(on)h.textContent=document.pointerLockElement?'⎋ Échap deux fois : revenir à la carte':'⎋ Échap : revenir à la carte'},400)}
+// ===== Les groupes vivent au rythme du jour : près du camp (2 cases au plus), ils partent à l'aube, travaillent le jour et rentrent dormir au camp ; plus loin, ils bivouaquent la nuit sans avancer =====
+{let nuit0=null;setInterval(()=>{try{if(!S||S.fin||S.bac||typeof modeHist==='function'&&modeHist()||!S.grp||!S.grp.length)return;const ph=jourPh(),nuit=ph<.22||ph>.8;if(nuit===nuit0)return;nuit0=nuit;
+ S.grp.forEach(g=>{const e=g.exp;if(!e||e.but==='camp'||e.but==='explorer')return;const pres=hd(T[e.cap],T[e.home])<=2;
+  if(nuit){if(pres&&(e.etat==='sur place'||e.etat==='aller')){e.nuit=1;e.etat='retour';journal(g.n+' quitte '+(lieuDe(T[g.pos])||'le terrain')+' à la tombée du jour.')}else if(e.etat==='sur place')journal(g.n+' bivouaque pour la nuit.')}
+  else if(e.nuit&&e.etat==='camp'){e.nuit=0;e.etat='aller';journal(g.n+' repart à l’aube '+(EXPB[e.but]?EXPB[e.but][0].toLowerCase():'au travail')+'.')}});try{grpDessin()}catch(x){}}catch(e){}},1500)}
+// et le travail du jour (gibier, cueillette, pêche) ne se fait que de jour : la nuit, le groupe dort
+{const ej=expJour;expJour=function(){try{const ph=jourPh();if(S&&S.grp&&(ph<.22||ph>.8)){const sv=S.grp.map(g=>g.exp&&g.exp.etat==='sur place'?g:null);sv.forEach(g=>{if(g){g.exp._et=g.exp.etat;g.exp.etat='dort'}});const r=ej.apply(this,arguments);(S.grp||[]).forEach(g=>{if(g.exp&&g.exp.etat==='dort'){g.exp.etat=g.exp._et;delete g.exp._et}});return r}}catch(e){}return ej.apply(this,arguments)}}
+// ===== Fiche d'un acteur au camp : où il est (le feu, le jardin, la réserve…) et un bouton pour l'incarner =====
+{const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{const p=CV.selP!=null&&ppId(CV.selP);const box=document.querySelector('#cvL .pc.sel')||document.querySelector('#cvL .pc');if(!p||!box||box.querySelector('.ou186'))return r;if(enGrp(p))return r;
+ const ta=tacheDe(p);let ou='';if(typeof CVLT!=='undefined')for(const k in CVLT){if(CVLT[k][1].includes(ta)){ou=CVLT[k][0];break}}
+ if(p.id===S.garde)ou='Le poste de garde';const dehors=typeof TLIEU!=='undefined'&&TLIEU.includes(ta);
+ const e=document.createElement('div');e.className='ou186';e.style.cssText='margin:6px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center';
+ e.innerHTML='<small style="flex:1 1 100%;opacity:.85">'+(dehors?'Travaille hors du camp.':'Au camp'+(ou?' : <b>'+ou.toLowerCase()+'</b>':'')+(TACHES[ta]?' — '+TACHES[ta][1]+'.':'.'))+'</small><button class="bt sec" data-i186="1">🧍 '+(p.g==='f'?'L’incarner':'L’incarner')+'</button>';
+ box.insertBefore(e,box.children[1]||null);e.querySelector('[data-i186]').onclick=()=>{try{toast('🧍 Vous incarnez '+p.n.split(' ')[0]+'. (Échap pour revenir)');vpOuvrir({moi:p})}catch(x){toast('Impossible de l’incarner ici.')}}}catch(e){}return r}}
+// ===== Vue incarnée : devant un buisson, F demande « qui cueille ? » — vous, ou un compagnon du groupe (qui y va pendant que vous continuez) =====
+{const vi=vpInteragir;vpInteragir=function(){try{const V=VP;if(V&&!V.en2D&&!$('fq186')){const d=vpDevant();if(d&&(d.k==='cueillir'||d.k==='ramasser')){const act=d.k;const C=Array.prototype.map.call(V.cp||[],(o,i)=>({o,i})).filter(x=>(x.o.hp==null||x.o.hp>0)&&(act==='ramasser'||typeof VPPEUT==='undefined'||VPPEUT.cueillir.includes(vpKind(x.o.p))));
+  if(C.length){const q=document.createElement('div');q.id='fq186';q.style.cssText='position:fixed;left:50%;bottom:54px;transform:translateX(-50%);z-index:9450;background:#1a140ce8;border:1px solid #e8be5a;border-radius:10px;padding:8px 10px;color:#f4ead6;font:600 13px Montserrat,system-ui,sans-serif;display:flex;gap:6px;flex-wrap:wrap;align-items:center;max-width:90vw';
+   q.innerHTML='<span style="margin-right:4px">'+(act==='ramasser'?'Qui ramasse ?':'Qui cueille ?')+'</span><button class="bt" data-q="moi">Moi <small>F</small></button>'+C.map((x,j)=>'<button class="bt sec" data-q="'+x.i+'">'+x.o.p.n.split(/[ ,]/)[0]+' <small>'+(j+1)+'</small></button>').join('');
+   document.body.appendChild(q);const fin=()=>{q.remove();removeEventListener('keydown',kd,true)};
+   const go=k=>{fin();if(k==='moi'){vi.apply(this,[]);return}V.sel.clear();V.sel.add(+k);vpOrdre(act);V.sel.clear();try{vpSelUI()}catch(e){}};
+   const kd=e=>{if(e.key==='f'||e.key==='F'){e.preventDefault();e.stopImmediatePropagation();go('moi')}else if(/^[1-9]$/.test(e.key)&&C[+e.key-1]){e.preventDefault();e.stopImmediatePropagation();go(C[+e.key-1].i)}else if(e.key==='Escape'){e.stopImmediatePropagation();fin()}};
+   setTimeout(()=>addEventListener('keydown',kd,true),0);q.querySelectorAll('[data-q]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();go(b.dataset.q)});setTimeout(()=>{if(q.parentNode)fin()},8000);return}}}}catch(e){}return vi.apply(this,arguments)}}
+// ===== Vue incarnée : clic droit sur un animal → « Qui le chasse ? » : vous, ou un compagnon précis, qui part sur cette bête-là =====
+{const V3=new THREE.Vector3();addEventListener('mousedown',e=>{try{const V=VP;if(!V||V.en2D||e.button!==2||(V.fight&&!V.fight.fin)||!V.cam||e.target.tagName!=='CANVAS')return;const r=e.target.getBoundingClientRect();let best=null,bd=70;
+ (V.an||[]).forEach(a=>{if(a.mort||!a.m)return;V3.copy(a.m.position);V3.y+=.5;V3.project(V.cam);if(V3.z>1)return;const sx=r.left+(V3.x+1)/2*r.width,sy=r.top+(1-V3.y)/2*r.height,d=Math.hypot(sx-e.clientX,sy-e.clientY);if(d<bd){bd=d;best=a}});
+ if(!best)return;e.stopImmediatePropagation();e.preventDefault();const old=$('fq186');if(old)old.remove();
+ const nom=best.nom||best.k||(best.ta?'tangue':'cabri'),C=Array.prototype.map.call(V.cp||[],(o,i)=>({o,i})).filter(x=>x.o.hp==null||x.o.hp>0);
+ const q=document.createElement('div');q.id='fq186';q.style.cssText='position:fixed;left:50%;bottom:54px;transform:translateX(-50%);z-index:9450;background:#1a140ce8;border:1px solid #e8be5a;border-radius:10px;padding:8px 10px;color:#f4ead6;font:600 13px Montserrat,system-ui,sans-serif;display:flex;gap:6px;flex-wrap:wrap;align-items:center;max-width:90vw';
+ q.innerHTML='<span style="margin-right:4px">Qui chasse ce '+nom+' ?</span><button class="bt" data-q="moi">Moi <small>sagaie</small></button>'+C.map((x,j)=>'<button class="bt sec" data-q="'+x.i+'">'+x.o.p.n.split(/[ ,]/)[0]+' <small>'+(j+1)+'</small></button>').join('')+(C.length>1?'<button class="bt sec" data-q="tous">Tous</button>':'');
+ document.body.appendChild(q);const fin=()=>{q.remove();removeEventListener('keydown',kd,true)};
+ const go=k=>{fin();if(k==='moi'){const ch=V.chef;if(ch){V.yaw=Math.atan2(-(best.x-ch.x),-(best.z-ch.z))}try{vpAction('lancer')}catch(x){}return}
+  const L=k==='tous'?C:C.filter(x=>x.i===+k);L.forEach(x=>{x.o.ord='chasser';x.o.proie=best;x.o.tache=null});vpMsg('« '+L.map(x=>x.o.p.n.split(/[ ,]/)[0]).join(', ')+', le '+nom+' là-bas ! »');try{vpSelUI()}catch(x){}};
+ const kd=ev=>{if(/^[1-9]$/.test(ev.key)&&C[+ev.key-1]){ev.preventDefault();ev.stopImmediatePropagation();go(C[+ev.key-1].i)}else if(ev.key==='Escape'){ev.stopImmediatePropagation();fin()}};
+ setTimeout(()=>addEventListener('keydown',kd,true),0);q.querySelectorAll('[data-q]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();go(b.dataset.q)});setTimeout(()=>{if(q.parentNode)fin()},8000)}catch(x){}},true)}
+// ===== Le camp ne s'ouvre en grand que si c'est VOUS qui zoomez dessus (molette, pincement) — plus quand la caméra du début s'approche toute seule =====
+addEventListener('wheel',e=>{if(e.deltaY<0)window.ZOOMT=performance.now()},{passive:true,capture:true});
+addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)window.ZOOMT=performance.now()},{passive:true,capture:true});
+addEventListener('keydown',e=>{if(e.key==='+'||e.key==='='||e.code==='NumpadAdd')window.ZOOMT=performance.now()},true);
+// ===== Vie : ceux qui ont un travail du dehors (chasse, cueillette, bois, paille, pierre) mais pas encore de lieu en reçoivent un tout seul, le meilleur à deux cases du camp ; on les voit partir le matin et rentrer le soir =====
+setInterval(()=>{try{if(!S||S.fin||S.bac||typeof modeHist!=='function'||modeHist()||typeof lieuOK!=='function'||typeof TLIEU==='undefined')return;let n=0;
+ (S.pp||[]).forEach(p=>{if(n>=6||!adulte(p)||enGrp(p)||p.id===S.garde||p.lieu!=null)return;const k=tacheDe(p);if(!TLIEU.includes(k))return;const c=T[campDe(p)];if(!c)return;
+  const C=T.filter(t=>hd(c,t)<=2&&lieuOK(p,k,t));if(!C.length)return;const note=t=>(k==='chasse'&&typeof gibR==='function'?gibR(t):k==='cueil'&&typeof resR==='function'?resR(t):k==='bois'?(t.forest?1:0):1)-hd(c,t)*.05+Math.random()*.05;
+  const best=C.sort((a,b)=>note(b)-note(a))[0];p.lieu=best.i;n++});
+ if(n){try{if(typeof sauve==='function')sauve();if(window.CV&&CV.on)cvListe()}catch(e){}}}catch(e){}},3000);
+// un repère qui pulse quelques secondes sur la case montrée (« Voir où il est »)
+function repere186(t){if(typeof scene==='undefined')return;const g=new THREE.Mesh(new THREE.RingGeometry(.25,.34,40).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xffd060,transparent:true,depthTest:false}));g.renderOrder=20;g.position.set(t.x,Math.max(0,alt(t.x,t.z))*VX+.06,t.z);scene.add(g);const t0=performance.now();
+ const f=()=>{const u=(performance.now()-t0)/1000;if(u>5){scene.remove(g);return}const k=1+(u%1)*1.6;g.scale.set(k,k,k);g.material.opacity=1-(u%1);requestAnimationFrame(f)};f()}
+// la fiche se rafraîchit pendant que le groupe marche (la jauge avance)
+setInterval(()=>{try{if(window.CV&&CV.on&&CV.selP!=null&&document.querySelector('.eq183'))cvListe()}catch(e){}},2000);

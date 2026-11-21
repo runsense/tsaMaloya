@@ -43,8 +43,12 @@ function campProche106(t){const C=camps();return C.length?C.slice().sort((a,b)=>
 function sortie106(t,k){const c=campProche106(t);if(!c){toast('Aucun camp d’où partir.');return}window.EXPS=window.EXPS||{coche:{},prov:2,but:k};EXPS.coche={};EXPS.but=k;EXPS.dest106=t.i;try{expPlan(c.i,null)}catch(e){toast('Impossible de préparer la sortie.')}}
 {const ep=expPlan;expPlan=function(){const r=ep.apply(this,arguments);try{const ok=$('expOk');if(ok&&window.EXPS&&EXPS.dest106!=null){const d=EXPS.dest106;ok.textContent='Partir vers '+(lieuDe(T[d])||lieuProche(T[d])||'cette case');ok.addEventListener('click',()=>{setTimeout(()=>{try{if(window.choixExp)choisirTuile(T[d])}catch(e){}EXPS.dest106=null},30)})}const bx=$('expN');if(bx)bx.addEventListener('click',()=>{if(window.EXPS)EXPS.dest106=null})}catch(e){}return r}}
 {const mc=menuCtx;menuCtx=function(X,Y,titre,L){try{if(S&&!modeHist()&&!($('kons')&&!$('kons').hidden)&&!CV.on&&!VP&&Array.isArray(L)){const pt=pick(X,Y),t=pt&&tileAt(pt);if(t&&!t.bare&&(S.t[t.i]||{}).b!=='camp'){const vu=!!(S.t[t.i]||{}).s,A=[];
- if(vu){A.push(['🏹 Chasser ici',()=>sortie106(t,'chasse')],['🧺 Cueillir ici',()=>sortie106(t,'cueil')])}
- if(!vu||T.some(u=>!u.bare&&hd(u,t)<=2&&!(S.t[u.i]||{}).s))A.push(['🧭 Explorer par ici'+(vu?'':' (inconnu)'),()=>sortie106(t,'explorer')]);
+ if(vu){A.push(['🏹 Chasser ici',()=>sortie106(t,'chasse')],['🧺 Cueillir ici',()=>sortie106(t,'cueil')]);if(t.riv||t.nb.some(n=>T[n]&&T[n].bare))A.push(['🎣 Pêcher ici',()=>sortie106(t,'peche'),'Rivière ou bord de mer : un pêcheur dans le groupe rapporte plus.'])}
+ {const va=(S.grp||[]).find(g=>g.exp&&g.exp.but==='explorer'&&g.exp.etat==='aller'&&hd(T[g.exp.cap],t)<=2);
+  const prevu=u=>(S.grp||[]).some(g=>g.exp&&g.exp.but==='explorer'&&g.exp.etat==='aller'&&hd(T[g.exp.cap],u)<=2);
+  const inc=T.filter(u=>!u.bare&&hd(u,t)<=2&&!(S.t[u.i]||{}).s&&!prevu(u)).length;
+  if(va)A.push(['🧭 '+va.n+' part déjà explorer par ici — voir où il est',()=>{const lt=T[va.pos];camT.set(lt.x,lt.alt*VX,lt.z);dist=6;try{repere186(lt)}catch(x){}},'Encore '+hd(T[va.pos],T[va.exp.cap])+' case(s) avant d’arriver : les cases autour se découvriront à son arrivée.']);
+  else if(!vu||inc)A.push(['🧭 Explorer par ici'+(vu?'':' (inconnu)'),()=>sortie106(t,'explorer'),inc+' case'+(inc>1?'s':'')+' encore inconnue'+(inc>1?'s':'')+' autour : l’explorateur les découvre en arrivant.'])}
  if(S.voieC&&vu&&camps().some(c=>hd(c,t)<=2)){const a=actions(t).find(x=>/defrich|champ|cultiv/i.test(x.id+' '+x.n));if(a)A.push(['🌾 '+a.n,()=>{choisirTuile(t);agir(t,a.id);rafraichir()}])}
  L.unshift(...A)}}}catch(e){}return mc.apply(this,arguments)}}
 // les colons ne fondent un nouveau lieu que près d'une place de la colonie (une ville déjà fondée)

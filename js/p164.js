@@ -35,7 +35,8 @@ setInterval(()=>{try{const f=typeof CINE!=='undefined'&&!!CINE;if(typeof RIVG126
 try{$('fin').onclick=()=>suite()}catch(e){}
 // 8. Le menu du clic droit dit tout : sous chaque action, ce qu'elle rapporte ; les actions impossibles sont grisées avec la raison. Plus de panneau de droite.
 {const st=document.createElement('style');st.textContent='#mCtx button small{display:block;font-size:11.5px;opacity:.75;font-weight:400;line-height:1.25;margin-top:1px;white-space:normal;max-width:330px}#mCtx button.non{opacity:.55;cursor:default}#mCtx button.non small{color:#e8a07a;opacity:1}body.ctx157 #side{visibility:hidden!important;pointer-events:none!important}';document.head.appendChild(st);
- menuCtx=function(x,y,titre,L){const o=$('mCtx');if(o)o.remove();const m=document.createElement('div');m.id='mCtx';
+ // rendu seul : les ajouts des autres modules (chasser, cueillir, explorer…) passent toujours par la chaîne des menuCtx
+ window.RENDU164=function(x,y,titre,L){const o=$('mCtx');if(o)o.remove();const m=document.createElement('div');m.id='mCtx';
   m.innerHTML='<small>'+titre+'</small>'+L.map((l,i)=>'<button data-i="'+i+'"'+(l[3]?' class="non"':'')+'>'+l[0]+(l[2]?'<small>'+String(l[2]).replace(/</g,'&lt;').slice(0,180)+'</small>':'')+'</button>').join('');document.body.appendChild(m);
   m.style.left=Math.max(6,Math.min(x,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(6,Math.min(y,innerHeight-m.offsetHeight-8))+'px';
   m.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const l=L[+b.dataset.i];if(l[3]){toast(l[2]||'Impossible pour l’instant.');return}m.remove();l[1]()});
