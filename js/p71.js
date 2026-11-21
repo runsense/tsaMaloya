@@ -4,7 +4,7 @@
 const GESTE71={chasse:'chasse_traque',cueil:'cueillir_sol',bois:'bois',paille:'cueillir_sol',pierre:'bois',eau:'eau',peche:'guetteur'};
 {const b=bat;bat=function(k){b.apply(this,arguments);try{if(!S||typeof GRPI==='undefined'||!GRPI||modeHist())return;GRPI.count=0;GRPI.visible=false;if(GRPR){GRPR.count=0;GRPR.visible=false}
  if(typeof jourPh!=='function'||typeof TLIEU==='undefined')return;const ph=jourPh();if(!(ph>.12&&ph<.62))return;let n=0;
- (S.pp||[]).forEach(p=>{if(n>=14||enGrp(p)||p.lieu==null)return;const ta=tacheDe(p);if(!TLIEU.includes(ta))return;const t=T[p.lieu];if(!t)return;const a=p.id*2.3+(k||0)*.05,r=.18+.08*Math.sin(p.id);const x=t.x+Math.cos(a)*r,z=t.z+Math.sin(a)*r;
+ (S.pp||[]).forEach(p=>{if(n>=14||enGrp(p)||p.lieu==null)return;const ta=tacheDe(p);if(!TLIEU.includes(ta))return;if(adulte(p)&&typeof TACH106!=='undefined'&&TACH106[ta]&&campDe(p)!=p.lieu)return;const t=T[p.lieu];if(!t)return;const a=p.id*2.3+(k||0)*.05,r=.18+.08*Math.sin(p.id);const x=t.x+Math.cos(a)*r,z=t.z+Math.sin(a)*r;
   mfPoser('w'+p.id,mfModeleDe(p),x,Math.max(0,alt(x,z))*VX+.02,z,a+Math.PI,GESTE71[ta]||'repos_debout');n++})}catch(e){}}}
 // En Vie, la carte reste une carte satellite : plus d'icônes de ressources (poissons, coquillages…) ni de symboles au-dessus des groupes
 resDessin=function(){if(typeof scene==='undefined')return;(RESI||[]).forEach(s=>scene.remove(s));RESI=[]};

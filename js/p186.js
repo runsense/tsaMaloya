@@ -1,7 +1,7 @@
 // ===== Le tournoi de zone (petits jeux) : on choisit une zone et son combattant, puis on enchaîne trois duels ; chacun avec son art martial =====
 const TOURN186={
  sud:{n:'Tournoi des Hauts du Sud',t:'Les marrons des remparts contre les chasseurs de marrons.',L:['dimitile','heva','cimendef','simangalove','raharianne','mussard','milicien','commandeur']},
- ville:{n:'Tournoi de Saint-Denis',t:'Le gouverneur, les colons et les deux milices : boxe française contre boxe anglaise.',L:['gouverneur','colon','milicienFr','milicienEn','anglais','commandeur']},
+ ville:{n:'Tournoi de Saint-Denis',t:'Le gouverneur et son épée, les colons et les deux milices, le capitaine anglais et sa boxe.',L:['gouverneur','colon','milicienFr','milicienEn','anglais','commandeur']},
  ocean:{n:'Tournoi de l’océan Indien',t:'Les arts venus d’ailleurs : kalarippayattu, moraingy, capoeira, kung-fu, varma kalai.',L:['malabar','malgache','capoeira','chinois','gardien','ombre']}};
 const PALM186={lire(){try{return JSON.parse(localStorage.getItem('tsa-tournois')||'{}')}catch(e){return {}}},gagne(z,k){const P=this.lire();P[z]=P[z]||{};P[z][k]=(P[z][k]||0)+1;try{localStorage.setItem('tsa-tournois',JSON.stringify(P))}catch(e){}}};
 function tournoi186(z){const PZ=PALM186.lire()[z]||{};const Z=TOURN186[z],e=$('ecran');e.hidden=false;
@@ -799,7 +799,7 @@ const TILT186={a:30,P:1600,s:.88};
   const F=c.F[Math.floor(((phase%1)+1)%1*c.F.length)%c.F.length],kv=1/Math.cos(a*Math.PI/180),haut=taille*.62,Sz=haut/c.fig;
   if(!F||!isFinite(Sz)||!isFinite(X)||!isFinite(Y))return s0.apply(this,arguments);x.save();try{x.translate(X,Y+taille*.08);x.scale(1,kv);x.drawImage(F,-Sz/2,-Sz*c.pied,Sz,Sz)}finally{x.restore()}return true}}
 // 3) l'inclinaison CSS d'un plateau, avec les clics et la souris remis à leur place sur le plateau
-function tilt186(cv){if(!cv||cv.__t186)return;const A=TILT186.a,P=TILT186.P,Sc=TILT186.s;cv.__t186=A;const TR='perspective('+P+'px) rotateX('+A+'deg) scale('+Sc+')';cv.style.transformOrigin='50% 50%';cv.style.transform=TR;
+function tilt186(cv){if(!cv||cv.__t186)return;const A=TILT186.a,P=TILT186.P,Sc=TILT186.s;cv.__t186=A;const TR='perspective('+P+'px) rotateX('+A+'deg) scale('+Sc+')';cv.style.transformOrigin='50% 50%';cv.style.transform=TR;cv.style.willChange='transform';cv.style.backfaceVisibility='hidden';try{const pa=cv.parentElement;if(pa){pa.style.overflow='hidden';pa.style.contain='paint'}}catch(e){}
  let fake=null;cv.getBoundingClientRect=function(){if(fake)return fake;return Element.prototype.getBoundingClientRect.call(this)};
  const lay=()=>{cv.style.transform='none';const r=Element.prototype.getBoundingClientRect.call(cv);cv.style.transform=TR;return r};const SYN=new WeakSet(),a=A*Math.PI/180;
  const map=e=>{const L=lay(),W=L.width,H=L.height,cx=L.left+W/2,cy=L.top+H/2,sx=e.clientX-cx,sy=e.clientY-cy;const Y=sy*P/(P*Math.cos(a)+sy*Math.sin(a)),X=sx*(P-Y*Math.sin(a))/P;return [L,cx+X/Sc,cy+Y/Sc]};
@@ -850,3 +850,44 @@ EV.garde186={sys:1,tag:'Archive',an:'',get t(){return S&&S.voieC?'L’alarme sur
  o:[{n:'🛡️ Défendre en personnage (3D)',d:'Vous tenez le grenier vous-même, avec vos gens, vague après vague.',fx:{},f:()=>{if(!gardeHab186())raidAuto186()}},{n:'Laisser faire',d:'La cloche, les chiens et les commandeurs décident.',fx:{},f:()=>raidAuto186()}]};
 {const jt=jourTick;jourTick=function(){const r=jt.apply(this,arguments);try{if(!S||modeHist()||S.fin||!camps().length||VP)return r;const q=S.evq||(S.evq=[]);if(q.includes('garde186'))return r;
   const tq=S.traque||0,p=S.voieC?(S.year>=1730&&S.year<1848?.025:.008):(tq>50?.03:0);if(Math.random()<p)q.push('garde186')}catch(e){}return r}}
+// ===== Le menu et tous les boutons grossissent un peu sous le pointeur (ou au clavier), comme les boutons du jeu =====
+{const st=document.createElement('style');st.textContent='button,.bt,.act,.tab,[data-k],[data-q],.r,a.bt{transition:transform .14s ease,box-shadow .14s ease,filter .14s ease}'+
+ 'button:not(:disabled):hover,button:not(:disabled):focus-visible,.bt:not(:disabled):hover,.act:not(:disabled):hover,.act:not(:disabled):focus-visible,.tab:hover,a.bt:hover,#ru186 .r:hover{transform:scale(1.07);filter:brightness(1.12);box-shadow:0 4px 14px rgba(0,0,0,.35);position:relative;z-index:2}'+'button:not(:disabled):hover,.bt:not(:disabled):hover,.act:not(:disabled):hover,button:not(:disabled):focus-visible{transform:scale(1.07)!important}'+
+ 'button:not(:disabled):active,.bt:not(:disabled):active,.act:not(:disabled):active{transform:scale(.98)}'+
+ '@media (prefers-reduced-motion:reduce){button,.bt,.act,.tab{transition:none}}';document.head.appendChild(st)}
+
+// Espace sur un plateau incliné : on empêche le défilement de la page et le « clic » du bouton qui a le focus (le jeu reçoit quand même la touche)
+addEventListener('keydown',e=>{try{if(e.key!==' ')return;const cv=document.querySelector('#cmd canvas,#avt canvas');if(!cv||!cv.__t186)return;e.preventDefault();if(document.activeElement&&document.activeElement.tagName==='BUTTON')document.activeElement.blur()}catch(x){}},true);
+// Duel et tournois : les deux combattants 3D se chargent dès l'ouverture (pendant l'écran d'accueil), pas au premier coup
+{const MD186={simangalove:'simangavole',raharianne:'raharianne',milicienFr:'milicien',milicienEn:'soldat_en',anglais:'soldat_en',colon:'p7_colon',gouverneur:'gouverneur',malabar:'indien',malgache:'moraingy',capoeira:'capoeira',chinois:'chinois',dimitile:'p1a_chasseur',heva:'femme_sagaie',cimendef:'jeune_pagne',gardien:'mystique',milicien:'milicien',commandeur:'commandeur',mussard:'p7_colon',ombre:'pretre'};
+ const od=window.ouvrirDuel;if(typeof od==='function'){window.ouvrirDuel=function(a,b){try{[a,b].forEach(k=>{const m=MD186[k]||'homme_chemise';if(typeof p3Charge==='function')p3Charge(m)})}catch(e){}return od.apply(this,arguments)};try{ouvrirDuel=window.ouvrirDuel}catch(e){}}}
+// pouvoirs (duel, groupes de bataille) : le chrono pendant la recharge, et le bouton s'illumine quand il est prêt, tant qu'on ne l'a pas utilisé
+{const st=document.createElement('style');st.textContent='@keyframes pret186{0%,100%{box-shadow:0 0 0 0 rgba(232,190,90,0)}50%{box-shadow:0 0 14px 4px rgba(232,190,90,.85)}}.pret186{animation:pret186 1.4s ease-in-out infinite;border-color:#e8be5a!important}button[data-cd]:not([data-cd=""]){position:relative}button[data-cd]:not([data-cd=""])::after{content:attr(data-cd);position:absolute;right:3px;top:2px;font:700 10px system-ui;color:#ffe3a0;background:rgba(0,0,0,.55);border-radius:6px;padding:0 4px}';document.head.appendChild(st)}
+function mark186(){try{if(typeof BT==='undefined'||!BT)return;const T=BT.tps,dl='-'+Math.round(performance.now()%1400)+'ms';document.querySelectorAll('#btGr [data-g$=":peur"],#btGr [data-g$=":brume"]').forEach(b=>{const peur=/peur$/.test(b.dataset.g),r=peur?Math.max(0,(BT.cdP186||0)-T):(BT.brume?BT.brume.t:0),pret=r<=0&&(S.myst||0)>=2;b.dataset.cd=r>0?Math.ceil(r)+' s':'';b.classList.toggle('pret186',pret);b.style.animationDelay=dl})}catch(e){}}
+setInterval(mark186,250);{const bu=btUI;btUI=function(){const r=bu.apply(this,arguments);mark186();return r}}
+{const st=document.createElement('style');st.textContent='.gpad button.pret186{animation-delay:0s}';document.head.appendChild(st)}
+// le soldat français dans les duels : l'uniforme anglais recoloré en bleu (habit bleu de l'infanterie de ligne) ; le rouge devient bleu, le reste ne change pas
+function recolor186(scene){try{const vu=new Map();scene.traverse(o=>{if(!o.isMesh||!o.material)return;const M=Array.isArray(o.material)?o.material:[o.material];o.material=M.map(m=>{if(!m.map||!m.map.image)return m;let nt=vu.get(m.map);if(!nt){const im=m.map.image,cv=document.createElement('canvas');cv.width=im.width;cv.height=im.height;const x=cv.getContext('2d');x.drawImage(im,0,0);const d=x.getImageData(0,0,cv.width,cv.height),a=d.data;
+   for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];if(r>80&&r>g*1.45&&r>b*1.35){const l=r*.55+g*.25+b*.2;a[i]=l*.28;a[i+1]=l*.42;a[i+2]=Math.min(255,l*1.25)}}x.putImageData(d,0,0);nt=new THREE.CanvasTexture(cv);nt.flipY=m.map.flipY;nt.encoding=m.map.encoding;nt.wrapS=m.map.wrapS;nt.wrapT=m.map.wrapT;vu.set(m.map,nt)}const m2=m.clone();m2.map=nt;m2.needsUpdate=true;return m2});if(o.material.length===1)o.material=o.material[0]})}catch(e){}}
+// petits jeux 2D : un héros qui « marche » contre un mur reste en place → il reprend la pose d'attente au lieu de marcher sur place
+{const s0=spr185,M=new Map();spr185=function(x,m,clip,vue,ph,X,Y,taille,ang){try{if(clip==='marche'){const k=((x&&x.canvas&&x.canvas.parentElement&&x.canvas.parentElement.id)||'?')+m+vue,now=performance.now();let e=M.get(k);if(!e){e={x:X,y:Y,t:now,bouge:now};M.set(k,e)}if(Math.hypot(X-e.x,Y-e.y)>.6){e.bouge=now;e.x=X;e.y=Y}if(now-e.bouge>260)clip='repos_debout'}}catch(e){}return s0.call(this,x,m,clip,vue,ph,X,Y,taille,ang)}}
+// ===== Fin du conte : avant le bilan, un long survol de l'île d'aujourd'hui, en image satellite (Copernicus Sentinel-2, juillet 2026) =====
+{const ef0=ecranFin;let fait=0;ecranFin=function(){const args=arguments,self=this;try{if(fait===1)return;if(fait||!S||!(S.fin==='1946'||S.fin==='2026')||typeof camT==='undefined'||!terr)return ef0.apply(self,args);fait=1;
+  ['top','side','bas','drawer','modal'].forEach(i=>{const e=$(i);if(e)e.hidden=true});document.body.classList.add('survol186');
+  try{const u=terr.material.uniforms;if(u&&u.satOn)u.satOn.value=1}catch(e){}auto=false;
+  const c0={x:camT.x,y:camT.y,z:camT.z,d:dist,p:pol,a:az},C={x:32,y:0,z:29},D=16000,t0=performance.now();
+  const cap=document.createElement('div');cap.id='survol186';cap.style.cssText='position:fixed;left:50%;bottom:7%;transform:translateX(-50%);z-index:9600;text-align:center;color:#fbf7ec;font:600 15px Montserrat,system-ui,sans-serif;text-shadow:0 2px 8px #000c;opacity:0;transition:opacity 1.6s;pointer-events:none;max-width:90vw';
+  cap.innerHTML='<div style="font:700 28px Alegreya,Georgia,serif;margin-bottom:6px">'+(typeof nomIle==='function'?nomIle():'La Réunion')+', aujourd’hui</div><div>Vue satellite réelle de l’île · Copernicus Sentinel-2, juillet 2026</div>';
+  const pas=document.createElement('button');pas.textContent='Passer ›';pas.style.cssText='position:fixed;right:18px;bottom:18px;z-index:9601;background:#1a140ce0;color:#f4ead6;border:1px solid #e8be5a88;border-radius:999px;padding:6px 14px;font:600 13px Montserrat,system-ui,sans-serif;cursor:pointer';
+  document.body.append(cap,pas);setTimeout(()=>cap.style.opacity=1,900);
+  let fini=0;const fin=()=>{if(fini)return;fini=1;removeEventListener('keydown',kd,true);cap.style.opacity=0;setTimeout(()=>{cap.remove();pas.remove();document.body.classList.remove('survol186');fait=2;ef0.apply(self,args)},700)};
+  const kd=e=>{if(e.key==='Escape'||e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();fin()}};addEventListener('keydown',kd,true);pas.onclick=fin;
+  const ez=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+  const tick=()=>{if(fini)return;const u=Math.min(1,(performance.now()-t0)/D),e=ez(Math.min(1,u*1.6));
+   camT.set(c0.x+(C.x-c0.x)*e,c0.y+(C.y-c0.y)*e,c0.z+(C.z-c0.z)*e);dist=c0.d+(82-c0.d)*e;pol=c0.p+(.62-c0.p)*e;az=c0.a+u*Math.PI*1.1;
+   if(u>=1)return fin();requestAnimationFrame(tick)};requestAnimationFrame(tick)}catch(e){try{ef0.apply(self,args)}catch(_){}}}}
+// les longs titres de fin (« La départementalisation ») passent à la ligne au lieu d'être coupés
+{const st=document.createElement('style');st.textContent='#ecran h1{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;max-width:100%}';document.head.appendChild(st);try{if(!document.documentElement.lang)document.documentElement.lang='fr'}catch(e){}}
+// ===== Le songe du gramoun en tête des petits jeux (il était tout en bas, après les commandos), avec sa vraie description =====
+{const mp=menuPJ;menuPJ=function(){const r=mp.apply(this,arguments);try{const e=$('ecran'),b=e&&e.querySelector('[data-ral]');if(!b)return r;b.innerHTML='<b>🌙 Le songe du gramoun</b><br><small style="opacity:.8">Un vieux rêve sous le tamarin : le tour de l’île en voiture, de nuit, sur les vraies routes, de Saint-Pierre jusqu’au volcan, en 8 étapes.</small>';
+  const em=[...e.querySelectorAll('button')].find(x=>/^Embuscade/.test(x.textContent.trim()));if(em&&em!==b&&em.parentElement){em.parentElement.insertBefore(b,em);b.className=em.className||b.className;b.style.cssText=em.style.cssText||b.style.cssText}}catch(_){}return r}}

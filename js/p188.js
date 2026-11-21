@@ -1,0 +1,29 @@
+// ===== p188 : les vrais mouvements de combat (Mixamo), recalés à la volée sur chaque combattant Meshy du duel =====
+// Les coups ne sont plus calculés os par os : chaque coup est un mouvement capté sur une personne (poing, pied, garde, coup reçu, chute).
+const MXD188={};function mxDec188(n){if(MXD188[n])return MXD188[n];const c=MX186[n];if(!c)return null;const d16=(s,k)=>{const b=atob(s),a=new Int16Array(b.length/2);for(let i=0;i<a.length;i++){const lo=b.charCodeAt(i*2),hi=b.charCodeAt(i*2+1);let v=lo|(hi<<8);if(v>32767)v-=65536;a[i]=v}return Float32Array.from(a,x=>x/k)};
+ const o={n,F:c.F,fps:c.fps,pk:c.pk,b:{},hip:d16(c.hip,10000)};for(const k in c.b)o.b[k]={dir:c.b[k].dir,q:d16(c.b[k].q,32767)};return MXD188[n]=o}
+function mxRecible(scene,c,opt){opt=opt||{};const T=THREE,ENF={Hips:'Spine02',Spine02:'Spine01',Spine01:'Spine',Spine:'neck',neck:'Head',Head:'head_end',LeftShoulder:'LeftArm',LeftArm:'LeftForeArm',LeftForeArm:'LeftHand',LeftHand:'LeftHandMiddle1',RightShoulder:'RightArm',RightArm:'RightForeArm',RightForeArm:'RightHand',RightHand:'RightHandMiddle1',LeftUpLeg:'LeftLeg',LeftLeg:'LeftFoot',LeftFoot:'LeftToeBase',LeftToeBase:'LeftToe_end',RightUpLeg:'RightLeg',RightLeg:'RightFoot',RightFoot:'RightToeBase',RightToeBase:'RightToe_end'};
+ const os={};scene.traverse(o=>{if(o.isBone&&!os[o.name])os[o.name]=o});const H=os.Hips;if(!H||!H.parent)return null;
+ // la pose de repos : on la lit sur une copie des os, sans toucher à l'animation en cours
+ const sv=[];scene.traverse(o=>{if(o.isBone)sv.push([o,o.quaternion.clone(),o.position.clone()])});if(opt.repos)opt.repos.forEach(([o,q,p])=>{o.quaternion.copy(q);o.position.copy(p)});
+ scene.updateMatrixWorld(true);const s0=new T.Matrix4().copy(scene.matrixWorld).invert();
+ const WQ=o=>{const m=new T.Matrix4().multiplyMatrices(s0,o.matrixWorld),p=new T.Vector3(),q=new T.Quaternion(),s=new T.Vector3();m.decompose(p,q,s);return {p,q}};
+ const bones=[];H.parent.traverse(o=>{if(o.isBone)bones.push(o)});const R={};bones.forEach(b=>{R[b.uuid]=WQ(b)});const rp=WQ(H.parent);const restL={};bones.forEach(b=>restL[b.uuid]=b.quaternion.clone());
+ const corr={};for(const n in c.b){const b=os[n];if(!b)continue;const e=os[ENF[n]];let d=new T.Vector3(0,1,0);if(e)d=R[e.uuid].p.clone().sub(R[b.uuid].p).normalize();const ds=new T.Vector3().fromArray(c.b[n].dir);corr[n]=new T.Quaternion().setFromUnitVectors(d,ds).multiply(R[b.uuid].q)}
+ const toes=['LeftToe_end','RightToe_end','LeftToeBase','RightToeBase'].map(n=>os[n]).filter(Boolean);const hh=Math.max(.2,R[H.uuid].p.y-(toes.length?Math.min(...toes.map(o=>R[o.uuid].p.y)):0));
+ const F=c.F,tt=new Float32Array(F);for(let f=0;f<F;f++)tt[f]=f/c.fps;const vals={};bones.forEach(b=>vals[b.uuid]=new Float32Array(F*4));const hp=new Float32Array(F*3);
+ const W={},D=new T.Quaternion(),pinv=new T.Quaternion(),lr=new T.Quaternion(),pi=new T.Matrix4().copy(H.parent.matrixWorld).invert(),sw=scene.matrixWorld;
+ for(let f=0;f<F;f++){for(const b of bones){const pw=b.parent===H.parent?rp.q:W[b.parent.uuid];const src=c.b[b.name];
+   if(src&&corr[b.name]){const a=src.q;D.set(a[f*4],a[f*4+1],a[f*4+2],a[f*4+3]).normalize();W[b.uuid]=D.clone().multiply(corr[b.name])}else W[b.uuid]=pw.clone().multiply(restL[b.uuid]);
+   pinv.copy(pw).invert();lr.copy(pinv).multiply(W[b.uuid]).normalize();vals[b.uuid].set([lr.x,lr.y,lr.z,lr.w],f*4)}
+  const dx=opt.surPlace?0:c.hip[f*3]*hh,dy=c.hip[f*3+1]*hh,dz=opt.surPlace?0:c.hip[f*3+2]*hh;const w=R[H.uuid].p.clone().add(new T.Vector3(dx,dy,dz)).applyMatrix4(sw).applyMatrix4(pi);hp.set([w.x,w.y,w.z],f*3)}
+ sv.forEach(([o,q,p])=>{o.quaternion.copy(q);o.position.copy(p)});scene.updateMatrixWorld(true);
+ const tr=bones.map(b=>new T.QuaternionKeyframeTrack(b.name+'.quaternion',tt,vals[b.uuid]));tr.push(new T.VectorKeyframeTrack(H.name+'.position',tt,hp));
+ return new T.AnimationClip(opt.nom||c.n,(F-1)/c.fps,tr)}
+// quel mouvement pour quel coup, selon l'art martial du combattant
+const MXBASE188={idle:'Boxing',p1:'Punching',p2:'Cross_Punch',p3:'Mutant_Punch',k1:'Knee_Kick_Lead',k2:'Kicking',k3:'Inside_Crescent_Kick',ka:'Hurricane_Kick',saut:'Saut_Genou',bloc:'Body_Block',cr:'Crouch_Walk_Right',touche:'Reaction',stun:'Receive_Uppercut_To_The_Face',ko:'Dying'};
+const MXSTY188={capoeira:{idle:'Ginga_Variation_3',k1:'Martelo_2',k2:'Chapa_2',k3:'Meia_Lua_De_Compasso',ka:'Martelo_2'},anglaise:{idle:'Boxing_2',p3:'Punching_Bag_3'},savate:{},kalari:{p3:'Elbow_Punch',k3:'Hurricane_Kick'},varma:{p3:'Elbow_Punch'},kungfu:{idle:'Garde_Ninja',p3:'Elbow_Punch',k3:'Hurricane_Kick'},moraingy:{p2:'Headbutt',p3:'Quad_Punch',k1:'Martelo_2'},
+ escrime:{idle:'Pistol_Idle',p1:'Standing_Torch_Melee_Attack_Stab',p2:'Stable_Sword_Outward_Slash',p3:'Bayonet_Stab'}};
+function mx188Ajoute(o,f){if(typeof MX186==='undefined'||!o||!o.g)return;const st=(f&&f.st)||'';const m={...MXBASE188,...(MXSTY188[st]||{})};if(!st&&o.arme==='sabre')m.p3='Bayonet_Stab';
+ const repos=[];o.g.scene.traverse(b=>{if(b.isBone)repos.push([b,b.quaternion.clone(),b.position.clone()])});o.mx188={};
+ for(const k in m){const c=mxDec188(m[k]);if(!c)continue;try{const cl=mxRecible(o.g.scene,c,{nom:'mx_'+k,surPlace:k!=='ko'&&k!=='touche'&&k!=='stun',repos});if(cl){o.clips.push(cl);o.mx188[k]={pk:c.pk/c.fps,d:cl.duration}}}catch(e){}}}
