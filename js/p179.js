@@ -24,9 +24,9 @@ function gpCasc179(){const L=[];const cand=T.filter(t=>!t.sea&&t.slope>20&&t.alt
 // 2) la crue des cirques : un large ruban d'eau boueuse sur le fond de vallée, là où les rivières traversent un cirque ; et les grosses rivières qui sortent de leur lit en bas
 function gpCrue179(){const g=new THREE.Group();const mat=new THREE.MeshBasicMaterial({color:0x8a7550,transparent:true,opacity:.0,depthWrite:false,side:THREE.DoubleSide});
  RIV126.forEach(r=>{if(r.br)return;let run=[];const fin=()=>{if(run.length<4){run=[];return}const V=[],I=[];run.forEach((q,j)=>{const a=run[Math.max(0,j-2)],b=run[Math.min(run.length-1,j+2)];let dx=b[0]-a[0],dz=b[1]-a[1];const L=Math.hypot(dx,dz)||1;dx/=L;dz/=L;const h=Math.max(0,alt(q[0],q[1])),w=q[2];
-   [-1,1].forEach(s=>{const x=q[0]-dz*w*s,z=q[1]+dx*w*s;V.push(x,Math.max(h,Math.max(0,alt(x,z))*.0+h)*VX+.03,z)});if(j){const o=(j-1)*2;I.push(o,o+1,o+2,o+1,o+3,o+2)}});
+   const SX=[-1,-.5,0,.5,1];SX.forEach(s=>{const x=q[0]-dz*w*s,z=q[1]+dx*w*s,ha=Math.max(0,alt(x,z));V.push(x,Math.min(ha,h+25)*VX+.035,z)});if(j){const n=SX.length,o=(j-1)*n;for(let k=0;k<n-1;k++)I.push(o+k,o+k+1,o+n+k,o+k+1,o+n+k+1,o+n+k)}});
    const G2=new THREE.BufferGeometry();G2.setAttribute('position',new THREE.Float32BufferAttribute(V,3));G2.setIndex(I);const m=new THREE.Mesh(G2,mat);m.renderOrder=3;g.add(m);run=[]};
-  r.P.forEach((q,i)=>{if(i%3)return;const t=tileAt({x:q[0],z:q[1]}),h=alt(q[0],q[1]);if(!t||h<=1){fin();return}
+  r.P.forEach((q,i)=>{if(i%2)return;const t=tileAt({x:q[0],z:q[1]}),h=alt(q[0],q[1]);if(!t||h<=1){fin();return}
    const cirq=t.cirq&&h<1400,bas=h<120;if(cirq||bas)run.push([q[0],q[1],cirq?.16+.06*Math.sin(i*.07):.1]);else fin()});fin()});
  g.userData.mat=mat;g.visible=false;scene.add(g);return g}
 // 3) les bassins à tourbillon : un bassin de cascade avec une source du rempart juste au-dessus
