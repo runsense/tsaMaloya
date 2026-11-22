@@ -110,13 +110,13 @@ const PL72={v:0};
 const houle72=t=>Math.pow(.5+.5*Math.sin(t*.7-1.2),1.6);let COTE72=0;
 let ambT=0,boucleT=0;setInterval(()=>{const c=sndPret();if(!c)return;ambInit();const m=momentCourant();SND.ambK=m;const p=m==='cine'?'mer':(SONCH[m]||'mer');
  const musique=!PROFIL[p]&&PRE72[p];const A=musique?AMB.doux:(m==='cine'?AMB.cine:AMB[PROFIL[p]]||AMB.carte),t=c.currentTime;
- const VF=vent72(t,A);if(SND.amb.riv){const L=SND.amb.riv,raf=typeof RAF72!=='undefined'?RAF72.v:1;L.g.gain.setTargetAtTime(riv72()*Math.max(.45,.7+.45*(raf-1)),t,.5);L.F.frequency.setTargetAtTime(800+500*Math.abs(Math.sin(t*1.7)*Math.sin(t*.63)),t,.15)}
- ['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=(.7+.65*houle72(t))*mer72();if(n==='vent')v=VF;else if(typeof vpCalme204==='function')v*=vpCalme204();if(n==='pluie'){const pf=typeof pluieF106==='function'?pluieF106():0;PL72.v+=(pf-PL72.v)*(pf>PL72.v?.025:.04);v=Math.max(v*(.25+.9*PL72.v),.05*PL72.v)}const T=L.tr||(L.tr={cible:v,fin:0});
+ try{const VF=vent72(t,A);if(SND.amb.riv){const L=SND.amb.riv,raf=typeof RAF72!=='undefined'?RAF72.v:1;L.g.gain.setTargetAtTime(riv72()*Math.max(.45,.7+.45*(raf-1)),t,.5);L.F.frequency.setTargetAtTime(800+500*Math.abs(Math.sin(t*1.7)*Math.sin(t*.63)),t,.15)}
+ ['mer','vent','pluie','grave'].forEach(n=>{try{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=(.7+.65*houle72(t))*mer72();if(n==='vent')v=VF;else if(typeof vpCalme204==='function')v*=vpCalme204();if(n==='pluie'){const pf=typeof pluieF106==='function'?pluieF106():0;PL72.v+=(pf-PL72.v)*(pf>PL72.v?.025:.04);v=Math.max(v*(.25+.9*PL72.v),.05*PL72.v)}const T=L.tr||(L.tr={cible:v,fin:0});
   // un vrai changement d'ambiance : 0,9 s de passage ; celle qui sort baisse d'abord doucement puis plus franchement, celle qui entre monte vite d'abord
   if(Math.abs(v-T.cible)>Math.max(.012,T.cible*.35)&&m!==T.m){const de=L.g.gain.value,N=24,cv=new Float32Array(N);for(let i=0;i<N;i++){const u=i/(N-1),e=v<de?Math.pow(u,2.2):1-Math.pow(1-u,2.2);cv[i]=de+(v-de)*e}
    try{L.g.gain.cancelScheduledValues(t);L.g.gain.setValueCurveAtTime(cv,t,.9);T.fin=t+.92}catch(e){}T.m=m}
-  T.cible=v;if(t>=T.fin)L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)});
- SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520+COTE72*(-140+420*houle72(t)),t,.4);
+  T.cible=v;if(t>=T.fin)L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)}catch(e){}});
+ SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520+COTE72*(-140+420*houle72(t)),t,.4);}catch(e){}
  ambT++;const now=performance.now();
  if(musique){if(now>=boucleT){PRE72[p].f();boucleT=now+PRE72[p].d*1000-60}return}boucleT=0;if(ambT%4)return;const q=ambT/4;
  const cal=typeof vpCalme204==='function'?vpCalme204():1;if(A.ois&&cal>.7&&Math.random()<.18){const f=2200+Math.random()*1800;for(let i=0;i<2+Math.floor(Math.random()*3);i++)ton7(f,.09,{t:i*.13,vers:f*(1.2+Math.random()*.3),v:.025})}
@@ -129,7 +129,7 @@ let ambT=0,boucleT=0;setInterval(()=>{const c=sndPret();if(!c)return;ambInit();c
 // ----- les branchements -----
 {const t0=toast;toast=function(m){const r=t0.apply(this,arguments);try{if(/naissance/i.test(m||''))jouerMoment('naissance');else jouerMoment('info')}catch(e){}return r}}
 {const md=modal;modal=function(){const r=md.apply(this,arguments);try{if(!S||!S.evq||!S.evq.length)return r;const id=S.evq[0];if(id===SND.lastEv)return r;SND.lastEv=id;const e=EV[id]||{},tag=e.tag||'',tx=((e.t||'')+' '+(typeof e.b==='string'?e.b:'')).toLowerCase();
- if(/kabar|maloya|moringue|tambour|tsa mal oya/.test(tx)){SND.kabarJ=performance.now()+14000;boucleT=0}
+ if(/kabar|maloya|moringue|tambour|tsa mal oya|danse des noirs|bal des noirs/.test(tx)){SND.kabarJ=performance.now()+14000;boucleT=0}
  if(/cyclone|ouragan|tempête/.test(tx))jouerMoment('cyclone');
  else if(tag==='Archive')jouerMoment('evArchive');else if(/Conte|Mythe|Imaginaire|Mystique|Mémoire/.test(tag))jouerMoment('evConte');else if(tag==='Découverte')jouerMoment('evDecouverte');else if(/Monde|Mer|Comptoir/.test(tag))jouerMoment('evMonde');else if(tag==='Vote')jouerMoment('evVote');else jouerMoment('evArchive')}catch(e){}return r}}
 {const al=alerte;alerte=function(){const r=al.apply(this,arguments);try{const n=performance.now();if(!SND.lamb||n-SND.lamb>12000){SND.lamb=n;jouerMoment('alerte')}}catch(e){}return r}}
@@ -141,7 +141,7 @@ setInterval(()=>{try{if(faimNiv()>=3)jouerMoment('faim')}catch(e){}},5000);
 {const ap=apotheose;apotheose=function(){jouerMoment('victoire');return ap.apply(this,arguments)}}
 {const ij=introJeu;introJeu=function(o,go){const s=((o&&o.sur)||'')+' '+((o&&o.t)||'');const k=/Labyrinthe/i.test(s)?'jGaleries':/Bataille/i.test(s)?'jBataille':/Commando/i.test(s)?'jCommando':/Duel/i.test(s)?'jDuel':/Échecs/i.test(s)?'jEchecs':/Donjon/i.test(s)?'jDonjon':/Mission/i.test(s)?'jMission':/course|songe/i.test(s)?'jCourse':'jChasse';
  return ij.call(this,o,function(ok){if(ok){SND.jeu=k;boucleT=0}return go.apply(this,arguments)})}}
-{const j=journal;journal=function(m){const r=j.apply(this,arguments);try{if(/kabar|roulèr|maloya/i.test(m||'')){SND.kabarJ=performance.now()+12000;boucleT=0}if(/naissance/i.test(m||''))jouerMoment('naissance')}catch(e){}return r}}
+{const j=journal;journal=function(m){const r=j.apply(this,arguments);try{if(/kabar|roulèr|maloya|danse des noirs|service kabaré|bal des noirs/i.test(m||'')){SND.kabarJ=performance.now()+12000;boucleT=0}if(/naissance/i.test(m||''))jouerMoment('naissance')}catch(e){}return r}}
 // ----- le bouton son, à côté de « Satellite » ; et dans la Survie -----
 function sndBasculer(){SND.on=!SND.on;try{localStorage.setItem('tsa-son',SND.on?'1':'0')}catch(e){}const c=sndCtx();if(c){if(c.state==='suspended')c.resume();SND.out.gain.setTargetAtTime(SND.on?SND.vol:0,c.currentTime,.05)}document.querySelectorAll('.sndP').forEach(b=>b.textContent=SND.on?'🔊 Son':'🔇 Son')}
 setInterval(()=>{try{[$('fc'),document.querySelector('#kons header')].forEach(h=>{if(!h||h.querySelector('.sndP'))return;const s=document.createElement('span');s.className='pill sndP';s.style.cursor='pointer';s.title='Couper ou remettre le son du jeu';s.textContent=SND.on?'🔊 Son':'🔇 Son';s.onclick=e=>{e.stopPropagation();sndBasculer()};h.appendChild(s)})}catch(e){}},800);

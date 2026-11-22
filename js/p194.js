@@ -21,7 +21,9 @@ try{if(typeof PRE72!=='undefined'&&typeof SONCH!=='undefined'){let cur=null,curK
    else cur=boucle194(c,SND.out,nom,.6);window.CUR194=cur;
    if(cur){curK=k;o.d=3600}else{o.d=3.6;if(PRE72.maloya68)PRE72.maloya68.f()}}};PRE72[k]=o};
  const KB=['kabare','maligasse','kasse'];
- def('bclKabar',()=>KB[Math.floor(Math.random()*KB.length)]);def('bclMoring',()=>'moring');def('bclMalbar',()=>'malbar');def('bclRoule',()=>'roule');def('bclValse',()=>'valse');
+ // le kabar selon l'époque : avant 1850, la « danse des Noirs » et le premier shéga, sans triangle (il n'arrive qu'au milieu du XIXᵉ) ;
+ // de 1850 à 1920, le séga des origines avec son triangle ; à partir de 1921, le maloya, tous les ensembles
+ def('bclKabar',()=>{const y=S&&S.year||1700,L=y<1850?['maligasse','pleure']:y<1921?['kabare','kasse','maligasse']:KB;return L[Math.floor(Math.random()*L.length)]});def('bclMoring',()=>'moring');def('bclMalbar',()=>'malbar');def('bclRoule',()=>'roule');def('bclValse',()=>'valse');
  const z0=PRE72.zion;PRE72.bclPleure={d:12,f:()=>{const c=typeof sndPret==='function'&&sndPret();if(!(c&&boucle194(c,SND.out,'pleure',.55,1))&&z0)z0.f()}};
  SONCH.kabar='bclKabar';SONCH.jDuel='bclMoring';SONCH.malbar='bclMalbar';SONCH.roule='bclRoule';SONCH.valse='bclValse';SONCH.deces='bclPleure';
  setInterval(()=>{try{if(cur&&SONCH[SND.ambK]!==curK){const fin=curK==='bclKabar';cur.stop();cur=null;curK='';if(fin&&typeof bout205==='function')setTimeout(()=>bout205('kasse',2,.55),350)}}catch(e){}},300);
