@@ -5,7 +5,7 @@
 const FIG149={T:null,att:0,G:null,cle:''};
 function figTpl149(){if(FIG149.T||FIG149.att)return;FIG149.att=1;buf144('sk_figurants').then(ab=>new THREE.GLTFLoader().parse(ab.slice(0),'',g=>{const L=[];g.scene.updateMatrixWorld(true);
   g.scene.traverse(o=>{if(!o.isMesh)return;let n=o.name||'',p=o.parent;while(p&&!/Character_/.test(n)){n=p.name||'';p=p.parent}if(/Monster|Killer|Sheriff/.test(n))return;
-   const geo=o.geometry.clone();geo.applyMatrix4(o.matrixWorld);geo.computeBoundingBox();const b=geo.boundingBox,c=b.getCenter(new THREE.Vector3()),h=b.max.y-b.min.y||1;geo.translate(-c.x,-b.min.y,-c.z);geo.scale(1/h,1/h,1/h);
+   const geo=flot45(o.geometry.clone());geo.applyMatrix4(o.matrixWorld);geo.computeBoundingBox();const b=geo.boundingBox,c=b.getCenter(new THREE.Vector3()),h=b.max.y-b.min.y||1;geo.translate(-c.x,-b.min.y,-c.z);geo.scale(1/h,1/h,1/h);
    const m=new THREE.Mesh(geo,o.material);harmonise144(m);L.push(m)});FIG149.T=L;console.log('figurants',L.length)},()=>{})).catch(()=>{})}
 setInterval(()=>{try{if(!S||typeof scene==='undefined'||(typeof K!=='undefined'&&K))return;const on=S.year>=1950&&dist<9&&!(typeof VP!=='undefined'&&VP);if(!FIG149.G){FIG149.G=new THREE.Group();scene.add(FIG149.G)}FIG149.G.visible=on;if(!on)return;figTpl149();if(!FIG149.T||!FIG149.T.length)return;
   const cle=Math.round(camT.x/2)+'|'+Math.round(camT.z/2);if(cle===FIG149.cle)return;FIG149.cle=cle;const G=FIG149.G;while(G.children.length)G.remove(G.children[0]);

@@ -29,7 +29,9 @@ function roussette138(){const g=new THREE.Group(),m=new THREE.MeshBasicMaterial(
 function pool138(L,n,mk){while(L.length<n)L.push(mk());L.forEach((o,i)=>o.visible=i<n)}
 {const b0=bat;bat=function(){const r=b0.apply(this,arguments);try{if(!S||typeof scene==='undefined')return r;const now=performance.now()/1000,on=dist<14&&!S.fin,nuit=typeof jourPh==='function'?jourPh():.4;
   try{if(typeof VIV108!=='undefined'&&VIV108.b)VIV108.b.forEach(b=>{if(b.k==='oiseau'&&b.o)b.o.visible=false})}catch(e){}
-  const R2=dist*.8+3,proche=on?T.filter(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;return dx*dx+dz*dz<=R2*R2&&S.t[t.i]&&S.t[t.i].s}):[];const h=(t,s)=>rndH(t.i*5.1+s);
+  // le centre ne suit la caméra que par sauts (au-delà de 2,5 cases) : sinon, à chaque petit glissement, la liste des bêtes proches se refait et un oiseau disparaît puis réapparaît ailleurs
+  const C=window.C138||(window.C138={x:camT.x,z:camT.z,d:dist});if(Math.hypot(C.x-camT.x,C.z-camT.z)>2.5||Math.abs(C.d-dist)>dist*.3){C.x=camT.x;C.z=camT.z;C.d=dist}
+  const R2=C.d*.8+4,proche=on?T.filter(t=>{const dx=t.x-C.x,dz=t.z-C.z;return dx*dx+dz*dz<=R2*R2&&S.t[t.i]&&S.t[t.i].s}):[];const h=(t,s)=>rndH(t.i*5.1+s);
   // tortues : côte et savane basse, pas sur les terres des colons
   const LT=[];if(on&&vivant138('tortues')){const d=dens138('tortues');proche.forEach(t=>{const o=S.t[t.i];if(t.alt>450||t.forest||o.c||o.b==='camp'||h(t,1)>.5*d||LT.length>10)return;const n=1+Math.floor(h(t,2)*3);for(let j=0;j<n;j++){const k=now*.03+h(t,3)*6+j;LT.push([t.x+.3*Math.sin(k+j)+(j-.5)*.1,t.z+.25*Math.cos(k*.8+j*2),Math.cos(k)])}})}
   pool138(DISP138.tor,LT.length,tortue138);LT.forEach(([x,z,a],i)=>{const g=DISP138.tor[i];g.position.set(x,Math.max(0,alt(x,z))*VX,z);g.rotation.y=a;g.userData.tete.position.y=.012+.006*Math.sin(now*1.3+i)});

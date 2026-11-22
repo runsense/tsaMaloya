@@ -50,9 +50,11 @@ function feuNouveau135(){const g=new THREE.Group();const geo=new THREE.PlaneGeom
 // 4) Des oiseaux qui volent : une petite nuée près de la vue (règles de nuée : cohésion, alignement, écart), ailes qui battent vite vers le bas et remontent lentement, puis planent.
 //    Ils s'écartent des personnages qui passent dessous et se posent un moment dans les arbres.
 const OIS135={F:[],t:performance.now()};
-function oiseau135(){const g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0x2a2622,side:THREE.DoubleSide});
+function oiseau135(esp){const g=new THREE.Group(),m=new THREE.MeshLambertMaterial({color:{perroquets:0x3d7a34,mascarin:0x5a4232,zoizo:0x6e7748}[esp]||0x3a332c,side:THREE.DoubleSide}),mv=new THREE.MeshLambertMaterial({color:{perroquets:0x5fa24a,mascarin:0x7a5a40,zoizo:0x9aa070}[esp]||0x5a5046,side:THREE.DoubleSide});
  const corps=new THREE.Mesh(new THREE.ConeGeometry(.012,.07,5).rotateX(Math.PI/2),m);g.add(corps);
- const aile=()=>{const s=new THREE.Shape();s.moveTo(0,-.012);s.lineTo(.07,-.004);s.lineTo(.05,.014);s.lineTo(0,.016);const ge=new THREE.ShapeGeometry(s).rotateX(-Math.PI/2);return new THREE.Mesh(ge,m)};
+ // aile d'oiseau : bord d'attaque arrondi, pointe effilée, rémiges en dents à l'arrière (plus de quadrilatère)
+ const aile=()=>{const s=new THREE.Shape();s.moveTo(0,.016);s.quadraticCurveTo(.04,.02,.085,.002);s.lineTo(.07,-.004);s.lineTo(.066,.0);s.lineTo(.052,-.008);s.lineTo(.048,-.003);s.lineTo(.034,-.011);s.lineTo(.03,-.005);s.lineTo(.016,-.012);s.lineTo(0,-.01);s.lineTo(0,.016);const ge=new THREE.ShapeGeometry(s).scale(1,-1,1).rotateX(-Math.PI/2);return new THREE.Mesh(ge,mv)};
+ {const q=new THREE.Shape();q.moveTo(-.006,0);q.lineTo(.006,0);q.lineTo(.012,-.03);q.lineTo(0,-.024);q.lineTo(-.012,-.03);q.lineTo(-.006,0);const qg=new THREE.ShapeGeometry(q).rotateX(-Math.PI/2);const qu=new THREE.Mesh(qg,m);qu.position.z=-.03;g.add(qu)}
  const ad=aile(),ag=aile();ag.scale.x=-1;g.add(ad,ag);g.userData={ad,ag,ph:Math.random()*6,pl:0};return g}
 function nuee135(cx,cz){const L=[];const n=9+Math.floor(Math.random()*6);for(let i=0;i<n;i++){const o=oiseau135();o.position.set(cx+(Math.random()-.5)*2,0,cz+(Math.random()-.5)*2);o.userData.v=new THREE.Vector3((Math.random()-.5)*.6,0,(Math.random()-.5)*.6);o.userData.h=1.2+Math.random()*.8;scene.add(o);L.push(o)}return {L,cx,cz,pose:0,arbre:null}}
 {const b0=bat;bat=function(){const r=b0.apply(this,arguments);try{if(!S||typeof scene==='undefined'||!camT)return r;const now=performance.now(),dt=Math.min(.05,(now-OIS135.t)/1000);OIS135.t=now;

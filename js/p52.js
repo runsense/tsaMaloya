@@ -33,7 +33,7 @@ function aniPlaces(k){const L=[];if(!S||S.fin||dist>=(k==='papangue'?16:10))retu
 // ===== les bâtiments Meshy dans la ville 3D de la Construction : habitation créole, cases en paille, chapelle, magasin, grenier, appontement =====
 const K3MOD={};
 function k3M(k,x,z,h,ry,G,long){const M=K3MOD[k];if(!M){K3MOD[k]={att:1};meshyB64('bat_'+k).then(t=>{const b=atob(t.trim()),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);new THREE.GLTFLoader().parse(u.buffer,'',g=>{let me=null;g.scene.updateMatrixWorld(true);g.scene.traverse(o=>{if(o.isMesh&&!me)me=o});if(!me){K3MOD[k]={non:1};return}
-  const geo=me.geometry.clone();geo.applyMatrix4(me.matrixWorld);geo.computeBoundingBox();const bb=geo.boundingBox;geo.translate(-(bb.min.x+bb.max.x)/2,-bb.min.y,-(bb.min.z+bb.max.z)/2);geo.computeBoundingBox();const B=geo.boundingBox;
+  const geo=flot45(me.geometry.clone());geo.applyMatrix4(me.matrixWorld);geo.computeBoundingBox();const bb=geo.boundingBox;geo.translate(-(bb.min.x+bb.max.x)/2,-bb.min.y,-(bb.min.z+bb.max.z)/2);geo.computeBoundingBox();const B=geo.boundingBox;
   const mt=me.material.map;if(mt)mt.encoding=THREE.sRGBEncoding;K3MOD[k]={geo,mat:mt?new THREE.MeshLambertMaterial({map:mt}):me.material,h:B.max.y-B.min.y||1,l:Math.max(B.max.x-B.min.x,B.max.z-B.min.z)||1};if(typeof KV3!=='undefined')KV3.cle=''},()=>{K3MOD[k]={non:1}})}).catch(()=>{K3MOD[k]={non:1}});return false}
  if(!M.geo)return false;const o=new THREE.Mesh(M.geo,M.mat),s=long?h*4/M.l:h/M.h;o.scale.setScalar(s);o.position.set(x,long?Math.max(.005,k3Y(x,z)):k3Y(x,z),z);o.rotation.y=ry||0;o.userData.partage=1;G.add(o);return true}
 // la géométrie partagée ne doit pas être libérée quand la ville est reconstruite

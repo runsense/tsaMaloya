@@ -55,8 +55,8 @@ function p3Boucle(){if(!CV.on)return;const cv=$('cvC');if(!cv)return;p3Scene();c
  P3.hemi.intensity=nuit?.25:1;P3.sun.intensity=nuit?.05:.8;{const ar=false;P3.feuL.intensity=(nuit?2.2:.6)*(ar?.9:.85+Math.sin(now/110)*.15);if(P3.flamme)P3.flamme.scale.y=ar?.9:.8+Math.sin(now/90)*.2}P3.R.setClearColor(new THREE.Color(nuit?0x0a0e20:0x9cc4d8).convertSRGBToLinear());
  const x=cv.getContext('2d');x.clearRect(0,0,W,H);const vu=new Set();
  P.forEach(p=>{let a=CV.A[p.id];if(!a){a=CV.A[p.id]={x:L.feu[0]+(Math.random()-.5)*.3,y:L.feu[1]+(Math.random()-.5)*.2,tx:0,ty:0,act:'',t:0,say:'',sayT:0,vis:1}}
-  if(a.t<=0||(nuit&&a.act!=='dort'&&p.id!==S.garde)||(!nuit&&a.act==='dort')){const [u,v,ac]=cvCible(p,a,L,nuit);a.tx=u;a.ty=v;a.act=ac;a.t=300+Math.random()*500;if(!nuit&&Math.random()<.18){a.say=cvDit(p,a);a.sayT=200}}
-  const dx=a.tx-a.x,dy=a.ty-a.y,d=Math.hypot(dx,dy),sp=adulte(p)?.0016:.0024,bouge=d>sp;if(bouge){a.x+=dx/d*sp;a.y+=dy/d*sp}else a.t--;
+  if(a.t<=0||(nuit&&a.act!=='dort'&&p.id!==S.garde)||(!nuit&&a.act==='dort')){const [u,v,ac]=cvCible(p,a,L,nuit);a.tx=u;a.ty=v;a.act=ac;a.t=700+Math.random()*900;if(!nuit&&Math.random()<.18){a.say=cvDit(p,a);a.sayT=200}}
+  const dx=a.tx-a.x,dy=a.ty-a.y,d=Math.hypot(dx,dy),sp=adulte(p)?.003:.0042,bouge=d>sp;if(bouge){a.x+=dx/d*sp;a.y+=dy/d*sp}else a.t--;
   a.vis=a.x<1;vu.add(p.id);
   // le personnage 3D
   const n=p3Modele(p);let m=P3.M[p.id];if(!m||m.n!==n){if(!P3.ok[n]){p3Charge(n);return}if(!m||m.n!==n){if(m&&m.o)P3.gens.remove(m.o.g.scene);P3.M[p.id]={n,o:null,wait:1};p3Instance(n).then(o=>{const mm=P3.M[p.id];if(!mm||mm.n!==n)return;mm.o=o;mm.wait=0;P3.gens.add(o.g.scene)})}return}

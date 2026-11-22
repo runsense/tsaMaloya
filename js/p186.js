@@ -276,11 +276,11 @@ const ACT186={chasse:['#c0503a','chasser','🏹'],cueil:['#6fae55','cueillir','�
 function g186(p){return (S.grp||[]).some(g=>g.m.includes(p.id))}
 function nuit186(){try{const ph=jourPh();return ph<.22||ph>.8}catch(e){return false}}
 function etat186(p){if(!p||!adulte(p))return '';const g=(S.grp||[]).find(g=>g.m.includes(p.id));if(g){const e=g.exp;if(e&&e.etat&&e.etat!=='camp')return ACT186[e.but]?e.but:'explorer';return ''}
- if(nuit186()||p.bl)return '';const t=tacheDe(p);return t&&t!=='repos'&&ACT186[t]?t:''}
+ const ca=typeof CV!=='undefined'&&CV.A&&CV.A[p.id];if(p.bl)return '';if(ca?ca.act==='dort':nuit186())return '';const t=tacheDe(p);return t&&t!=='repos'&&ACT186[t]?t:''}
 {const cl=cvListe;cvListe=function(){const r=cl.apply(this,arguments);try{if(!S||modeHist()||!CV.on)return r;const nu=nuit186();
   document.querySelectorAll('#cvL .ac[data-pid]').forEach(el=>{const p=ppId(+el.dataset.pid);if(!p)return;const q=(window.HOV186!=null&&ppId(HOV186))||p,mq=P3.M[q.id];if(q!==p&&mq&&mq.o)mq.o.g.scene.getWorldPosition(w);const a=etat186(q),A=ACT186[a];
    if(A){el.style.borderLeft='5px solid '+A[0];el.style.background='linear-gradient(90deg,'+A[0]+'55,'+A[0]+'14 75%)';el.style.opacity='';el.title=p.n.split(' ')[0]+' est en train de '+A[1]}
-   else{el.style.borderLeft='5px solid transparent';el.style.background='transparent';el.style.opacity='.62';const s=el.querySelector(':scope>small');if(s&&adulte(p))s.textContent=p.bl?'blessé, se repose':nu?'dort':'ne fait rien';el.title=p.n.split(' ')[0]+(nu?' dort':' ne fait rien')}})}catch(e){}return r}}
+   else{el.style.borderLeft='5px solid transparent';el.style.background='transparent';el.style.opacity='.62';const s=el.querySelector(':scope>small');const ca=CV.A&&CV.A[p.id],nd=ca?ca.act==='dort':nu;if(s&&adulte(p))s.textContent=p.bl?'blessé, se repose':nd?'dort':'ne fait rien';el.title=p.n.split(' ')[0]+(nd?' dort':' ne fait rien')}})}catch(e){}return r}}
 {let AV={},nuAv=null;setInterval(()=>{try{if(!S||S.fin||modeHist()||!S.pp||(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden))return;const nu=nuit186(),fin={};let chg=false;
   S.pp.forEach(p=>{const a=etat186(p),b=AV[p.id];if(b!==undefined&&a!==b){chg=true;const gd=(S.grp||[]).find(g=>g.m.includes(p.id)&&g.exp&&g.exp.etat==='camp');if(b&&!a&&!(nu&&!nuAv)&&!gd&&!(nu&&!g186(p)))(fin[b]=fin[b]||[]).push(p.n.split(/[ ,]/)[0])}AV[p.id]=a});
   if(nuAv===false&&nu){journal('La nuit tombe : ceux du camp rentrent dormir, les groupes dehors font halte.')}

@@ -18,16 +18,40 @@ function vpGrimpeMaj191(dt,ch){const V=VP,G=V&&V.grimpe;if(!G)return;G.t+=dt;con
 
 // ----- 2. La tâche « cuisiner » : la cuisinière (le rôle mystique, quand personne n'est malade) est au camp, près d'un feu à trois pierres, la marmite dessus -----
 const CUIS191={};
-function marmite191(){const g=new THREE.Group(),pierre=new THREE.MeshLambertMaterial({color:0x4a4642}),pot=new THREE.MeshLambertMaterial({color:0x1d1b1a}),flamme=new THREE.MeshBasicMaterial({color:0xff8a30});
+function marmite191(c){const g=new THREE.Group(),pierre=new THREE.MeshLambertMaterial({color:0x4a4642}),pot=new THREE.MeshLambertMaterial({color:0x1d1b1a}),flamme=new THREE.MeshBasicMaterial({color:0xff8a30});
  for(let k=0;k<3;k++){const p=new THREE.Mesh(new THREE.DodecahedronGeometry(.13,0),pierre);const a=k*2.09;p.position.set(Math.cos(a)*.22,.08,Math.sin(a)*.22);g.add(p)}
  const m=new THREE.Mesh(new THREE.CylinderGeometry(.2,.16,.24,10),pot);m.position.y=.3;g.add(m);const b=new THREE.Mesh(new THREE.TorusGeometry(.2,.02,4,10),pot);b.rotation.x=Math.PI/2;b.position.y=.42;g.add(b);
- const f=new THREE.Mesh(new THREE.ConeGeometry(.12,.28,6),flamme);f.position.y=.12;g.add(f);g.userData.f=f;return g}
+ const f=new THREE.Mesh(new THREE.ConeGeometry(.12,.28,6),flamme);f.position.y=.12;g.add(f);g.userData.f=f;
+ g.userData.cle=garni191(g,c);return g}
+// ce qui cuit dans la marmite suit l'époque, le lieu, les gens et le temps qu'il a fait — sans rien écrire :
+// viande quand la chasse donne, brèdes toujours ; patate douce, citrouille (giraumon), oignon du jardin ;
+// concombre une fois planté (dès 1700 environ), tomates (rougail) vers 1750, chouchou à partir de 1840 environ et surtout dans les Hauts et les cirques,
+// margoze chez les Malbars (engagés indiens, après 1848) ; safran péi (curcuma) souvent ; au camp marron, zambrovate, haricots et ravintsara. Après un cyclone ou quand les vivres manquent : pas de viande, des racines et des brèdes.
+// Les dates sont des repères approximatifs.
+function cle191(c){const y=S&&S.year||1663,dur=(S.vivres||0)<6||(S.cyc&&S.cyc.recent)||(typeof pluieF106==='function'&&pluieF106()>.8),haut=c&&c.alt>600,mal=y>=1848&&(S.pp||[]).some(p=>p.or==='in'&&campDe(p)===(c&&c.i));return [y>=1700,y>=1750,y>=1840,haut,mal,dur].map(b=>b?1:0).join('')}
+function garni191(g,c){const k=cle191(c),[con,tom,chou,haut,mal,dur]=k.split('').map(Number);const Mt=col=>new THREE.MeshLambertMaterial({color:col,side:THREE.DoubleSide});
+ // le safran péi (curcuma), qui soigne, colore souvent le bouillon ; au camp marron, des grains (zambrovate, haricots) et des feuilles de ravintsara, l'arbre sacré malgache
+ const saf=Math.random()<.6,marr=!S.voieC;
+ const bo=new THREE.Mesh(new THREE.CircleGeometry(.185,12),Mt(saf?0xc8901a:tom?0x9a4a22:dur?0x6a6030:0x7a5222));bo.rotation.x=-Math.PI/2;bo.position.y=.405;g.add(bo);
+ const pose=(geo,col,n,r0,dy,f)=>{const m=Mt(col);for(let k=0;k<n;k++){const a=k*6.283/n+Math.random()*.8,r=r0+Math.random()*.07,q=new THREE.Mesh(geo,m);q.position.set(Math.cos(a)*r,.412+dy,Math.sin(a)*r);q.rotation.y=a;if(f)f(q,k);g.add(q)}};
+ const cube=new THREE.BoxGeometry(.04,.03,.04),feuille=new THREE.CircleGeometry(.03,5);
+ if(!dur)pose(new THREE.BoxGeometry(.05,.035,.045),0x6a3a22,5,.05,.004);
+ pose(feuille,0x3f7a2e,dur?9:6,.03,.008,q=>{q.rotation.x=-Math.PI/2+.25;q.scale.set(1.6,.8,1)});
+ const jard=[[0xd8b46a,'cube'],[0xe88a2a,'cube'],[0xeee6d0,'oignon']];if(con)jard.push([0xb8d890,'rond']);
+ jard.sort(()=>Math.random()-.5).slice(0,dur?1:2).forEach(([col,t])=>pose(t==='oignon'?new THREE.TorusGeometry(.018,.006,4,8):t==='rond'?new THREE.CylinderGeometry(.022,.022,.008,8):cube,col,3,.05,.004,q=>{if(t==='oignon')q.rotation.x=-Math.PI/2}));
+ if(marr||Math.random()<.4)pose(new THREE.SphereGeometry(.011,5,4),Math.random()<.5?0x9a7a44:0x7a2a22,10,.03,.006);
+ if(marr&&Math.random()<.7)pose(new THREE.CircleGeometry(.022,6),0x1f4a26,2,.06,.012,q=>{q.rotation.x=-Math.PI/2+.2;q.scale.set(1.8,.9,1)});
+ if(tom&&!dur)pose(new THREE.SphereGeometry(.026,6,5),0xd8402a,3,.08,.004,q=>q.scale.y=.6);
+ if(chou)pose(new THREE.SphereGeometry(.03,6,5),0xc8e0a0,haut?5:2,.05,.006,q=>q.scale.set(.9,.7,1.2));
+ if(mal)pose(new THREE.CylinderGeometry(.014,.01,.07,6),0x4a8a3a,3,.06,.008,q=>{q.rotation.z=Math.PI/2});
+ return k}
 {const b0=bat;bat=function(k){b0.apply(this,arguments);try{if(!S||S.fin||(typeof K!=='undefined'&&K)||modeHist()||VP||typeof mfPoser!=='function'||typeof jourPh!=='function'||typeof scene==='undefined')return;const ph=jourPh(),vus={};
  (S.pp||[]).forEach(p=>{if(enGrp(p)||!adulte(p)||tacheDe(p)!=='cuisine')return;const c=T[campDe(p)];if(!c)return;if(ph<.2||ph>.86)return;
   const s=(p.id*53%100)/100,ox=Math.cos(s*6.28)*.12,oz=Math.sin(s*6.28)*.12,x=c.x+ox,z=c.z+oz,y=Math.max(0,alt(x,z))*VX+.02;
   mfPoser('w191_'+p.id,mfModeleDe(p),x,y,z,Math.atan2(-ox,-oz),'cuisiner');const f=MF.L['w191_'+p.id];
   // la marmite, à la taille du personnage, juste devant lui
-  let M=CUIS191[c.i];if(!M){M=CUIS191[c.i]=marmite191();scene.add(M)}const sc=f&&f.o?f.o.scale.x:1;M.scale.setScalar(sc);const mx=x-ox*.55,mz=z-oz*.55;M.position.set(mx,Math.max(0,alt(mx,mz))*VX+.02,mz);M.visible=true;vus[c.i]=1;
+  let M=CUIS191[c.i];if(M&&M.userData.cle!==cle191(c)){scene.remove(M);M=null}if(!M){M=CUIS191[c.i]=marmite191(c);scene.add(M)}// à l'échelle d'un personnage de la carte (MF.H) : une marmite arrive à mi-cuisse, pas plus haute que la personne
+  const sc=(f&&f.o?f.o.scale.x:1)*(typeof MF!=='undefined'&&MF.H?MF.H:.62)*.42;M.scale.setScalar(sc);const mx=x-ox*.75,mz=z-oz*.75;M.position.set(mx,Math.max(0,alt(mx,mz))*VX+.02,mz);M.visible=true;vus[c.i]=1;
   if(M.userData.f)M.userData.f.scale.y=.8+Math.random()*.5});
  for(const i in CUIS191)if(!vus[i])CUIS191[i].visible=false}catch(e){}}}
 
