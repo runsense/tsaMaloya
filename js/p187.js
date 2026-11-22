@@ -442,7 +442,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
  let last=performance.now(),T0=last;const fm=new THREE.Vector3(),tgt=new THREE.Vector3();
  function bosse187(X,Z){const D=ETG&&ETG.userData.da;if(!D||!D.length)return 0;let h=0;for(const j of D){const p=RP[j],t=RT[j],dx=X-p.x,dz=Z-p.z,al=dx*t.x+dz*t.z;if(Math.abs(al)<2.2){const lat=Math.abs(dx*RN[j].x+dz*RN[j].z);if(lat<larg()/2+.3)h=Math.max(h,.22*Math.cos(al/2.2*Math.PI/2)**2)}}return h}
  function sol187(X,Z){return HS(X,Z)+bosse187(X,Z)}
- function pose(){if(st.x==null)placer(0);const t=new THREE.Vector3(Math.sin(st.h),0,Math.cos(st.h)),n=new THREE.Vector3(t.z,0,-t.x),y0=sol187(st.x,st.z),y=st.y!=null?Math.max(st.y,y0):y0,ya=sol187(st.x+t.x*1.3,st.z+t.z*1.3),yb=sol187(st.x-t.x*1.3,st.z-t.z*1.3),pente=st.air?st.vy/Math.max(st.v,4)*.6:(ya-yb)/2.6;
+ function pose(){if(st.x==null)placer(0);const t=new THREE.Vector3(Math.sin(st.h),0,Math.cos(st.h)),n=new THREE.Vector3(t.z,0,-t.x),y0=sol187(st.x,st.z),y=st.y!=null?Math.max(st.y,y0-.12):y0,ya=sol187(st.x+t.x*1.3,st.z+t.z*1.3),yb=sol187(st.x-t.x*1.3,st.z-t.z*1.3),pente0=st.air?st.vy/Math.max(st.v,4)*.6:(ya-yb)/2.6;st.pt=st.pt==null?pente0:st.pt+(pente0-st.pt)*(st.air?.3:.12);const pente=st.pt;
   car.position.set(st.x,y+.05,st.z);car.rotation.set(0,st.h+st.dir*.06,0);car.rotation.x=-Math.atan(pente);const i=Math.min(NP-1,Math.max(0,Math.round(st.s)));return {p:car.position.clone(),t,n,i,pente}}
  // pose la voiture au point i du trajet, dans le sens de la route
  function placer(i){i=Math.min(NP-1,Math.max(0,i));st.snap=1;st.ch=null;st.vh=null;st.y=null;st.air=0;st.vy=0;st.x=RP[i].x-(ET.large?RN[i].x*3.5:0);st.z=RP[i].z-(ET.large?RN[i].z*3.5:0);st.h=Math.atan2(RT[i].x,RT[i].z);st.s=i}
@@ -486,9 +486,10 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
     if(E.large){const p=RP[st.s],n=RN[st.s],lat=(st.x-p.x)*n.x+(st.z-p.z)*n.z,gmax=w-.35,gmin=-(E.osm==='nrl'?w-.25:w-.05);if(lat>gmax){st.x-=n.x*(lat-gmax);st.z-=n.z*(lat-gmax);choc187(-n.x,-n.z)}else if(lat<gmin){st.x+=n.x*(gmin-lat);st.z+=n.z*(gmin-lat);choc187(n.x,n.z)}}}
    if(st.crash>0){st.crash-=dt;st.v*=Math.pow(.2,dt)}
    // le saut : la voiture suit la route tant que la gravité le permet ; sur une bosse ou un dos d'âne pris vite, elle décolle, puis retombe
-   {const gy=sol187(st.x,st.z);if(st.y==null){st.y=gy;st.vy=0;st.air=0;st.gp=gy}const vg=(gy-st.gp)/Math.max(dt,1e-3);st.gp=gy;
-    if(!st.air){if((vg-st.vy)/Math.max(dt,1e-3)<-9.8*1.15&&st.v>9&&vg<st.vy){st.air=1}else{st.vy=vg;st.y=gy}}
-    if(st.air){st.vy-=9.8*dt;st.y+=st.vy*dt;if(st.y<=gy){const imp=vg-st.vy;st.y=gy;st.air=0;if(imp>3.5){st.sec=Math.max(st.sec||0,Math.min(1.2,imp/7));if(imp>10)st.v*=.75}st.vy=vg}}}
+   {// le relief de la route est lissé (le maillage du sol fait de petites marches qui faisaient ruer la voiture comme un taureau) ; seuls les dos d'âne font décoller
+    const bz=bosse187(st.x,st.z)||0;let hs=HS(st.x,st.z);if(!isFinite(hs))hs=isFinite(st.gl)?st.gl:0;if(!isFinite(st.gl))st.gl=null;if(!isFinite(st.y))st.y=null;st.gl=st.gl==null?hs:st.gl+(hs-st.gl)*Math.min(1,dt*6);const gy=st.gl+bz;if(st.y==null){st.y=gy;st.vy=0;st.air=0;st.gp=gy}const vg=(gy-st.gp)/Math.max(dt,1e-3);st.gp=gy;
+    if(!st.air){if(bz>0&&(vg-st.vy)/Math.max(dt,1e-3)<-9.8*1.15&&st.v>9&&vg<st.vy){st.air=1}else{st.vy=vg;st.y=gy}}
+    if(st.air){st.at=(st.at||0)+dt;st.vy-=9.8*dt;st.y+=st.vy*dt;if(st.y<=gy||st.at>2.5||!isFinite(st.y)){st.at=0;if(!isFinite(st.y))st.y=gy;const imp=vg-st.vy;st.y=gy;st.air=0;if(imp>3.5){st.sec=Math.max(st.sec||0,Math.min(1.2,imp/7));if(imp>10)st.v*=.75}st.vy=vg}}}
    // hors de la chaussée : l'herbe et la terre freinent fort ; au-delà de 55 m, on bute (le bord du monde détaillé)
    if(st.hors){const lim=ecart>w+6?12:20;if(st.v>lim)st.v-=(st.v-lim)*Math.min(1,dt*1.5);st.frotte=.25}
    if(ecart>55){const p=RP[st.s],dx=st.x-p.x,dz=st.z-p.z,L=Math.hypot(dx,dz)||1;st.x=p.x+dx/L*55;st.z=p.z+dz/L*55;st.v*=.5}
