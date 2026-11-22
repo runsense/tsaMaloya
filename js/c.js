@@ -379,7 +379,8 @@ function remplirLieu(){const t=lieu,o=S.t[t.i]||{},ra=o.b==='camp'?1.3:0;if(t.ba
  if(!sav)for(let k=0;k<150;k++){const[x,z,a]=cou(k,2.1);if(alt(x,z)<6||Math.hypot(x-t.x,z-t.z)<ra)continue;hutC.setRGB(1,1,1);poseM(MOD.fanjan,x,alt(x,z)*VX+.03,z,a,0,0,.7+rndH(k)*.8,hutC)}
  for(let k=0;k<70;k++){const[x,z,a]=cou(k,3.7);if(alt(x,z)<4)continue;hutC.setRGB(1,1,1);poseM(MOD.rocher,x,alt(x,z)*VX+.03,z,a,0,0,.6+rndH(k)*1.2,hutC)}
  for(let k=0;k<280;k++){const[x,z,a]=cou(k,4.9);if(alt(x,z)<4)continue;hutC.setRGB(1,1,1);poseM(MOD.herbe,x,alt(x,z)*VX+.03,z,a,0,0,1,hutC)}}
-function poseM(m,x,y,z,ry,rx,rz,s,col){const n=m.userData.n;if(n>=m.userData.max)return;QQ.setFromEuler(EU.set(rx,ry,rz));M.compose(V.set(x,y,z),QQ,SC.set(s,s,s));m.setMatrixAt(n,M);m.setColorAt(n,col);QQ.identity();m.userData.n=n+1}
+const BLANC382=new THREE.Color(1,1,1);
+function poseM(m,x,y,z,ry,rx,rz,s,col){const n=m.userData.n;if(n>=m.userData.max)return;QQ.setFromEuler(EU.set(rx,ry,rz));M.compose(V.set(x,y,z),QQ,SC.set(s,s,s));m.setMatrixAt(n,M);m.setColorAt(n,col||BLANC382);QQ.identity();m.userData.n=n+1}
 function modeles(){const TR=(x,y,z,rx=0,ry=0,rz=0,sx=1,sy=1,sz=1)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rx,ry,rz)),new THREE.Vector3(sx,sy,sz));
  const cy=(a,b,h,n=12)=>new THREE.CylinderGeometry(a,b,h,n),co=(r,h,n=14)=>new THREE.ConeGeometry(r,h,n),bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d),sp=r=>new THREE.IcosahedronGeometry(r,1);
  const PA=0xc09a52,PB=0x9f7d3f,PC=0x7f6232,BO=0x6e4c2c,BC=0x8a6238,TE=0xb09468,SO=0x1c1510,PI=0x77756c,VE=0x3f8a4a,BL=0xece4d2,TU=0x8a4a30,GR=0x7c8582;

@@ -76,8 +76,11 @@ const SONCH={alerte:'lambi',deces:'zion',decesDem:'clocheGrave',faim:'coeur',bra
 function jouerMoment(k){try{const p=SONCH[k];if(!p||!sndPret())return;if(PRE72[p]){PRE72[p].f();return}if(p==='volcan')PRE72.gronde.f();else if(p==='vent'||p==='tonnerre')PRE72.tonnerre.f()}catch(e){}}
 function sJouer(k){try{if(PRE72[k]&&sndPret())PRE72[k].f()}catch(e){}}
 // ----- ambiances en boucle -----
-function ambCouche(ft,f,q){const c=SND.ctx,s=c.createBufferSource();s.buffer=SND.bruit;s.loop=true;const F=c.createBiquadFilter();F.type=ft;F.frequency.value=f;F.Q.value=q;const g=c.createGain();g.gain.value=0;s.connect(F);F.connect(g);g.connect(SND.out);s.start(0,Math.random()*1.5);return {s,F,g}}
-function ambInit(){if(SND.amb||!SND.ctx)return;SND.amb={mer:ambCouche('lowpass',420,.6),vent:ambCouche('bandpass',520,.7),pluie:ambCouche('highpass',2600,.4),grave:ambCouche('lowpass',90,.6)}}
+function ambCouche(ft,f,q){const c=SND.ctx,s=c.createBufferSource();s.buffer=SND.bruit;s.loop=true;const F=c.createBiquadFilter();F.type=ft;F.frequency.value=f;F.Q.value=q;const g=c.createGain();g.gain.value=0;s.connect(F);F.connect(g);g.connect(SND.ambBus||SND.out);s.start(0,Math.random()*1.5);return {s,F,g}}
+function ambInit(){if(SND.amb||!SND.ctx)return;
+ // l'ambiance passe par son propre bus, au sixième : la musique et les sons du jeu restent devant
+ SND.ambBus=SND.ctx.createGain();SND.ambBus.gain.value=1/6;SND.ambBus.connect(SND.out);
+ SND.amb={riv:ambCouche('bandpass',950,.5),mer:ambCouche('lowpass',420,.6),vent:ambCouche('bandpass',520,.7),pluie:ambCouche('highpass',2600,.4),grave:ambCouche('lowpass',90,.6)}}
 const AMB={carte:{mer:.10,vent:.025,ois:1},nuit:{mer:.08,vent:.015,gr:1},cyclone:{mer:.16,vent:.32,pluie:.22,grave:.06},volcan:{mer:.05,vent:.02,grave:.34},cine:{mer:.12,vent:.04},
  galeries:{vent:.03,grave:.16,gouttes:1},bataille:{vent:.08,grave:.05,tamb:1},foret:{vent:.05,ois:1},doux:{mer:.03,vent:.01},silence:{}};
 // le moment courant : un petit jeu, un kabar, le prologue, le cyclone, la nuit ou le jour
@@ -96,9 +99,15 @@ function vent72(t,A){let base=Math.max(A.vent||0,.02);let loin=0,haut=0,cote=0,c
  RAF72.v+=(RAF72.cible-RAF72.v)*.18;
  const vague=cote*.6*(.5+.5*Math.sin(t*.5));
  return Math.min(.22,base*(.55+1.3*loin+.7*haut+vague)*camp*RAF72.v)}
+// la mer s'entend sur la côte, presque plus dans les Hauts ; la rivière proche s'entend, elle, en montant
+function mer72(){try{if(typeof camT==='undefined'||typeof alt!=='function')return 1;const h=Math.max(0,alt(camT.x,camT.z));return Math.max(.06,Math.min(1,1-(h-25)/320))}catch(e){return 1}}
+const RIV72={d:99,t:0};
+function riv72(){try{const now=performance.now();if(now-RIV72.t>900&&window.RIV126&&typeof camT!=='undefined'){RIV72.t=now;let b=99;for(const r of RIV126){const P=r.P||[];for(let i=0;i<P.length;i+=3){const d=Math.hypot(P[i][0]-camT.x,P[i][1]-camT.z);if(d<b)b=d}}RIV72.d=b}
+ const pres=Math.max(0,Math.min(1,(3.2-RIV72.d)/2.6)),pl=typeof pluie==='function'&&pluie()?1.6:1;return .09*pres*pl}catch(e){return 0}}
 let ambT=0,boucleT=0;setInterval(()=>{const c=sndPret();if(!c)return;ambInit();const m=momentCourant();SND.ambK=m;const p=m==='cine'?'mer':(SONCH[m]||'mer');
  const musique=!PROFIL[p]&&PRE72[p];const A=musique?AMB.doux:(m==='cine'?AMB.cine:AMB[PROFIL[p]]||AMB.carte),t=c.currentTime;
- const VF=vent72(t,A);['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=1+.35*Math.sin(t*.5);if(n==='vent')v=VF;L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)});
+ const VF=vent72(t,A);if(SND.amb.riv){const L=SND.amb.riv;L.g.gain.setTargetAtTime(riv72(),t,.8);L.F.frequency.setTargetAtTime(800+500*Math.abs(Math.sin(t*1.7)*Math.sin(t*.63)),t,.15)}
+ ['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=(1+.35*Math.sin(t*.5))*mer72();if(n==='vent')v=VF;L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)});
  SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520,t,.4);
  ambT++;const now=performance.now();
  if(musique){if(now>=boucleT){PRE72[p].f();boucleT=now+PRE72[p].d*1000-60}return}boucleT=0;if(ambT%4)return;const q=ambT/4;
