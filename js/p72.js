@@ -87,9 +87,18 @@ function momentCourant(){try{const now=performance.now();if(SND.jeu&&window.BTUO
  const k=$('kons');if(k&&!k.hidden)return 'ambSurvie';if(typeof S==='undefined'||!S)return 'ambJour';
  if(typeof CYCV!=='undefined'&&CYCV&&CYCV.I>.2)return 'ambCyclone';
  const ph=typeof jourPh==='function'?jourPh():.4;return (ph<.08||ph>.7)?'ambNuit':'ambJour'}catch(e){return 'ambJour'}}
+// le vent : fort de loin et en hauteur, il suit les vagues sur la côte, plus doux dans le camp, et toujours par rafales
+const RAF72={v:0,cible:0,proch:0};
+function vent72(t,A){let base=Math.max(A.vent||0,.02);let loin=0,haut=0,cote=0,camp=1;
+ try{loin=Math.max(0,Math.min(1,((typeof dist!=='undefined'?dist:10)-8)/40));if(typeof camT!=='undefined'&&typeof alt==='function'){const h=alt(camT.x,camT.z);haut=Math.max(0,Math.min(1,h/1600));cote=h<80?1-Math.max(0,h)/80:0}
+  if((typeof VP!=='undefined'&&VP)||(typeof CV!=='undefined'&&CV&&CV.on))camp=.45}catch(e){}
+ const now=performance.now();if(now>RAF72.proch){RAF72.cible=Math.random()<.45?.25+Math.random()*.35:1+Math.random()*1.3;RAF72.proch=now+1200+Math.random()*4200}
+ RAF72.v+=(RAF72.cible-RAF72.v)*.18;
+ const vague=cote*.6*(.5+.5*Math.sin(t*.5));
+ return Math.min(.22,base*(.55+1.3*loin+.7*haut+vague)*camp*RAF72.v)}
 let ambT=0,boucleT=0;setInterval(()=>{const c=sndPret();if(!c)return;ambInit();const m=momentCourant();SND.ambK=m;const p=m==='cine'?'mer':(SONCH[m]||'mer');
  const musique=!PROFIL[p]&&PRE72[p];const A=musique?AMB.doux:(m==='cine'?AMB.cine:AMB[PROFIL[p]]||AMB.carte),t=c.currentTime;
- ['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer'||n==='vent')v*=1+.35*Math.sin(t*(n==='mer'?.5:.23)+(n==='vent'?2:0));L.g.gain.setTargetAtTime(v,t,.6)});
+ const VF=vent72(t,A);['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=1+.35*Math.sin(t*.5);if(n==='vent')v=VF;L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)});
  SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520,t,.4);
  ambT++;const now=performance.now();
  if(musique){if(now>=boucleT){PRE72[p].f();boucleT=now+PRE72[p].d*1000-60}return}boucleT=0;if(ambT%4)return;const q=ambT/4;

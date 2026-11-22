@@ -29,7 +29,7 @@ function arcTex146(){const c=document.createElement('canvas');c.width=256;c.heig
   if(fT>.12)AV146.der=now;const ph=jourPh(),jour=ph>.1&&ph<.65,arcOn=jour&&vu&&now-AV146.der<45000&&now-AV146.der>1500&&fT<.1&&AV146.der>0;
   if(!AV146.arc){const m=new THREE.MeshBasicMaterial({map:arcTex146(),transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});const g=new THREE.RingGeometry(9,10.2,64,1,0,Math.PI);
    const uv=g.attributes.uv,p=g.attributes.position;for(let i=0;i<p.count;i++){const r=Math.hypot(p.getX(i),p.getY(i));uv.setXY(i,(r-9)/1.2,.5)}AV146.arc=new THREE.Mesh(g,m);AV146.arc.renderOrder=2;scene.add(AV146.arc)}
-  {const a=AV146.arc,cible=arcOn?.22*(1-Math.max(0,(now-AV146.der-30000)/15000)):0;a.material.opacity+=(cible-a.material.opacity)*Math.min(1,dt*1.5);a.visible=a.material.opacity>.01;
+  {const a=AV146.arc,cible=arcOn?.22*(1-Math.max(0,(now-AV146.der-30000)/15000))*(()=>{try{const v=new THREE.Vector3();cam.getWorldDirection(v);return Math.max(0,Math.min(1,(v.y+.55)/.25))}catch(e){return 1}})():0;a.material.opacity+=(cible-a.material.opacity)*Math.min(1,dt*1.5);a.visible=a.material.opacity>.01;
    if(a.visible){const d=Math.max(12,dist*1.6),ang=(typeof az!=='undefined'?az:0);a.position.set(camT.x-Math.sin(ang)*d,camT.y-1-dist*.12,camT.z-Math.cos(ang)*d);a.rotation.y=ang;const k=Math.max(.6,dist/18);a.scale.setScalar(k)}}
   // le son des gouttes
   try{if(fT>.08&&typeof sndPret==='function'&&sndPret()&&Math.random()<fT*.6){const c=sndPret(),t=c.currentTime,n=1+Math.floor(fT*4);for(let i=0;i<n;i++)bruit7(.03,{t:Math.random()*.2,ft:'bandpass',f:2500+Math.random()*4000,q:6,v:.015+fT*.03})}}catch(e){}

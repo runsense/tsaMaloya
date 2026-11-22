@@ -39,7 +39,7 @@ try{['resurgence177','grossesPluies179','glissement179'].forEach(k=>{if(EV[k])EV
 // ===== l'arc-en-ciel n'est plus un anneau géométrique : bandes de couleur aux bords fondus, ciel plus clair dedans,
 // second arc très pâle, pieds qui s'effacent avant de toucher le relief, et un voile irrégulier qui le mêle à la pluie =====
 (function arc180(){try{if(typeof AV146==='undefined'||!AV146.arc){setTimeout(arc180,1500);return}const a=AV146.arc;if(a.userData.v180)return;a.userData.v180=1;
- const g=new THREE.RingGeometry(7.6,12,128,6,0,Math.PI);
+ const g=new THREE.RingGeometry(7.6,12,160,6,-.45,Math.PI+.9);
  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{op:{value:0},t:{value:0},ks:{value:1},cote:{value:1}},
   vertexShader:'attribute float hr;varying vec2 vp;varying float vh;void main(){vp=position.xy;vh=hr;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
   fragmentShader:'uniform float op;uniform float t;uniform float ks;uniform float cote;varying vec2 vp;varying float vh;'+
@@ -54,7 +54,7 @@ try{['resurgence177','grossesPluies179','glissement179'].forEach(k=>{if(EV[k])EV
    'float sol=smoothstep(.25*ks,1.6*ks,vh);'+
    'float haut=mix(1.,.35,smoothstep(.15,1.,a));'+
    'float flanc=mix(1.,.45,smoothstep(-1.,1.,vp.x/r*cote));'+
-   'float pied=sol*haut*flanc*smoothstep(.0,.2,a);'+
+   'float pied=sol*haut*flanc*smoothstep(-.42,-.05,a);'+
    'float voile=.45+.55*n(vec2(vp.x*.7+3.,vp.y*.2+t*.04))*(.55+.45*n(vec2(vp.x*6.,vp.y*.8-t*.9)));'+
    'gl_FragColor=vec4(c*pied*voile*op,1.0);}'});
  g.setAttribute('hr',new THREE.Float32BufferAttribute(new Float32Array(g.attributes.position.count).fill(9),1));a.geometry.dispose();a.geometry=g;

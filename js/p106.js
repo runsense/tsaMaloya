@@ -184,5 +184,5 @@ SAVOIRS.pigeons={n:'L’élevage de pigeons',c:2,bt:'Colons, demande l’an 1670
 // ----- 21. Vie : une seule demande à la fois au départ. Tant qu'une fenêtre attend une réponse (rôles, conseil, récit, sortie),
 // la bulle du guide se cache et son compte à rebours s'arrête ; les petites bulles d'aide aussi -----
 {const gt=guideTick;guideTick=function(){try{const occ=['cons87','expP','choixRole','campIntro'].some(id=>{const e=$(id);return e&&e.offsetParent})||(()=>{const m=$('modal');return m&&!m.hidden})();const b=$('guideJ');
- if(occ){if(b)b.style.display='none';if(guideTick.t0)guideTick.t0+=400;document.querySelectorAll('.tip97,#tip97,.bulleAide').forEach(e=>e.style.display='none');return}
- if(b)b.style.display='';document.querySelectorAll('.tip97,#tip97,.bulleAide').forEach(e=>e.style.display='')}catch(e){}return gt.apply(this,arguments)}}
+ if(occ){if(b)b.style.display='none';if(guideTick.t0)guideTick.t0+=400;document.querySelectorAll('.tip97,#tip97,.bulleAide').forEach(e=>{if(e.style.display!=='none'){e.style.display='none';e.dataset.cache106='1'}});return}
+ if(b)b.style.display='';document.querySelectorAll('.tip97,#tip97,.bulleAide').forEach(e=>{if(e.dataset.cache106){delete e.dataset.cache106;if(e.textContent.trim())e.style.display=''}})}catch(e){}return gt.apply(this,arguments)}}
