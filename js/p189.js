@@ -4,7 +4,7 @@
 // et une CONSÉQUENCE chez celui qui reçoit (la tête part en arrière, le ventre se plie, la jambe cède), selon l'endroit et la force.
 // Pour chaque coup on imagine plusieurs prises, on les note (portée, équilibre), on garde la meilleure.
 const INT189={
- zones:{p1:{tete:.8,ventre:.2},p2:{tete:.6,ventre:.4},p3:{tete:.7,ventre:.3},k1:{jambe:.85,ventre:.15},k2:{ventre:.7,tete:.15,jambe:.15},k3:{tete:.9,ventre:.1},ka:{tete:.6,ventre:.4}},
+ zones:{p1:{tete:.8,ventre:.2},p2:{tete:.6,ventre:.4},p3:{tete:.7,ventre:.3},k1:{jambe:.85,ventre:.15},k2:{ventre:.7,tete:.15,jambe:.15},k3:{tete:.9,ventre:.1},ka:{tete:.6,ventre:.4},bal:{jambe:1},ret:{tete:.6,ventre:.4},up:{tete:1}},
  os:{tete:'Head',ventre:'Spine01',jambe:'Leg'}};
 function os189(o){if(o.b189)return o.b189;const m={};o.g.scene.traverse(b=>{if(b.isBone&&!m[b.name])m[b.name]=b});return o.b189=m}
 const V189=()=>new THREE.Vector3(),Q189=()=>new THREE.Quaternion();
