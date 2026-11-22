@@ -97,22 +97,30 @@ function vent72(t,A){let base=Math.max(A.vent||0,.02);let loin=0,haut=0,cote=0,c
   if((typeof VP!=='undefined'&&VP)||(typeof CV!=='undefined'&&CV&&CV.on))camp=.45}catch(e){}
  const now=performance.now();if(now>RAF72.proch){RAF72.cible=Math.random()<.45?.25+Math.random()*.35:1+Math.random()*1.3;RAF72.proch=now+1200+Math.random()*4200}
  RAF72.v+=(RAF72.cible-RAF72.v)*.18;
- const vague=cote*.6*(.5+.5*Math.sin(t*.5));
- return Math.min(.22,base*(.55+1.3*loin+.7*haut+vague)*camp*RAF72.v)}
+ COTE72=cote;const vague=cote*(1.1*houle72(t)-.25);
+ const hv=typeof courbe200==='function'&&typeof camT!=='undefined'?(courbe200('vent',Math.max(0,alt(camT.x,camT.z))).v-.44)/.56*.7:.7*haut;
+ return Math.min(.22,base*(.55+1.3*loin+hv+vague)*camp*RAF72.v)}
 // la mer s'entend sur la côte, presque plus dans les Hauts ; la rivière proche s'entend, elle, en montant
-function mer72(){try{if(typeof camT==='undefined'||typeof alt!=='function')return 1;const h=Math.max(0,alt(camT.x,camT.z));return Math.max(.06,Math.min(1,1-(h-25)/320))}catch(e){return 1}}
+function mer72(){try{if(typeof camT==='undefined'||typeof alt!=='function')return 1;const h=Math.max(0,alt(camT.x,camT.z));if(typeof courbe200==='function')return courbe200('mer',h).v;return Math.max(.06,Math.min(1,1-(h-25)/320))}catch(e){return 1}}
 const RIV72={d:99,t:0};
 function riv72(){try{const now=performance.now();if(now-RIV72.t>900&&window.RIV126&&typeof camT!=='undefined'){RIV72.t=now;let b=99;for(const r of RIV126){const P=r.P||[];for(let i=0;i<P.length;i+=3){const d=Math.hypot(P[i][0]-camT.x,P[i][1]-camT.z);if(d<b)b=d}}RIV72.d=b}
- const pres=Math.max(0,Math.min(1,(3.2-RIV72.d)/2.6)),pl=typeof pluie==='function'&&pluie()?1.6:1;return .09*pres*pl}catch(e){return 0}}
+ const pres=typeof courbe200==='function'?courbe200('riviere',RIV72.d).v:Math.max(0,Math.min(1,(3.2-RIV72.d)/2.6)),pl=typeof pluie==='function'&&pluie()?1.6:1;return .09*pres*pl}catch(e){return 0}}
+const PL72={v:0};
+// la houle : une vague toutes les 9 s environ, la crête plus courte que le creux ; la mer et, sur la côte, le souffle du vent la suivent ensemble
+const houle72=t=>Math.pow(.5+.5*Math.sin(t*.7-1.2),1.6);let COTE72=0;
 let ambT=0,boucleT=0;setInterval(()=>{const c=sndPret();if(!c)return;ambInit();const m=momentCourant();SND.ambK=m;const p=m==='cine'?'mer':(SONCH[m]||'mer');
  const musique=!PROFIL[p]&&PRE72[p];const A=musique?AMB.doux:(m==='cine'?AMB.cine:AMB[PROFIL[p]]||AMB.carte),t=c.currentTime;
- const VF=vent72(t,A);if(SND.amb.riv){const L=SND.amb.riv;L.g.gain.setTargetAtTime(riv72(),t,.8);L.F.frequency.setTargetAtTime(800+500*Math.abs(Math.sin(t*1.7)*Math.sin(t*.63)),t,.15)}
- ['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=(1+.35*Math.sin(t*.5))*mer72();if(n==='vent')v=VF;L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)});
- SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520,t,.4);
+ const VF=vent72(t,A);if(SND.amb.riv){const L=SND.amb.riv,raf=typeof RAF72!=='undefined'?RAF72.v:1;L.g.gain.setTargetAtTime(riv72()*Math.max(.45,.7+.45*(raf-1)),t,.5);L.F.frequency.setTargetAtTime(800+500*Math.abs(Math.sin(t*1.7)*Math.sin(t*.63)),t,.15)}
+ ['mer','vent','pluie','grave'].forEach(n=>{const L=SND.amb[n];let v=A[n]||0;if(n==='mer')v*=(.7+.65*houle72(t))*mer72();if(n==='vent')v=VF;else if(typeof vpCalme204==='function')v*=vpCalme204();if(n==='pluie'){const pf=typeof pluieF106==='function'?pluieF106():0;PL72.v+=(pf-PL72.v)*(pf>PL72.v?.025:.04);v=Math.max(v*(.25+.9*PL72.v),.05*PL72.v)}const T=L.tr||(L.tr={cible:v,fin:0});
+  // un vrai changement d'ambiance : 0,9 s de passage ; celle qui sort baisse d'abord doucement puis plus franchement, celle qui entre monte vite d'abord
+  if(Math.abs(v-T.cible)>Math.max(.012,T.cible*.35)&&m!==T.m){const de=L.g.gain.value,N=24,cv=new Float32Array(N);for(let i=0;i<N;i++){const u=i/(N-1),e=v<de?Math.pow(u,2.2):1-Math.pow(1-u,2.2);cv[i]=de+(v-de)*e}
+   try{L.g.gain.cancelScheduledValues(t);L.g.gain.setValueCurveAtTime(cv,t,.9);T.fin=t+.92}catch(e){}T.m=m}
+  T.cible=v;if(t>=T.fin)L.g.gain.setTargetAtTime(v,t,n==='vent'?.25:.6)});
+ SND.amb.vent.F.frequency.setTargetAtTime(PROFIL[p]==='cyclone'?380+260*Math.abs(Math.sin(t*.4)):520+COTE72*(-140+420*houle72(t)),t,.4);
  ambT++;const now=performance.now();
  if(musique){if(now>=boucleT){PRE72[p].f();boucleT=now+PRE72[p].d*1000-60}return}boucleT=0;if(ambT%4)return;const q=ambT/4;
- if(A.ois&&Math.random()<.18){const f=2200+Math.random()*1800;for(let i=0;i<2+Math.floor(Math.random()*3);i++)ton7(f,.09,{t:i*.13,vers:f*(1.2+Math.random()*.3),v:.025})}
- if(A.gr&&q%2===0){for(let i=0;i<4;i++)ton7(4300,.035,{t:i*.07,v:.012,type:'triangle'})}
+ const cal=typeof vpCalme204==='function'?vpCalme204():1;if(A.ois&&cal>.7&&Math.random()<.18){const f=2200+Math.random()*1800;for(let i=0;i<2+Math.floor(Math.random()*3);i++)ton7(f,.09,{t:i*.13,vers:f*(1.2+Math.random()*.3),v:.025})}
+ if(A.gr&&cal>.6&&q%2===0){for(let i=0;i<4;i++)ton7(4300,.035,{t:i*.07,v:.012,type:'triangle'})}
  if(A.gouttes&&Math.random()<.4){const f=900+Math.random()*900;ton7(f,.18,{vers:f*.6,v:.05})}
  if(A.tamb&&q%4===0){I72.rouler(0,.28);I72.rouler(.5,.2);I72.rouler(.75,.28)}
  if(PROFIL[p]==='volcan'&&Math.random()<.3)bruit7(2.2,{ft:'lowpass',f:110,q:.5,v:.18,a:.8});

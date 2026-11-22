@@ -28,3 +28,5 @@ try{const lj=leg104Jouer;leg104Jouer=function(k){const r=lj.apply(this,arguments
 // et jamais plus d'un toutes les 3 secondes
 try{if(typeof PRE72!=='undefined'&&PRE72.tick){let der=0;PRE72.tick={d:1,f:()=>{try{const now=performance.now();if(now-der<3000)return;der=now;const c=typeof sndPret==='function'&&sndPret();if(!c)return;const B=sons193(c),b=B&&B.tick;
  if(!b){if(typeof sTon==='function')sTon(2400,.03,{v:.02,type:'triangle'});return}const s=c.createBufferSource(),g=c.createGain(),t=c.currentTime;s.buffer=b;g.gain.setValueAtTime(.3,t);g.gain.linearRampToValueAtTime(0,t+.14);s.connect(g);g.connect(SND.out);s.start(t,.25,.15)}catch(e){}}}}}catch(e){}
+// pendant le conte, seuls les sons du récit restent : plus de clic de message ni de signal de bras (ils venaient des cases que le conte touche)
+try{const jm=jouerMoment;jouerMoment=function(k){try{if(S&&S.autoD&&!S.fin&&(k==='info'||k==='bras'))return}catch(e){}return jm.apply(this,arguments)}}catch(e){}

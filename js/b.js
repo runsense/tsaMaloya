@@ -302,10 +302,10 @@ function grandir(){const n=(S.year<1715?1:S.year<1735?2:3)+(voie().c>40?1:0)+(S.
  for(let k=0;k<n;k++){const c=[];colTiles().forEach(t=>t.nb.forEach(i=>{const u=T[i],o=S.t[i];if(!(o&&(o.c||o.b==='camp'))&&u.alt<mx&&!c.includes(u))c.push(u)}));
   if(!c.length)return;c.sort((a,b)=>a.alt-b.alt);const u=c[Math.floor(rnd()*rnd()*c.length)],o=tl(u.i);
   if(o.b){log('La colonie avance : un '+(o.b==='guet'?'poste':'jardin')+' est perdu.');delete o.b}o.c=1;o.clr=1}}
-const VILLES=[[1663,55.270,-21.010,'Saint-Paul'],[1669,55.450,-20.880,'Saint-Denis'],[1673,55.609,-20.907,'Sainte-Suzanne'],[1705,55.550,-20.897,'Sainte-Marie'],[1712,55.286,-21.170,'Saint-Leu'],[1718,55.650,-20.960,'Saint-André'],[1726,55.411,-21.286,'Saint-Louis'],[1730,55.713,-21.034,'Saint-Benoît'],[1735,55.478,-21.339,'Saint-Pierre']];
+const VILLES=[[1663,55.270,-21.010,'Saint-Paul'],[1667,55.609,-20.907,'Sainte-Suzanne'],[1669,55.450,-20.880,'Saint-Denis'],[1705,55.550,-20.897,'Sainte-Marie'],[1712,55.286,-21.170,'Saint-Leu'],[1718,55.650,-20.960,'Saint-André'],[1726,55.411,-21.286,'Saint-Louis'],[1730,55.713,-21.034,'Saint-Benoît'],[1735,55.478,-21.339,'Saint-Pierre']];
 const VHIST={'Saint-Paul':'Premier établissement français, en 1663 : une poignée de colons et des Malgaches, du bétail et des jardins. Capitale jusqu’en 1738.',
  'Saint-Denis':'Fondé en 1669 par Étienne Regnault, premier gouverneur. Capitale de l’île à partir de 1738.',
- 'Sainte-Suzanne':'Quartier du Nord-Est, sur les terres arrosées au vent. Date de fondation approximative dans le jeu.',
+ 'Sainte-Suzanne':'Quartier du Nord-Est, sur les terres arrosées au vent. Fondé vers 1667 sous Étienne Regnault, autour du Quartier-Français, deux ans avant Saint-Denis.',
  'Sainte-Marie':'Quartier entre Saint-Denis et Sainte-Suzanne. Date approximative dans le jeu.',
  'Saint-Leu':'Côte sous le vent : le café y gagne les pentes au XVIIIe siècle. Date approximative dans le jeu.',
  'Saint-André':'Quartier de l’Est, ouvert par les défrichements du XVIIIe siècle. Date approximative dans le jeu.',

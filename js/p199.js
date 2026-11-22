@@ -25,5 +25,5 @@ setInterval(()=>{try{if(!vie199()||typeof camT==='undefined')return;const c=type
  const src=hauts199();
  if(soir&&src&&!SON199.kb&&SON199.soir!==(S.ns||0)*10+(S.jourN||0)&&Math.random()<.5&&typeof boucle194==='function'){SON199.soir=(S.ns||0)*10+(S.jourN||0);SON199.kb=boucle194(c,SND.out,Math.random()<.5?'kabare':'maligasse',.5)}
  if(SON199.kb&&(!soir||!vie199())){SON199.kb.stop();SON199.kb=null}
- if(SON199.kb&&SON199.kb.sp){const d=Math.hypot(camT.x-src[0],camT.z-src[1]),pres=Math.max(0,Math.min(1,1-(d-2)/14)),calme=dCase<1.4?.3:1,raf=typeof RAF72!=='undefined'?Math.min(1.8,RAF72.v):1;
-  SON199.kb.sp.gain.setTargetAtTime(Math.max(.015,.05+.25*pres)*calme*(.7+.3*raf),c.currentTime,.6);SON199.kb.F.frequency.setTargetAtTime(380+1400*pres,c.currentTime,.6)}}catch(e){}},400);
+ if(SON199.kb&&SON199.kb.sp){const d=Math.hypot(camT.x-src[0],camT.z-src[1]),K=courbe200('cache',d),calme=dCase<1.4?.3:1,raf=typeof RAF72!=='undefined'?Math.min(1.8,RAF72.v):1;
+  SON199.kb.sp.gain.setTargetAtTime(Math.max(.015,.3*K.v)*calme*(.7+.3*raf),c.currentTime,.6);SON199.kb.F.frequency.setTargetAtTime(K.hz,c.currentTime,.6)}}catch(e){}},400);
