@@ -27,3 +27,9 @@ try{if(typeof PRE72!=='undefined'&&typeof SONCH!=='undefined'){let cur=null,curK
    if(!/kabar|maloya|moringue/.test(tx))for(const [re,m] of EVM)if(re.test(tx)){SND.m194=m;SND.m194J=performance.now()+16000;break}}}catch(e){}return md.apply(this,arguments)}}
 }}catch(e){}
 try{CRED144.push(["Boucles de maloya (kabaré, kasse, malbar, maligasse, moring, pleure, roule, valse) : rythmes de la librairie « Maloya Roots Percussions », Wayo Audio, joués et mixés par Paris","Wayo Audio"])}catch(e){}
+
+// ===== le cyclone s'annonce : la saison d'avant commence au beau fixe, sans nuage ni vent ; il approche sur la fin
+// (pendant le dernier bras s'il n'y en a que 2, sur les 2 derniers s'il y en a plus de 5) et frappe la saison suivante =====
+function approche194(){try{if(!S||S.fin||!S.cyc)return 0;const n=S.cyc.in;if(n<=0)return 1;if(n>1)return 0;
+ const n0=typeof brasMax==='function'?brasMax():3,k=n0<=2?1:n0<=5?1.5:2,r=Math.max(0,S.bras||0);
+ return Math.max(0,Math.min(1,(k+1-r)/(k+1)))}catch(e){return 0}}

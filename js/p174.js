@@ -20,6 +20,6 @@ function ampPluie174(){try{return S&&!S.fin?pluieLieu174(camT.x,camT.z).duty:0}c
 function averse174(){try{if(!S||S.fin)return 0;const P=pluieLieu174(camT.x,camT.z);if(P.duty<=0)return 0;const t=performance.now()/1000,w=Math.floor(t/50),u=(t/50)-w;
  if(rndH(w*7.31+(S.ns||0)*1.7)>=P.duty)return 0;const fort=P.z==='centre'&&rndH(w*3.9+1.3)<.35?1.6:1;return Math.min(1,P.inten*fort)*Math.min(1,u*5,(1-u)*5)}catch(e){return 0}}
 averseF146=function(){try{if(!S||S.fin)return 0;if(!modeHist())return typeof pluieF106==='function'?pluieF106():0;if(S.cyc&&S.cyc.in<=0)return 0;return averse174()*.7}catch(e){return 0}};
-pluieF106=function(){try{if(!S||S.fin)return 0;const cyc=S.cyc&&S.cyc.in<=0?1:S.cyc&&S.cyc.in===1?.6:0;return Math.min(1,Math.max(cyc,averse174()*.7))}catch(e){return 0}};
+pluieF106=function(){try{if(!S||S.fin)return 0;const cyc=S.cyc&&S.cyc.in<=0?1:S.cyc?(typeof approche194==='function'?approche194():(S.cyc.in<=1?1:0))*.6:0;return Math.min(1,Math.max(cyc,averse174()*.7))}catch(e){return 0}};
 // l'en-tête dit le vrai temps : cyclone quand il est là, et les averses de l'Est en saison sèche
 {const e0=ep;ep=function(){try{if(S&&S.cyc&&S.cyc.in<=0)return 'Cyclone · '+ep0();const r=e0.apply(this,arguments);if(S&&!pluie()&&ampPluie174()>=.4)return r.replace('Saison sèche · ','Saison sèche, averses au vent · ');return r}catch(e){return e0.apply(this,arguments)}}}

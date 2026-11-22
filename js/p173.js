@@ -7,7 +7,7 @@ fig173.cl={};
 {const pi=p3Instance;p3Instance=function(n){return pi.apply(this,arguments).then(I=>{fig173.cl[n]=I.g.animations;return I})}}
 // la direction de la mer depuis une case du bord : à l'opposé de ses voisines de terre
 function mer173(t){const N=(t.nb||[]).map(i=>T[i]).filter(Boolean);const w=N.find(u=>u.alt<=1);if(w)return {x:w.x,z:w.z};if(N.length>=6)return null;let cx=0,cz=0;N.forEach(u=>{cx+=u.x-t.x;cz+=u.z-t.z});const l=Math.hypot(cx,cz)||1,d=Math.hypot(N[0].x-t.x,N[0].z-t.z)||.6;return {x:t.x-cx/l*d,z:t.z-cz/l*d}}
-const beau173=()=>{try{return !(typeof pluie==='function'&&pluie())&&!(S.cyc&&S.cyc.in<=1)}catch(e){return true}};
+const beau173=()=>{try{return !(typeof pluie==='function'&&pluie())&&!(S.cyc&&(typeof approche194==='function'?approche194():(S.cyc.in<=1?1:0))>.2)}catch(e){return true}};
 function place173(cle,n,h,clip,x,y,z,ry){let f=NAG173.L[cle];if(!f){f=NAG173.L[cle]={g:null,att:1};fig173(n,h,clip).then(g=>{if(NAG173.L[cle]!==f)return;if(clip==='nager'){const w=new THREE.Group();g.rotation.x=Math.PI/2;g.position.y=-.004;w.add(g);g=w}f.g=g;scene.add(g)}).catch(()=>{delete NAG173.L[cle]})}f.vu=NAG173.t;if(f.g){f.g.position.set(x,y,z);f.g.rotation.y=ry}}
 setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;NAG173.t=(NAG173.t||0)+1;const ph=typeof jourPh==='function'?jourPh():.5,jour=ph>.18&&ph<.7,voir=jour&&beau173()&&dist<18&&!(typeof VP!=='undefined'&&VP)&&!(typeof CINE!=='undefined'&&CINE);
  const now=performance.now()/1000,col=!!S.voieC;
