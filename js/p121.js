@@ -49,9 +49,16 @@ function passerAttente121(){try{if(!S||!modeHist())return;const m=$('modal');if(
  if(!S.autoD){S.autoD=1;try{autoBtn()}catch(x){}}proch=performance.now()+50;toast('Le conte avance.')}catch(e){}}
 // ===== Les routes et chemins coloniaux : de vraies bandes de terre (ornières, cailloux, bords d'herbe), plus des traits parallèles =====
 const VR121={pos:[null,null,null,null],m:[null,null,null,null]};
-setInterval(()=>{try{if(!window.VOIES||typeof scene==='undefined')return;VOIES.forEach((l,k)=>{l.visible=false;const a=l.geometry.attributes.position;if(!a||a===VR121.pos[k]&&VR121.m[k])return;VR121.pos[k]=a;
+setInterval(()=>{try{if(typeof sentier!=='undefined'&&sentier)sentier.visible=false;if(!window.VOIES||typeof scene==='undefined')return;VOIES.forEach((l,k)=>{l.visible=false;const a=l.geometry.attributes.position;if(!a||a===VR121.pos[k]&&VR121.m[k])return;VR121.pos[k]=a;
  if(VR121.m[k]){scene.remove(VR121.m[k]);VR121.m[k].geometry.dispose()}const A=a.array,G=[],w=k>=2?.16:.075;
- for(let e=0;e+23<A.length;e+=24){const P=[];for(let s=0;s<4;s++)P.push({x:A[e+s*6],y:A[e+s*6+1],z:A[e+s*6+2]});P.push({x:A[e+21],y:A[e+22],z:A[e+23]});G.push(ruban97(P,w,q=>Math.max(0,alt(q.x,q.z))*VX+(k>=2?.1:.05)))}
+ // les sentiers nés du passage (k<2) : plus de traits droits d'un centre de case à l'autre (ils faisaient des lignes parallèles qui dévalaient les pentes) ;
+ // ils serpentent, et on ne double pas le sentier tracé à la main (déjà dessiné, en ruban sinueux)
+ const tr=new Set((S&&S.trail)||[]),cle=(x,z)=>Math.round(x*50)+','+Math.round(z*50),TI={};if(k<2&&typeof T!=='undefined')T.forEach(t=>{TI[cle(t.x,t.z)]=t.i});
+ for(let e=0;e+23<A.length;e+=24){const P=[];
+  if(k<2){const ax=A[e],az=A[e+2],bx=A[e+21],bz=A[e+23],ia=TI[cle(ax,az)],ib=TI[cle(bx,bz)];if(ia!=null&&ib!=null&&tr.has(ia)&&tr.has(ib))continue;
+   const L=Math.hypot(bx-ax,bz-az)||1,ph=((ia||0)*13+(ib||0)*7)%10;for(let q=0;q<=12;q++){const f=q/12,ww=Math.sin(f*Math.PI)*(Math.sin(f*5+ph)*.16+Math.sin(f*13+ph)*.04),x=ax+(bx-ax)*f-(bz-az)/L*ww,z=az+(bz-az)*f+(bx-ax)/L*ww;P.push({x,y:0,z})}}
+  else{for(let s=0;s<4;s++)P.push({x:A[e+s*6],y:A[e+s*6+1],z:A[e+s*6+2]});P.push({x:A[e+21],y:A[e+22],z:A[e+23]})}
+  G.push(ruban97(P,w,q=>Math.max(0,alt(q.x,q.z))*VX+(k>=2?.1:.05)))}
  if(!G.length){VR121.m[k]=null;return}const g=fusion97(G),m=new THREE.Mesh(g,matRuban110(k>=2?1:0));if(k===3)m.material.color.set(0xd0ccc0);m.renderOrder=3;m.frustumCulled=false;scene.add(m);VR121.m[k]=m});
  // les chemins s'effacent de loin comme avant
- VR121.m.forEach((m,k)=>{if(m&&k<2){const o=VOIES[k].material.opacity;m.visible=o>.02;m.material.opacity=Math.min(1,o*1.15)}})}catch(e){}},700);
+ VR121.m.forEach((m,k)=>{if(m&&k<2){const o=VOIES[k].material.opacity;m.visible=o>.02;m.material.opacity=Math.min(.6,o*.8)}})}catch(e){}},700);

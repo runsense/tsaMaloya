@@ -42,7 +42,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
   {osm:'sd',n:'Saint-Denis, le Barachois',s:'en plein festival maloya : la route est bouchée, on passe par la ville et Bellepierre',h:'jour',vmax:160,festival:1,wp:[[55.4330,-20.8790],[55.4420,-20.8775],[55.4475,-20.8780,'r'],[55.4505,-20.8830],[55.4480,-20.8880],[55.4440,-20.8920],[55.4415,-20.8955]]},
   {osm:'plaines',part:[.55,.72],n:'La route des Plaines',s:'la montée des Hauts, de Saint-Benoît à la Plaine des Cafres',h:'jour',vmax:210,wp:[[55.7130,-21.0340,'r'],[55.6900,-21.0650],[55.6600,-21.1000],[55.6280,-21.1350],[55.6000,-21.1550],[55.5800,-21.1720],[55.5700,-21.1950],[55.5650,-21.2100]]},
   {osm:'volcan',part:[.55,1],n:'La route du volcan',s:'la forêt, la colline, puis la plaine rouge, comme sur Mars',h:'soir',vmax:190,volcan:1,wp:[[55.5650,-21.2110,'r'],[55.5800,-21.2200],[55.5950,-21.2300],[55.6080,-21.2360],[55.6200,-21.2385],[55.6320,-21.2370],[55.6430,-21.2330],[55.6600,-21.2290],[55.6760,-21.2250],[55.6890,-21.2185]]}];
- let ET=ETAPES[0],RP=[],RT=[],RN=[],NP=0,larg=()=>9,ETG=null,ek=0,HS=(X,Z)=>0,PROCHE=(X,Z)=>[1e9,-1];
+ let vert187=()=>0,ET=ETAPES[0],RP=[],RT=[],RN=[],NP=0,larg=()=>9,ETG=null,ek=0,HS=(X,Z)=>0,PROCHE=(X,Z)=>[1e9,-1];
  function etape(k){ek=k;ET=ETAPES[k];if(ETG){sc.remove(ETG);ETG.traverse(o=>{if(o.userData.partage)return;if(o.geometry)o.geometry.dispose();(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m&&m.map&&m.map!==SATT&&m.map.dispose)m.map.dispose()})})}ETG=new THREE.Group();sc.add(ETG);
   // le trajet, avec les ronds-points : on tourne autour de l'îlot, dans le sens inverse des aiguilles d'une montre
   const W=ET.wp.map(([lo,la,f])=>{const [X,Z]=toR(lo,la);return {X,Z,r:f==='r'}});const pts=[];
@@ -62,6 +62,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
   {const Y=RP.map(p=>p.y);for(let r=0;r<3;r++)for(let i=0;i<=NP;i++){let s2=0,n=0;for(let k2=-12;k2<=12;k2++){const j=i+k2;if(j>=0&&j<=NP){s2+=Y[j];n++}}RP[i].y=s2/n}RP.forEach(p=>p.y=Math.max(p.y,ET.mer?1.6:.6))}
   larg=()=>ET.large?14:7;window.larg187=()=>larg()/2;
   // la Plaine des Sables : le sol lui-même rougit (plus de nappe posée dessus, qui flottait au-dessus des creux et coupait les bosses)
+  vert187=(bi,dd)=>{if(!ET.volcan||bi<0)return 0;const u=bi/NP;return Math.min(1,Math.max(0,(u-.02)/.04))*Math.min(1,Math.max(0,(.3-u)/.05))*Math.min(1,Math.max(0,(dd-larg()/2-1)/4))};
   rouge187=(bi,dd)=>{if(!ET.volcan||bi<0)return 0;const u=bi/NP,a=Math.min(1,Math.max(0,(u-.52)/.05))*Math.min(1,Math.max(0,(.96-u)/.03));return a*Math.min(1,Math.max(0,1-(dd-70)/60))};
   // le sol : le vrai relief, l'image satellite, aplani sous la route
   let xmin=1e9,xmax=-1e9,zmin=1e9,zmax=-1e9;RP.forEach(p=>{xmin=Math.min(xmin,p.x);xmax=Math.max(xmax,p.x);zmin=Math.min(zmin,p.z);zmax=Math.max(zmax,p.z)});const M=700;xmin-=M;xmax+=M;zmin-=M;zmax+=M;
@@ -70,7 +71,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
   // le sol, à l'échelle réelle : loin de la route le vrai relief ; près de la route il descend en douceur jusqu'au niveau de la chaussée
   const w2=larg()/2;PROCHE=proche;HS=(X,Z)=>{const y0=hR(X,Z),[dd,bi]=proche(X,Z);if(bi<0)return y0;if(ET.mer&&alt(X/K+P0[0],Z/K+P0[1])<=1)return y0>0?y0:-2;const ry=RP[bi].y-.12,k=Math.min(1,Math.max(0,(dd-(w2+1.5))/45));return ry+(y0-ry)*k*k*(3-2*k)};
   for(let j=0;j<=GZ;j++)for(let i=0;i<=GX;i++){const X=xmin+(xmax-xmin)*i/GX,Z=zmin+(zmax-zmin)*j/GZ;const gx=X/K+P0[0],gz=Z/K+P0[1],enMer=alt(gx,gz)<=1;const [dd,bi]=proche(X,Z);let y=HS(X,Z);if(dd<80){const k=Math.min(1,Math.max(0,(dd-58)/20));y-=3*(1-k*k*(3-2*k))}
-   gp.push(X,enMer?-2:y,Z);guv.push((gx+MAR)/W0,1-(gz+MAR)/H0);{const f=rouge187(bi,dd);gcol.push(1+f*.45,1-f*.45,1-f*.6)}if(i<GX&&j<GZ){const a=j*(GX+1)+i;gi.push(a,a+GX+1,a+1,a+1,a+GX+1,a+GX+2)}}
+   gp.push(X,enMer?-2:y,Z);guv.push((gx+MAR)/W0,1-(gz+MAR)/H0);{const f=rouge187(bi,dd),v=vert187(bi,dd);gcol.push((1+f*.45)*(1-v*.45),(1-f*.45)*(1+v*.5),(1-f*.6)*(1-v*.6))}if(i<GX&&j<GZ){const a=j*(GX+1)+i;gi.push(a,a+GX+1,a+1,a+1,a+GX+1,a+GX+2)}}
   const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(gp,3));gg.setAttribute('uv',new THREE.Float32BufferAttribute(guv,2));gg.setAttribute('color',new THREE.Float32BufferAttribute(gcol,3));solM.vertexColors=true;gg.setIndex(gi);gg.computeVertexNormals();ETG.add(new THREE.Mesh(gg,solM));hi187(ET.osm,W0,H0);
   // l'asphalte et ses lignes ; sur la mer, les piles du viaduc
   {const pos=[],idx=[],cr=[],uvR=[];let dR=0;for(let i=0;i<=NP;i++){const p=RP[i],n=RN[i],w=larg()/2;if(i)dR+=p.distanceTo(RP[i-1]);uvR.push(0,dR/9,1,dR/9);pos.push(p.x-n.x*w,p.y+.05,p.z-n.z*w,p.x+n.x*w,p.y+.05,p.z+n.z*w);
@@ -78,7 +79,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
    const r=ET.volcan?Math.min(1,Math.max(0,(i/NP-.5)/.05)):0,c0=[.227,.227,.235],c1=[.13,.05,.035],c2=[.21,.19,.16],g2=ET.volcan?Math.min(1,Math.max(0,(i/NP-.7)/.03))*Math.min(1,Math.max(0,(.95-i/NP)/.03)):0,cc=c0.map((v,j)=>(v+(c1[j]-v)*r)*(1-g2)+c2[j]*g2);cr.push(...cc,...cc);if(i<NP){const b=i*2;idx.push(b,b+2,b+1,b+1,b+2,b+3)}}
    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(cr,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uvR,2));g.setIndex(idx);g.computeVertexNormals();ETG.add(new THREE.Mesh(g,new THREE.MeshLambertMaterial({color:0xffffff,vertexColors:true,map:ASPH187()})))}
   {const W0=(NX-1)*ST,H0=(NY-1)*ST,pos=[],uv=[],idx=[],col=[],NC=57,PAS=2.5;let nv=0;
-   for(let i=0;i<=NP;i++){const p=RP[i],n=RN[i];for(let c=0;c<NC;c++){const o=(c-(NC-1)/2)*PAS,X=p.x+n.x*o,Z=p.z+n.z*o,[dd,bi]=proche(X,Z),y=HS(X,Z);pos.push(X,y,Z);const gx=X/K+P0[0],gz=Z/K+P0[1];uv.push((gx+MAR)/W0,1-(gz+MAR)/H0);const f=rouge187(bi,dd);col.push(1+f*.45,1-f*.45,1-f*.6)}
+   for(let i=0;i<=NP;i++){const p=RP[i],n=RN[i];for(let c=0;c<NC;c++){const o=(c-(NC-1)/2)*PAS,X=p.x+n.x*o,Z=p.z+n.z*o,[dd,bi]=proche(X,Z),y=HS(X,Z);pos.push(X,y,Z);const gx=X/K+P0[0],gz=Z/K+P0[1];uv.push((gx+MAR)/W0,1-(gz+MAR)/H0);const f=rouge187(bi,dd),v=vert187(bi,dd);col.push((1+f*.45)*(1-v*.45),(1-f*.45)*(1+v*.5),(1-f*.6)*(1-v*.6))}
     if(i<NP){const r=i*NC,r2=r+NC;for(let c=0;c<NC-1;c++){if(ET.mer&&pos[(r+c)*3+1]<=-1.9&&pos[(r2+c+1)*3+1]<=-1.9)continue;idx.push(r+c,r+c+1,r2+c,r+c+1,r2+c+1,r2+c)}}}
    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g.setIndex(idx);g.computeVertexNormals();solM.side=THREE.DoubleSide;const m=new THREE.Mesh(g,solM);m.userData.bande=1;ETG.add(m)}
   ligne(u=>-larg(u)/2+.35,.12,false,0xe8e4d8);ligne(u=>larg(u)/2-.35,.12,false,0xe8e4d8);ligne(0,.1,true,0xe8e4d8);
@@ -340,6 +341,9 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
   const pp=new THREE.Sprite(new THREE.SpriteMaterial({map:oiseau('#4a3a30',1)}));pp.scale.set(7,7,1);ETG.add(pp);ETG.userData.pap=pp;
   // l'arrivée : le parking et le gîte du volcan
   const jf=Math.round(NP*.985),fin=at(.985,0),nf=RN[jf],yf=RP[jf].y;const park=new THREE.Mesh(new THREE.PlaneGeometry(40,26),new THREE.MeshLambertMaterial({color:0x4a4a4c}));park.rotation.x=-Math.PI/2;park.position.set(fin.x+nf.x*24,yf+.07,fin.z+nf.z*24);ETG.add(park);
+  {const pierre=new THREE.MeshLambertMaterial({color:0x2e2b29,flatShading:true}),N=44,ins=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(.42,0),pierre,N*3),q=new THREE.Object3D(),px=park.position.x,pz=park.position.z;let n=0;
+   for(let k=0;k<N;k++){const a=Math.PI*.15+k/N*Math.PI*1.4,x=px+Math.cos(a)*22,z=pz+Math.sin(a)*15;for(let h=0;h<3;h++){q.position.set(x+(Math.random()-.5)*.3,hR(x,z)+.3+h*.38,z+(Math.random()-.5)*.3);q.rotation.set(Math.random()*3,Math.random()*3,0);q.scale.set(1+Math.random()*.4,.8,1);q.updateMatrix();ins.setMatrixAt(n++,q.matrix)}if(typeof obs187==='function')obs187(x,z,.6)}
+   ins.count=n;ETG.add(ins)}
   [0xd0d0d0,0x2a5a9a,0x9a2a2a].forEach((c,k)=>{const v=new THREE.Mesh(new THREE.BoxGeometry(2,1.3,4.2),new THREE.MeshLambertMaterial({color:c}));v.position.set(park.position.x-12+k*6,yf+.7,park.position.z-6);ETG.add(v)});
   const gite=new THREE.Group();const mur=new THREE.Mesh(new THREE.BoxGeometry(18,5,9),new THREE.MeshLambertMaterial({color:0xe8e0cc}));mur.position.y=2.5;gite.add(mur);const toit=new THREE.Mesh(new THREE.ConeGeometry(12,4,4),new THREE.MeshLambertMaterial({color:0x9a3a2a}));toit.rotation.y=Math.PI/4;toit.scale.set(1,1,.55);toit.position.y=7;gite.add(toit);
   const pan=document.createElement('canvas');pan.width=256;pan.height=64;const px=pan.getContext('2d');px.fillStyle='#5a3a1a';px.fillRect(0,0,256,64);px.fillStyle='#f3e6c4';px.font='600 26px system-ui';px.textAlign='center';px.fillText('Gîte du volcan',128,42);const ps=new THREE.Mesh(new THREE.PlaneGeometry(8,2),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(pan)}));ps.position.set(0,5.6,4.6);gite.add(ps);
@@ -404,16 +408,19 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
  function voitureEtape(){if(ET===vET)return;vET=ET;voiture(VPE[ET.osm]||'subaru')}
  voiture('subaru');
  // ---- la musique : des rythmes joués par le jeu (pas d'enregistrement), un style par boîte de nuit ; puis le moteur et le vent
- let AC=null,mg=null,mot=null,motG=null,style='',pas16=0,tNext=0;try{AC=new (window.AudioContext||window.webkitAudioContext)();mg=AC.createGain();mg.gain.value=.0;mg.connect(AC.destination);mot=AC.createOscillator();mot.type='sawtooth';motG=AC.createGain();motG.gain.value=0;const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=600;mot.connect(lp);lp.connect(motG);motG.connect(AC.destination);mot.start()}catch(e){AC=null}
+ let AC=null,mg=null,mot=null,motG=null,style='',pas16=0,tNext=0;let bcl194=null;try{AC=new (window.AudioContext||window.webkitAudioContext)();mg=AC.createGain();mg.gain.value=.0;mg.connect(AC.destination);mot=AC.createOscillator();mot.type='sawtooth';motG=AC.createGain();motG.gain.value=0;const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=600;mot.connect(lp);lp.connect(motG);motG.connect(AC.destination);mot.start()}catch(e){AC=null}
  const bruitB=AC?(()=>{const b=AC.createBuffer(1,AC.sampleRate*.3,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;return b})():null;
+ try{if(AC&&typeof sons193==='function')sons193(AC)}catch(e){}
+ // un vrai tambour quand on l'a (roulèr, ravanne, djembé) : sinon le son synthétisé
+ const vrai=(nom,t,v,r)=>AC&&typeof coup193==='function'&&coup193(AC,mg,nom,t,v,r);
  const coup=(t,f,dur,v,type)=>{if(!AC)return;const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(!type)o.frequency.exponentialRampToValueAtTime(Math.max(30,f*.4),t+dur);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(mg);o.start(t);o.stop(t+dur+.02)};
  const souffle=(t,dur,v,hp)=>{if(!AC)return;const s=AC.createBufferSource();s.buffer=bruitB;const f=AC.createBiquadFilter();f.type='highpass';f.frequency.value=hp||6000;const g=AC.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(f);f.connect(g);g.connect(mg);s.start(t);s.stop(t+dur+.02)};
- const RYT={sega:{bpm:132,n:12,f:(k,t,d)=>{if(k%6===0)coup(t,70,.25,.8);if(k%6===3)coup(t,140,.12,.35);souffle(t,.06,k%3===0?.22:.1,5000);if(k%12===9)coup(t,1800,.4,.06,'triangle')}},
+ const RYT={sega:{bpm:132,n:12,f:(k,t,d)=>{if(k%6===0&&!vrai('ravanne',t,1))coup(t,70,.25,.8);if(k%6===3&&!vrai('ravslap',t,.6))coup(t,140,.12,.35);souffle(t,.06,k%3===0?.22:.1,5000);if(k%12===9)coup(t,1800,.4,.06,'triangle')}},
   electro:{bpm:128,n:16,f:(k,t,d)=>{if(k%4===0)coup(t,60,.3,.9);if(k%4===2)souffle(t,.05,.18,8000);if(k%2===1)coup(t,[55,55,65,49][(k>>2)%4]*2,.18,.12,'sawtooth')}},
   disco:{bpm:118,n:16,f:(k,t,d)=>{if(k%4===0)coup(t,62,.28,.85);if(k%4===2)souffle(t,.14,.2,6000);coup(t,[82,164][k%2]*(k%8<4?1:1.12),.14,.13,'square')}},
-  maloya:{bpm:120,n:12,f:(k,t,d)=>{if(k%12===0||k%12===7)coup(t,55,.4,.95);if(k%12===4||k%12===10)coup(t,95,.2,.5);souffle(t,.07,.12+(k%3===0?.1:0),4000);if(k%24===18)coup(t,196,.5,.08,'sine')}},
+  maloya:{bpm:120,n:12,f:(k,t,d)=>{if((k%12===0||k%12===7)&&!vrai('rouler',t,1.2))coup(t,55,.4,.95);if((k%12===4||k%12===10)&&!vrai('rouler',t,.55,1.25))coup(t,95,.2,.5);souffle(t,.07,.12+(k%3===0?.1:0),4000);if(k%24===18)coup(t,196,.5,.08,'sine')}},
   dancehall:{bpm:96,n:16,f:(k,t,d)=>{if(k%16===0||k%16===6||k%16===10)coup(t,58,.3,.9);if(k%8===4)souffle(t,.12,.3,2500);if(k%2===0)souffle(t,.03,.08,9000)}}};
- const musique=t=>{if(!AC||!style||!RYT[style])return;const r=RYT[style],dt=60/r.bpm/(r.n===12?3:4);while(tNext<t+.12){r.f(pas16%r.n,Math.max(tNext,t),dt);pas16++;tNext+=dt}};
+ const musique=t=>{if(AC&&style==='maloya'&&typeof boucle194==='function'){if(!bcl194)bcl194=boucle194(AC,mg,'kabare',1.4);if(bcl194)return}else if(bcl194){bcl194.stop();bcl194=null}if(!AC||!style||!RYT[style])return;const r=RYT[style],dt=60/r.bpm/(r.n===12?3:4);while(tNext<t+.12){r.f(pas16%r.n,Math.max(tNext,t),dt);pas16++;tNext+=dt}};
  // ---- l'état du jeu
  const st={i:0,s:0,o:0,v:0,phase:'film',ft:0,et:-1,temps:0,fini:0};let K2={};
  // le passage d'une étape à l'autre : un vrai fondu au noir (la voiture continue de rouler), puis on rouvre sur l'étape suivante à la même vitesse
@@ -458,7 +465,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
    const E=ET,vmax=230/3.6;st.gaz=Math.max(0,Math.min(1,(st.gaz||0)+(K2.a?dt*1.1:-dt*3)));const peut=!(st.crash>0)&&!st.air,sgn=Math.sign(st.v),av=Math.abs(st.v);
    // marche avant, freinage, puis marche arrière (Frein à l'arrêt) jusqu'à 30 km/h ; le gaz en reculant freine d'abord
    let acc=0;if(peut){if(st.v>-.3)acc=st.gaz*(st.v<15?9:st.v<35?6.5:4.5);else if(K2.a)acc=12;if(K2.f){if(st.v>.3)acc-=14;else acc-=4.5}}
-   const g=9.8*Math.sin(Math.atan(P.pente));st.v+=(acc-g-sgn*(st.v*st.v*.0012+(av>.1?.6:0)))*dt;if(!K2.a&&!K2.f&&av>.05)st.v-=sgn*1.2*dt;if(Math.abs(st.v)<.08&&!K2.a&&!K2.f)st.v=0;
+   const g=9.8*Math.sin(Math.atan(P.pente));st.v+=(acc-g-sgn*(st.v*st.v*.0012+(av>.1?.6:0)))*dt;if(!K2.a&&!K2.f&&av>.05)st.v-=sgn*1.2*dt;if(!K2.a&&!K2.f&&Math.abs(st.v)<1.5){st.v*=Math.pow(.02,dt);if(Math.abs(st.v)<.15)st.v=0}/* à l'arrêt sans toucher : le frein de parking, on ne recule pas tout seul */
    const w=larg()/2,braq=(K2.g?1:0)-(K2.d?1:0);st.dir+=(braq-st.dir)*Math.min(1,dt*6);
    // l'adhérence : asphalte sec 1 ; humide (forêt des Plaines, brume du volcan, aube sur les laves) ; gravier et pouzzolane en haut du volcan ; terre hors de la route ; frein à main = l'arrière décroche
    const u=st.s/NP,mouil=(E.osm==='plaines'||E.osm==='laves'||(E.volcan&&u>.25&&u<.55)),grav=E.volcan&&u>.5;let mu=grav?.5:mouil?.72:1;if(st.air)mu=.05;if(st.hors)mu=Math.min(mu,.45);if(K2.m)mu*=.35;st.mu=mu;

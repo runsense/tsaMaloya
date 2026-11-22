@@ -567,8 +567,10 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 {let M=null,cle='';setInterval(()=>{try{if(typeof scene==='undefined'||!S||(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden)){if(M)M.visible=false;return}
   const C=colTiles().filter(t=>t.alt<250),k=C.length+':'+Math.round((S.year||1663)/10);if(k===cle){if(M)M.visible=true;return}cle=k;if(M){scene.remove(M);M.geometry.dispose()}
   const [cx,cz]=xz(55.53,-21.12),P=[],vus=new Set();C.forEach(t=>{for(let q=0;q<3;q++){const x0=t.x+(q-1)*.28*Math.cos(t.i),z0=t.z+(q-1)*.28*Math.sin(t.i),key=Math.round(x0*3)+'|'+Math.round(z0*3);if(vus.has(key))continue;vus.add(key);
-   const dx=cx-x0,dz=cz-z0,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L;let px=x0,pz=z0,pa=null;for(let s=0;s<60;s++){const x=x0+ux*s*.2,z=z0+uz*s*.2,a=altTri(x,z);if(a<1){px=x;pz=z;continue}if(a>1600)break;const y=a*VX+.035;if(pa)P.push(pa[0],pa[1],pa[2],x,y,z);pa=[x,y,z]}}});
-  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));M=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0xe0b070,transparent:true,opacity:.75,depthWrite:false}));M.renderOrder=4;scene.add(M)}catch(e){}},4000)}
+   const dx=cx-x0,dz=cz-z0,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L,B=[];for(let s=0;s<60;s++){const x=x0+ux*s*.2,z=z0+uz*s*.2,a=altTri(x,z);if(a<1)continue;if(a>1600)break;B.push({x,y:0,z})}if(B.length>=3)P.push(B)}});
+  // non plus des traits : de larges bandes de terre à peine teintées, comme des parcelles (les traits fins faisaient des lignes droites qui dévalaient les pentes)
+  const G=P.map(B=>ruban97(B,.26,q=>Math.max(0,altTri(q.x,q.z))*VX+.03));if(!G.length){M=null;return}
+  M=new THREE.Mesh(fusion97(G),new THREE.MeshBasicMaterial({color:0xb89860,transparent:true,opacity:.13,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));M.renderOrder=4;M.frustumCulled=false;scene.add(M)}catch(e){}},4000)}
 // 2. Quand une espèce s'éteint, on la voit partir : son image monte au-dessus de son pays, pâlit et s'efface
 const ICO186=k=>/tortue/.test(k)?'🐢':/dugong/.test(k)?'🦭':/rousset|chauve/.test(k)?'🦇':/perroq|mascarin/.test(k)?'🦜':/oiseauxeau/.test(k)?'🦆':/solitaire/.test(k)?'🦢':'🐦';
 {let vu=null;setInterval(()=>{try{if(!S||typeof scene==='undefined'||!S.disp135x)return;const L=Object.keys(S.disp135x);if(vu==null){vu=new Set(L);return}L.forEach(k=>{if(vu.has(k))return;vu.add(k);
@@ -583,7 +585,7 @@ function laisse186(){try{if(!BT)return;const f=window.AUTO186;if(window.BAT186){
   const d=document.createElement('div');d.id='bt186';d.style.cssText='position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99990;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;background:rgba(14,12,10,.88);border:1px solid #e8be5a;border-radius:12px;padding:8px 12px;color:#f3e6c4;font:600 13px system-ui;max-width:calc(100vw - 32px)';
   d.innerHTML=(conte?'<span id="bt186t">📖 Le conte continue : '+(window.AUTO186&&window.AUTO186.c?window.AUTO186.c:'le camp se défendra seul')+' dans <b>5</b> s</span><button class="bt" id="bt186j">⚔️ Jouer la bataille</button>':'')+'<button class="bt sec" id="bt186q">📖 '+(window.AUTO186&&window.AUTO186.n?window.AUTO186.n:'Laisser le camp se défendre seul')+'</button>';
   (BT.el||document.body).appendChild(d);d.querySelector('#bt186q').onclick=e=>{e.stopPropagation();laisse186()};
-  if(conte){let n=5,joue=false;d.querySelector('#bt186j').onclick=e=>{e.stopPropagation();joue=true;try{S.autoD=0;if(typeof autoBtn==='function')autoBtn()}catch(e){}const t=d.querySelector('#bt186t');if(t)t.remove();e.target.remove()};
+  if(conte){let n=5,joue=false;d.querySelector('#bt186j').onclick=e=>{e.stopPropagation();joue=true;try{S.autoD=0;S.autoSusp=1;if(typeof autoBtn==='function')autoBtn()}catch(e){}const t=d.querySelector('#bt186t');if(t)t.remove();e.target.remove()};
    const t0=Date.now(),it=setInterval(()=>{if(!BT||!d.isConnected||joue){clearInterval(it);return}n=Math.max(0,5-Math.floor((Date.now()-t0)/1000));const b=d.querySelector('#bt186t b');if(b)b.textContent=n;if(n<=0){clearInterval(it);laisse186()}},250)}}catch(e){}return r}}
 
 // ===== Histoire, côté colon : la bande qui descend sur l'habitation, et le détachement qui monte au camp marron — en Épopée ou laissés au récit =====

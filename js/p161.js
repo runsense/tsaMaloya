@@ -6,7 +6,7 @@ function nettoie161(){try{if(typeof CINE!=='undefined'&&CINE)cineFin()}catch(e){
  ['cine','mCtx','cur135','souris157','voile138','expR2','cavC131','evDec'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove()});
  document.querySelectorAll('#modal .op.conte').forEach(b=>b.classList.remove('conte'));document.body.classList.remove('side135','ctx157')}
 ['annuler','revenir'].forEach(n=>{try{const f=window[n]||eval(n);const g=function(){if(!S||S.fin)return;nettoie161();const r=f.apply(this,arguments);
-  try{S.autoD=0;if(typeof autoBtn==='function')autoBtn();if(typeof grace!=='undefined')grace=performance.now()+4000}catch(e){}
+  try{S.autoD=0;S.autoSusp=1;if(typeof autoBtn==='function')autoBtn();if(typeof grace!=='undefined')grace=performance.now()+4000}catch(e){}
   try{modal();panneau();peindre();rafraichir()}catch(e){}try{toast((n==='annuler'?'Dernière action annulée':'Retour à la saison précédente')+'. Le conte est en pause : relancez-le avec « Conte » quand vous voulez.')}catch(e){}return r};
   if(n==='annuler')annuler=g;else revenir=g}catch(e){}});
 // les boutons pointaient sur les anciennes fonctions : on les rebranche
