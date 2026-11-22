@@ -6,19 +6,28 @@ Object.assign(SON193,{"boucle_kabare": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2
 const BCL194={kabare:12,kasse:16,malbar:16,maligasse:12,moring:12,pleure:12,roule:24,valse:12};
 function boucle194(ctx,dest,nom,v,une){try{const B=sons193(ctx),b=B&&B['boucle_'+nom];if(!b)return null;const s=ctx.createBufferSource();s.buffer=b;const L=Math.min(b.duration,BCL194[nom]||b.duration);
  if(!une){s.loop=true;s.loopStart=0;s.loopEnd=L}
- const g=ctx.createGain(),t=ctx.currentTime;g.gain.value=0;g.gain.setTargetAtTime(v,t,.4);if(une)g.gain.setTargetAtTime(0,t+L-2.5,.8);s.connect(g);g.connect(dest);s.start(t,0,une?L:undefined);
- return {nom,stop(){try{g.gain.setTargetAtTime(0,ctx.currentTime,.5);s.stop(ctx.currentTime+2.5)}catch(e){}}}}catch(e){return null}}
+ const g=ctx.createGain(),t=ctx.currentTime;g.gain.value=0;g.gain.setTargetAtTime(v,t,.4);if(une)g.gain.setTargetAtTime(0,t+L-2.5,.8);
+ const sp=ctx.createGain(),F=ctx.createBiquadFilter();F.type='lowpass';F.frequency.value=18000;F.Q.value=.5;s.connect(g);g.connect(sp);sp.connect(F);F.connect(dest);s.start(t,0,une?L:undefined);
+ return {nom,sp,F,ctx,stop(){try{g.gain.setTargetAtTime(0,ctx.currentTime,.5);s.stop(ctx.currentTime+2.5)}catch(e){}}}}catch(e){return null}}
 // dans l'île : le kabar (kabaré, maligasse ou kasse), le moringue (moring), les fêtes tamoules (malbar),
 // la fuite des marrons (roule), les bals (valse) ; le deuil joue « pleure » une fois
 try{if(typeof PRE72!=='undefined'&&typeof SONCH!=='undefined'){let cur=null,curK='';
  const def=(k,choix)=>{const o={d:3.6,f:()=>{const c=typeof sndPret==='function'&&sndPret();if(!c)return;
-   if(cur&&curK===k){o.d=3600;return}if(cur){cur.stop();cur=null}const nom=choix();cur=boucle194(c,SND.out,nom,.6);
+   if(cur&&curK===k){o.d=3600;return}if(cur){cur.stop();cur=null}const nom=choix();cur=boucle194(c,SND.out,nom,.6);window.CUR194=cur;
    if(cur){curK=k;o.d=3600}else{o.d=3.6;if(PRE72.maloya68)PRE72.maloya68.f()}}};PRE72[k]=o};
  const KB=['kabare','maligasse','kasse'];
  def('bclKabar',()=>KB[Math.floor(Math.random()*KB.length)]);def('bclMoring',()=>'moring');def('bclMalbar',()=>'malbar');def('bclRoule',()=>'roule');def('bclValse',()=>'valse');
  const z0=PRE72.zion;PRE72.bclPleure={d:12,f:()=>{const c=typeof sndPret==='function'&&sndPret();if(!(c&&boucle194(c,SND.out,'pleure',.55,1))&&z0)z0.f()}};
  SONCH.kabar='bclKabar';SONCH.jDuel='bclMoring';SONCH.malbar='bclMalbar';SONCH.roule='bclRoule';SONCH.valse='bclValse';SONCH.deces='bclPleure';
  setInterval(()=>{try{if(cur&&SONCH[SND.ambK]!==curK){cur.stop();cur=null;curK=''}}catch(e){}},300);
+ // la musique vient du camp : on l'entend pleine dedans, étouffée et portée par les rafales quand la vue s'éloigne,
+ // et l'ambiance (mer, rivière, vent) s'efface un peu devant elle
+ setInterval(()=>{try{const m=cur;let duck=0;if(m&&m.sp){const c=m.ctx,t=c.currentTime;let near=1,zf=1;
+   if(typeof camT!=='undefined'){const cc=(typeof camps==='function'&&camps()[0])||null;if(cc){const d=Math.hypot(camT.x-cc.x,camT.z-cc.z);near=Math.max(0,Math.min(1,1-(d-3)/22))}
+    if(typeof dist!=='undefined')zf=Math.max(.35,Math.min(1,1-(dist-10)/80))}
+   const raf=typeof RAF72!=='undefined'?RAF72.v:1,porte=1+(1-near)*(Math.min(1.8,raf)-1)*.6,lv=Math.max(.06,(.2+.8*near)*zf*porte);
+   m.sp.gain.setTargetAtTime(lv,t,.35);m.F.frequency.setTargetAtTime(900+17000*Math.pow(near*zf,2),t,.4);duck=near*zf}
+  if(SND.ambBus&&SND.ctx)SND.ambBus.gain.setTargetAtTime((1/6)*(1-.45*duck),SND.ctx.currentTime,.6)}catch(e){}},250);
  // un événement qui parle de fête tamoule, de fuite marronne ou de bal installe sa musique pendant 16 s
  const EVM=[[/malbar|tamoul|tamij|marche sur le feu|pandal|kavadi|pongal|kovil/,'malbar'],[/fuir|fuite|évad|s'enfui|chasseurs de noirs|détachement/,'roule'],[/\bbal\b|valse|quadrille|polka|soirée chez|réception chez/,'valse']];
  SND.m194=null;SND.m194J=0;
