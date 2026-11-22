@@ -2,7 +2,7 @@
 // ===== p191 : grimper (vue incarnée), la tâche « cuisiner » visible au camp, et la garde du camp marron étoffée =====
 
 // ----- les gestes : grimper (Mixamo « Climbing To Top »), se hisser pendu (« Freehang Climb »), cuisiner (mains qui s'affairent devant soi) -----
-try{if(typeof MXGESTE188!=='undefined')Object.assign(MXGESTE188,{grimper:'Climbing_To_Top',grimper_pendu:'Freehang_Climb',cuisiner:'Pilot_Flips_Switches'})}catch(e){}
+try{if(typeof MXGESTE188!=='undefined')Object.assign(MXGESTE188,{grimper:'Climbing_To_Top',grimper_pendu:'Freehang_Climb',cuisiner:'Pilot_Flips_Switches',danse_maloya:'Maloya_Femme',danse_maloya_homme:'Maloya_Homme',ceremonie:'Ceremonie_Mystique',joue_rouler:'Joue_Rouler',joue_bidon:'Joue_Bidon',joue_djembe:'Joue_Djembe',danse_malbar:'Danse_Malbar'})}catch(e){}
 
 // ----- 1. Grimper : face à un ressaut (rocher, talus, rempart de terre) de 0,8 à 3,5 m, Espace fait grimper au lieu de sauter -----
 // Le personnage s'accroche, se hisse (2,7 s), et se retrouve debout en haut, un pas plus loin. Plus haut que 2 m : il se hisse pendu, plus lentement.
@@ -44,3 +44,23 @@ function fuite191(){const v=Math.round((S.vivres||0)*.4);fx({vivres:-v,coh:-1});
 // les pièges : à la première vague, chaque chasseur a une chance sur trois de tomber dans une fosse ou un collet (blessé, hors de combat)
 {const gv=gardeVague186;gardeVague186=function(){const V=VP,G=V&&V.garde186,av=G?G.vague:0,n0=V&&V.fight?V.fight.E.length:0;gv.apply(this,arguments);try{if(!G||S.voieC||av!==0)return;let pris=0;
   V.fight.E.slice(n0).forEach(o=>{if(Math.random()<.34){o.hp=0;o.piege191=1;pris++}});if(pris)setTimeout(()=>{try{vpMsg('Les pièges du sentier ! '+pris+(pris>1?' chasseurs tombent':' chasseur tombe')+' dans les fosses avant d’arriver au camp.')}catch(e){}},2200)}catch(e){}}}
+
+// ----- 4. Histoire : le moringue, d'après le Portail de l'esclavage (Région Réunion) et l'histoire de sa renaissance à Villèle -----
+// Faits retenus : origine malgache (moraingy) ; pratiqué en cachette sur les habitations de café et de canne aux XVIIIe-XIXe s. ;
+// un rond d'environ trois mètres en terre battue ; le tambourinaire (au roulèr, ou à défaut sur un bidon de fer-blanc) lance le rythme,
+// en règle l'intensité et arbitre ; on se défie en annonçant son âge ; on se bat surtout des pieds et des talons ; des coups secrets
+// (la bourrante, le talon malgas) ; après 1848 il reste aux affranchis, puis devient le loisir des pauvres créoles jusqu'en 1914.
+const MOR191='Faits : le moringue vient du moraingy malgache ; pratiqué en cachette sur les habitations aux XVIIIe-XIXe siècles ; rond de terre battue d’environ trois mètres ; le tambourinaire, au roulèr, arbitre ; coups de pied et de talon. Source : Portail de l’esclavage, Région Réunion.';
+EV.moringueH={y:1735,si:()=>true,tag:'Archive',an:'après 1734',hist:1,nat:MOR191,
+ get t(){return S&&S.voieC?'Le rond du dimanche soir':'Le rond derrière les cases'},
+ get b(){return S&&S.voieC?'Derrière les cases, on entend le roulèr. Un cercle de terre battue, trois mètres à peine : deux hommes s’y défient en annonçant leur âge, puis se battent des pieds et des talons, au rythme que le tambourinaire accélère ou ralentit. Le Code noir interdit ces rassemblements.':'Le dimanche soir, le roulèr appelle. Le vieux qui frappe la peau a été un combattant : c’est lui qui règle le rythme et arrête le combat. Un jeune entre dans le rond et dit son âge ; on lui répond. On se bat des pieds et des talons, comme au pays des ancêtres, de l’autre côté de la mer.'},
+ get o(){return S&&S.voieC?[
+  {n:'Fermer les yeux',d:'Les gens de l’habitation gardent leur dimanche. Cohésion +3.',fx:{coh:3}},
+  {n:'Faire disperser le rond',d:'Le commandeur casse le tambour. L’ordre est gardé, la rancœur grandit : cohésion −3, et plus de fuites.',fx:{coh:-3},f:()=>{S.fuiteB=(S.fuiteB||0)+1;log('Le roulèr est brisé ; il en sera fait un autre, plus loin, dans un bidon de fer-blanc.')}},
+  {n:'Regarder un combat (duel)',d:'Vous voyez de près le moraingy venu de Madagascar.',fx:{},f:()=>{try{ouvrirDuel('malgache','malgache',r=>{log(r&&r.ok?'Vous avez vu le talon malgas : un coup qu’on ne voit pas venir.':'Le combat s’arrête : le tambourinaire a levé la main.')})}catch(e){}}}]:[
+  {n:'Entrer dans le rond (duel)',d:'Dire son âge, et se battre des pieds, au rythme du roulèr.',fx:{},f:()=>{try{ouvrirDuel('malgache','malgache',r=>{if(r&&r.ok){fx({coh:2});S.myst=(S.myst||0)+1;log('Vous sortez du rond vainqueur : on vous appelle désormais par un surnom.')}else{fx({coh:1});log('Vous avez perdu, mais le vieux au roulèr hoche la tête : vous reviendrez.')}})}catch(e){}}},
+  {n:'Battre le roulèr',d:'Vous tenez le rythme : cohésion +3, mystique +1.',fx:{coh:3},f:()=>{S.myst=(S.myst||0)+1}},
+  {n:'Rester à l’écart',d:'Le rond se tient sans vous.',fx:{}}]}};
+EV.moringueA={y:1890,si:()=>true,tag:'Archive',an:'après 1889',hist:1,nat:MOR191+' Après 1848, il reste longtemps aux affranchis, puis, de 1880 à 1914, devient le principal loisir des pauvres créoles (Ligne Paradis, Le Brûlé, Trois-Bassins…).',
+ t:'Le moringue des quartiers',b:'Depuis l’abolition, le moringue n’a plus à se cacher des commandeurs. Dans les cabarets et les ronds de terre battue des quartiers pauvres — Ligne Paradis, Le Brûlé, Trois-Bassins — les combattants ont des surnoms et des coups gardés secrets : la bourrante, le talon malgas. Les petits Blancs des Hauts viennent aussi s’y mesurer.',
+ o:[{n:'Aller au rond (duel)',d:'Un combat contre un champion du quartier.',fx:{},f:()=>{try{ouvrirDuel('malgache','malgache',r=>{log(r&&r.ok?'Le quartier parle de vous.':'Le champion garde son rond.')})}catch(e){}}},{n:'Regarder et parier',d:'Cohésion +2.',fx:{coh:2}}]};

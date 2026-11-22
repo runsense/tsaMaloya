@@ -132,13 +132,23 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
   const rnd=(a)=>{let x=Math.sin(a*91.7+ek*13.1)*43758.5453;return x-Math.floor(x)};
   const pose1=(m,f)=>{Promise.resolve().then(()=>p3Charge(m)).then(()=>p3Instance(m)).then(I=>{if(ETG!==G)return;const o=I.g.scene;o.traverse(x=>{if(x.isMesh){x.frustumCulled=false}});G.add(o);const it={o,mx:I.mx,A:I.g.animations,...f};
     const jouer=n=>{const c=THREE.AnimationClip.findByName(it.A,n);if(c){const a=it.mx.clipAction(c);a.play();a.time=rnd(L.length)*c.duration;if(f.ts)a.timeScale=f.ts;return true}return false};
-    if(f.danse){let ok=false;try{if(typeof mxDec188==='function'&&I.g.scene.userData.repos){const cl=mxRecible(I.g.scene,mxDec188('Warming_Up'),{nom:'danse',surPlace:true,repos:I.g.scene.userData.repos});if(cl){it.A.push(cl);ok=jouer('danse')}}}catch(e){}if(!ok)jouer('transe_maloya')||jouer('repos_debout')}
+    if(f.geste){jouer(f.geste)||jouer('repos_debout')}else if(f.danse){let ok=f.maloya?jouer(f.homme?'danse_maloya_homme':'danse_maloya'):false;if(!ok)try{if(typeof mxDec188==='function'&&I.g.scene.userData.repos){const cl=mxRecible(I.g.scene,mxDec188('Warming_Up'),{nom:'danse',surPlace:true,repos:I.g.scene.userData.repos});if(cl){it.A.push(cl);ok=jouer('danse')}}}catch(e){}if(!ok)jouer('transe_maloya')||jouer('repos_debout')}
     else jouer(f.v?"marche":"repos_debout")||jouer("marche");L.push(it)}).catch(e=>console.warn("pietons187",e&&e.message))};
   // des promeneurs, dans les deux sens, le long de la mer
   const ZI=[12].concat(clubs.map(c=>c.i));for(let k=0;k<16;k++){const i=Math.min(NP-4,Math.max(4,Math.round(ZI[k%ZI.length]+(rnd(k)-.5)*70)));pose1(MODS[k%MODS.length],{i,v:1.1+rnd(k+40)*.5,sens:rnd(k+50)>.5?1:-1,off:mer*(ET.festival?w+3+rnd(k+60)*9:w+3.5+rnd(k+60)*3),ts:1})}
+  // les tambours : devant le kabaré, un roulèr (on s'assoit dessus, la peau entre les genoux) et un bidon frappé aux baguettes ;
+  // sur la scène du festival maloya, des djembés debout
+  const tamb=(type,X,Z,face,y)=>{const g=new THREE.Group(),bois=new THREE.MeshLambertMaterial({color:0x7a4a2a}),peau=new THREE.MeshLambertMaterial({color:0xd9c49a});
+    if(type==='rouler'){const c=new THREE.Mesh(new THREE.CylinderGeometry(.27,.27,.75,14),bois);c.rotation.x=Math.PI/2;c.position.set(0,.27,.05);g.add(c);const pe=new THREE.Mesh(new THREE.CircleGeometry(.26,14),peau);pe.position.set(0,.27,.43);g.add(pe);const ca=new THREE.Mesh(new THREE.BoxGeometry(.5,.12,.5),new THREE.MeshLambertMaterial({color:0x8a2a1a}));ca.position.set(0,.06,.05);g.add(ca)}
+    else if(type==='bidon'){const c=new THREE.Mesh(new THREE.CylinderGeometry(.29,.29,.88,16),new THREE.MeshLambertMaterial({color:0x2a4ab8}));c.position.set(0,.44,.55);g.add(c);const t=new THREE.Mesh(new THREE.CylinderGeometry(.18,.2,.45,8),bois);t.position.y=.22;g.add(t)}
+    else{const pts=[[0,0],[.12,0],[.1,.22],[.06,.32],[.16,.5],[.17,.6],[0,.6]].map(([a,b])=>new THREE.Vector2(a,b));const d=new THREE.Mesh(new THREE.LatheGeometry(pts,14),bois);d.position.set(0,.35,.35);g.add(d);const pe=new THREE.Mesh(new THREE.CircleGeometry(.17,14),peau);pe.rotation.x=-Math.PI/2;pe.position.set(0,.96,.35);g.add(pe)}
+    g.position.set(X,y!=null?y:HS(X,Z),Z);g.rotation.y=face;G.add(g)};
+  clubs.forEach((c,kc)=>{if(c.style!=='maloya')return;const gp=c.g.position,vers=new THREE.Vector3(RP[c.i].x-gp.x,0,RP[c.i].z-gp.z).normalize(),cote=new THREE.Vector3(vers.z,0,-vers.x);
+   [['rouler','joue_rouler',-1.2],['bidon','joue_bidon',1.4]].forEach(([ty,ge,o],k)=>{const X=gp.x+vers.x*5.2+cote.x*o*2.4,Z=gp.z+vers.z*5.2+cote.z*o*2.4,face=Math.atan2(vers.x,vers.z);tamb(ty,X,Z,face);pose1(MODS[(kc+k+5)%MODS.length],{X,Z,fixe:1,geste:ge,face})})});
+  if(fest){const g=fest.g;g.updateMatrixWorld(true);[-6,0,6].forEach((x,k)=>{const v=new THREE.Vector3(x,1.5,-3).applyMatrix4(g.matrixWorld),face=g.rotation.y;tamb('djembe',v.x,v.z,face,v.y);pose1(MODS[(k+2)%MODS.length],{X:v.x,Z:v.z,fixe:1,geste:'joue_djembe',face,y:v.y})})}
   // des groupes devant les boîtes de nuit
   clubs.forEach((c,kc)=>{const gp=c.g.position,vers=new THREE.Vector3(RP[c.i].x-gp.x,0,RP[c.i].z-gp.z).normalize(),cote=new THREE.Vector3(vers.z,0,-vers.x);
-   for(let k=0;k<2;k++){const X=gp.x+vers.x*(6+rnd(kc*7+k)*2)+cote.x*(k-.5)*1.8,Z=gp.z+vers.z*(6+rnd(kc*7+k)*2)+cote.z*(k-.5)*1.8;pose1(MODS[(kc*3+k+3)%MODS.length],{X,Z,fixe:1,danse:c.style==='maloya'||k===1,face:Math.atan2(gp.x-X,gp.z-Z)+(rnd(kc+k)-.5)*1.5})}})}
+   for(let k=0;k<2;k++){const X=gp.x+vers.x*(6+rnd(kc*7+k)*2)+cote.x*(k-.5)*1.8,Z=gp.z+vers.z*(6+rnd(kc*7+k)*2)+cote.z*(k-.5)*1.8;pose1(MODS[(kc*3+k+3)%MODS.length],{X,Z,fixe:1,danse:c.style==='maloya'||k===1,maloya:c.style==='maloya',homme:['homme_chemise','indien','chinois','jeune_colon','vieux'].includes(MODS[(kc*3+k+3)%MODS.length]),face:Math.atan2(gp.x-X,gp.z-Z)+(rnd(kc+k)-.5)*1.5})}})}
  // ---- la circulation : quelques voitures dans notre sens devant nous, et en face ; si on les touche, on freine net
  function trafic187(){const G=ETG,L=G.userData.tra=[],w=larg()/2,rnd=a=>{let x=Math.sin(a*77.7+ek*19.3)*43758.5453;return x-Math.floor(x)};if(ET.festival&&0)return;
   const DS=RP[0].distanceTo(RP[Math.min(NP,40)])/Math.min(NP,40)||2.5,n=ET.clubs?5:7;
@@ -168,7 +178,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
     else if(T.t<5.5){if(!T.debout){T.debout=1;joue187(it,'repos_debout',1)||joue187(it,'marche',1)}}
     else{if(it.fixe){it.X=T.X;it.Z=T.Z}else{it.off=Math.max(-60,Math.min(60,((T.X-RP[it.i|0].x)*RN[it.i|0].x+(T.Z-RP[it.i|0].z)*RN[it.i|0].z)))}it.tb=null;joue187(it,it.fixe?(it.danse?'danse':'repos_debout'):'marche',1)}
     if(it.mx)it.mx.update(dt);continue}
-   if(it.fixe){it.o.position.set(it.X,HS(it.X,it.Z),it.Z);it.o.rotation.y=it.face}
+   if(it.fixe){it.o.position.set(it.X,it.y!=null?it.y:HS(it.X,it.Z),it.Z);it.o.rotation.y=it.face}
    else{it.i+=it.sens*it.v*dt/2.5;if(it.i<2||it.i>NP-2){it.sens*=-1;it.i=Math.min(NP-2,Math.max(2,it.i))}const i=Math.floor(it.i),f=it.i-i,p=RP[i],q=RP[i+1],n=RN[i],X=p.x+(q.x-p.x)*f+n.x*it.off,Z=p.z+(q.z-p.z)*f+n.z*it.off;it.o.position.set(X,HS(X,Z),Z);it.o.rotation.y=Math.atan2(RT[i].x*it.sens,RT[i].z*it.sens)}
    if(it.mx&&it.o.position.distanceToSquared(car.position)<250*250)it.mx.update(dt)}}
  // ---- le bord des routes réunionnaises, d'après les vues embarquées : herbes hautes et cannes, muret de béton côté ravine, poteaux électriques et leurs fils,
