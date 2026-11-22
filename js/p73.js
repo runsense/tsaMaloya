@@ -76,7 +76,7 @@ function vpLancer(o,cible,force){const y=VP.h(o.x,o.z)+1.5,d=new THREE.Vector3(c
  const s=new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,1.3,4).rotateX(Math.PI/2),new THREE.MeshLambertMaterial({color:0x7a5a36}));s.position.set(o.x,y,o.z);VP.sc.add(s);VP.vol.push({m:s,v,t:0,de:o});vpClip(o,'sagaie');o.lanceT=.9}
 function vpAction(a){if(!VP)return;const ch=VP.chef;
  if(a==='lancer'){if(VP.rel>0)return;if(VP.sag<=0)return vpMsg('Plus de sagaie : ramassez-les ou rentrez.');VP.sag--;VP.rel=1.1;const p=vpVisee();vpLancer(ch,p,VP.acc||VP.ram?20:25);vpAlerte(VP.acc||VP.ram?6:12)}
- else if(a==='frapper'){vpClip(ch,'baton_coup');ch.lanceT=.8;const c=VP.an.find(x=>!x.mort&&Math.hypot(x.x-ch.x,x.z-ch.z)<2.4);if(c)vpTue(c,VP.G.chef,'bâton');else vpMsg('Trop loin pour frapper.')}
+ else if(a==='frapper'){vpClip(ch,'baton_coup');ch.lanceT=.8;const c=VP.an.find(x=>!x.mort&&Math.hypot(x.x-ch.x,x.z-ch.z)<2.4);ch.cib189=c||null;ch.t189=performance.now();if(c)vpTue(c,VP.G.chef,'bâton');else vpMsg('Trop loin pour frapper.')}
  else if(a==='arme'){vpMsg((S.fu||0)>0?'Le fusil volé fait fuir tout le gibier à la ronde : ici, la sagaie vaut mieux.':'Vous n’avez que la sagaie.')}
  else if(a==='suivre'||a==='attendre'||a==='chasser'){VP.ordre=a;vpMsg(a==='suivre'?'« Suivez-moi. »':a==='attendre'?'« Attendez ici, sans bruit. »':'« Allez ! » Les compagnons se lancent sur le gibier.');VP.cp.forEach(o=>{o.ax=o.x;o.az=o.z})}
  else if(a==='pouvoir'){const L=typeof pvScene==='function'?pvScene():[];if(!L.length)return vpMsg('Aucun pouvoir mystique connu : les savoirs et les mythes en ouvrent.');const k=L[0];const c=POUV[k]?POUV[k].c:3;if((S.myst||0)<c)return vpMsg('Pas assez de mystique.');S.myst-=c;if(SCPV[k][1]==='voir'){VP.voirT=20}else if(SCPV[k][1]==='soin'){VP.hp=Math.min(3,VP.hp+1)}else VP.discret=20;vpMsg(SCPV[k][0]+' : '+SCPV[k][2]+' (mythe)')}
@@ -92,7 +92,7 @@ function vpBoucle(){if(!VP)return;const now=performance.now(),dt=Math.min(.05,(n
  if(ln>.05){const s=Math.sin(VP.yaw),co=Math.cos(VP.yaw),mx=(fx*co+fz*s)/ln,mz=(-fx*s+fz*co)/ln,nx=ch.x+mx*sp*dt,nz=ch.z+mz*sp*dt;if(vpLibre(nx,nz)&&Math.abs(h(nx,nz)-h(ch.x,ch.z))<sp*dt*1.4+.05){ch.x=clamp(nx,-80,80);ch.z=clamp(nz,-80,80)}ch.ang=Math.atan2(mx,mz)}
  VP.vy-=14*dt;let y0=h(ch.x,ch.z),cy=(ch.y==null?y0:ch.y)+VP.vy*dt;if(cy<=y0){cy=y0;VP.vy=0;VP.sol=true}ch.y=cy;
  VP.bruit=VP.discret>0?0:ln>.05?(VP.ram?.05:VP.acc?.18:run?1:.45):.04;VP.discret=Math.max(0,(VP.discret||0)-dt);VP.voirT=Math.max(0,(VP.voirT||0)-dt);VP.rel=Math.max(0,VP.rel-dt);
- const pose=(o,mv,vit)=>{if(!o.root)return;o.root.position.set(o.x,(o.y!=null?o.y:h(o.x,o.z))-(o===ch&&VP.ram?.55:0),o.z);o.root.rotation.y=o.ang;o.root.scale.y=o===ch&&VP.ram?.55:1;if(o.lanceT>0){o.lanceT-=dt}else vpClip(o,o===ch&&!VP.sol?'saut':mv?(vit>5?'course':(o===ch&&(VP.acc||VP.ram))||o.tra?'chasse_traque':'marche'):(o===ch&&VP.acc?'cacher':'repos_debout'));if(o.mx)o.mx.update(dt)};
+ const pose=(o,mv,vit)=>{if(!o.root)return;o.root.position.set(o.x,(o.y!=null?o.y:h(o.x,o.z))-(o===ch&&VP.ram?.55:0),o.z);o.root.rotation.y=o.ang;o.root.scale.y=o===ch&&VP.ram?.55:1;if(o.lanceT>0){o.lanceT-=dt}else vpClip(o,o===ch&&!VP.sol?'saut':mv?(vit>5?'course':(o===ch&&(VP.acc||VP.ram))||o.tra?'chasse_traque':'marche'):(o===ch&&VP.acc?'cacher':'repos_debout'));if(o.mx)o.mx.update(dt);try{if(typeof vpInt189==='function')vpInt189(o,dt)}catch(e){}};
  pose(ch,ln>.05,sp);
  // les compagnons
  VP.cp.forEach((o,i)=>{if(VP.fight&&!VP.fight.fin){pose(o,!!o.mvF,o.rc==='combat'?5:3.4);return}let tx,tz,v=3.4;o.tra=0;

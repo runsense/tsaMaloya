@@ -47,3 +47,15 @@ function int189(c,o,c2,o2,dt,G){try{if(!o.mx188||!o.g||!o2.g)return;if(o.mx188.t
    else{if(b.Hips)tourne189(b.Hips,R(.12*f));const Ls=['LeftUpLeg','RightUpLeg'].map(n=>b[n]).filter(Boolean);if(Ls.length===2){const x0=wp189(Ls[0]).x,x1=wp189(Ls[1]).x,av=(x0-x1)*-r.s>0?Ls[0]:Ls[1];tourne189(av,R(.35*f))}if(b.Spine)tourne189(b.Spine,R(-.12*f))}}}
 }catch(e){}}
 function atkD189(c){try{return (typeof c.dg189==='number'?c.dg189:8)}catch(e){return 8}}
+// ===== Le même générateur dans la vue incarnée : le bras va chercher la cible (bête, milicien, marron) ; celui qu'on touche réagit, balle comprise =====
+function vpOs189(o){if(o.b189)return o.b189;const m={};if(o.root)o.root.traverse(b=>{if(b.isBone&&!m[b.name])m[b.name]=b});return o.b189=m}
+const VPGESTE189={baton_coup:.8,sabre:.7,couteau:.8,fusil:.8};
+function vpInt189(o,dt){if(!o||!o.root)return;const b=vpOs189(o);if(!b.Hips)return;o.root.updateMatrixWorld(true);const now=performance.now();
+ // le coup : pendant le geste, le bras armé est tiré vers la cible (le fusil, lui, vise la poitrine)
+ const D=VPGESTE189[o.clip];if(D&&o.cib189&&o.t189){const p=(now-o.t189)/1000/D;if(p>=0&&p<1){const c=o.cib189,cr=c.root;if(cr){cr.updateMatrixWorld(true);const T=new THREE.Vector3();cr.getWorldPosition(T);T.y+=c.p||c===VP.chef?1.25:.45;
+    const w=Math.sin(Math.PI*Math.min(1,p*1.15))*(o.clip==='fusil'?.6:.85);const ch=o.clip==='fusil'?CH189.LeftHand:CH189.RightHand;
+    if(b.Spine&&b.Hips){const up=wp189(b.Spine).sub(wp189(b.Hips)),vt=T.clone().sub(wp189(b.Hips));aligne189(b.Spine,up,up.clone().normalize().add(vt.normalize().multiplyScalar(.15)),w)}
+    if(b[ch[0]]&&b[ch[1]]&&b[ch[2]])ik189(b[ch[0]],b[ch[1]],b[ch[2]],T,w)}}}
+ // la conséquence : un coup ou une balle fait partir le buste et la tête à l'opposé, puis le corps revient
+ const r=o.hit189;if(r&&o.mx&&o.mx._actions&&o.mx._actions.some(a=>a.isRunning())){const t=(now-r.t0)/1000;if(t>1.1)o.hit189=null;else{const f=(t/.12)*Math.exp(1-t/.12),L=Math.hypot(r.dx,r.dz)||1,dir=new THREE.Vector3(r.dx/L,0,r.dz/L),ax=new THREE.Vector3(0,1,0).cross(dir).normalize(),R=a=>Q189().setFromAxisAngle(ax,a);
+   if(b.Spine)tourne189(b.Spine,R(.15*f));if(b.neck)tourne189(b.neck,R(.12*f));if(b.Head)tourne189(b.Head,R(.18*f))}}}
