@@ -24,3 +24,7 @@ const lire195=tx=>{try{tx=(tx||'').toLowerCase();if(/cavadee|kavadi|mourouga|mar
 try{const md=modal;modal=function(){try{if(S&&S.evq&&S.evq.length){const e=EV[S.evq[0]]||{};lire195((e.t||'')+' '+(typeof e.b==='string'?e.b:''))}}catch(e){}return md.apply(this,arguments)}}catch(e){}
 try{const lg=log;log=function(m){const r=lg.apply(this,arguments);lire195(m);return r}}catch(e){}
 try{const lj=leg104Jouer;leg104Jouer=function(k){const r=lj.apply(this,arguments);if(k==='cavadee')cavadee195();return r}}catch(e){}
+// le son « info » de chaque message : un seul petit clic d'horloge, pas quatre secondes de tic-tac (qui sonnaient comme un compte à rebours) ;
+// et jamais plus d'un toutes les 3 secondes
+try{if(typeof PRE72!=='undefined'&&PRE72.tick){let der=0;PRE72.tick={d:1,f:()=>{try{const now=performance.now();if(now-der<3000)return;der=now;const c=typeof sndPret==='function'&&sndPret();if(!c)return;const B=sons193(c),b=B&&B.tick;
+ if(!b){if(typeof sTon==='function')sTon(2400,.03,{v:.02,type:'triangle'});return}const s=c.createBufferSource(),g=c.createGain(),t=c.currentTime;s.buffer=b;g.gain.setValueAtTime(.3,t);g.gain.linearRampToValueAtTime(0,t+.14);s.connect(g);g.connect(SND.out);s.start(t,.25,.15)}catch(e){}}}}}catch(e){}
