@@ -37,13 +37,15 @@ function anime218(o,F,now,dt){const s=o.s;o.f+=(F-o.f)*Math.min(1,dt*.6);o.t.mat
   const px=b.w.position.x,pz=b.w.position.z;b.w.position.set(ax,(bat?y*.6:y)*(.3+o.f*.7),az);if(Math.hypot(ax-px,az-pz)>1e-4)b.w.rotation.y=Math.atan2(ax-px,az-pz);b.w.rotation.z=bat?Math.sin(now*9+j)*.6:-Math.sign(b.v)*.25;b.w.visible=o.f>.15});
  if(o.pir){const a=now*.04+s.i;o.pir.position.set(s.x-s.ux*.15+Math.cos(a)*.22,.01+Math.sin(now*1.3)*.005,s.z-s.uz*.15+Math.sin(a)*.15);o.pir.rotation.y=-a;o.pir.visible=o.f>.3&&jour218()}}
 function jour218(){const ph=typeof jourPh==='function'?jourPh():.4;return ph>.12&&ph<.72}
-{let tp=performance.now();setInterval(()=>{try{if(typeof scene==='undefined'||!S||!T||!T.length)return;const now=performance.now(),dt=Math.min(.3,(now-tp)/1000);tp=now;
+// les oiseaux bougent à chaque image (et plus 20 fois par seconde) : plus de saccades
+const raf218=fn=>{const f=()=>{try{fn()}catch(e){}requestAnimationFrame(f)};requestAnimationFrame(f)};
+{let tp=performance.now();raf218(()=>{try{if(typeof scene==='undefined'||!S||!T||!T.length)return;const now=performance.now(),dt=Math.min(.3,(now-tp)/1000);tp=now;
   const F=force218(),voir=F>.05&&dist<28&&!(typeof VP!=='undefined'&&VP)&&!(typeof CINE!=='undefined'&&CINE);const vus={};
   if(voir)sites218().map(s=>[s,Math.hypot(s.x-camT.x,s.z-camT.z)]).filter(([s,d])=>d<dist*1.4+3&&(!T.length||true)).sort((a,b)=>a[1]-b[1]).slice(0,3).forEach(([s])=>vus[s.i]=s);
   for(const k in EAUX218.L){const o=EAUX218.L[k];if(!vus[k]){o.f-=dt*.5;if(o.f<=0){scene.remove(o.G);delete EAUX218.L[k]}else anime218(o,0,now/1000,dt)}}
   for(const k in vus){let o=EAUX218.L[k];if(!o)o=EAUX218.L[k]=cree218(vus[k]);anime218(o,F,now/1000,dt)}
   // la première fois qu'on le voit dans une partie : la fiche
-  if(voir&&Object.keys(vus).length&&!S.vu218&&Object.values(EAUX218.L).some(o=>o.f>.4)){S.vu218=1;S.done=S.done||{};if(!S.done.eaux218&&S.evq&&!S.evq.includes('eaux218'))S.evq.push('eaux218')}}catch(e){}},50)}
+  if(voir&&Object.keys(vus).length&&!S.vu218&&Object.values(EAUX218.L).some(o=>o.f>.4)){S.vu218=1;S.done=S.done||{};if(!S.done.eaux218&&S.evq&&!S.evq.includes('eaux218'))S.evq.push('eaux218')}}catch(e){}})}
 EV.eaux218={y:1663,si:()=>!!(S&&S.vu218),tag:'Nature',an:'après les grosses pluies',t:'Les eaux noires',
  get b(){return 'Après la grosse pluie, au bout des rivières et devant certaines falaises, la mer change : au milieu du turquoise, une tache plus sombre. C’est l’eau douce qui sort, par la rivière ou par-dessous, des sources qui coulent sous la mer. Le poisson y monte. Les paille-en-queue et les makwas (les noddis bruns) arrivent, plongent, se volent les prises en plein air. '+(S.voieC?'Les pêcheurs le savent : ils mettent la pirogue au bord de la tache.':'Ceux d’en haut le voient de loin, depuis le bord des remparts : la mer leur dit où le poisson est.')},
  v:'L’eau douce se voit d’en haut.',h:'Observation de pêcheurs et de promeneurs, vue des hauteurs de Saint-Denis au-dessus du littoral. Les nappes de l’île se déversent aussi sous la mer, le long des côtes ; les rivières en crue font de même en surface.',
@@ -51,8 +53,8 @@ EV.eaux218={y:1663,si:()=>!!(S&&S.vu218),tag:'Nature',an:'après les grosses plu
 // les colonies de makwas : l'îlet de Petite-Île et les falaises du Cap Méchant (Saint-Philippe) ; de jour, ils tournent au-dessus de la côte ;
 // et en mer, quand une bande de makwas plonge, le pêcheur sait que le thon ou la dorade chassent dessous.
 const COL218={L:{}};
-setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin||typeof inst144!=='function')return;const ph=typeof jourPh==='function'?jourPh():.4,jour=ph>.12&&ph<.72,voir=jour&&dist<22&&!(typeof VP!=='undefined'&&VP);const now=performance.now()/1000;
+{let tp2=performance.now();raf218(()=>{try{const k2=Math.min(6,(performance.now()-tp2)/50);tp2=performance.now();if(typeof scene==='undefined'||!S||S.fin||typeof inst144!=='function')return;const ph=typeof jourPh==='function'?jourPh():.4,jour=ph>.12&&ph<.72,voir=jour&&dist<22&&!(typeof VP!=='undefined'&&VP);const now=performance.now()/1000;
   [[55.566,-21.364,'petiteile'],[55.735,-21.378,'capmechant']].forEach(([lo,la,k])=>{const[x,z]=xz(lo,la),pres=voir&&Math.hypot(x-camT.x,z-camT.z)<dist*1.4+3;let o=COL218.L[k];
    if(!pres){if(o)o.G.visible=false;return}if(!o){const G=new THREE.Group();scene.add(G);o=COL218.L[k]={G,B:[]};for(let i=0;i<7;i++)Promise.resolve({w:makwa227()}).then(r=>{G.add(r.w);o.B.push({w:r.w,a:Math.random()*6.28,r:.2+Math.random()*.5,v:(.4+Math.random()*.5)*(Math.random()<.5?-1:1),h:.25+Math.random()*.5})}).catch(()=>{})}
-   o.G.visible=true;o.B.forEach((b,j)=>{b.a+=.05*b.v;const px=b.w.position.x,pz=b.w.position.z,ax=x+Math.cos(b.a)*b.r,az=z+Math.sin(b.a)*b.r*.7;b.w.position.set(ax,Math.max(0,alt(x,z))*VX+b.h+.05*Math.sin(now*2+j),az);if(Math.hypot(ax-px,az-pz)>1e-4)b.w.rotation.y=Math.atan2(ax-px,az-pz)})})}catch(e){}},50);
+   o.G.visible=true;o.B.forEach((b,j)=>{b.a+=.05*b.v*k2;const px=b.w.position.x,pz=b.w.position.z,ax=x+Math.cos(b.a)*b.r,az=z+Math.sin(b.a)*b.r*.7;b.w.position.set(ax,Math.max(0,alt(x,z))*VX+b.h+.05*Math.sin(now*2+j),az);if(Math.hypot(ax-px,az-pz)>1e-4)b.w.rotation.y=Math.atan2(ax-px,az-pz)})})}catch(e){}})}
 try{const e=EV.eaux218;if(e){e.h+=' Les makwas (noddis bruns) nichent en colonies sur l’îlet de Petite-Île et aux falaises du Cap Méchant ; les pêcheurs du large suivent leurs bandes qui plongent : dessous chassent le thon ou la dorade. On dit que leur nom vient des Makua, peuple du Mozambique dont beaucoup furent amenés dans l’île par la traite (origine probable, non établie).'}}catch(e){}
