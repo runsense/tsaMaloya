@@ -2,7 +2,7 @@
 // ===== p174 : la pluie suit l'île — l'Est et le Sud sauvage sont mouillés presque toujours (hauts de Bras-Panon, Plaine des Palmistes, Bébour sous le Piton des Neiges, Saint-Philippe),
 // l'Ouest sous le vent reste sec en saison sèche ; après un cyclone, le beau temps revient d'abord à l'Ouest pendant que l'Est prend encore la pluie. =====
 {const cy=cyclone;cyclone=function(){const r=cy.apply(this,arguments);try{if(S)S.cycNs=S.ns||0}catch(e){}return r}}
-// La part du temps où il pleut, selon l'endroit (relevé de Paris) : Sud sauvage 4/5 ; la côte au vent et ses hauts vont de 4/5 au sud jusqu'à 2/5 à Saint-Denis ;
+// La part du temps où il pleut, selon l'endroit (relevé de l’auteur) : Sud sauvage 4/5 ; la côte au vent et ses hauts vont de 4/5 au sud jusqu'à 2/5 à Saint-Denis ;
 // de légères averses dans les hauts du Sud-Ouest jusqu'à Saint-Leu ; l'Ouest sous le vent reste sec en saison sèche.
 function pluieLieu174(x,z){try{const g=LL99({x,z}),h=Math.max(0,alt(x,z)),sais=typeof pluie==='function'&&pluie(),post=S.cycNs!=null&&(S.ns||0)-S.cycNs<=1&&!(S.cyc&&S.cyc.in<=0);
  const k=v=>Math.max(0,Math.min(1,v));let duty,inten,z0;

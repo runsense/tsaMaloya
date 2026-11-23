@@ -1,5 +1,5 @@
 
-// ===== p148 : idées tirées des modèles envoyés par Paris (vagues, ouragan, bassin à cascades, rivières, plantes) =====
+// ===== p148 : idées tirées des modèles envoyés par l’auteur (vagues, ouragan, bassin à cascades, rivières, plantes) =====
 // 1) La houle et les déferlantes : tout autour de l'île, des bandes d'écume naissent au large et viennent mourir sur le rivage ;
 //    la mer grossit avant un cyclone (vagues plus hautes, plus rapides, écume partout) et se calme après.
 // 2) Les trous d'eau des cascades : un cercle de galets autour du bassin, des fougères et des herbes sur les berges, la cascade en deux chutes quand elle est haute.

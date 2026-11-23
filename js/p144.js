@@ -1,8 +1,8 @@
 
-// ===== p144 : les modèles 3D apportés par Paris (Sketchfab, CC-BY) et ses oiseaux imprimés (3mf) entrent dans le jeu =====
+// ===== p144 : les modèles 3D apportés par l’auteur (Sketchfab, CC-BY) et ses oiseaux imprimés (3mf) entrent dans le jeu =====
 // Rendu harmonisé : tous les matériaux passent au même régime (mat, sans métal, sans reflets ni lueurs, textures en sRGB), et chaque modèle est ramené à sa taille dans le jeu.
 // Bêtes : tortue géante, ibis (solitaire), pigeon (pigeon rose), roussette (vol animé), petits oiseaux (vol animé), scinque, rat, perroquet.
-// Oiseaux de Paris (tirés de ses 3mf d'impression, couleurs de ses filaments) : paille-en-queue (phaéton), papangue, pétrel noir de Bourbon, zoizo la Vierge.
+// Oiseaux de l’auteur (tirés de ses 3mf d'impression, couleurs de ses filaments) : paille-en-queue (phaéton), papangue, pétrel noir de Bourbon, zoizo la Vierge.
 // Décor : cocotiers des côtes, rochers et pierres, branches moussues et troncs morts en forêt.
 const M144={prm:{},tpl:{},mx:[]};
 function buf144(n){return M144.prm[n]||(M144.prm[n]=meshyB64(n).then(t=>{const b=atob(t.trim()),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer}))}
@@ -81,4 +81,4 @@ setTimeout(function roc144(){try{if(typeof MOD==='undefined'||!MOD.rocher||!MOD.
 // crédits des modèles (licence CC-BY 4.0 : on cite chaque auteur)
 const CRED144=[['Tortue géante','Akinremi'],['Ibis blanc','jgrabo20'],['Pigeon','kenchoo'],['Roussette (Bat flying)','rafaelrafi'],['Petit oiseau (LowPoly humming-bird)','alexi.smnd'],['Scinque','bronwenalexina'],['Rat','iRahulRajput'],['Perroquet','SDPM Esare'],['Cocotier','iGauravRajput'],['Pierre (Stone Rock part 11)','YN14R'],['Branche moussue','ScanForgeFAB']];
 setInterval(()=>{try{const c=document.getElementById('credSat');if(!c||c.querySelector('.cr144'))return;const b=document.createElement('a');b.className='cr144';b.href='#';b.textContent=' · Modèles 3D';b.style.cssText='color:inherit;text-decoration:underline;pointer-events:auto;cursor:pointer';
- b.onclick=e=>{e.preventDefault();alerteSimple('Modèles 3D','Modèles Sketchfab sous licence CC-BY 4.0 :<br>'+CRED144.map(([n,a])=>n+' — '+a).join('<br>')+'<br><br>Paille-en-queue, papangue, pétrel noir et zoizo la Vierge : modèles de Jean-Christophe Paris. Personnages et bêtes : modèles Meshy.',[['Fermer',()=>{}]])};c.appendChild(b)}catch(e){}},2000);
+ b.onclick=e=>{e.preventDefault();alerteSimple('Modèles 3D','Modèles Sketchfab sous licence CC-BY 4.0 :<br>'+CRED144.map(([n,a])=>n+' — '+a).join('<br>')+'<br><br>Paille-en-queue, papangue, pétrel noir et zoizo la Vierge : modèles de l’auteur du jeu. Personnages et bêtes : modèles Meshy.',[['Fermer',()=>{}]])};c.appendChild(b)}catch(e){}},2000);

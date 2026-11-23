@@ -14,7 +14,7 @@ setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin)return;const nuit=
  const now=performance.now()/1000;
  for(const k in vus){const t=T[k],m=vus[k];let p=PIR172.L[k];if(!p){p=new THREE.Group();const c=g168Navire('pirogue');c.scale.setScalar(1.4);p.add(c);const n=S.voieC?'homme_chemise':'jeune_pagne';rameur172(n,.1).then(r=>{r.position.set(0,.04,0);r.rotation.y=Math.PI/2;c.add(r)}).catch(()=>{});scene.add(p);PIR172.L[k]=p}
   const cx=t.x+(m.x-t.x)*.75,cz=t.z+(m.z-t.z)*.75,a=now*.05+(+k),x=cx+Math.cos(a)*.35,z=cz+Math.sin(a)*.25;p.position.set(x,.01+Math.sin(now*1.3+(+k))*.005,z);p.rotation.y=-a}}catch(e){}},120);
-// ===== le créole suit le lieu (relecture de Paris) : « lo » et « lu » au Sud, « le » et « li » ailleurs ; quelques mots changent entre les Bas et les Hauts, le Nord et le Sud =====
+// ===== le créole suit le lieu (relecture de l’auteur) : « lo » et « lu » au Sud, « le » et « li » ailleurs ; quelques mots changent entre les Bas et les Hauts, le Nord et le Sud =====
 // « lo van » reste partout tel quel : devant « van », on dit toujours « lo ».
 // {N:…|S:…} : Nord / Sud ; {B:…|H:…} : Bas / Hauts
 function kz172(p,txt){try{if(typeof txt!=='string')return txt;const t=p&&typeof campDe==='function'?T[campDe(p)]:null,z=typeof zone162==='function'?zone162(t):'bas',sud=z==='sud',haut=t&&(t.alt||0)>600;

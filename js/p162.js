@@ -1,7 +1,7 @@
 // ===== p162 : le créole change selon la zone et le rang — tout le monde parle le créole de son endroit (esclaves compris) =====
 // Sud et Hauts du Sud jusqu'à la Plaine des Cafres : « lo » au lieu de « le », « lu » au lieu de « li ». Est : créole de l'Est. Hauts : parler lent, mots anciens.
 // Bas des plantations : plus de mots malgaches. Notables, gens de la ville : un créole presque français.
-// Phrases courtes et courantes, à faire relire par Paris ; la traduction suit entre parenthèses.
+// Phrases courtes et courantes, à faire relire par l’auteur ; la traduction suit entre parenthèses.
 function zone162(t){try{if(!t)return 'bas';const g=LL99(t);if(g.lat<-21.13&&g.lon>55.38&&g.lon<55.72)return 'sud';if(g.lon>55.62&&g.lat>-21.2)return 'est';if((t.alt||0)>600)return 'hauts';return 'bas'}catch(e){return 'bas'}}
 const CR162=[
  ['Sh’min lé long, nou sa ariv tar.','le chemin est long, on va arriver tard'],

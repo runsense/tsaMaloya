@@ -376,7 +376,7 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
  // ---- la voiture : une petite berline, feux arrière rouges, phares
  const car=new THREE.Group(),carS=new THREE.Group(),carR=new THREE.Group(),carH=new THREE.Group(),carP=new THREE.Group(),carC=new THREE.Group(),rouesR=[];let choixV='subaru';try{choixV=localStorage.getItem('songe_voiture')||'subaru'}catch(e){}
  {
-  // la Subaru Impreza de Paris : son modèle imprimé, à l'échelle réelle (4,34 m) ; repli sur la voiture en blocs si les données manquent
+  // la Subaru Impreza de l’auteur : son modèle imprimé, à l'échelle réelle (4,34 m) ; repli sur la voiture en blocs si les données manquent
   const bati=(V,FW,Lm,grp)=>{if(!V)return false;const lo=V.lo,hi=V.hi,S=Lm/(hi[0]-lo[0]);
    V.g.forEach(g=>{const b=atob(g.p),u=new Uint8Array(b.length);for(let k=0;k<b.length;k++)u[k]=b.charCodeAt(k);const q=new Int16Array(u.buffer),n=q.length/3,pos=new Float32Array(n*3);
     for(let k=0;k<n;k++){const mx=lo[0]+(q[k*3]+32768)/65535*(hi[0]-lo[0]),my=lo[1]+(q[k*3+1]+32768)/65535*(hi[1]-lo[1]),mz=lo[2]+(q[k*3+2]+32768)/65535*(hi[2]-lo[2]);pos[k*3]=FW*my*S;pos[k*3+1]=(mz-lo[2])*S;pos[k*3+2]=FW*mx*S}

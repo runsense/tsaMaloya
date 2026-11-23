@@ -1,6 +1,6 @@
 // ===== p218 : les eaux noires après la pluie — après une grosse pluie, à la sortie des rivières et des sources d'eau douce qui sortent sous la mer,
 // l'eau est plus foncée au milieu du turquoise (le douce se mêle au salé). Le poisson y monte, les paille-en-queue et les noddis s'y battent en plongeant,
-// et parfois une pirogue de pêcheurs vient s'y poser. Ça se voit d'en haut : des hauts de Saint-Denis, au bord du littoral. (observé par Paris) =====
+// et parfois une pirogue de pêcheurs vient s'y poser. Ça se voit d'en haut : des hauts de Saint-Denis, au bord du littoral. (observé par l’auteur) =====
 const EAUX218={sites:null,L:{},der:-1e9,cyc:0};
 // les sorties : l'embouchure de chaque rivière, et des sources sous la mer le long du littoral (Saint-Denis, la Grande Chaloupe, la baie de Saint-Paul)
 function sites218(){if(EAUX218.sites)return EAUX218.sites;const S0=[];try{const cx=T.reduce((a,u)=>a+u.x,0)/T.length,cz=T.reduce((a,u)=>a+u.z,0)/T.length;
@@ -21,7 +21,7 @@ function oiseaux218(site,G){const B=[];if(typeof tpl144!=='function')return B;
  // un modèle chargé une seule fois, puis cloné (avant : un chargement par oiseau, ce qui figeait le jeu quand plusieurs taches apparaissaient)
  const add=(nom,o,k,esp,ech,teinte)=>tpl144(nom,o).then(T0=>{const w=T0.clone(true);w.scale.multiplyScalar(ech);if(teinte)w.traverse(m=>{if(m.isMesh&&m.material){m.material=m.material.clone();m.material.color&&m.material.color.setHex(teinte)}});G.add(w);B.push({w,k,esp,r:.25+Math.random()*.35,a:Math.random()*6.28,v:(.5+Math.random()*.5)*(Math.random()<.5?-1:1),h:.35+Math.random()*.4,pl:0})}).catch(()=>{});
  for(let i=0;i<2;i++)add('oi_phaeton',{h:.32,long:true,yaw:-Math.PI/2,tint:0xf4f2ec},i,'paille',.7);
- for(let i=0;i<3;i++)add('oi_petrel',{h:.2,long:true,yaw:-Math.PI/2},i,'noddi',.8,0x8a7262);return B}
+ for(let i=0;i<3;i++){const w=makwa227();G.add(w);B.push({w,k:i,esp:'noddi',r:.25+Math.random()*.35,a:Math.random()*6.28,v:(.5+Math.random()*.5)*(Math.random()<.5?-1:1),h:.35+Math.random()*.4,pl:0})}return B}
 function cree218(s){const G=new THREE.Group();scene.add(G);const m=new THREE.MeshBasicMaterial({map:tex218(),transparent:true,depthWrite:false,opacity:0});
  const t=new THREE.Mesh(new THREE.PlaneGeometry(1,1),m);t.rotation.x=-Math.PI/2;t.rotation.z=-Math.atan2(s.uz,s.ux);t.scale.set(s.src?1.1:1.6,s.src?.9:.85,1);t.position.set(s.x,.018,s.z);t.renderOrder=1;G.add(t);
  // les remous du poisson : petites gerbes blanches qui éclatent ici et là
@@ -48,3 +48,11 @@ EV.eaux218={y:1663,si:()=>!!(S&&S.vu218),tag:'Nature',an:'après les grosses plu
  get b(){return 'Après la grosse pluie, au bout des rivières et devant certaines falaises, la mer change : au milieu du turquoise, une tache plus sombre. C’est l’eau douce qui sort, par la rivière ou par-dessous, des sources qui coulent sous la mer. Le poisson y monte. Les paille-en-queue et les makwas (les noddis bruns) arrivent, plongent, se volent les prises en plein air. '+(S.voieC?'Les pêcheurs le savent : ils mettent la pirogue au bord de la tache.':'Ceux d’en haut le voient de loin, depuis le bord des remparts : la mer leur dit où le poisson est.')},
  v:'L’eau douce se voit d’en haut.',h:'Observation de pêcheurs et de promeneurs, vue des hauteurs de Saint-Denis au-dessus du littoral. Les nappes de l’île se déversent aussi sous la mer, le long des côtes ; les rivières en crue font de même en surface.',
  o:[{n:'Regarder',d:'Savoir +1.',fx:{savoir:1}}]};
+// les colonies de makwas : l'îlet de Petite-Île et les falaises du Cap Méchant (Saint-Philippe) ; de jour, ils tournent au-dessus de la côte ;
+// et en mer, quand une bande de makwas plonge, le pêcheur sait que le thon ou la dorade chassent dessous.
+const COL218={L:{}};
+setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin||typeof inst144!=='function')return;const ph=typeof jourPh==='function'?jourPh():.4,jour=ph>.12&&ph<.72,voir=jour&&dist<22&&!(typeof VP!=='undefined'&&VP);const now=performance.now()/1000;
+  [[55.566,-21.364,'petiteile'],[55.735,-21.378,'capmechant']].forEach(([lo,la,k])=>{const[x,z]=xz(lo,la),pres=voir&&Math.hypot(x-camT.x,z-camT.z)<dist*1.4+3;let o=COL218.L[k];
+   if(!pres){if(o)o.G.visible=false;return}if(!o){const G=new THREE.Group();scene.add(G);o=COL218.L[k]={G,B:[]};for(let i=0;i<7;i++)Promise.resolve({w:makwa227()}).then(r=>{G.add(r.w);o.B.push({w:r.w,a:Math.random()*6.28,r:.2+Math.random()*.5,v:(.4+Math.random()*.5)*(Math.random()<.5?-1:1),h:.25+Math.random()*.5})}).catch(()=>{})}
+   o.G.visible=true;o.B.forEach((b,j)=>{b.a+=.05*b.v;const px=b.w.position.x,pz=b.w.position.z,ax=x+Math.cos(b.a)*b.r,az=z+Math.sin(b.a)*b.r*.7;b.w.position.set(ax,Math.max(0,alt(x,z))*VX+b.h+.05*Math.sin(now*2+j),az);if(Math.hypot(ax-px,az-pz)>1e-4)b.w.rotation.y=Math.atan2(ax-px,az-pz)})})}catch(e){}},50);
+try{const e=EV.eaux218;if(e){e.h+=' Les makwas (noddis bruns) nichent en colonies sur l’îlet de Petite-Île et aux falaises du Cap Méchant ; les pêcheurs du large suivent leurs bandes qui plongent : dessous chassent le thon ou la dorade. On dit que leur nom vient des Makua, peuple du Mozambique dont beaucoup furent amenés dans l’île par la traite (origine probable, non établie).'}}catch(e){}

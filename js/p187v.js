@@ -1,4 +1,4 @@
-// la Subaru Impreza 2000 de Paris (son modèle imprimé « subaru_4_couleurs », décimé à ~23 000 triangles, couleurs de ses filaments)
+// la Subaru Impreza 2000 de l’auteur (son modèle imprimé « subaru_4_couleurs », décimé à ~23 000 triangles, couleurs de ses filaments)
 const VOIT187_PAV=1,VOIT187_CAV=-1,VOIT187_HLAV=-1;
 const VOIT187_R5AV=1;
 const VOIT187_AV=-1;

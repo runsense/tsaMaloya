@@ -1,6 +1,6 @@
 
 // ===== p145 : les « dossiers noirs » — la violence ordinaire de l'esclavage et de l'engagisme à Bourbon, racontée sans s'y complaire =====
-// Source : textes réunis par Paris (publications de mémoire). Les lieux et les prénoms des enfants sont gardés ; les noms des bourreaux ne sont pas repris :
+// Source : textes réunis par l’auteur (publications de mémoire). Les lieux et les prénoms des enfants sont gardés ; les noms des bourreaux ne sont pas repris :
 // ces dossiers citent des cotes d'archives (AD974) que nous n'avons pas pu vérifier. Chaque fiche le dit. Les faits de système (Code noir, capitation, engagisme, lazarets…) sont, eux, établis.
 const DN145=[
  ['dnAvirons',1835,'La forge de la Ravine des Avirons','Martial, onze ans, apprenti chez un maréchal-ferrant. Pour un soufflet mal tenu, le maître le brûle au fer rouge ; le bras ne guérira jamais. Le tribunal acquitte le maître.','cote citée : AD974 2 U 338'],

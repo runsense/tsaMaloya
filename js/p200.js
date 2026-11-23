@@ -1,5 +1,5 @@
 // ===== p200 : le son dans l'île — volume et clarté de chaque source selon la distance (ou l'altitude).
-// Les courbes se règlent dans l'Atelier Maloya (« Le son dans l'île ») ; on recopie ici ce que Paris y a dessiné. =====
+// Les courbes se règlent dans l'Atelier Maloya (« Le son dans l'île ») ; on recopie ici ce que l’auteur y a dessiné. =====
 const FR200=[0,.07,.13,.23,.4,.67,1];
 const SRC200={kabar:{max:30,v:[100,100,96,85,67,38,20],c:[100,98,91,76,44,27,27]},
  cache:{max:20,v:[100,100,88,70,41,17,17],c:[44,44,40,33,22,6,6]},

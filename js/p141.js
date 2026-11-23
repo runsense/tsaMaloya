@@ -1,6 +1,6 @@
 
 // ===== p141 : les espèces « en noir » des listes rouges (EX : éteinte dans le monde ; RE : disparue de La Réunion) qui manquaient =====
-// Source : dossier de presse de la Liste rouge de la faune de La Réunion (UICN, 2010) et Liste rouge de la flore vasculaire (2023), envoyés par Paris.
+// Source : dossier de presse de la Liste rouge de la faune de La Réunion (UICN, 2010) et Liste rouge de la flore vasculaire (2023), envoyés par l’auteur.
 // Les listes ne donnent pas de date de disparition : les dates ci-dessous sont des ordres de grandeur choisis pour le jeu ; elles bougent ensuite selon les pressions (p135).
 const NOIR141=[
  ['pigeonRose',1700,'Le pigeon rose de la Réunion','Un pigeon rose des forêts, décrit par les premiers voyageurs. Facile à tirer, il ne survit pas longtemps aux premiers fusils.','EX','foret'],

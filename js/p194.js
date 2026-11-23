@@ -1,4 +1,4 @@
-// ===== p194 : quatre boucles de maloya jouées par Paris dans Kontakt =====
+// ===== p194 : quatre boucles de maloya jouées par l’auteur dans Kontakt =====
 // Rythmes de la librairie « Maloya Roots Percussions » (Wayo Audio), mixés ensemble en une prise par formation :
 // kabaré, kasse, malbar binaire, maligasse, moring, pleure, roule, valse. Boucles de 12, 16 ou 24 s, mono 64 kb/s.
 // Licence Wayo : les sons ne sont pas redistribuables isolément ; ici ce sont des mixages complets, intégrés au jeu.
@@ -14,7 +14,7 @@ function boucle194(ctx,dest,nom,v,une){try{const B=sons193(ctx),b=B&&B['boucle_'
 try{if(typeof PRE72!=='undefined'&&typeof SONCH!=='undefined'){let cur=null,curK='';
  const def=(k,choix)=>{const o={d:3.6,f:()=>{const c=typeof sndPret==='function'&&sndPret();if(!c)return;
    if(cur&&curK===k){o.d=3600;return}if(cur){cur.stop();cur=null}const nom=choix();
-   // le kabar d'un camp s'ouvre sur les 15 secondes composées par Paris dans l'Atelier, puis la boucle prend le relais
+   // le kabar d'un camp s'ouvre sur les 15 secondes composées par l’auteur dans l'Atelier, puis la boucle prend le relais
    if(k==='bclKabar'&&sons193(c)['boucle_intro_kabar']){const bus=c.createGain(),F=c.createBiquadFilter();F.type='lowpass';F.frequency.value=18000;bus.connect(F);F.connect(SND.out);
     const intro=boucle194(c,bus,'intro_kabar',1.1,1);let suite=null;const h=setTimeout(()=>{suite=boucle194(c,bus,nom,.6)},14800);
     cur={nom,sp:bus,F,ctx:c,stop(){clearTimeout(h);try{intro&&intro.stop()}catch(e){}try{suite&&suite.stop()}catch(e){}}}}
@@ -49,7 +49,7 @@ try{if(typeof PRE72!=='undefined'&&typeof SONCH!=='undefined'){let cur=null,curK
  if(typeof modal==='function'){const md=modal;modal=function(){try{if(S&&S.evq&&S.evq.length){const e=EV[S.evq[0]]||{},tx=((e.t||'')+' '+(typeof e.b==='string'?e.b:'')).toLowerCase();
    if(!/kabar|maloya|moringue/.test(tx))for(const [re,m] of EVM)if(re.test(tx)){SND.m194=m;SND.m194J=performance.now()+16000;break}}}catch(e){}return md.apply(this,arguments)}}
 }}catch(e){}
-try{CRED144.push(["Boucles de maloya (kabaré, kasse, malbar, maligasse, moring, pleure, roule, valse) : rythmes de la librairie « Maloya Roots Percussions », Wayo Audio, joués et mixés par Paris","Wayo Audio"])}catch(e){}
+try{CRED144.push(["Boucles de maloya (kabaré, kasse, malbar, maligasse, moring, pleure, roule, valse) : rythmes de la librairie « Maloya Roots Percussions », Wayo Audio, joués et mixés pour le jeu","Wayo Audio"])}catch(e){}
 
 // ===== le cyclone s'annonce : la saison d'avant commence au beau fixe, sans nuage ni vent ; il approche sur la fin
 // (pendant le dernier bras s'il n'y en a que 2, sur les 2 derniers s'il y en a plus de 5) et frappe la saison suivante =====

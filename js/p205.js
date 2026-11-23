@@ -1,4 +1,4 @@
-// ===== p205 : des bouts de rythme qui ponctuent le jeu, pris dans les boucles de Paris.
+// ===== p205 : des bouts de rythme qui ponctuent le jeu, pris dans les boucles de l’auteur.
 // Ouvrir un camp : 4 s de maligasse. La fin d'un kabar : 2 s de kasse, seule. Un navire qui arrive : le lambi.
 // La fin d'une saison : 1,3 s de roulèr chez les marrons ; chez les colons, la musique de leur temps (voir plus bas). =====
 function bout205(nom,dur,v){try{const c=typeof sndPret==='function'&&sndPret();if(!c)return;const B=sons193(c),b=B&&B['boucle_'+nom];if(!b)return;

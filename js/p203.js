@@ -1,4 +1,4 @@
-// ===== p203 : la musique d'accueil — le morceau composé par Paris dans l'Atelier Maloya. Elle part au premier geste sur l'écran
+// ===== p203 : la musique d'accueil — le morceau composé par l’auteur dans l'Atelier Maloya. Elle part au premier geste sur l'écran
 // d'accueil (le navigateur ne laisse pas jouer de son avant) et s'efface quand la partie commence. =====
 const ACC203={on:(typeof S==='undefined'||!S),joue:null};
 {const ac=accueil;accueil=function(){ACC203.on=true;return ac.apply(this,arguments)}}

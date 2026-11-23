@@ -10,10 +10,10 @@ const ANN217=[
   ['Al die willen te kaap’ren varen','Chanson de corsaires hollandais, XVIIᵉ siècle. Partition du recueil de F. van Duyse, Het oude Nederlandsche lied (1903), domaine public.',()=>['hollandais',KAAP213]],
   ['Admiral Benbow, version pirate','Le même air, plus lent, en mineur, sur un tambour sourd : la voile sans pavillon.',()=>['pirate',BENBOW213]]]},
  {g:'Maloya du kabar',L:[
-  ['Ouverture','Boucle jouée par Paris dans Kontakt.','intro_jeu'],['Entrée du kabar','Boucle jouée par Paris dans Kontakt.','intro_kabar'],
+  ['Ouverture','Boucle jouée pour le jeu dans Kontakt.','intro_jeu'],['Entrée du kabar','Boucle jouée pour le jeu dans Kontakt.','intro_kabar'],
   ['Kabaré','Rythme du service kabaré.','kabare'],['Kasse','Rythme cassé.','kasse'],['Malbar','Maloya malbar, binaire.','malbar'],['Maligasse','Le rythme venu de Madagascar.','maligasse'],
   ['Moring','Le rythme du combat moring.','moring'],['Pleure','Maloya lent, pour les morts.','pleure'],['Roulé','Le roulèr mène.','roule'],['Valse','Maloya à trois temps.','valse']],
-  n:'Rythmes de la librairie « Maloya Roots Percussions » (Wayo Audio), joués et mixés par Paris dans Kontakt. Les sons isolés ne sont pas redistribuables ; ici, des mixages complets.'},
+  n:'Rythmes de la librairie « Maloya Roots Percussions » (Wayo Audio), joués et mixés pour le jeu dans Kontakt. Les sons isolés ne sont pas redistribuables ; ici, des mixages complets.'},
  {g:'Avant 1900',L:[['La phrase du timba','Le timba, lamellophone venu du Mozambique et de Madagascar, disparaît au début du XXᵉ siècle. Reconstitution : aucun enregistrement n’existe.','timba']]}];
 const CRED217='Tambours (coups découpés) : « Ceramic Djembe » (RutgerMuller, CC0), tambour sur cadre (Swietliste, CC0), « Untitled African rhythm » (Kevin MacLeod, CC BY 3.0), « Tamate drum-beating at funeral in Bengaluru » (CC BY 3.0), Wikimedia Commons. Kayamb, pikèr, sati, bobre : synthétisés.';
 // lecteur de notes, programmé au fil de l'eau pour pouvoir l'arrêter ; lim = nombre de notes (pour un extrait), vol = facteur de volume
