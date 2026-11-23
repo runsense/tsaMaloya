@@ -11,8 +11,9 @@ const AOUT213=[[62,1],[62,1],[62,1],[67,3],[71,1],[71,1],[71,1],[67,3],[71,1],[7
 // Hollandais : « Al die willen te kaap'ren varen » (chanson de corsaires, XVIIᵉ siècle), recopiée de la partition du recueil de F. van Duyse, Het oude Nederlandsche lied (1903), domaine public.
 const KAAP213=[[69,2],[72,1],[71,1],[72,1],[74,1],[72,2],[71,1],[69,2],[64,1],[69,2],[72,1],[71,1],[72,1],[74,1],[72,2],[71,1],[69,2],[0,1],[72,2],[74,1],[76,2],[74,1],[72,2],[74,1],[76,2],[0,1],[69,1],[71,1],[72,1],[71,2],[71,1],[71,1],[72,1],[74,1],
  [72,2],[69,1],[72,2],[74,1],[76,2],[74,1],[72,2],[74,1],[76,2],[0,1],[69,1],[71,1],[72,1],[71,1],[72,1],[74,1],[72,2],[71,1],[69,2],[0,4]];
+const NANTES213=[[67,1],[67,2],[66,1],[67,2],[69,1],[67,3],[64,3],[67,3],[69,3],[65,3],[0,2],[65,1],[65,2],[64,1],[65,2],[67,1],[65,1],[64,1],[65,1],[62,3],[67,3],[67,3],[64,3],[0,3]];
 let tour213=0;
-function air213(nat){try{if(typeof sTon!=='function'||typeof violon205!=='function')return;tour213++;const N=nat==='hollandais'?KAAP213:nat==='francais'?(tour213%2?AOUT213:CLAIRE213):nat==='pirate'?BENBOW213:(tour213%2?LADIES213:BENBOW213),pir=nat==='pirate',dt=pir?.22:N===LADIES213?.2:.17;let t=.2;
+function air213(nat){try{if(typeof sTon!=='function'||typeof violon205!=='function')return;tour213++;const N=nat==='hollandais'?KAAP213:nat==='francais'?[AOUT213,CLAIRE213,NANTES213][tour213%3]:nat==='pirate'?BENBOW213:(tour213%2?LADIES213:BENBOW213),pir=nat==='pirate',dt=pir?.22:N===LADIES213?.2:.17;let t=.2;
  N.forEach(([m,d])=>{if(!m){t+=d*dt;return}const mm=pir&&[71,64].includes(m)?m-1:m,du=d*dt*.92;if(nat==='francais'){violon205(mm,du,t,.04);flute205(mm+12,du,t,.025)}else{violon205(mm,du,t,.04);if(!pir)fifre205(mm,du*.8,t,.028)}t+=d*dt});
  if(pir&&typeof caisse205==='function')for(let k=0;k<t/(dt*4);k++)caisse205(k*dt*4,.06)}catch(e){}}
 {let der='';const m0=modal;modal=function(){const r=m0.apply(this,arguments);try{if(S&&S.evq&&S.evq[0]==='voile'&&S.voile){const k=(S.year||0)+':'+(S.ns||0)+':'+S.voile.nat;if(k!==der){der=k;setTimeout(()=>air213(S.voile&&S.voile.nat),900)}}}catch(e){}return r}}
