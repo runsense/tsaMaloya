@@ -17,10 +17,11 @@ function tex218(){if(EAUX218.tx)return EAUX218.tx;const c=document.createElement
 // quelle force a l'eau douce : la grosse pluie qui vient de tomber, ou la saison d'après un cyclone
 function force218(){try{if(!S||S.fin)return 0;const n=performance.now();const a=typeof averse174==='function'?averse174():0;if(a>.55)EAUX218.der=n;
   const pl=Math.max(0,1-Math.max(0,n-EAUX218.der-20000)/240000)*(EAUX218.der>0?1:0),cyc=S.cycNs!=null&&(S.ns||0)-S.cycNs<=1&&!(S.cyc&&S.cyc.in<=0)?.9:0;return Math.max(pl,cyc)}catch(e){return 0}}
-function oiseaux218(site,G){const B=[];if(typeof inst144!=='function')return B;
- const add=(nom,o,k,esp)=>inst144(nom,o).then(x=>{G.add(x.w);B.push({w:x.w,k,esp,r:.25+Math.random()*.35,a:Math.random()*6.28,v:(.5+Math.random()*.5)*(Math.random()<.5?-1:1),h:.35+Math.random()*.4,pl:0})}).catch(()=>{});
- for(let i=0;i<2+Math.floor(Math.random()*2);i++)add('oi_phaeton',{h:.22,long:true,yaw:-Math.PI/2,tint:0xf6f4ee},i,'paille');
- for(let i=0;i<3+Math.floor(Math.random()*3);i++)add('oi_petrel',{h:.16,long:true,yaw:-Math.PI/2,tint:0x7a6656},i,'noddi');return B}
+function oiseaux218(site,G){const B=[];if(typeof tpl144!=='function')return B;
+ // un modèle chargé une seule fois, puis cloné (avant : un chargement par oiseau, ce qui figeait le jeu quand plusieurs taches apparaissaient)
+ const add=(nom,o,k,esp,ech,teinte)=>tpl144(nom,o).then(T0=>{const w=T0.clone(true);w.scale.multiplyScalar(ech);if(teinte)w.traverse(m=>{if(m.isMesh&&m.material){m.material=m.material.clone();m.material.color&&m.material.color.setHex(teinte)}});G.add(w);B.push({w,k,esp,r:.25+Math.random()*.35,a:Math.random()*6.28,v:(.5+Math.random()*.5)*(Math.random()<.5?-1:1),h:.35+Math.random()*.4,pl:0})}).catch(()=>{});
+ for(let i=0;i<2;i++)add('oi_phaeton',{h:.32,long:true,yaw:-Math.PI/2,tint:0xf4f2ec},i,'paille',.7);
+ for(let i=0;i<3;i++)add('oi_petrel',{h:.2,long:true,yaw:-Math.PI/2},i,'noddi',.8,0x8a7262);return B}
 function cree218(s){const G=new THREE.Group();scene.add(G);const m=new THREE.MeshBasicMaterial({map:tex218(),transparent:true,depthWrite:false,opacity:0});
  const t=new THREE.Mesh(new THREE.PlaneGeometry(1,1),m);t.rotation.x=-Math.PI/2;t.rotation.z=-Math.atan2(s.uz,s.ux);t.scale.set(s.src?1.1:1.6,s.src?.9:.85,1);t.position.set(s.x,.018,s.z);t.renderOrder=1;G.add(t);
  // les remous du poisson : petites gerbes blanches qui éclatent ici et là
@@ -38,12 +39,12 @@ function anime218(o,F,now,dt){const s=o.s;o.f+=(F-o.f)*Math.min(1,dt*.6);o.t.mat
 function jour218(){const ph=typeof jourPh==='function'?jourPh():.4;return ph>.12&&ph<.72}
 {let tp=performance.now();setInterval(()=>{try{if(typeof scene==='undefined'||!S||!T||!T.length)return;const now=performance.now(),dt=Math.min(.3,(now-tp)/1000);tp=now;
   const F=force218(),voir=F>.05&&dist<28&&!(typeof VP!=='undefined'&&VP)&&!(typeof CINE!=='undefined'&&CINE);const vus={};
-  if(voir)sites218().map(s=>[s,Math.hypot(s.x-camT.x,s.z-camT.z)]).filter(([s,d])=>d<dist*1.4+3&&(!T.length||true)).sort((a,b)=>a[1]-b[1]).slice(0,4).forEach(([s])=>vus[s.i]=s);
+  if(voir)sites218().map(s=>[s,Math.hypot(s.x-camT.x,s.z-camT.z)]).filter(([s,d])=>d<dist*1.4+3&&(!T.length||true)).sort((a,b)=>a[1]-b[1]).slice(0,3).forEach(([s])=>vus[s.i]=s);
   for(const k in EAUX218.L){const o=EAUX218.L[k];if(!vus[k]){o.f-=dt*.5;if(o.f<=0){scene.remove(o.G);delete EAUX218.L[k]}else anime218(o,0,now/1000,dt)}}
   for(const k in vus){let o=EAUX218.L[k];if(!o)o=EAUX218.L[k]=cree218(vus[k]);anime218(o,F,now/1000,dt)}
   // la première fois qu'on le voit dans une partie : la fiche
   if(voir&&Object.keys(vus).length&&!S.vu218&&Object.values(EAUX218.L).some(o=>o.f>.4)){S.vu218=1;S.done=S.done||{};if(!S.done.eaux218&&S.evq&&!S.evq.includes('eaux218'))S.evq.push('eaux218')}}catch(e){}},50)}
 EV.eaux218={y:1663,si:()=>!!(S&&S.vu218),tag:'Nature',an:'après les grosses pluies',t:'Les eaux noires',
- get b(){return 'Après la grosse pluie, au bout des rivières et devant certaines falaises, la mer change : au milieu du turquoise, une tache plus sombre. C’est l’eau douce qui sort, par la rivière ou par-dessous, des sources qui coulent sous la mer. Le poisson y monte. Les paille-en-queue et les noddis arrivent, plongent, se volent les prises en plein air. '+(S.voieC?'Les pêcheurs le savent : ils mettent la pirogue au bord de la tache.':'Ceux d’en haut le voient de loin, depuis le bord des remparts : la mer leur dit où le poisson est.')},
+ get b(){return 'Après la grosse pluie, au bout des rivières et devant certaines falaises, la mer change : au milieu du turquoise, une tache plus sombre. C’est l’eau douce qui sort, par la rivière ou par-dessous, des sources qui coulent sous la mer. Le poisson y monte. Les paille-en-queue et les makwas (les noddis bruns) arrivent, plongent, se volent les prises en plein air. '+(S.voieC?'Les pêcheurs le savent : ils mettent la pirogue au bord de la tache.':'Ceux d’en haut le voient de loin, depuis le bord des remparts : la mer leur dit où le poisson est.')},
  v:'L’eau douce se voit d’en haut.',h:'Observation de pêcheurs et de promeneurs, vue des hauteurs de Saint-Denis au-dessus du littoral. Les nappes de l’île se déversent aussi sous la mer, le long des côtes ; les rivières en crue font de même en surface.',
  o:[{n:'Regarder',d:'Savoir +1.',fx:{savoir:1}}]};

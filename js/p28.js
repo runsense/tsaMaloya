@@ -47,7 +47,7 @@ addEventListener('click',e=>{const r=e.target.closest&&e.target.closest('.besR')
   const k=S.evq[0]+'|'+S.evq.length;if(k!==cle){cle=k;t0=performance.now();const tx=(m.innerText||'').length;dur=Math.max(9000,Math.min(26000,5000+tx*45))}
   if(survol)t0+=125;const u=Math.min(1,(performance.now()-t0)/dur),inn=m.querySelector('.carte .in');if(inn&&!$('evMin')){inn.insertAdjacentHTML('afterbegin','<div id="evMin"><i></i></div><div id="evMinT">Le jeu continue seul : le conte choisira à la fin du trait. Survolez pour prendre le temps de lire.</div>')}
   const bar=m.querySelector('#evMin i');if(bar&&!(typeof modeHist==='function'&&modeHist()&&typeof autoD==='function'&&autoD()&&typeof proch!=='undefined'&&proch))bar.style.width=Math.round(u*100)+'%';
-  if(u>=1&&!(modeHist()&&autoD())){cle=null;const b=m.querySelector('.op.conte')||[...m.querySelectorAll('.op')].find(x=>!x.disabled);if(b)b.click()}},250)}
+  if(u>=1&&!(modeHist()&&autoD())){cle=null;const b=m.querySelector('.op.conte')||[...m.querySelectorAll('.op')].find(x=>!x.disabled)||m.querySelector('.annonce106');if(b)b.click()}},250)}
 
 // un choix décisif : une option suit l'histoire réelle, une autre ouvre l'utopie. Lui seul attend le joueur ; le conte reprend ensuite.
 function evDecisif(id){try{const e=EV[id];if(!e)return false;const O=optsDe(id,e)||[];if(e.dec)return true;if(e.dec===0)return false;return O.some(o=>/utopie/i.test((o.n||'')+' '+(o.d||'')))||(!/^(Archive|Mythe|Mémoire|Nature|Découverte|Imaginaire)$/.test(e.tag||'')&&O.length>1&&O.some(o=>o.hist)&&O.some(o=>!o.hist))}catch(x){return false}}

@@ -18,9 +18,9 @@ const ANN217=[
 const CRED217='Tambours (coups découpés) : « Ceramic Djembe » (RutgerMuller, CC0), tambour sur cadre (Swietliste, CC0), « Untitled African rhythm » (Kevin MacLeod, CC BY 3.0), « Tamate drum-beating at funeral in Bengaluru » (CC BY 3.0), Wikimedia Commons. Kayamb, pikèr, sati, bobre : synthétisés.';
 // lecteur de notes, programmé au fil de l'eau pour pouvoir l'arrêter ; lim = nombre de notes (pour un extrait), vol = facteur de volume
 function joue217(N,nat,lim,vol,fin){let stop=false;const c=typeof sndPret==='function'&&sndPret();if(!c||typeof violon205!=='function')return{stop(){}};
- const pir=nat==='pirate',dt=pir?.22:N===LADIES213?.2:.17,k=vol||1,M=lim?N.slice(0,lim):N;let i=0,t0=c.currentTime+.15,t=0;
+ const pir=nat==='pirate',dt=pir?.22:nat==='cour'?.21:N===LADIES213?.2:.17,k=vol||1,M=lim?N.slice(0,lim):N;let i=0,t0=c.currentTime+.15,t=0;try{par217(N,M,dt,()=>stop)}catch(e){}
  const tick=()=>{if(stop)return;const lim2=c.currentTime-t0+.5;while(i<M.length&&t<lim2){const[m,d]=M[i++];if(m){const mm=pir&&[71,64].includes(m)?m-1:m,du=d*dt*.92,at=Math.max(0,t0+t-c.currentTime);
-   if(nat==='francais'){violon205(mm,du,at,.04*k);flute205(mm+12,du,at,.025*k)}else{violon205(mm,du,at,.04*k);if(!pir)fifre205(mm,du*.8,at,.028*k)}
+   if(nat==='francais'||nat==='cour'){violon205(mm,du,at,.04*k);flute205(mm+12,du,at,.025*k)}else{violon205(mm,du,at,.04*k);if(!pir)fifre205(mm,du*.8,at,.028*k)}
    if(pir&&typeof caisse205==='function'&&i%4===1)caisse205(at,.06*k)}t+=d*dt}
   if(i>=M.length){setTimeout(()=>{if(!stop&&fin)fin()},Math.max(0,(t0+t-c.currentTime)*1000));return}setTimeout(tick,200)};tick();return{stop(){stop=true}}}
 function timba217(fin){const c=typeof sndPret==='function'&&sndPret();if(!c)return{stop(){}};const PH=[[0,62],[.25,65],[.5,67],[.75,65],[1,69],[1.5,67],[1.75,65],[2,62],[2.5,60],[2.75,62]];let stop=false,n=0;

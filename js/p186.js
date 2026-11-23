@@ -565,12 +565,12 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 // 1. Les concessions « du battant des lames au sommet des montagnes » : des bandes de terre qui montent de la côte vers les crêtes, là où la colonie s'installe.
 //    Plus la colonie s'étend, plus il y en a ; c'est dans ces bandes que la forêt tombe.
 {let M=null,cle='';setInterval(()=>{try{if(typeof scene==='undefined'||!S||(typeof K!=='undefined'&&K&&$('kons')&&!$('kons').hidden)){if(M)M.visible=false;return}
-  const C=colTiles().filter(t=>t.alt<250),k=C.length+':'+Math.round((S.year||1663)/10);if(k===cle){if(M)M.visible=true;return}cle=k;if(M){scene.remove(M);M.geometry.dispose()}
-  const [cx,cz]=xz(55.53,-21.12),P=[],vus=new Set();C.forEach(t=>{for(let q=0;q<3;q++){const x0=t.x+(q-1)*.28*Math.cos(t.i),z0=t.z+(q-1)*.28*Math.sin(t.i),key=Math.round(x0*3)+'|'+Math.round(z0*3);if(vus.has(key))continue;vus.add(key);
-   const dx=cx-x0,dz=cz-z0,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L,B=[];for(let s=0;s<60;s++){const x=x0+ux*s*.2,z=z0+uz*s*.2,a=altTri(x,z);if(a<1)continue;if(a>1600)break;B.push({x,y:0,z})}if(B.length>=3)P.push(B)}});
+  const C=colTiles().filter(t=>t.alt<250),k=C.length+':'+Math.round((S.year||1663)/10)+':'+T.filter(t=>seen(t)).length;if(k===cle){if(M)M.visible=true;return}cle=k;if(M){scene.remove(M);M.geometry.dispose()}
+  const [cx,cz]=xz(55.53,-21.12),P=[],vus=new Set(),C2=colTiles();C.forEach(t=>{for(let q=0;q<3;q++){const x0=t.x+(q-1)*.28*Math.cos(t.i),z0=t.z+(q-1)*.28*Math.sin(t.i),key=Math.round(x0*3)+'|'+Math.round(z0*3);if(vus.has(key))continue;vus.add(key);
+   const dx=cx-x0,dz=cz-z0,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L,B=[];for(let s=0;s<60;s++){const x=x0+ux*s*.2,z=z0+uz*s*.2,a=altTri(x,z);if(a<1)continue;if(a>1600)break;{const u=tileAt({x,z});if(!u||!seen(u)||!C2.some(c=>Math.hypot(c.x-x,c.z-z)<2.2))break}B.push({x,y:0,z})}if(B.length>=3)P.push(B)}});
   // non plus des traits : de larges bandes de terre à peine teintées, comme des parcelles (les traits fins faisaient des lignes droites qui dévalaient les pentes)
   const G=P.map(B=>ruban97(B,.26,q=>Math.max(0,altTri(q.x,q.z))*VX+.03));if(!G.length){M=null;return}
-  M=new THREE.Mesh(fusion97(G),new THREE.MeshBasicMaterial({color:0xb89860,transparent:true,opacity:.13,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));M.renderOrder=4;M.frustumCulled=false;scene.add(M)}catch(e){}},4000)}
+  M=new THREE.Mesh(fusion97(G),new THREE.MeshBasicMaterial({color:0xb89860,transparent:true,opacity:.09,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));M.renderOrder=4;M.frustumCulled=false;scene.add(M)}catch(e){}},4000)}
 // 2. Quand une espèce s'éteint, on la voit partir : son image monte au-dessus de son pays, pâlit et s'efface
 const ICO186=k=>/tortue/.test(k)?'🐢':/dugong/.test(k)?'🦭':/rousset|chauve/.test(k)?'🦇':/perroq|mascarin/.test(k)?'🦜':/oiseauxeau/.test(k)?'🦆':/solitaire/.test(k)?'🦢':'🐦';
 {let vu=null;setInterval(()=>{try{if(!S||typeof scene==='undefined'||!S.disp135x)return;const L=Object.keys(S.disp135x);if(vu==null){vu=new Set(L);return}L.forEach(k=>{if(vu.has(k))return;vu.add(k);

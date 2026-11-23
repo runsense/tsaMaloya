@@ -29,7 +29,7 @@ EV.raid106={sys:1,tag:'Archive',an:'',get t(){return 'Les chasseurs entrent dans
 {const st=document.createElement('style');st.textContent='.annonce106{margin:12px 0 4px;padding:8px 12px;border-left:3px solid #c9a24a;background:rgba(201,162,74,.12);font-size:14px}.annonce106 b{display:block;margin-bottom:2px}.annonce106 .bar{height:3px;background:#c9a24a;margin-top:8px;transform-origin:left;animation:ann106 6s linear forwards}@keyframes ann106{from{transform:scaleX(1)}to{transform:scaleX(0)}}';document.head.appendChild(st)}
 {const m0=modal;let tmr=null,cle=null;modal=function(){m0.apply(this,arguments);try{if(!S||!S.evq||!S.evq.length)return;const id=S.evq[0],e=EV[id];const O=optsDe(id,e);if(O.length!==1){$('modal').onclick=null;return}const b=$('op0');if(!b)return;
  const p=document.createElement('div');p.className='annonce106';p.innerHTML='<b>'+O[0].n+'</b>'+(O[0].d?'<small>'+teinte(O[0].d)+'</small>':'')+'<div class="bar"></div>';b.replaceWith(p);
- const k=id+'|'+S.year+'|'+(S.ns||0);if(cle===k)return;cle=k;clearTimeout(tmr);const go=()=>{try{if(S&&S.evq&&S.evq[0]===id){choisir(id,0);rafraichir()}}catch(e){}};tmr=setTimeout(go,6000);
+ const k=id+'|'+S.year+'|'+(S.ns||0);if(cle===k&&tmr)return;cle=k;clearTimeout(tmr);const go=()=>{tmr=null;try{if(S&&S.evq&&S.evq[0]===id){choisir(id,0);rafraichir()}}catch(e){}};tmr=setTimeout(go,6000);
  const m=$('modal');m.onclick=ev=>{if(ev.target.closest('details'))return;clearTimeout(tmr);go()}}catch(e){}}}
 document.addEventListener('keydown',e=>{try{if((e.code==='Space'||e.key===' ')&&S&&S.evq&&S.evq.length&&!$('modal').hidden&&!$('op1')&&!$('op0')){e.preventDefault();e.stopImmediatePropagation();choisir(S.evq[0],0);rafraichir()}}catch(x){}},true);
 
