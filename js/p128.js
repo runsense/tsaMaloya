@@ -14,4 +14,4 @@ function cm128Cadre(){try{const t=T[CV.camp];if(!t)return;camGo=null;camT.set(t.
 // changer de camp par les onglets : la caméra suit
 {let cam=null;setInterval(()=>{try{if(!window.CAMPMAP128||!CV.on){cam=null;CM128.ess=null;return}window.BTUON=0;if(cam!==CV.camp){cam=CV.camp;cm128Cadre()}const tc=T[CV.camp];if(tc&&lieu!==tc&&dist<8&&CM128.ess!==CV.camp){CM128.ess=CV.camp;const c=camT.clone(),d=dist,p=pol,a=az;try{fermerLieu(true)}catch(e){}ouvrirLieu(tc);camT.copy(c);dist=d;pol=p;az=a;LA97=lieu;const so=$('sortie');if(so)so.hidden=true}
  // on reste au camp tant qu'on ne dézoome pas franchement ; au-delà, on sort sur la carte
- if(dist>9){cvFermer()}}catch(e){}},300)}
+ if(dist>9&&!(typeof TW232!=='undefined'&&TW232.c)){cvFermer()}}catch(e){}},300)}

@@ -1,11 +1,13 @@
 // ===== p225 : les fanjans et le mystique passif (idée de l’auteur) =====
 // Les fanjans mâles (Cyathea borbonica) gardent : le camp se cache mieux. Les femelles (C. excelsa, C. glauca) soignent : un peu de santé.
-// Le fanjan de pierre pousse de rien, sur la coulée nue : rare, il porte le plus de mystique.
+// Le fanjan de pierre pousse là où affleure la pierre qui clarifie (pas sur la coulée nue) : il n'est pas rare, et il porte le plus de mystique.
 // Tous sont fragiles : on les coupe, ils ne reviennent que lentement. Et dans Vie, quand on en abat un, la terre tremble.
 const FJ225={};
 function fjVie225(t){if(!S)return 0;S.fj225=S.fj225||{};const v=S.fj225[t.i];return v==null?1:v}
+// la pierre qui clarifie (les cristaux blancs de zéolithe) : là où le jeu en met, et le long des rivières des Hauts, ici et là — un peu partout, pas partout, jamais sur la coulée nue
+function clarif225(t){if(!t||t.bare||/Coulées de lave/.test(t.biome||''))return false;try{if(typeof cristalIci==='function'&&cristalIci(t)==='zeo')return true}catch(e){}return !!(t.riv&&t.alt>300&&rndH(t.i*3.9+1)<.45)}
 function fjType225(t){if(!t||t.alt<150)return null;const b=t.biome||'',r=rndH(t.i*13.7+5);
- if(/Coulées de lave/.test(b))return r<.12&&(t.nb||[]).some(i=>T[i]&&T[i].forest)?'pierre':null;
+ if(clarif225(t)&&r<.6)return 'pierre';
  if(/fanjans/.test(b))return r<.5?'male':'femelle';
  if(t.forest&&t.alt>=300&&t.alt<=1500&&r<.45)return r<.2?'male':'femelle';return null}
 function fjAutour225(){const R={male:0,femelle:0,pierre:0};try{const C=camps();if(!C.length)return R;T.forEach(t=>{const ty=fjType225(t);if(!ty)return;if(!C.some(c=>hd(c,t)<=2))return;const o=S.t[t.i]||{};if(o.c)return;R[ty]+=fjVie225(t)})}catch(e){}return R}
@@ -23,8 +25,8 @@ function tremble225(){try{const t0=performance.now(),cx=camT.x,cz=camT.z;FJ225.s
    S.fj225[t.i]=Math.max(0,fjVie225(t)-.25);S.myst=Math.max(0,(S.myst||0)-2);tremble225();
    const ty=fjType225(t);journal(ty==='male'?'Un fanjan mâle est tombé sous la hache de '+p.n.split(' ')[0]+'. La terre a tremblé, un peu.':'Un fanjan femelle est tombé sous la hache de '+p.n.split(' ')[0]+'. Sous les pieds, la terre a bougé.');
    try{dire(p,'Tu as senti ? La terre…')}catch(e){}break}}catch(e){}return r}}
-// le fanjan de pierre se voit dans le lieu : un fanjan seul, debout sur la coulée nue
+// le fanjan de pierre se voit dans le lieu : un fanjan qui sort de la roche aux cristaux blancs
 {const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);try{const t=lieu;if(t&&fjType225(t)==='pierre'&&fjVie225(t)>.05&&MOD.fanjan){const n0=MOD.fanjan.userData.n;const x=t.x+.35,z=t.z-.2;hutC.setRGB(.8,.95,.85);poseM(MOD.fanjan,x,alt(x,z)*VX+.02,z,1.3,0,0,1.5,hutC);MOD.fanjan.count=MOD.fanjan.userData.n;MOD.fanjan.instanceMatrix.needsUpdate=true}}catch(e){}return r}}
 EV.fanjans225={y:1663,si:()=>!!(S&&S.done&&S.done.fj225vu),tag:'Mystique',an:'',t:'Les fanjans',
- get b(){return 'Autour du camp, les fanjans. Le mâle, au tronc net, se tient droit : '+(S.voieC?'les bois semblent plus calmes là où il pousse.':'derrière lui, les chasseurs ne voient plus le sentier.')+' La femelle, plus large, garde l’humidité : là où elle pousse, les plaies se ferment mieux. Il en est un qui pousse de rien, sur la pierre nue de la coulée. On dit qu’il ne faut pas les abattre.'},
+ get b(){return 'Autour du camp, les fanjans. Le mâle, au tronc net, se tient droit : '+(S.voieC?'les bois semblent plus calmes là où il pousse.':'derrière lui, les chasseurs ne voient plus le sentier.')+' La femelle, plus large, garde l’humidité : là où elle pousse, les plaies se ferment mieux. Il en est un qui pousse de la pierre même, là où affleurent les petits cristaux blancs de la pierre qui clarifie. On dit qu’il ne faut pas les abattre.'},
  v:'On dit qu’il ne faut pas les abattre.',h:'Fanjan mâle : Cyathea borbonica ; fanjans femelles : C. excelsa, C. glauca, fougères arborescentes de l’île. Leurs pouvoirs sont un choix du jeu.',o:[{n:'Les laisser pousser',d:'Mystique +2',fx:{myst:2}}]};

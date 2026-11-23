@@ -15,7 +15,7 @@ const ANN217=[
   ['Moring','Le rythme du combat moring.','moring'],['Pleure','Maloya lent, pour les morts.','pleure'],['Roulé','Le roulèr mène.','roule'],['Valse','Maloya à trois temps.','valse']],
   n:'Rythmes de la librairie « Maloya Roots Percussions » (Wayo Audio), joués et mixés pour le jeu dans Kontakt. Les sons isolés ne sont pas redistribuables ; ici, des mixages complets.'},
  {g:'Avant 1900',L:[['La phrase du timba','Le timba, lamellophone venu du Mozambique et de Madagascar, disparaît au début du XXᵉ siècle. Reconstitution : aucun enregistrement n’existe.','timba']]}];
-const CRED217='Tambours (coups découpés) : « Ceramic Djembe » (RutgerMuller, CC0), tambour sur cadre (Swietliste, CC0), « Untitled African rhythm » (Kevin MacLeod, CC BY 3.0), « Tamate drum-beating at funeral in Bengaluru » (CC BY 3.0), Wikimedia Commons. Kayamb, pikèr, sati, bobre : synthétisés.';
+const CRED217='Tambours (coups découpés) : « Ceramic Djembe » (RutgerMuller, CC0), tambour sur cadre (Swietliste, CC0), « Untitled African rhythm » (Kevin MacLeod, CC BY 3.0), « Tamate drum-beating at funeral in Bengaluru » (CC BY 3.0), Wikimedia Commons. Kayamb, pikèr, sati, bobre : synthétisés. Violon, violoncelle et psaltérion : échantillons de gaijinbuzz (CC0) et de TheFlyFishingFilmmaker (CC BY 4.0), Freesound. Musiques des petits jeux : pack « Atrium » de MirMaximus (CC0), Freesound.';
 // lecteur de notes, programmé au fil de l'eau pour pouvoir l'arrêter ; lim = nombre de notes (pour un extrait), vol = facteur de volume
 function joue217(N,nat,lim,vol,fin){let stop=false;const c=typeof sndPret==='function'&&sndPret();if(!c||typeof violon205!=='function')return{stop(){}};
  const pir=nat==='pirate',dt=pir?.22:nat==='cour'?.21:N===LADIES213?.2:.17,k=vol||1,M=lim?N.slice(0,lim):N;let i=0,t0=c.currentTime+.15,t=0;try{par217(N,M,dt,()=>stop)}catch(e){}
@@ -39,6 +39,7 @@ function annexe217(box){box.dataset.ann='1';
   ic(b).textContent='♪';const fin=()=>{if(b.isConnected)ic(b).textContent='▶'};
   if(typeof x[2]==='function'){const[nat,N]=x[2]();JOUE217=joue217(N,nat,0,1,fin)}
   else if(x[2]==='timba')JOUE217=timba217(fin);
+  else if(String(x[2]).startsWith('mus:'))JOUE217=mus237(x[2].slice(4),false,.4,fin);
   else{const B=typeof sons193==='function'&&sons193(c);if(!B||!B['boucle_'+x[2]]){toast('La musique se charge… réessayez dans un instant.');fin();return}
    const r=boucle194(c,SND.out,x[2],.7,1);const L=Math.min(B['boucle_'+x[2]].duration,(BCL194[x[2]]||99));const h=setTimeout(fin,L*1000);JOUE217={stop(){clearTimeout(h);try{r&&r.stop()}catch(z){}}}}});
  box.querySelector('#ann217s').onclick=()=>{arr217();raz()}}
