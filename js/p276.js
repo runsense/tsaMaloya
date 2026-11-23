@@ -53,10 +53,10 @@ function vision276(k,fin){const V=VIS276[k];if(!V){if(fin)fin();return}const y=(
  const g=cv.getContext('2d');let on=true;const t0=performance.now();const anim=()=>{if(!on)return;const s=Math.random;Math.random=(()=>{let q=7;return ()=>{q=(q*9301+49297)%233280;return q/233280}})();try{peint276(g,k,640,400,(performance.now()-t0)/1000)}finally{Math.random=s}requestAnimationFrame(anim)};anim();
  bt.onclick=()=>{on=false;d.remove();try{if(typeof S!=='undefined'&&S&&!S.fin&&V.fx){fx(V.fx);log('✨ Vision : '+V.t+'. '+V.rec+'.')}}catch(e){}if(fin)fin()}}
 // le curé
-{const s0=songeCure272;songeCure272=function(fin){return s0((ok,k,pris)=>{if(!ok){if(fin)fin(ok,k,pris);return}const v=k==='g'?'pape':k==='p'?'scub':'lafosse';vision276(v,()=>{try{if(typeof S!=='undefined'&&S&&!S.fin&&pris>=25){fx({coh:1});log('🕯 Le curé a gardé '+pris+' lumignons de son rêve : cohésion +1.')}}catch(e){}if(fin)fin(ok,k,pris)})})}}
+{const s0=songeCure272;songeCure272=function(fin){return s0((ok,k,pris,att)=>{try{if(ok&&att)window.REP280&&REP280('cure',att)}catch(e){}if(!ok){if(fin)fin(ok,k,pris);return}const v=k==='g'?'pape':k==='p'?'scub':'lafosse';vision276(v,()=>{try{if(typeof S!=='undefined'&&S&&!S.fin&&pris>=25){fx({coh:1});log('🕯 Le curé a gardé '+pris+' lumignons de son rêve : cohésion +1.')}}catch(e){}if(fin)fin(ok,k,pris)})})}}
 // le gouverneur
-{const g0=gouv273Ouvrir;gouv273Ouvrir=function(fin){return g0((ok,c)=>{const v=c==='o'?'napo':c==='r'?'roi':'sarda';vision276(v,()=>{if(fin)fin(ok,c)})})}}
+{const g0=gouv273Ouvrir;gouv273Ouvrir=function(fin){return g0((ok,c,vv)=>{try{if(ok&&vv)window.REP280&&REP280('gouv',vv)}catch(e){}const v=c==='o'?'napo':c==='r'?'roi':'sarda';vision276(v,()=>{if(fin)fin(ok,c)})})}}
 // le gramoun : s'il finit la course
-{const r0=rallyeOuvrir;rallyeOuvrir=function(fin){return r0(ok=>{if(ok)vision276('roikaf',()=>{if(fin)fin(ok)});else if(fin)fin(ok)})}}
+{const r0=rallyeOuvrir;rallyeOuvrir=function(fin){return r0(ok=>{try{if(ok)window.REP280&&REP280('gramoun',{k:1})}catch(e){}if(ok)vision276('roikaf',()=>{if(fin)fin(ok)});else if(fin)fin(ok)})}}
 {const st=document.createElement('style');st.textContent='';document.head.appendChild(st)}
 setInterval(()=>{try{const v=document.getElementById('vision276');['radio222','fig263b'].forEach(i=>{const e=document.getElementById(i);if(e&&v)e.style.visibility='hidden'})}catch(e){}},300);
