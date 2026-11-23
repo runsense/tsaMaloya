@@ -1,6 +1,6 @@
 // ===== p262 : la radio a ses stations — quelques adresses SoundCloud d'artistes réunionnais, plus celles que le joueur ajoute
 // (gardées dans ce navigateur). Un clic sur une station la lance ; « + Garder » ajoute l'adresse collée à la liste. =====
-const ST262=[['Saodaj’ (maloya)','https://soundcloud.com/saodaj']];
+const ST262=[];
 function liste262(){let L=[];try{L=JSON.parse(localStorage.getItem('tsa-radio-liste')||'[]')}catch(e){}return L}
 {const p0=panneau222;panneau222=function(){const r=p0.apply(this,arguments);try{const p=document.getElementById('radio222p');if(!p)return r;
   const box=document.createElement('div');box.style.cssText='margin:8px 0 0;display:flex;flex-direction:column;gap:4px;max-height:180px;overflow:auto';

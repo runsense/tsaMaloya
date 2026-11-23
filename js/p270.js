@@ -34,3 +34,9 @@ Object.assign(EV,{
   h:'Archéologie dans l’océan Indien, « Les cimetières » : l’ordonnance de 1820 inventorie 12 cimetières officiels cloisonnés.',
   o:[{n:'Comprendre',d:'Savoir +1',fx:{savoir:1}}]}
 });
+// la Vierge noire de la Rivière des Pluies : la légende de Mario, et la mémoire des morts du quartier
+EV.viergeN270={y:1750,tag:'Mythe',an:'Sainte-Marie, XVIIIᵉ siècle',t:'La Vierge noire et Mario',
+ get b(){return 'On raconte qu’un esclave, Mario, vendu à un maître cruel, s’enfuit dans les hauts de la Rivière des Pluies avec une petite statue de la Vierge que lui avait donnée son premier maître. Il se cache dans une petite grotte. Un jour, les chasseurs approchent : il pose la statue par terre et prie. Un bougainvillier pousse d’un coup et ferme l’entrée. Les chasseurs passent sans le voir.'+(S&&S.voieC?'':' Depuis, on monte prier là-haut pour ceux qu’on n’a jamais pu enterrer.')},
+ v:'Le sanctuaire de la Vierge noire, à Sainte-Marie, reçoit encore des milliers de pèlerins. Au pied de la statue, une sculpture de basalte d’Edgar Marco Ah-Kiem (2008) montre Mario suppliant. On dit aussi que des esclaves étaient enterrés aux alentours : aucun document ne l’atteste à ce jour.',
+ h:'Portail de l’esclavage à La Réunion, « L’esclave Mario et la Vierge noire ». L’époque de la légende n’est pas datée ; le jeu la place au XVIIIᵉ siècle.',
+ get o(){return S&&S.voieC?[{n:'Faire bénir la grotte',d:'Entente +2',fx:{coh:2}}]:[{n:'Prier pour les morts sans tombe',d:'Mystique +3, anciens +1',fx:{myst:3,anciens:1}}]}};
