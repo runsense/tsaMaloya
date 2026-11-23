@@ -1,0 +1,16 @@
+// ===== p260 : la vie marronne bouge — partie des Hauts de Saint-Paul, la bande remonte vers le centre de l'île quand la traque se resserre,
+// et laisse des postes de guet vers le Maïdo. De là, on voit venir les chasseurs, et l'on voit aussi les nouveaux fugitifs :
+// quand le guetteur est sûr qu'aucun détachement ne veille, on va les chercher et on les ramène au cœur des Hauts. =====
+const guets260=()=>{try{return T.filter(t=>S.t[t.i]&&S.t[t.i].b==='guet')}catch(e){return []}};
+EV.centre260={y:1735,tag:'Mémoire',an:'les années 1730',si:()=>S&&!S.voieC&&S.year>=1730&&(S.traque||0)>=35&&camps().some(c=>c.x<xz(55.36,-21)[0]),t:'Monter vers le centre',
+ b:'Les détachements connaissent maintenant les ravines au-dessus de Saint-Paul. Les anciens disent qu’il faut monter plus loin, vers le cœur de l’île, là où les remparts tombent à pic : Mafate, les pitons du centre. On laissera des guetteurs sur les crêtes, vers le Maïdo, pour voir venir les chasseurs.',
+ h:'Les premiers marrons (1663) gagnent les Hauts de Saint-Paul ; au XVIIIe siècle, les camps se trouvent surtout dans les cirques et autour des grands pitons, et les rapports des détachements parlent de guetteurs et de feux sur les crêtes. Le déplacement d’une même bande est reconstitué par le jeu.',
+ o:[{n:'Monter vers le centre',d:'Traque −8, santé −2 (le froid des hauteurs)',fx:{traque:-8,sante:-2}},{n:'Tenir les ravines de l’Ouest',d:'Cohésion +2, traque +3',fx:{coh:2,traque:3}}]};
+EV.fuyards260={sys:1,tag:'Mémoire',an:'',get t(){return 'Des fugitifs en contrebas'},
+ get b(){return 'Depuis le poste de guet, on les voit : '+(S.fu260||4)+' fugitifs qui montent une ravine, sans savoir où aller. Un détachement est-il derrière eux ? Le guetteur regarde longtemps les crêtes, la fumée des habitations, les chiens. '+((S.traque||0)>=50?'Ce matin, il croit voir bouger quelque chose plus bas.':'Rien ne bouge.')},
+ h:'Les camps grossissaient par l’arrivée de nouveaux fugitifs ; les marrons connaissaient les sentiers et allaient parfois chercher des esclaves dans les habitations. Le rôle d’escorte des guetteurs est reconstitué par le jeu.',
+ get o(){const n=S.fu260||4,ok=(S.traque||0)<50;return [{n:'Aller les chercher, les ramener au centre',d:ok?'Gens +'+n+', cohésion +1':'Risqué : un détachement veille peut-être',fx:{},f:()=>{const r=Math.random(),pr=Math.max(.15,.95-(S.traque||0)/100);if(r<pr){S.gens=(S.gens||0)+n;S.coh=Math.min(100,(S.coh||0)+1);try{journal('🐦 Le guetteur a sifflé « rien » : '+n+' fugitifs sont montés jusqu’au camp.')}catch(e){}}else{S.gens=(S.gens||0)+1;S.traque=Math.min(100,(S.traque||0)+6);try{journal('🐕 Le détachement suivait leur trace : un seul est arrivé, et la traque se rapproche.')}catch(e){}}}},
+  {n:'Les guider vers un autre camp',d:'Amitiés entre camps : un camp voisin grandit',fx:{coh:1},f:()=>{try{journal('Les fugitifs ont été menés vers une autre bande des Hauts.')}catch(e){}}},
+  {n:'Ne pas se montrer',d:'Traque −1',fx:{traque:-1}}]}};
+setInterval(()=>{try{if(!S||S.voieC||S.fin||!S.evq||S.evq.includes('fuyards260'))return;if(!guets260().length||S.year<1700)return;if(S.fuy260y!=null&&S.year-S.fuy260y<2)return;
+  if(Math.random()>.35)return;S.fuy260y=S.year;S.fu260=2+Math.floor(Math.random()*5);S.evq.push('fuyards260')}catch(e){}},6000);

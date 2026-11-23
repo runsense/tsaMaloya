@@ -2,7 +2,7 @@
 // partout dans les Hauts (les 45 camps de la carte des toponymes), chacun à son heure. On agrandit le sien (des cases, des jardins),
 // et l'on rencontre les autres : on se rallie, on échange, ou l'on reste chacun chez soi. =====
 const CL252={y:null};
-function an252(i,lo){const h=(Math.sin(i*91.7+lo*13.1)*43758.5)%1,u=Math.abs(h);return 1688+Math.round(u*110)+(lo>55.6?8:0)}
+function an252(i,lo){try{const la=MAR251.camps[i][2];if(la<-21.2){const h=Math.abs(Math.sin(i*45.1)*43758.5)%1;return 1690+Math.round(h*35)}}catch(e){}const h=(Math.sin(i*91.7+lo*13.1)*43758.5)%1,u=Math.abs(h);return 1688+Math.round(u*110)+(lo>55.6?8:0)}
 function ne252(i){try{if(S&&S.ne252&&S.ne252[i]!=null)return S.ne252[i]}catch(e){}return an252(i,MAR251.camps[i][1])}
 function libres252(){if(!S||!MAR251||!MAR251.vus)return [];S.cl252=S.cl252||{};return MAR251.vus.map((c,i)=>({i,c,y:ne252(i),st:S.cl252[i]||0})).filter(o=>S.year>=o.y)}
 // pourquoi ce camp est né : la fuite d'une habitation, une révolte, des marrons venus aider, ou les jours qui suivent un cyclone

@@ -54,10 +54,14 @@ setInterval(()=>{try{if(typeof sentier!=='undefined'&&sentier)sentier.visible=fa
  // les sentiers nés du passage (k<2) : plus de traits droits d'un centre de case à l'autre (ils faisaient des lignes parallèles qui dévalaient les pentes) ;
  // ils serpentent, et on ne double pas le sentier tracé à la main (déjà dessiné, en ruban sinueux)
  const tr=new Set((S&&S.trail)||[]),cle=(x,z)=>Math.round(x*50)+','+Math.round(z*50),TI={};if(k<2&&typeof T!=='undefined')T.forEach(t=>{TI[cle(t.x,t.z)]=t.i});
- for(let e=0;e+23<A.length;e+=24){const P=[];
+ // les routes (k≥2) : plus de treillis de triangles d'une case à l'autre — on garde un arbre (chaque lieu relié, sans boucle inutile),
+ // et chaque route épouse un peu le terrain au lieu de filer au cordeau
+ let garde=null;if(k>=2){const E=[],par={},f=x=>{while(par[x]!==x){par[x]=par[par[x]];x=par[x]}return x};for(let e=0;e+23<A.length;e+=24){const a1=cle(A[e],A[e+2]),b1=cle(A[e+21],A[e+23]);par[a1]=a1;par[b1]=b1;E.push([e,a1,b1,Math.hypot(A[e+21]-A[e],A[e+23]-A[e+2])])}
+  E.sort((u,v)=>u[3]-v[3]);garde=new Set();E.forEach(([e,a1,b1])=>{const ra=f(a1),rb=f(b1);if(ra!==rb){par[ra]=rb;garde.add(e)}})}
+ for(let e=0;e+23<A.length;e+=24){const P=[];if(garde&&!garde.has(e))continue;if(k>=2&&typeof RING257!=='undefined'&&RING257.pres&&RING257.pres((A[e]+A[e+21])/2,(A[e+2]+A[e+23])/2))continue;
   if(k<2){const ax=A[e],az=A[e+2],bx=A[e+21],bz=A[e+23],ia=TI[cle(ax,az)],ib=TI[cle(bx,bz)];if(ia!=null&&ib!=null&&tr.has(ia)&&tr.has(ib))continue;
    const L=Math.hypot(bx-ax,bz-az)||1,ph=((ia||0)*13+(ib||0)*7)%10;for(let q=0;q<=12;q++){const f=q/12,ww=Math.sin(f*Math.PI)*(Math.sin(f*5+ph)*.16+Math.sin(f*13+ph)*.04),x=ax+(bx-ax)*f-(bz-az)/L*ww,z=az+(bz-az)*f+(bx-ax)/L*ww;P.push({x,y:0,z})}}
-  else{for(let s=0;s<4;s++)P.push({x:A[e+s*6],y:A[e+s*6+1],z:A[e+s*6+2]});P.push({x:A[e+21],y:A[e+22],z:A[e+23]})}
+  else{const ax=A[e],az=A[e+2],bx=A[e+21],bz=A[e+23],L=Math.hypot(bx-ax,bz-az)||1,ph=(Math.abs(Math.round(ax*37+bz*53))%10);for(let q=0;q<=10;q++){const f=q/10,ww=Math.sin(f*Math.PI)*(Math.sin(f*4+ph)*.09+Math.sin(f*11+ph)*.02),x=ax+(bx-ax)*f-(bz-az)/L*ww,z=az+(bz-az)*f+(bx-ax)/L*ww;P.push({x,y:0,z})}}
   G.push(ruban97(P,w,q=>Math.max(0,alt(q.x,q.z))*VX+(k>=2?.1:.05)))}
  if(!G.length){VR121.m[k]=null;return}const g=fusion97(G),m=new THREE.Mesh(g,matRuban110(k>=2?1:0));if(k===3)m.material.color.set(0xd0ccc0);m.renderOrder=3;m.frustumCulled=false;scene.add(m);VR121.m[k]=m});
  // les chemins s'effacent de loin comme avant

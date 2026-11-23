@@ -1,12 +1,12 @@
-// ===== p247 : l'histoire marronne ne naît pas d'un seul camp. Dans l'Est, des esclaves enfuis des habitations de Sainte-Suzanne
+// ===== p247 : l'histoire marronne ne naît pas d'un seul camp. Dans l'Est, des esclaves enfuis des habitations de la côte au vent
 // fondent seuls leur camp à Salazie (Anchaing, Héva et leurs filles) : une dynastie marronne, qui ne rejoint l'alliance des camps que plus tard. =====
 const EST247=()=>{try{return near(55.489,-21.077)}catch(e){return null}};
 Object.assign(EV,{
  campest247:{y:1736,tag:'Mémoire',an:'vers 1736',si:()=>S&&!S.voieC&&!S.est247,nat:'Les fuites depuis les habitations de l’Est et les camps de Salazie sont attestés ; la famille d’Anchaing appartient à la tradition.',
   t:'Un camp né seul, dans l’Est',
-  b:'De Salazie, un sifflement de merle répond au nôtre. Ce ne sont pas des nôtres : des esclaves enfuis des habitations de Sainte-Suzanne ont remonté la rivière du Mât, seuls, sans personne pour les guider. Sur un piton, Anchaing et Héva ont fondé leur camp ; leurs filles grandissent, et déjà on parle d’une famille de chefs.',
+  b:'De Salazie, un sifflement de merle répond au nôtre. Ce ne sont pas des nôtres : des esclaves enfuis d’une habitation de la côte au vent, sur les terres de l’actuel Saint-André, ont remonté la rivière du Mât, seuls, sans personne pour les guider. Sur un piton, Anchaing et Héva ont fondé leur camp ; leurs filles grandissent, et déjà on parle d’une famille de chefs.',
   v:'Le marronnage n’a pas un seul berceau : chaque fuite fonde son monde.',
-  h:'Le marronnage de l’Est s’est fait depuis les habitations de la côte au vent (Sainte-Suzanne, Saint-André) vers Salazie. La dynastie d’Anchaing et Héva est celle de la tradition orale.',
+  h:'Le marronnage de l’Est s’est fait depuis les habitations de la côte au vent (Sainte-Suzanne, Saint-André) vers Salazie. La dynastie d’Anchaing et Héva est celle de la tradition orale ; l’habitation d’où ils fuient n’est pas connue : les versions disent Sainte-Suzanne ou Saint-André ; le jeu la place, sans la nommer, sur l’actuel Saint-André.',
   o:[{n:'Leur envoyer des présents',d:'Amitiés +2 : un lien se noue',fx:{ami:2},f:()=>{S.est247={lien:1}}},{n:'Les laisser vivre à leur façon',d:'Cohésion +1',fx:{coh:1},f:()=>{S.est247={lien:0}}}]},
  ralest247:{y:1745,tag:'Mémoire',an:'Salazie',si:()=>S&&!S.voieC&&S.est247&&S.est247.lien&&!S.est247.r&&(camps().length>=3||S.year>=1750),nat:'Le ralliement des bandes autour de chefs élus est décrit par les rapports des détachements ; celui-ci est reconstitué par le jeu.',
   t:'Le ralliement de l’Est',

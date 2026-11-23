@@ -15,6 +15,6 @@ setInterval(()=>{try{const off=!S||S.fin||!ECH236.pret||typeof camT==='undefined
   const feu=typeof CV!=='undefined'&&CV.on;if(feu&&!AMB242.feu)AMB242.feu=bruit238('feu',.13,true);else if(!feu)fin('feu')}catch(e){}},1200);
 // les Chinois de La Réunion : engagés, boutiques, Nouvel An, danse du lion
 {const m0=modal;let der='',h=null;modal=function(){const id=S&&S.evq&&S.evq[0];const r=m0.apply(this,arguments);try{const e=id&&EV[id];
-  if(e&&id!==der&&(typeof SND==='undefined'||SND.on)){const tx=(e.t||'')+' '+(typeof e.b==='string'?e.b:'');if(/\b(engagés|familles|boutiques?|commerçants?|Nouvel An) chinois|\bChinois (arrivent|de l|de La)|Canton|Guan Di|fête du Printemps|danse du lion|letchi/i.test(tx)){der=id;h=mus237('chine',false,.26)}}}catch(x){}return r}
+  if(e&&id!==der&&(typeof SND==='undefined'||SND.on)){const tx=(e.t||'')+' '+(typeof e.b==='string'?e.b:'');if(/\b(engagés|familles|boutiques?|commerçants?|Nouvel An) chinois|\bChinois (arrivent|de l|de La)|Canton|Guan Di|fête du Printemps|danse du lion|letchi/i.test(tx)){der=id;h=mus237('chine',true,.26)}}}catch(x){}return r}
  setInterval(()=>{try{const m=$('modal');if(h&&(!m||m.hidden)){h.stop();h=null}}catch(e){}},800)}
 try{const g=ANN217.find(g=>/Airs des îles/.test(g.g));if(g)g.L.push(['Les Chinois de l’île','« Silk Embrace », openmindaudio (Pixabay).','mus:chine'])}catch(e){}

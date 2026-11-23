@@ -1,0 +1,9 @@
+// ===== p259 : les glacières du Maïdo — à partir des années 1820, l'eau gèle la nuit dans les creux des hauteurs ; on la casse à l'aube,
+// on la garde dans des puits froids, puis on la descend à pied, dans des gonis et de la sciure, jusqu'aux habitations des Bas. =====
+Object.assign(EV,{
+ glaciere259:{y:1825,tag:'Archive',an:'années 1820',t:'Les glacières du Maïdo',
+  get b(){return S&&S.voieC?'Au-dessus de Saint-Paul, près du Maïdo, l’eau gèle les nuits d’hiver dans des bassins creusés. À l’aube, des esclaves cassent la glace en blocs, jusqu’à 25 kg, qu’on garde au froid dans des puits. Puis on la descend à pied, emballée dans des gonis et de la sciure, sur une soixantaine de kilomètres : les grandes maisons des Bas servent des sorbets et des boissons glacées.':'Sur les hauteurs du Maïdo, les nuits d’hiver, l’eau gèle. Des esclaves montent des Bas pour la casser à l’aube et la redescendre en blocs sur leur dos, emballée dans des gonis. Du haut des remparts, on les voit passer en file : un chemin de plus que les détachements connaissent.'},
+  v:'Une glace portée à dos d’homme, du froid des Hauts aux sorbets des Bas.',
+  h:'Glacières du Maïdo (Saint-Paul) : commerce de la glace dès les années 1820 ; blocs jusqu’à 25 kg conservés dans des puits, emballés dans des gonis et de la sciure, transportés par des esclaves sur environ 60 km jusqu’à l’abolition. Site repéré en 2020. Madame Desbassayns aimait servir sorbets et boissons glacées, sans qu’on sache si sa glace venait de là (Service régional de l’archéologie).',
+  get o(){return S&&S.voieC?[{n:'Commander de la glace pour la fête',d:'Amitiés +2, entente −1',fx:{ami:2,coh:-1}},{n:'Ne pas faire monter vos gens',d:'Entente +1',fx:{coh:1}}]:[{n:'Parler aux porteurs de glace',d:'Gens +1, traque +2',fx:{gens:1,traque:2}},{n:'Éviter leur chemin',d:'Traque −1',fx:{traque:-1}}]}}
+});
