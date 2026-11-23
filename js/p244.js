@@ -1,17 +1,17 @@
 // ===== p244 : les vrais sentiers de l'île (407 tracés relevés : chemin des Anglais, rempart du Dimitile, ravine à Malheur, Mafate, Bélouve…)
-// se dessinent en pointillé sur la carte, au fur et à mesure qu'on découvre le pays qu'ils traversent. Les routes modernes et les parcours de course sont écartés. =====
+// se dessinent en pointillé seulement autour de la case sélectionnée (pas partout sur la carte), sur le pays déjà découvert. Les routes modernes et les parcours de course sont écartés. =====
 const DON244={s:[]};
 function nom244(n){return (n||'').replace(/([a-zé])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
 const SEN244={M:null,cle:'',P:null,der:0};
 function pts244(){if(SEN244.P||!DON244.s.length)return SEN244.P;SEN244.P=DON244.s.map(([n,L,d])=>{let lo=d[0],la=d[1];const P=[xz(lo/1e5,la/1e5)];for(let i=2;i<d.length;i+=2){lo+=d[i];la+=d[i+1];P.push(xz(lo/1e5,la/1e5))}const Q=[];for(let i=0;i+1<P.length;i++){const [x0,z0]=P[i],[x1,z1]=P[i+1],d=Math.hypot(x1-x0,z1-z0),m=Math.max(1,Math.ceil(d/.04));for(let k=0;k<m;k++){const x=x0+(x1-x0)*k/m,z=z0+(z1-z0)*k/m;Q.push({x,z,d:d/m,t:tileAt({x,z})})}}return {n:nom244(n),L,Q}});return SEN244.P}
 setInterval(()=>{try{if(typeof scene==='undefined'||!S||typeof T==='undefined'||!T.length||typeof xz!=='function'||typeof DEM==='undefined'||!DEM||!DEM.kx)return;
   const cache=(typeof K!=='undefined'&&K)||(typeof CV!=='undefined'&&CV.on);if(SEN244.M)SEN244.M.visible=!cache;if(cache)return;
-  const L=pts244();if(!L)return;const nv=T.filter(t=>seen(t)).length,cle=nv+':'+L.length;if(cle===SEN244.cle)return;SEN244.cle=cle;
+  const L=pts244();if(!L)return;const sl=typeof sel!=='undefined'&&sel?sel:null,nv=T.filter(t=>seen(t)).length,cle=nv+':'+L.length+':'+(sl?sl.i:-1);if(cle===SEN244.cle)return;SEN244.cle=cle;
   if(SEN244.M){scene.remove(SEN244.M);SEN244.M.geometry.dispose();SEN244.M=null}
   const G=[],neufs=[];S.sent244=S.sent244||[];
   // en pointillé : des tirets de 120 m, espacés de 90 m, posés sur le relief
   L.forEach(s=>{let tir=[],acc=0,on=true,vus=0;const fin=()=>{if(tir.length>=2)G.push(ruban97(tir,.035,q=>Math.max(0,altTri(q.x,q.z))*VX+.025));tir=[]};
-   for(const q of s.Q){if(!q.t||!seen(q.t)){fin();continue}vus++;acc+=q.d;if(on){tir.push({x:q.x,y:0,z:q.z});if(acc>.12){fin();on=false;acc=0}}else if(acc>.09){on=true;acc=0}}
+   if(!sl)return;if(!s.Q.some(q=>q.t===sl))return;for(const q of s.Q){if(!q.t||!seen(q.t)||hd(q.t,sl)>1){fin();continue}vus++;acc+=q.d;if(on){tir.push({x:q.x,y:0,z:q.z});if(acc>.12){fin();on=false;acc=0}}else if(acc>.09){on=true;acc=0}}
    fin();if(vus&&!S.sent244.includes(s.n)){S.sent244.push(s.n);neufs.push(s)}});
   if(G.length){SEN244.M=new THREE.Mesh(fusion97(G),new THREE.MeshBasicMaterial({color:0xf0e2bc,transparent:true,opacity:.55,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3}));SEN244.M.renderOrder=5;SEN244.M.frustumCulled=false;scene.add(SEN244.M)}
   // un sentier qui se dessine pour la première fois : une ligne au journal (pas plus d'une toutes les 30 s, et pas au chargement d'une partie)
