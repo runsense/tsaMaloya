@@ -10,7 +10,7 @@ P224.forEach(([k,y,an,t,b,v])=>{EV[k]={y,si:()=>!!S,tag:'Mémoire',an,t,b,v,h:'T
 // 1. une carte à un seul choix restée plus de 12 s se valide d'elle-même ;
 // 2. un clic sur un choix qui ne répond pas (gestionnaire perdu lors d'un redessin) est rejoué directement.
 {let id0=null,t0=0;setInterval(()=>{try{const m=$('modal');if(!S||!m||m.hidden||!S.evq||!S.evq.length){id0=null;return}const id=S.evq[0];if(id!==id0){id0=id;t0=performance.now();return}
-  if(m.querySelector('.annonce106')&&performance.now()-t0>12000){id0=null;choisir(id,0);rafraichir()}}catch(e){}},1000)}
+  if(m.querySelector('.annonce106')&&performance.now()-t0>Math.max(12000,(typeof lis240==='function'?lis240(m):0)+6000)){id0=null;choisir(id,0);rafraichir()}}catch(e){}},1000)}
 document.addEventListener('click',ev=>{try{const m=$('modal');if(!m||m.hidden||!S||!S.evq||!S.evq.length)return;const b=ev.target.closest&&ev.target.closest('#modal [id^="op"]');if(!b)return;const k=+b.id.replace('op','');if(isNaN(k))return;const id=S.evq[0],n=S.evq.length;
   setTimeout(()=>{try{if(S.evq[0]===id&&S.evq.length===n&&!m.hidden){choisir(id,k);rafraichir()}}catch(e){}},1500)}catch(e){}},true);
 // ----- les plats de la mer et des rivières, avec leur histoire d'arrivée (repères approximatifs) -----
