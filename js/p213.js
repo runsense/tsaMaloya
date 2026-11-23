@@ -1,10 +1,18 @@
 // ===== p213 : les chants de marins — quand une voile paraît, on entend l'air de son pavillon, joué par nos instruments (airs anciens, libres de droits) =====
 // Anglais : « Admiral Benbow » (chanson de marine anglaise, vers 1702), violon et fifre. Source de la notation : collection ABC de John Chambers (trillian.mit.edu/~jc), transcription de Jon Freeman.
 // Français : « À la claire fontaine », que chantaient les marins de la vieille France (déjà dans le jeu).
+// Anglais aussi : « Spanish Ladies » (chanson de la Royal Navy, XVIIIᵉ siècle), notation ABC de folkinfo.mainlynorfolk.info.
+// Français aussi : « Le trente et un du mois d'août » (combat d'un navire français contre une frégate anglaise), notation ABC de folktunefinder.com.
 // Pirate : le même air anglais, plus lent, en mineur, sur un tambour sourd. Les airs hollandais et bretons viendront quand on aura leur notation sûre.
 const BENBOW213=[[62,2],[67,2],[67,2],[69,2],[66,2],[67,4],[71,2],[72,2],[74,4],[72,2],[71,2],[69,2],[72,2],[71,2],[69,2],[67,2],[67,2],[69,2],[66,2],[67,2],[62,2],[64,2],[64,2],[62,6],[72,2],[71,2],[69,2],[71,2],[72,2],[74,4],[72,2],[71,2],[69,2],[67,2],[66,2],[64,2],[62,4],[62,2],[62,2],[67,2],[67,2],[67,2],[64,2],[60,4],[59,2],[60,2],[62,4],[64,2],[66,2],[67,4]];
 const CLAIRE213=[[67,2],[67,2],[71,2],[71,2],[69,2],[71,2],[69,2],[67,2],[67,2],[67,2],[71,2],[71,2],[69,2],[71,4],[71,2],[71,2],[69,2],[67,2],[71,2],[74,2],[71,2],[74,4]];
-function air213(nat){try{if(typeof sTon!=='function'||typeof violon205!=='function')return;const N=nat==='francais'?CLAIRE213:BENBOW213,pir=nat==='pirate',dt=pir?.22:.17;let t=.2;
- N.forEach(([m,d])=>{const mm=pir&&[71,64].includes(m)?m-1:m,du=d*dt*.92;if(nat==='francais'){violon205(mm,du,t,.04);flute205(mm+12,du,t,.025)}else{violon205(mm,du,t,.04);if(!pir)fifre205(mm,du*.8,t,.028)}t+=d*dt});
+const LADIES213=[[62,2],[67,2],[67,2],[66,2],[67,4],[67,1],[69,1],[70,2],[69,2],[67,2],[66,2],[62,3],[62,1],[67,2],[67,2],[66,2],[67,4],[67,1],[69,1],[70,2],[69,2],[67,2],[69,4],[69,1],[69,1],[70,2],[69,2],[67,2],[72,2],[70,2],[69,2],[74,2],[67,2],[67,1],[69,1],[66,1],[64,1],[62,2],[74,1],[72,1],[70,2],[69,2],[67,2],[66,2],[62,2],[62,2],[62,2],[67,2],[66,2],[67,4]];
+const AOUT213=[[62,1],[62,1],[62,1],[67,3],[71,1],[71,1],[71,1],[67,3],[71,1],[71,1],[71,1],[71,3],[67,1],[71,1],[67,1],[69,3],[62,1],[62,1],[62,1],[67,3],[71,1],[71,1],[71,1],[67,3],[71,1],[71,1],[71,1],[71,3],[67,1],[71,1],[67,1],[69,3],[69,1],[71,1],[72,1],[74,3],[67,1],[67,1],[66,1],[64,3],[62,1],[0,1],[62,1],[67,1.5],[67,.5],[67,1],[67,2],[66,.5],[67,.5],[69,3],[69,1],[71,1],[72,1],[71,3],[69,1],[67,1],[69,1],[67,2],[0,1]];
+// Hollandais : « Al die willen te kaap'ren varen » (chanson de corsaires, XVIIᵉ siècle), recopiée de la partition du recueil de F. van Duyse, Het oude Nederlandsche lied (1903), domaine public.
+const KAAP213=[[69,2],[72,1],[71,1],[72,1],[74,1],[72,2],[71,1],[69,2],[64,1],[69,2],[72,1],[71,1],[72,1],[74,1],[72,2],[71,1],[69,2],[0,1],[72,2],[74,1],[76,2],[74,1],[72,2],[74,1],[76,2],[0,1],[69,1],[71,1],[72,1],[71,2],[71,1],[71,1],[72,1],[74,1],
+ [72,2],[69,1],[72,2],[74,1],[76,2],[74,1],[72,2],[74,1],[76,2],[0,1],[69,1],[71,1],[72,1],[71,1],[72,1],[74,1],[72,2],[71,1],[69,2],[0,4]];
+let tour213=0;
+function air213(nat){try{if(typeof sTon!=='function'||typeof violon205!=='function')return;tour213++;const N=nat==='hollandais'?KAAP213:nat==='francais'?(tour213%2?AOUT213:CLAIRE213):nat==='pirate'?BENBOW213:(tour213%2?LADIES213:BENBOW213),pir=nat==='pirate',dt=pir?.22:N===LADIES213?.2:.17;let t=.2;
+ N.forEach(([m,d])=>{if(!m){t+=d*dt;return}const mm=pir&&[71,64].includes(m)?m-1:m,du=d*dt*.92;if(nat==='francais'){violon205(mm,du,t,.04);flute205(mm+12,du,t,.025)}else{violon205(mm,du,t,.04);if(!pir)fifre205(mm,du*.8,t,.028)}t+=d*dt});
  if(pir&&typeof caisse205==='function')for(let k=0;k<t/(dt*4);k++)caisse205(k*dt*4,.06)}catch(e){}}
 {let der='';const m0=modal;modal=function(){const r=m0.apply(this,arguments);try{if(S&&S.evq&&S.evq[0]==='voile'&&S.voile){const k=(S.year||0)+':'+(S.ns||0)+':'+S.voile.nat;if(k!==der){der=k;setTimeout(()=>air213(S.voile&&S.voile.nat),900)}}}catch(e){}return r}}
