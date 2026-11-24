@@ -40,14 +40,14 @@ try{['resurgence177','grossesPluies179','glissement179'].forEach(k=>{if(EV[k])EV
 // second arc très pâle, pieds qui s'effacent avant de toucher le relief, et un voile irrégulier qui le mêle à la pluie =====
 (function arc180(){try{if(typeof AV146==='undefined'||!AV146.arc){setTimeout(arc180,1500);return}const a=AV146.arc;if(a.userData.v180)return;a.userData.v180=1;
  const g=new THREE.RingGeometry(7.6,12,120,6,-1.1,Math.PI+2.2);
- const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{op:{value:0},t:{value:0},ks:{value:1},cote:{value:1}},
-  vertexShader:'attribute float hr;varying vec2 vp;varying float vh;void main(){vp=position.xy;vh=hr;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-  fragmentShader:'uniform float op;uniform float t;uniform float ks;uniform float cote;varying vec2 vp;varying float vh;'+
+ const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{op:{value:0},t:{value:0},ks:{value:1},cote:{value:1},rot:{value:0},fk:{value:0}},
+  vertexShader:'attribute float hr;varying vec2 vp0;varying float vh;void main(){vp0=position.xy;vh=hr;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:'uniform float op;uniform float t;uniform float ks;uniform float cote;uniform float rot;uniform float fk;varying vec2 vp0;varying float vh;'+
    'vec3 hsv(float h){vec3 k=clamp(abs(mod(h*6.+vec3(0.,4.,2.),6.)-3.)-1.,0.,1.);return k;}'+
    'vec3 spec(float x){x=clamp(x,0.,1.);return mix(vec3(1.),hsv(clamp((.88-x)/.76,0.,1.)*.76),.72);}'+
    'float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}'+
    'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}'+
-   'void main(){float r=length(vp);float a=vp.y/r;'+
+   'void main(){float hy=clamp(vp0.y/12.,0.,1.);vec2 vp=vec2(vp0.x-rot*(2.2+3.*hy)*hy,vp0.y*(1.-abs(rot)*.12));float r=length(vp);float a=vp.y/r;'+
    'float x=(r-9.0)/1.3;float b=smoothstep(-.3,.2,x)*(1.-smoothstep(.8,1.3,x));vec3 c=spec(x)*b*.55;'+
    'float dedans=smoothstep(-1.4,-.1,x)*(1.-smoothstep(-.1,.1,x))*.1;c+=vec3(dedans);'+
    'float x2=(r-10.9)/.9;float b2=smoothstep(-.3,.2,x2)*(1.-smoothstep(.8,1.3,x2))*.12;c+=spec(1.-x2)*b2;'+
@@ -56,10 +56,11 @@ try{['resurgence177','grossesPluies179','glissement179'].forEach(k=>{if(EV[k])EV
    'float flanc=mix(1.,.45,smoothstep(-1.,1.,vp.x/r*cote));'+
    'float pied=sol*haut*flanc*smoothstep(-.95,-.75,a);'+
    'float voile=.45+.55*n(vec2(vp.x*.7+3.,vp.y*.2+t*.04))*(.55+.45*n(vec2(vp.x*6.,vp.y*.8-t*.9)));'+
-   'gl_FragColor=vec4(c*pied*voile*op,1.0);}'});
+   'float rang=.6*smoothstep(-.6,1.,a)+.4*smoothstep(.0,.9,b);float vis=1.-smoothstep(rang-.08,rang+.08,fk*1.15);'+
+   'gl_FragColor=vec4(c*pied*voile*op*vis,1.0);}'});
  g.setAttribute('hr',new THREE.Float32BufferAttribute(new Float32Array(g.attributes.position.count).fill(9),1));a.geometry.dispose();a.geometry=g;
  // la hauteur de chaque point de l'arc au-dessus du relief : près du sol il s'efface (il commence plus haut sur une montagne, plus bas sur la plaine)
  const majH=()=>{try{if(!a.visible||typeof alt!=='function')return;a.updateMatrixWorld();const P=g.attributes.position,H=g.attributes.hr,v=new THREE.Vector3();for(let i=0;i<P.count;i++){v.set(P.getX(i),P.getY(i),0).applyMatrix4(a.matrixWorld);H.setX(i,v.y-Math.max(0,alt(v.x,v.z))*VX)}H.needsUpdate=true;m.uniforms.ks.value=a.scale.x}catch(e){}};
  m.uniforms.cote.value=Math.random()<.5?1:-1;const m0=a.material;a.material=m;m.opacity=m0.opacity;
- a.onBeforeRender=()=>{majH();m.uniforms.op.value=Math.min(1,m.opacity*2.6);m.uniforms.t.value=performance.now()/1000};
+ a.onBeforeRender=(rr,sc,cm)=>{try{const d=new THREE.Vector3();cm.getWorldDirection(d);const y=Math.atan2(d.x,d.z),nw=performance.now();const U=m.uniforms;if(a.userData.y0!=null){let dy=y-a.userData.y0;dy=Math.atan2(Math.sin(dy),Math.cos(dy));const dt=Math.max(.008,(nw-a.userData.t0)/1000),w=Math.max(-1,Math.min(1,dy/dt/1.2));U.rot.value+=(w-U.rot.value)*.12;U.fk.value=Math.max(0,Math.min(1,U.fk.value+(Math.abs(w)>.12?dt*.9:-dt*.35)))}a.userData.y0=y;a.userData.t0=nw}catch(e){}majH();{const ud=a.userData,o=m.opacity;if(ud.oP!=null&&o<ud.oP-1e-4){ud.desc=1}else if(o>(ud.oP||0)+1e-4){ud.desc=0;ud.oMax=Math.max(ud.oMax||0,o)}ud.oP=o;if(o<.012)ud.oMax=0;const fo=ud.desc&&ud.oMax?Math.max(0,1-o/ud.oMax):0;m.uniforms.op.value=Math.min(1,(ud.desc&&ud.oMax?ud.oMax:o)*2.6);m.uniforms.fk.value=Math.max(m.uniforms.fk.value*(ud.fkR==null?1:1),fo);}m.uniforms.t.value=performance.now()/1000};
  }catch(e){}})();

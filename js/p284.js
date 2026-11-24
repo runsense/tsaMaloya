@@ -70,7 +70,7 @@ const EPO284={
 // le départ
 function departEpo284(k){const E=EPO284[k];if(!E)return;VOIEC='m';DEBUT=1663;nouvelle();try{const y=E.y0;S.year=y;S.yf=y;S.ns=Math.round((y-1663)/1.5);Object.keys(EV).forEach(q=>{const e=EV[q];if(e&&e.y&&e.y<y)S.done[q]=1});
  const [x,z]=xz(E.lieu[1],E.lieu[2]);const T1=T.filter(t=>!t.bare&&t.alt>300).sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))[0];const T0=T.find(t=>S.t[t.i]&&S.t[t.i].b==='camp');
- if(T1&&T0&&T1!==T0){ouvrir(T1,2);tl(T1.i).b='camp';delete S.t[T0.i].b;setTimeout(()=>{try{camps().filter(t=>t!==T1).forEach(t=>{delete S.t[t.i].b});peindre()}catch(e){}},1500)}
+ if(T1)S.epoCamp=T1.i;if(T1&&T0&&T1!==T0){ouvrir(T1,2);tl(T1.i).b='camp';delete S.t[T0.i].b;setTimeout(()=>{try{camps().filter(t=>t!==T1).forEach(t=>{delete S.t[t.i].b});peindre()}catch(e){}},1500)}
  S.epo284={k,n:0,a:{}};S.tard281=y;try{savoirsTard281(y)}catch(e){}S.evq=['epoI284'];S.gens=Math.max(S.gens||10,14);peindre();sauve();modal()}catch(e){console.warn(e)}}
 EV.epoI284={sys:1,tag:'Camp',an:'',get t(){const E=EPO284[S.epo284.k];return 'Épopée — '+E.n},get b(){return EPO284[S.epo284.k].intro},get v(){return EPO284[S.epo284.k].v},o:[{n:'Commencer',d:'Sa vie avance en chapitres ; vos choix décident de sa fin.',fx:{coh:2}}]};
 EV.epoC284={sys:1,tag:'Camp',an:'',get t(){const E=EPO284[S.epo284.k],c=E.ch[S.epo284.n];return E.n+' — '+(S.epo284.n+1)+'/'+(E.ch.length+1)+' · '+c[1]},get b(){return EPO284[S.epo284.k].ch[S.epo284.n][2]},get v(){return EPO284[S.epo284.k].v},

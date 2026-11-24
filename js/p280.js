@@ -5,7 +5,7 @@ try{ROIS.simangavole={n:'Simangavole',v:0,d:'Guerrière et conseillère, partie 
 // le départ « Simangavole »
 function departSim280(){VOIEC='m';DEBUT=1663;window.SIM280=1;nouvelle();try{const y=1740;S.year=y;S.yf=y;S.ns=Math.round((y-1663)/1.5);Object.keys(EV).forEach(k=>{const e=EV[k];if(e&&e.y&&e.y<y)S.done[k]=1});S.evq=['simDebut280'];
  const [x,z]=xz(55.4513,-21.1117);const T1=T.filter(t=>!t.bare&&t.alt>300).sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))[0];const T0=T.find(t=>S.t[t.i]&&S.t[t.i].b==='camp');
- if(T1&&T0&&T1!==T0){ouvrir(T1,2);tl(T1.i).b='camp';delete S.t[T0.i].b}S.sim280=1;setTimeout(()=>{try{camps().filter(t=>t!==T1).forEach(t=>{delete S.t[t.i].b});peindre()}catch(e){}},1500);S.gens=Math.max(S.gens||10,14);S.coh=Math.max(S.coh||60,75);peindre();sauve();modal()}catch(e){console.warn(e)}window.SIM280=0}
+ if(T1)S.epoCamp=T1.i;if(T1&&T0&&T1!==T0){ouvrir(T1,2);tl(T1.i).b='camp';delete S.t[T0.i].b}S.sim280=1;setTimeout(()=>{try{camps().filter(t=>t!==T1).forEach(t=>{delete S.t[t.i].b});peindre()}catch(e){}},1500);S.gens=Math.max(S.gens||10,14);S.coh=Math.max(S.coh||60,75);peindre();sauve();modal()}catch(e){console.warn(e)}window.SIM280=0}
 EV.simDebut280={sys:1,tag:'Camp',an:'vers 1740',t:'Simangavole',
  b:'Elle est partie de l’Est, une nuit, avec ceux qui voulaient la suivre. Elle a remonté les rivières, traversé la forêt de Bébour, et elle est arrivée au pied des Trois Salazes, où Matouté et sa bande vivent dans les cavernes. Ici, c’est elle qu’on écoute : elle sait se battre, et elle sait conseiller.',
  v:'Simangavole vient de la tradition orale ; aucune archive ne la nomme. Le groupe de maloya féminin Simangavole porte aujourd’hui son nom.',
