@@ -373,7 +373,7 @@ function ouvrirLieu(t){if(!S||!seen(t))return;fermerLieu(true);lieu=t;const N=12
  camT.set(t.x,t.alt*VX,t.z);dist=6;pol=1.08;$('sortie').hidden=false;peindre()}
 function fermerLieu(keep){if(lieuM){scene.remove(lieuM);lieuM.geometry.dispose();lieuM.material.dispose();lieuM=null}lieu=null;$('sortie').hidden=true;if(!keep)peindre()}
 function remplirLieu(){const t=lieu,o=S.t[t.i]||{},ra=o.b==='camp'?1.3:0;if(t.bare){hutC.setRGB(1,1,1);for(let k=0;k<110;k++){const a=rndH(k+t.i)*6.28,d=Math.sqrt(rndH(k*3+1))*3.1,x=t.x+Math.cos(a)*d,z=t.z+Math.sin(a)*d;if(alt(x,z)>4)poseM(MOD.rocher,x,alt(x,z)*VX+.03,z,a,0,0,.8+rndH(k)*1.1,hutC)}return}
- const sav=/Savane/.test(t.biome),hau=t.alt>1100,m=sav?MOD.arbre:hau?MOD.sapin:MOD.arbre,nb=(o.clr||o.c)?40:sav?90:300;
+ const sav=/Savane/.test(t.biome),hau=t.alt>1100,m=sav?MOD.arbre:hau?(MOD.tamarin||MOD.sapin):MOD.arbre,nb=(o.clr||o.c)?40:sav?90:300;
  const cou=(k,s)=>{const a=rndH(k*s+t.i)*6.283,d=Math.sqrt(rndH(k*s+7))*3.15;return [t.x+Math.cos(a)*d,t.z+Math.sin(a)*d,a]};
  for(let k=0;k<nb;k++){const[x,z,a]=cou(k,1.3);if(alt(x,z)<6||Math.hypot(x-t.x,z-t.z)<ra)continue;const n=bruit(x,z);if(n<.42)continue;const v=.75+rndH(k)*.5;hutC.setRGB(v,.85+rndH(k+3)*.3,v);poseM(m,x,alt(x,z)*VX+.03,z,a,0,0,.8+rndH(k+5)*.9,hutC)}
  if(!sav)for(let k=0;k<150;k++){const[x,z,a]=cou(k,2.1);if(alt(x,z)<6||Math.hypot(x-t.x,z-t.z)<ra)continue;hutC.setRGB(1,1,1);poseM(MOD.fanjan,x,alt(x,z)*VX+.03,z,a,0,0,.7+rndH(k)*.8,hutC)}

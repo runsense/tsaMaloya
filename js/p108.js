@@ -59,7 +59,7 @@ function fond108Jouer(n){try{const v=VILLES.find(v=>v[3]===n);if(!v||typeof scen
  const g=new THREE.Group();scene.add(g);const M=c=>new THREE.MeshLambertMaterial({color:c});
  // le navire arrive du large (de l'ouest pour Saint-Paul, venu de Madagascar ; sinon par la mer, le long de la côte)
  const cx=T.reduce((a,u)=>a+u.x,0)/T.length,cz=T.reduce((a,u)=>a+u.z,0)/T.length;const dx=t.x-cx,dz=t.z-cz,L=Math.hypot(dx,dz)||1,ux=dx/L,uz=dz/L;
- const nav=new THREE.Group();const coque=new THREE.Mesh(new THREE.BoxGeometry(.5,.12,.16),M(0x5a3a22));coque.position.y=.06;const mat=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.55,5),M(0x3a2a18));mat.position.y=.35;const voile=new THREE.Mesh(new THREE.PlaneGeometry(.3,.32),new THREE.MeshLambertMaterial({color:0xf2ead8,side:THREE.DoubleSide}));voile.position.set(0,.38,0);voile.rotation.y=Math.PI/2;nav.add(coque,mat,voile);g.add(nav);
+ const nav=new THREE.Group();{const nv=g168Navire('navire');nv.scale.setScalar(.6);nav.add(nv)}g.add(nav);
  const sx=t.x+ux*7,sz=t.z+uz*7,ex=t.x+ux*.9,ez=t.z+uz*.9;nav.rotation.y=Math.atan2(-uz,ux)+Math.PI;
  // les colons à terre, et la zone défrichée qui s'étend
  const F=[];for(let i=0;i<5;i++){const f=new THREE.Mesh(new THREE.ConeGeometry(.04,.16,6),M(i<2?0x2f3b5a:0x8a5a3a));f.visible=false;g.add(f);F.push(f)}

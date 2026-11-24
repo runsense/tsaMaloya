@@ -75,16 +75,16 @@ function plage125(t){try{const ouest=typeof sousVent==='function'?sousVent(t):(t
 setInterval(()=>{try{if(typeof lieuM==='undefined'||!lieuM){o0=-1;return}const m=lieuM.material,o=Math.max(0,Math.min(1,(9.5-dist)/3.5));if(m.userData.sh)m.userData.sh.uniforms.op125.value=o;
  if(Math.abs(o-o0)<.02)return;o0=o;K.forEach(k=>{const mm=MOD[k];if(!mm||!mm.material)return;})}catch(e){}},60)}
 // autour du lieu ouvert, tout le connu suit : une couronne de forêt détaillée sur les cases découvertes voisines (jusqu'à ~8)
-{const RG={g:null};function anneau125(){try{if(RG.g){scene.remove(RG.g);RG.g=null}window.LR125=3.3;const t=lieu;if(!t||!S)return;const G=new THREE.Group();const RX=8.5;window.LR125=RX;
+{const RG={g:null};function anneau125(){try{if(RG.g){fondu307(RG.g,0,700);RG.g=null}window.LR125=3.3;const t=lieu;if(!t||!S)return;const G=new THREE.Group();const RX=8.5;window.LR125=RX;
  const lots={};const add=(k,x,z,s,ry)=>{(lots[k]=lots[k]||[]).push([x,z,s,ry])};const R=q=>{const v=Math.sin(q*12.9898)*43758.5453;return v-Math.floor(v)};
  for(let i=0;i<2600;i++){const a=R(i*1.37+t.i)*6.283,d=3.1+Math.sqrt(R(i*2.11+t.i*.7))*(RX-3.1),x=t.x+Math.cos(a)*d,z=t.z+Math.sin(a)*d,u=tileAt({x,z});if(!u||!seen(u)||u.bare)continue;const o=S.t[u.i]||{};if(o.c||o.clr||o.b)continue;const h=alt(x,z);if(h<5)continue;const b=u.biome||'',sav=/Savane/.test(b);
-  if(typeof bruit==='function'&&bruit(x,z)<.42&&R(i*3.3)<.6)continue;const r=R(i*5.7);let k;if(sav)k=r<.25?'arbre':r<.35?'latanier':r<.5?'rocher':'herbe';else if(u.alt>1100)k=r<.4?'tamarin':r<.55?'fanjanGl':r<.7?'rocher':'herbe';else k=r<.38?'arbre':r<.5?'fanjanEx':r<.58?'palmiste':r<.66?'rocher':'herbe';
+  if(typeof bruit==='function'&&bruit(x,z)<.42&&R(i*3.3)<.6)continue;const r=R(i*5.7);let k;if(sav)k=r<.25?'arbre':r<.35?'latanier':r<.5?'rocher':'herbe';else if(u.alt>1100)k=r<.4?(MOD.tamarin?'tamarin':'sapin'):r<.55?'fanjanGl':r<.7?'rocher':'herbe';else k=r<.38?'arbre':r<.5?'fanjanEx':r<.58?'palmiste':r<.66?'rocher':'herbe';
   add(k,x,z,k==='herbe'?1:.75+R(i*7.1)*.8,a)}
  const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3(),Y=new THREE.Vector3(0,1,0),c=new THREE.Color(1,1,1);
  for(const k in lots){const m=MOD[k];if(!m||!m.geometry)continue;const L=lots[k],I=new THREE.InstancedMesh(m.geometry,m.material,L.length);L.forEach(([x,z,s,ry],i)=>{M.compose(V.set(x,alt(x,z)*VX+.03,z),Q.setFromAxisAngle(Y,ry),Sc.set(s,s,s));I.setMatrixAt(i,M);if(m.instanceColor){I.setColorAt(i,c)}});I.frustumCulled=false;G.add(I)}
- scene.add(G);RG.g=G;if(!RG.p){RG.p=1;try{peindre()}catch(e){}finally{RG.p=0}}}catch(e){}}
+ scene.add(G);RG.g=G;fondu307(G,1,900);if(!RG.p){RG.p=1;try{peindre()}catch(e){}finally{RG.p=0}}}catch(e){}}
  const rl=remplirLieu;remplirLieu=function(){const r=rl.apply(this,arguments);if(!RG.p&&(!RG.g||RG.t!==lieu)){RG.t=lieu;anneau125()}return r};
- const fl=fermerLieu;fermerLieu=function(){if(RG.g){scene.remove(RG.g);RG.g=null;RG.t=null}window.LR125=3.3;return fl.apply(this,arguments)};
+ const fl=fermerLieu;fermerLieu=function(){if(RG.g){fondu307(RG.g,0,600);RG.g=null;RG.t=null}window.LR125=3.3;return fl.apply(this,arguments)};
  setInterval(()=>{try{if(!RG.g)return;const o=Math.max(0,Math.min(1,(9.5-dist)/3.5));RG.g.visible=o>.01}catch(e){}},100)}
 // effet de rapprochement : les décors du lieu grandissent de leur base plus vite que le relief ne se rapproche
 {const K=['arbre','tamarin','fanjan','fanjanEx','fanjanGl','fanjanCo','palmiste','latanier','vacoa','herbe','rocher','filao','tamarinier','branle','benjoin','bois_chandelle','ambaville'],U={value:1};const fait=new Set();
