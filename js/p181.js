@@ -5,10 +5,10 @@
 {const SRC='Source : série historique de l’INSEE (recensements et estimations).',ok=[{n:'Continuer',d:'',fx:{},hist:1}];
  const P=[[1713,'1 171 habitants','Moins de cinquante ans après les premiers colons, l’île compte un peu plus de mille habitants, libres et esclaves ensemble.'],
   [1717,'2 000 habitants','La population double en quatre ans. Les navires de la Compagnie amènent des esclaves de Madagascar et d’Afrique.'],
-  [1724,'12 550 habitants','Le café arrive à Bourbon et la Compagnie fait venir des milliers d’esclaves pour le cultiver. L’île change de visage en quelques années.'],
+  [1735,'environ 8 200 habitants','Le café a tout changé : la Compagnie a fait venir des milliers d’esclaves pour le cultiver. On compte 6 500 esclaves pour 1 700 libres.'],
   [1764,'25 000 habitants','Les esclaves sont maintenant bien plus nombreux que les libres. Plus il y a d’esclaves, plus il y a de fugitifs dans les Hauts.'],
   [1789,'entre 46 000 et 61 300 habitants','L’année de la Révolution. Les comptes ne s’accordent pas : selon les sources, entre 46 000 et 61 300 habitants, dont une large majorité d’esclaves.'],
-  [1848,'110 300 habitants','L’année de l’abolition : plus de 60 000 esclaves deviennent libres le 20 décembre.'],
+  [1848,'environ 97 000 habitants','L’année de l’abolition : 62 000 esclaves deviennent libres le 20 décembre, à côté de 35 000 libres.'],
   [1860,'200 000 habitants','Le sucre a remplacé le café. Pour remplacer les esclaves libérés dans les champs, on fait venir des engagés, surtout de l’Inde.'],
   [1887,'163 881 habitants','La population baisse : crise du sucre, épidémies, fin de l’engagisme indien.'],
   [1946,'241 708 habitants','L’île devient un département français. Premier recensement moderne.'],
@@ -60,7 +60,7 @@ Object.assign(EV,{rec1779:{y:1779,si:()=>S,tag:'Archive',an:'1779',nat:'Fait his
 // ===== la population réelle de l'île, année par année (Histoire) : recensements et estimations, interpolés entre deux comptes =====
 // Série INSEE (1671-2015) et chronologie INSEE pour la part des esclaves ; 1663 : les 12 premiers habitants ; 1714 : recensement par quartier.
 // Écartés : 1724 (12 550, incohérent avec 1735) et 1825 (96 000, incohérent avec 1826).
-const POP181=[[1663,12],[1665,30],[1671,90],[1696,269],[1704,734],[1714,1157],[1717,2000],[1735,8200],[1764,25000],[1777,35100],[1789,55000],[1793,45000],[1826,87100],[1830,101300],[1848,110300],[1860,200000],[1870,212000],[1887,163881],[1897,173192],[1926,182637],[1946,241708],[1954,274370],[1961,349282],[1967,416525],[1974,476675],[1982,515814],[1990,597823],[1999,706300],[2006,781962],[2015,850727]];
+const POP181=[[1663,12],[1665,30],[1671,90],[1696,269],[1704,734],[1714,1157],[1717,2000],[1735,8200],[1764,25000],[1777,35100],[1789,55000],[1793,45000],[1826,87100],[1830,101300],[1848,97000],[1860,200000],[1870,212000],[1887,163881],[1897,173192],[1926,182637],[1946,241708],[1954,274370],[1961,349282],[1967,416525],[1974,476675],[1982,515814],[1990,597823],[1999,706300],[2006,781962],[2015,850727]];
 const ESC181=[[1704,.42],[1714,.46],[1735,.79],[1793,.78],[1825,.74],[1847,.6],[1848,0]];
 function interp181(T,y){if(y<=T[0][0])return T[0][1];for(let i=1;i<T.length;i++)if(y<=T[i][0]){const [a,va]=T[i-1],[b,vb]=T[i];return va+(vb-va)*(y-a)/(b-a)}return T[T.length-1][1]}
 function popIle181(){try{const y=S.year,n=Math.round(interp181(POP181,y)),f=(y>=1704&&y<1848)?interp181(ESC181,y):0,fmt=v=>v>=10000?Math.round(v/100)*100:v;const t=fmt(n).toLocaleString('fr-FR');return f>0?t+' <span style="font-size:12px;opacity:.75">dont '+fmt(Math.round(n*f)).toLocaleString('fr-FR')+' esclaves</span>':t}catch(e){return '?'}}
