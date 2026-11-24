@@ -7,9 +7,9 @@
  const mk=(o,g,age,st,n,fa)=>{const p=nouvellePersonne({or:o,g,age,st,fa});if(n)p.n=n;p.hist=1;return p};S.pp=[];S.famN=3;const MG=[];
  const pris=new Set(),nm=g=>{const L=NOMS.mg[g].filter(x=>!pris.has(x)&&!/Anchaing|Héva|Cimendef|Dimitile|Mafate/.test(x));const x=L[Math.floor(rnd()*L.length)]||NOMS.mg[g][0];pris.add(x);return x};
  for(let i=0;i<10;i++){const g=i<7?'h':'f';MG.push(mk('mg',g,18+Math.floor(rnd()*20),S.voieC?'engagé':'marron',nm(g),i<7?1+(i%2):1+((i-7)%2)))}
- if(S.voieC){S.pp.push(mk('eu','h',34,'libre','Louis Payen',3),mk('eu','h',29,'libre','Pierre Pau',3))}S.pp.push(...MG);S.gens=S.pp.length;
+ if(S.voieC){S.pp.push(mk('eu','h',34,'libre','Louis Payen',3),mk('eu','h',29,'libre','Le compagnon de Payen',3))}S.pp.push(...MG);S.gens=S.pp.length;
  S.hist90=1}catch(e){console.warn(e)}return r}}
-setInterval(()=>{try{if(!S||!S.hist90||S.hist90===2||modeHist())return;S.hist90=2;journal(S.voieC?'Fin 1663 : Louis Payen et Pierre Pau débarquent à Saint-Paul avec dix Malgaches, dont trois femmes. Ce sont les premiers habitants connus de l’île.':'1663 : dix Malgaches, dont trois femmes, arrivés avec deux Français, les quittent et montent dans les Hauts. Ce sont les premiers marrons connus de l’île. Leurs noms ne nous sont pas parvenus : le jeu leur en donne.')}catch(e){}},2000);
+setInterval(()=>{try{if(!S||!S.hist90||S.hist90===2||modeHist())return;S.hist90=2;journal(S.voieC?'Mi-novembre 1663 : Louis Payen, un autre Européen au nom inconnu et dix Malgaches, sept hommes et trois femmes, débarquent à Saint-Paul. Ce sont les premiers habitants connus de l’île.':'1663 : dix Malgaches, dont trois femmes, arrivés avec deux Français, les quittent et montent dans les Hauts. Ce sont les premiers marrons connus de l’île. Leurs noms ne nous sont pas parvenus : le jeu leur en donne.')}catch(e){}},2000);
 
 // ----- 2. Le passage des jours : l'heure du jour en haut, et chaque nouveau jour s'annonce -----
 const MOM90=t=>t<.08?['🌅','l’aube']:t<.3?['🌤️','le matin']:t<.5?['☀️','midi']:t<.7?['🌤️','l’après-midi']:t<.85?['🌇','le soir']:['🌙','la nuit'];
