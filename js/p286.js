@@ -1,0 +1,32 @@
+// ===== p286 : des fiches pour les peuples moins présents dans le jeu — Zarabes, Comoriens, petits Blancs des Hauts, Chinois.
+// Seulement ce qui est rapporté ; quand une date ou une origine est approximative, la fiche le dit. =====
+Object.assign(EV,{
+ e1841m:{y:1841,tag:'Archive',an:'25 avril 1841',t:'Mayotte devient française',
+  b:'Le sultan Andriantsoly, venu de Madagascar et maître de Mayotte, cède l’île à la France. Les autres îles des Comores — Grande Comore, Anjouan, Mohéli — passeront sous protectorat français plus tard, à la fin du siècle.',
+  v:'Les Comores et La Réunion sont liées depuis longtemps : au XVIIIᵉ siècle déjà, des esclaves arrivent des Comores ou passent par elles, venus de la côte d’Afrique de l’Est.',
+  o:[{n:'Noter le nom de l’île',d:'Ouvre une destination lointaine. Cohésion +1.',fx:{coh:1}}]},
+ e1850e:{y:1850,tag:'Archive',an:'après 1848',t:'Les engagés venus des Comores',
+  b:'L’esclavage est aboli, mais les planteurs veulent des bras. Avec les Indiens, on fait venir des « engagés » d’Afrique de l’Est, de Madagascar, et aussi des Comores, sous contrat de plusieurs années. Les conditions sont souvent proches de celles d’avant.',
+  v:'Le recrutement en Afrique de l’Est fut vite accusé de ressembler à la traite, et freiné. Le nombre exact d’engagés comoriens est mal connu.',
+  o:[{n:'Les accueillir au camp',d:'+2 personnes, cohésion +1.',fx:{gens:2,coh:1}},{n:'Les prévenir de ce qui les attend',d:'Cohésion +2.',fx:{coh:2}}]},
+ e1980k:{y:1980,tag:'Archive',an:'fin du XXᵉ siècle',t:'Les Comoriens et les Mahorais de La Réunion',
+  b:'Après l’indépendance des Comores en 1975, puis surtout quand Mayotte devient département en 2011, beaucoup de Comoriens et de Mahorais viennent vivre à La Réunion. Ils apportent leurs mariages, leurs chants, leurs mosquées de quartier.',
+  v:'Leur place dans l’île fait encore débat ; les liens de famille entre Comores, Mayotte et La Réunion sont anciens.',
+  o:[{n:'Faire place à leurs fêtes',d:'Cohésion +2, anciens +1.',fx:{coh:2,anciens:1}}]},
+ e1905m:{y:1905,tag:'Archive',an:'1905',t:'La mosquée Noor-e-Islam',
+  b:'Rue du Grand-Chemin, à Saint-Denis, les commerçants musulmans venus du Gujarat ouvrent leur mosquée le 28 novembre 1905. Ils avaient acheté le terrain en 1892 ; le chantier a duré sept ans. Le minaret blanc se voit de loin. Autour, les boutiques de tissus, les épices, les fêtes de fin du Ramadan.',
+  v:'Noor-e-Islam est présentée comme la plus ancienne mosquée de France encore en activité. Ses fondateurs venaient surtout de Surat, arrivés deux ou trois décennies plus tôt. La rue du Grand-Chemin s’appelle aujourd’hui rue du Maréchal-Leclerc.',
+  o:[{n:'Visiter le quartier',d:'Vivres +3, cohésion +1.',fx:{vivres:3,coh:1}}]},
+ e1880h:{y:1880,tag:'Archive',an:'fin du XIXᵉ siècle',t:'Cantonais au Nord, Hakkas au Sud',
+  b:'Les Chinois venus librement ne viennent pas tous du même endroit. Les Cantonais s’installent surtout dans le Nord, à Saint-Denis ; les Hakkas surtout dans le Sud, autour de Saint-Pierre. Chacun a sa langue, ses associations, ses temples.',
+  v:'La « boutik sinwa », épicerie de quartier qui fait crédit, devient un lieu de la vie de tous les jours. Le partage Nord / Sud est une tendance, pas une règle absolue.',
+  o:[{n:'Ouvrir un compte à la boutique',d:'Vivres +4.',fx:{vivres:4}},{n:'Aller à la fête du Nouvel An',d:'Cohésion +2.',fx:{coh:2}}]},
+ e1855p:{y:1855,tag:'Archive',an:'vers 1850-1860',t:'On monte peupler les Plaines',
+  b:'La Plaine des Palmistes et la Plaine des Cafres, longtemps lieux de passage des marrons, reçoivent leurs premiers habitants permanents : des familles pauvres, souvent des petits Blancs sans terre dans les Bas. Il y fait froid, la terre est dure.',
+  v:'Le peuplement des Hauts au XIXᵉ siècle est surtout l’œuvre de petits planteurs, blancs ou affranchis, chassés des Bas par les grandes habitations sucrières.',
+  o:[{n:'Les laisser passer',d:'+2 personnes, traque +1.',fx:{gens:2,traque:1}},{n:'Leur montrer les sources',d:'Cohésion +2.',fx:{coh:2}}]},
+ e1900g:{y:1900,tag:'Archive',an:'début du XXᵉ siècle',t:'Le géranium des Hauts',
+  b:'Dans les Hauts de l’Ouest et du Sud, on plante le géranium. On le coupe, on le distille dans de petits alambics de famille, et l’essence part pour les parfumeurs de France. Pour beaucoup de petits planteurs des Hauts, c’est le seul revenu.',
+  v:'L’essence de « géranium Bourbon » a fait de La Réunion l’un des premiers producteurs mondiaux au XXᵉ siècle, avant le déclin des années 1960-1970. Le vétiver suit le même chemin.',
+  o:[{n:'Planter un champ de géranium',d:'Vivres +3, santé +1.',fx:{vivres:3,sante:1}}]}
+});
