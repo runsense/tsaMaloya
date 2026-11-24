@@ -1,0 +1,10 @@
+// ===== p296 : la radio rangée par régions — La Réunion, l'océan Indien, l'Inde et l'Asie, la France et les Antilles d'autrefois.
+// Chaque groupe s'ouvre et se ferme ; celui de la station en cours reste ouvert. =====
+function reg296(n){if(/^(Madagascar|Comores|Maurice|Rodrigues|Seychelles|Mozambique|Zimbabwe) ·/.test(n))return 'L’océan Indien et l’Afrique de l’Est';
+ if(/^(Inde|Pays tamoul|Indonésie|Birmanie|Cambodge) ·/.test(n))return 'L’Inde et l’Asie';
+ if(/Fréhel|Milton|Bourvil|Compagnons|Ségurel|Amont|Béart|Lirvat|Frett|biguine|Antilles|années 19[3-5]0/i.test(n))return 'La France et les Antilles d’autrefois';return 'La Réunion'}
+{const p0=panneau222;panneau222=function(){const r=p0.apply(this,arguments);try{const p=document.getElementById('radio222p');if(!p)return r;
+ const box=[...p.querySelectorAll('div')].find(d=>/overflow:\s*auto/.test(d.style.cssText)&&d.querySelector('button'));if(!box||box.dataset.g296)return r;box.dataset.g296=1;box.style.maxHeight='min(60vh,420px)';
+ const lignes=[...box.children],G={},ordre=['La Réunion','L’océan Indien et l’Afrique de l’Est','L’Inde et l’Asie','La France et les Antilles d’autrefois'];let cour=null;
+ lignes.forEach(l=>{const b=l.querySelector('button');if(!b)return;const n=b.textContent.replace(/^▶\s*/,'');const g=reg296(n);(G[g]||(G[g]=[])).push(l);try{if(RADIO222.url&&b.onclick&&l.innerHTML.indexOf('')>=0&&n&&RADIO222.titre===n)cour=g}catch(e){}});
+ box.innerHTML='';ordre.concat(Object.keys(G).filter(g=>!ordre.includes(g))).forEach(g=>{if(!G[g])return;const d=document.createElement('details');d.open=g==='La Réunion'||g===cour;d.style.cssText='margin:2px 0';const s=document.createElement('summary');s.textContent=g+' ('+G[g].length+')';s.style.cssText='cursor:pointer;font:600 13px Georgia,serif;color:#e8be5a;padding:3px 0';d.appendChild(s);const c=document.createElement('div');c.style.cssText='display:flex;flex-direction:column;gap:4px;padding-left:6px';G[g].forEach(l=>c.appendChild(l));d.appendChild(c);box.appendChild(d)})}catch(e){}return r}}
