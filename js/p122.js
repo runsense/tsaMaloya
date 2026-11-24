@@ -8,7 +8,7 @@ const hauts122=()=>S&&S.year>=1830&&(S.voieC||S.year>=1848);
 function bete122(k,taille){const m=P122[k==='mouton'?'ani_mouton':'ani_boeufc'];if(!m)return null;return clone104(m,taille,true)}
 {const vb=viv108Bati;viv108Bati=function(){const g=vb.apply(this,arguments);try{if(!P122.ani_boeufc)return g;
  const garde=[];VIV108.b.forEach(b=>{const k=b.k;
-  if(k==='boeuf'){const o=bete122('boeuf',.17);if(o){b.o.clear();b.o.scale.setScalar(1);b.o.add(o);b.o.rotation.y=b.cap;b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX}return}
+  if(k==='boeuf'){const o=bete122('boeuf',.17);if(o){b.fixe=1;b.o.clear();b.o.scale.setScalar(1);b.o.add(o);b.o.rotation.y=b.cap;b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX}return}
   // les petites boîtes (cabris, cochons, tangues) disparaissent : les vraies bêtes animées les remplacent
   if(k==='cabri'||k==='cochon'||k==='tangue'){if(b.o.parent)b.o.parent.remove(b.o);return}
   garde.push(b)});

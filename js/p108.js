@@ -28,8 +28,8 @@ function viv108Bati(){const g=new THREE.Group();VIV108.b=[];VIV108.o=[];const c=
  const cols={cabri:0x8a6a4a,cochon:0x3a2e28,tangue:0x6b5038,boeuf:0x7a4a2a};let nb=0;P.filter(t=>!t.bare&&t.alt>20&&!camps().some(c=>c.i===t.i)).forEach((t,i)=>{const pr=(S.gibP||{})[t.i]||0,col=(S.towns||[]).length*.03;const dens=Math.max(0,1-pr*1.2-col)*(t.forest?.8:1);const q=Math.round(dens*2.2*(((t.i*13)%10)/10+.4));for(let j=0;j<q&&nb<30;j++,nb++){const k=t.forest?((i+j)%2?'cochon':'tangue'):(S.year>1700&&(i+j)%3===0?'boeuf':'cabri');const o=new THREE.Group();const corps=new THREE.Mesh(new THREE.BoxGeometry(.09,.05,.04),viv108Mat(cols[k]));corps.position.y=.06;const tete=new THREE.Mesh(new THREE.BoxGeometry(.035,.035,.03),viv108Mat(cols[k]));tete.position.set(.06,.08,0);o.add(corps,tete);
   [[-.03,.015],[.03,.015],[-.03,-.015],[.03,-.015]].forEach(([x,z])=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.006,.006,.04,4),viv108Mat(0x2a2018));p.position.set(x,.02,z);o.add(p)});if(k==='cabri'){const c1=new THREE.Mesh(new THREE.ConeGeometry(.008,.03,4),viv108Mat(0xd8d0c0));c1.position.set(.065,.11,0);o.add(c1)}
   const ox=(j-q/2)*.18;o.position.set(t.x+ox,t.alt*VX,t.z+ox*.6);if(k==='boeuf')o.scale.setScalar(1.6);g.add(o);VIV108.b.push({k,o,cx:t.x+ox,cz:t.z+ox*.6,cap:Math.random()*6,ph:Math.random()*6})}});
- // les oiseaux : deux vols qui tournent au-dessus
- const nOis=Math.max(1,5-Math.floor((S.oisP106||0)/3));for(let v=0;v<2;v++)for(let i=0;i<nOis;i++){const o=new THREE.Group(),m=viv108Mat(v?0xf2f2ea:0x2a2a2a,{side:THREE.DoubleSide});const ai=[1,-1].map(sg=>{const w=new THREE.Mesh(new THREE.PlaneGeometry(.045,.014),m);w.position.x=sg*.022;o.add(w);return w});const c=new THREE.Mesh(new THREE.SphereGeometry(.008,5,4),m);c.scale.z=2;o.add(c);g.add(o);VIV108.b.push({k:'oiseau',o,v,i,ai})}
+ // les oiseaux : deux vols qui tournent au-dessus — ailes effilées, rejetées vers l'arrière (plus de rectangles), qui battent depuis l'épaule
+ const nOis=Math.max(1,5-Math.floor((S.oisP106||0)/3));for(let v=0;v<2;v++)for(let i=0;i<nOis;i++){const o=new THREE.Group(),m=viv108Mat(v?0xf2f2ea:0x2a2a2a,{side:THREE.DoubleSide});const ai=[1,-1].map(sg=>{const w=new THREE.Mesh(aile108(),m);w.scale.x=sg;w.position.x=sg*.004;o.add(w);return w});const c=new THREE.Mesh(new THREE.SphereGeometry(.008,5,4),m);c.scale.z=2;o.add(c);g.add(o);VIV108.b.push({k:'oiseau',o,v,i,ai})}
  // les cavernes connues : une bouche sombre dans la pente
  try{Object.keys(S.cav97||{}).map(Number).map(i=>T[i]).filter(t=>t&&P.includes(t)).forEach(t=>{g.add(grotte186(t))})}catch(e){}
  // les plantes et pierres de la mystique, là où elles poussent (marrons) : une petite lueur
@@ -40,7 +40,7 @@ setInterval(()=>{try{if(typeof scene==='undefined'||!S||S.fin||K||VP){if(VIV108.
 (function boucle(){requestAnimationFrame(boucle);try{if(!VIV108.g||!VIV108.g.visible)return;const s=(performance.now()-VIV108.t0)/1000;
  VIV108.b.forEach(b=>{if(b.k==='oiseau'){const a=s*.35+b.v*3+b.i*.18,r=1.6+b.v*.8;const x=camT.x+Math.cos(a)*r+b.i*.06,z=camT.z+Math.sin(a)*r,y=(Math.max(0,alt(x,z))*VX)+1.1+b.v*.3+Math.sin(s*2+b.i)*.04;b.o.position.set(x,y,z);b.o.rotation.y=-a;b.ai.forEach((w,j)=>w.rotation.z=(j?-1:1)*Math.sin(s*12+b.i)*.6);return}
   if(b.k==='poisson'){const u=((s*.15+b.ph)%1);const q=b.C.getPoint(u);b.o.position.set(q.x,Math.max(0,alt(q.x,q.z))*VX+.04+Math.max(0,Math.sin(u*40))*.02,q.z);return}
-  b.ph+=.016;if(Math.sin(b.ph*.6)>.3){b.cap+=Math.sin(b.ph*.21)*.02;const x=b.o.position.x+Math.cos(b.cap)*.004,z=b.o.position.z+Math.sin(b.cap)*.004;if(Math.hypot(x-b.cx,z-b.cz)>.6)b.cap+=Math.PI;else{b.o.position.x=x;b.o.position.z=z}b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX;b.o.rotation.y=-b.cap}});
+  if(b.fixe)return;b.ph+=.016;if(Math.sin(b.ph*.6)>.3){b.cap+=Math.sin(b.ph*.21)*.02;const x=b.o.position.x+Math.cos(b.cap)*.004,z=b.o.position.z+Math.sin(b.cap)*.004;if(Math.hypot(x-b.cx,z-b.cz)>.6)b.cap+=Math.PI;else{b.o.position.x=x;b.o.position.z=z}b.o.position.y=Math.max(0,alt(b.o.position.x,b.o.position.z))*VX;b.o.rotation.y=-b.cap}});
  VIV108.o.forEach((sp,i)=>{sp.material.opacity=.65+.35*Math.sin(s*2+i)})}catch(e){}})();
 
 // ===== Les fondations de la colonie, jouées sur la carte (le conte colon) : d'où viennent les gens, et la zone qui se défriche =====
@@ -92,3 +92,7 @@ function btFig108(x,q,s,col,qi){const t=(BT&&BT.tps)||0,mv=s.ord&&s.ord.k==='va'
  const roche=(X,Y,k)=>{x.fillStyle='#2e2b2a';x.beginPath();x.moveTo(X-6*k,Y+2*k);x.lineTo(X-3*k,Y-4*k);x.lineTo(X+4*k,Y-3*k);x.lineTo(X+6*k,Y+2*k);x.closePath();x.fill();x.fillStyle='#4a4644';x.beginPath();x.moveTo(X-3*k,Y-4*k);x.lineTo(X+4*k,Y-3*k);x.lineTo(X+1*k,Y);x.closePath();x.fill()};
  const fougere=(X,Y,k)=>{x.strokeStyle='#5a8a3a';x.lineWidth=1;for(let a=0;a<6;a++){const an=-Math.PI/2+(a-2.5)*.4;x.beginPath();x.moveTo(X,Y);x.quadraticCurveTo(X+Math.cos(an)*5*k,Y+Math.sin(an)*5*k,X+Math.cos(an)*8*k,Y+Math.sin(an)*6*k+2*k);x.stroke()}};
  for(let i=0;i<70;i++){const X=r()*W,Y=r()*H,k=.8+r()*.9,f=r();if(f<.25)vacoa(X,Y,k);else if(f<.45)fanjan(X,Y,k);else if(f<.7)roche(X,Y,k);else fougere(X,Y,k)}}catch(e){}return cv}}
+
+// une aile d'oiseau : large à l'épaule, pointue au bout, le bord d'attaque arrondi et rejeté vers l'arrière (à plat, l'épaule à l'origine)
+function aile108(){if(aile108.g)return aile108.g;const sh=new THREE.Shape();sh.moveTo(0,.008);sh.quadraticCurveTo(.026,.011,.05,-.004);sh.quadraticCurveTo(.03,-.004,.018,-.009);sh.quadraticCurveTo(.008,-.006,0,-.008);sh.lineTo(0,.008);
+ aile108.g=new THREE.ShapeGeometry(sh,6).rotateX(-Math.PI/2);return aile108.g}
