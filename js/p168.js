@@ -19,9 +19,9 @@ const AFR168=[[20,14],[43,12.5],[45,13],[52,15.5],[56.5,18],[59.5,22.5],[56.5,26
 const ILE168=[['Laquedives',72.6,10.5,.25],['Maldives',73.2,3.2,.42],['Chagos',71.8,-6.3,.58],['plateau des Mascareignes',60.5,-12.5,.72],['Maurice',57.5,-20.2,.86],['La Réunion',55.5,-21.1,.97]];
 function g168Carte(k,phase){const c=g168Toile();if(!c)return;const W=c.width=c.clientWidth,H=c.height=c.clientHeight,x=c.getContext('2d');
  const L0=30,L1=100,A0=30,A1=-36,top=H*.1,hh=H*.62,sc=Math.min(W/(L1-L0),hh/(A0-A1)),ox=(W-sc*(L1-L0))/2,oy=top+(hh-sc*(A0-A1))/2;const P=(lo,la)=>[ox+(lo-L0)*sc,oy+(A0-la)*sc];
- const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0e3550');g.addColorStop(1,'#081e30');x.fillStyle=g;x.fillRect(0,0,W,H);
- const poly=(L,dl,da,f,s)=>{x.beginPath();L.forEach(([lo,la],i)=>{const [a,b]=P(lo+dl,la+da);i?x.lineTo(a,b):x.moveTo(a,b)});x.closePath();x.fillStyle=f;x.fill();if(s){x.strokeStyle=s;x.lineWidth=1.5;x.stroke()}};
- poly(AFR168.slice(0,10),0,0,'#5b6a4a');poly(AFR168.slice(10).concat([[20,12]]),0,0,'#5b6a4a','#7a8a64');poly(MDG168,0,0,'#5b6a4a','#7a8a64');
+ mer312(x,W,H);
+ const poly=(L,dl,da,f,s)=>terre312(x,L.map(([lo,la])=>P(lo+dl,la+da)),f,sc);
+ poly(AFRD312,0,0,'#5b6a4a');poly(ARA312,0,0,'#7a7050');poly(MDGD312,0,0,'#5b6a4a');voile312(x,W,H,top,hh);
  // l'Inde : posée sur le point chaud il y a 66 millions d'années, puis remontée vers le nord
  const u=phase===1?0:Math.min(1,k*1.05),dl=-14.5*(1-u),da=-31.5*(1-u);
  // le point chaud vu depuis l'Afrique : sous les Mascareignes, puis sous Maurice, puis sous La Réunion (c'est la plaque qui glisse au-dessus)

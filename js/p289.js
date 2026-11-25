@@ -8,8 +8,8 @@ function fondCmd289(MP,RW,RH,cs,k){const cle=k+':'+cs+':'+RW+'x'+RH;if(F289[cle]
  let s=17+k.length*7;const r=()=>{s=(s*16807)%2147483647;return s/2147483647};
  const SOL={morne:['#5b4a36','#6a573f','#4e4030','#566a38'],negrier:['#b8a074','#c8b084','#a8906a','#9a8a62'],poudre:['#8a5a3a','#9a6a46','#7a4e32','#6e6a3a'],sanct:['#8a8070','#9a9080','#7a7062','#6a6656']}[k]||['#5b4a36','#6a573f','#4e4030','#566a38'];
  // le sol : grain, taches, brins
- x.fillStyle=SOL[0];x.fillRect(0,0,W,H);
- for(let i=0;i<W*H/90;i++){x.fillStyle=SOL[1+Math.floor(r()*3)];x.globalAlpha=.25+r()*.35;const R=1+r()*cs*.18;x.beginPath();x.ellipse(r()*W,r()*H,R,R*(.5+r()*.6),r()*3,0,7);x.fill()}
+ x.fillStyle=SOL[0];x.fillRect(0,0,W,H);const vrai=typeof sol313==='function'&&sol313(x,W,H,k,cs);
+ for(let i=0;i<(vrai?W*H/400:W*H/90);i++){x.fillStyle=SOL[1+Math.floor(r()*3)];x.globalAlpha=.25+r()*.35;const R=1+r()*cs*.18;x.beginPath();x.ellipse(r()*W,r()*H,R,R*(.5+r()*.6),r()*3,0,7);x.fill()}
  x.globalAlpha=1;
  if(k==='sanct'){x.strokeStyle='rgba(40,34,28,.35)';x.lineWidth=1;for(let j=0;j<RH;j++)for(let i=0;i<RW;i++){const X=i*cs,Y=j*cs,o=(j%2)*cs/2;x.strokeRect(X+o%cs,Y,cs,cs/2);x.strokeRect(X,Y+cs/2,cs,cs/2)}}
  if(k!=='sanct'&&k!=='negrier'){x.strokeStyle='rgba(90,120,50,.55)';x.lineWidth=1;for(let i=0;i<W*H/260;i++){const X=r()*W,Y=r()*H;x.beginPath();x.moveTo(X,Y);x.lineTo(X+(r()-.5)*4,Y-2-r()*4);x.stroke()}}

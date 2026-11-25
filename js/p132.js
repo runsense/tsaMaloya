@@ -29,16 +29,13 @@ function grotte132Jeu(el,cible){const ans=Math.max(0,((S&&S.year)||1666)-1666),n
   if(P.vu>=1)return fin(false);if(fait>=nD&&P.x<70)return fin(true);
   cam=Math.max(0,Math.min(LW-W,P.x-W/2));
   // le décor
-  x.fillStyle=cible==='col'?'#0e1420':'#0b1610';x.fillRect(0,0,W,H);x.save();x.translate(-cam,0);x.fillStyle='#e9e6d0';x.beginPath();x.arc(cam*.85+W*.82,60,20,0,7);x.fill();
-  x.fillStyle=cible==='col'?'#1a2418':'#12261a';arbres.forEach(([ax,ay,r])=>{if(cible==='col'&&niv>=2&&ax%3===0)return;x.beginPath();x.arc(ax,ay,r,0,7);x.fill()});
-  const sg=x.createLinearGradient(0,haut,0,sol);sg.addColorStop(0,cible==='col'?'#2a2618':'#1a2416');sg.addColorStop(1,cible==='col'?'#3a3020':'#24301e');x.fillStyle=sg;x.fillRect(0,haut,LW,H-haut);
-  if(cible==='col'&&niv>=1){x.strokeStyle='rgba(120,150,70,.35)';x.lineWidth=2;for(let r=0;r<6;r++){x.beginPath();x.moveTo(0,haut+20+r*34);x.lineTo(LW,haut+20+r*34);x.stroke()}}
+  ciel311(x,W,H,cam,cible,t,haut);x.save();x.translate(-cam,0);
+  arbres311(x,arbres,cible,niv,t,haut,cam,W);
+  sol311(x,LW,H,haut,sol,cible,niv,t,cam,W);
   // tout ce qui est sur le sol, trié du fond vers l'avant
-  const L=[];ob.forEach(o=>L.push({y:o.y,f:()=>{const s=.55+.45*prof(o.y);x.save();x.translate(o.x,o.y);x.scale(s,s);if(cible==='col'){x.fillStyle='#d8d0bc';x.fillRect(-45,-62,90,62);x.fillStyle='#7a3a2a';x.beginPath();x.moveTo(-55,-60);x.lineTo(0,-98);x.lineTo(55,-60);x.fill()}else{x.fillStyle='#5a4630';x.fillRect(-40,-55,80,55);x.fillStyle='#8a7040';x.beginPath();x.moveTo(-52,-52);x.lineTo(0,-100);x.lineTo(52,-52);x.fill()}
-   x.fillStyle=o.ok?'#b090e0':'#050505';x.fillRect(-10,-34,20,34);if(!o.ok){x.fillStyle='rgba(239,233,218,.7)';x.font='12px system-ui';x.fillText('z',8,-70-Math.sin(t*2+o.x)*3)}x.restore()}}));
-  G.forEach(g=>L.push({y:g.y,f:()=>{const s=.55+.45*prof(g.y);const gr=x.createRadialGradient(g.x+g.dir*60*s,g.y-50*s,8,g.x+g.dir*90*s,g.y-50*s,180*s);gr.addColorStop(0,'rgba(255,190,90,.35)');gr.addColorStop(1,'rgba(255,190,90,0)');x.fillStyle=gr;x.beginPath();x.moveTo(g.x,g.y-60*s);x.lineTo(g.x+g.dir*190*s,g.y-140*s);x.lineTo(g.x+g.dir*190*s,g.y+20*s);x.fill();
-   x.save();x.translate(g.x,g.y);x.scale(s,s);x.fillStyle=cible==='col'?'#c9b48a':'#3a2a1e';x.fillRect(-7,-40,14,30);x.beginPath();x.arc(0,-47,7,0,7);x.fill();x.fillRect(-6,-10,4,10);x.fillRect(2,-10,4,10);x.fillStyle='#ffb040';x.fillRect(g.dir*10,-52,3,14);x.restore()}}));
-  C.forEach(c=>L.push({y:c.y,f:()=>{x.fillStyle=c.eveil>.5?'#a08060':'#6a5a48';x.fillRect(c.x-14,c.y-12,28,12);x.fillStyle='#efe9da';x.font='12px system-ui';x.fillText(c.eveil>.5?'grr…':'z',c.x-6,c.y-18)}}));
+  const L=[];ob.forEach(o=>L.push({y:o.y,f:()=>case311(x,o,.55+.45*prof(o.y),cible,t)}));
+  G.forEach(g=>L.push({y:g.y,f:()=>garde311(x,g,.55+.45*prof(g.y),cible,t)}));
+  C.forEach(c=>L.push({y:c.y,f:()=>chien311(x,c,t)}));
   L.push({y:P.y,f:()=>{let a=.8;if(P.dans){const u=P.dans.t;a=u<.5?1-u*2:u>1.7?(u-1.7)*2:0;const o=P.dans.o;P.x+=(o.x-P.x)*.2;P.y+=(o.y-P.y)*.2}const s=.55+.45*prof(P.y),bob=Math.sin(t*3.2)*4,flot=10+Math.sin(t*1.7)*3;
    x.save();x.globalAlpha=Math.max(0,Math.min(.85,a));try{x.filter='blur(1.4px)'}catch(e){}x.translate(P.x,P.y-flot+bob*.3);x.scale(s*P.dir*1.6,s*1.6);
    // l'ombre au sol, sous lui (il ne touche pas terre)
