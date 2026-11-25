@@ -42,13 +42,22 @@ function prl306Mer(x,W,H,t,y0){const g=x.createLinearGradient(0,y0,0,H);g.addCol
 function prl306Ciel(x,W,y1,a,b){const g=x.createLinearGradient(0,0,0,y1);g.addColorStop(0,a);g.addColorStop(1,b);x.fillStyle=g;x.fillRect(0,0,W,y1)}
 // les tableaux
 const PRLT306={
- '1153':(x,W,H,t)=>{prl306Papier(x,W,H,t);const cx=W/2,cy=H/2,R=Math.min(W,H)*.42;
-  // la carte ronde d'al-Idrisi : le sud en haut, l'océan qui entoure le monde
-  x.fillStyle='#2f6a86';x.beginPath();x.arc(cx,cy,R,0,7);x.fill();x.strokeStyle='#7a5a2a';x.lineWidth=3;x.stroke();
-  const P=(lo,la)=>[cx-(lo-50)*R/34,cy+(la+2)*R/34];x.fillStyle='#d8b878';prl306Cote(x,CAF306.concat([[60,30],[20,30],[20,-34]]),P,1);x.fill();x.fillStyle='#d8b878';prl306Cote(x,MDG306,P,1);x.fill();
-  const iles=[['Dina Morgabin',55.5,-21.1,1],['Dina Arobi',57.5,-20.2,0],['Dina Morare',63.4,-19.7,0]];iles.forEach(([n,lo,la,f])=>{const [a,b]=P(lo,la);x.fillStyle=f?'#e8683a':'#c8a060';x.beginPath();x.arc(a,b,f?5+Math.sin(t*2):4,0,7);x.fill();
-   x.font=(f?'italic 600 ':'italic ')+Math.max(11,R*.07|0)+'px Georgia,serif';x.fillStyle=f?'#fff2c8':'#f4e6c0';x.textAlign='right';x.fillText(n,a-8,b+(f?16:n==='Dina Arobi'?-2:-18));x.textAlign='left'});
-  x.font='italic '+Math.max(11,R*.06|0)+'px Georgia,serif';x.fillStyle='#5a3a12';x.textAlign='center';x.fillText('al-Idrisi, 1154 — le sud est en haut',cx,H-24)},
+ '1153':(x,W,H,t)=>{prl306Papier(x,W,H,t);const cx=W/2,cy=H/2-6,R=Math.min(W,H)*.42;
+  // à la manière d'al-Idrisi : un disque, le sud en haut, l'océan qui entoure le monde, des montagnes en écailles, des fleuves bleus
+  x.fillStyle='#244e6a';x.beginPath();x.arc(cx,cy,R+12,0,7);x.fill();x.fillStyle='#3d7896';x.beginPath();x.arc(cx,cy,R,0,7);x.fill();
+  x.save();x.beginPath();x.arc(cx,cy,R,0,7);x.clip();
+  const P=(lo,la)=>[cx-(lo-52)*R/30,cy+(la+4)*R/30];
+  const terre=CAF306.slice().concat([[62,30],[10,30],[10,-40]]);const g=x.createLinearGradient(cx,cy-R,cx,cy+R);g.addColorStop(0,'#e6cf94');g.addColorStop(1,'#d4b06a');x.fillStyle=g;prl306Cote(x,terre,P,1);x.fill();x.strokeStyle='#8a6a30';x.lineWidth=1.5;x.stroke();
+  x.fillStyle='#d9bb7a';prl306Cote(x,MDG306,P,1);x.fill();x.stroke();
+  // montagnes en écailles brunes, comme sur la Tabula Rogeriana
+  for(let i=0;i<26;i++){const lo=30+((i*7)%12),la=-28+((i*11)%44),[a,b]=P(lo,la);if(Math.hypot(a-cx,b-cy)>R-10)continue;x.fillStyle='#a5683a';x.beginPath();x.moveTo(a-7,b+4);x.quadraticCurveTo(a,b-8,a+7,b+4);x.fill();x.strokeStyle='#6a3e1e';x.lineWidth=1;x.stroke()}
+  x.strokeStyle='#3d7896';x.lineWidth=2.2;[[[36,8],[33,-2],[31,-12]],[[35,-14],[38,-17],[40.5,-17.5]]].forEach(L=>{x.beginPath();L.forEach((q,i)=>{const [a,b]=P(q[0],q[1]);i?x.lineTo(a,b):x.moveTo(a,b)});x.stroke()});
+  x.restore();x.strokeStyle='#7a5a2a';x.lineWidth=3;x.beginPath();x.arc(cx,cy,R+12,0,7);x.stroke();
+  // l'anneau de l'océan qui entoure le monde
+  x.save();x.translate(cx,cy);x.font='italic '+Math.max(10,R*.055|0)+'px Georgia,serif';x.fillStyle='#e8dcc0';const txt='al-Bahr al-Muhit · l’océan qui entoure le monde · ';for(let i=0;i<txt.length;i++){const a=-Math.PI/2+i*.045;x.save();x.rotate(a);x.fillText(txt[i],0,-R-3);x.restore()}x.restore();
+  const iles=[['Dina Morgabin',55.5,-21.1,1],['Dina Arobi',57.5,-20.2,0],['Dina Morare',63.4,-19.7,0]];iles.forEach(([n,lo,la,f],k)=>{const [a,b]=P(lo,la);x.fillStyle=f?'#e8683a':'#d8b878';x.beginPath();x.ellipse(a,b,f?7:5,f?5:4,0,0,7);x.fill();x.strokeStyle='#6a4a20';x.stroke();
+   x.font=(f?'italic 700 ':'italic ')+Math.max(11,R*.07|0)+'px Georgia,serif';x.fillStyle=f?'#fff2c8':'#f4e6c0';x.textAlign='center';x.fillText(n,a,b+(k===1?-12:18));x.textAlign='left'});
+  x.font='italic '+Math.max(11,R*.06|0)+'px Georgia,serif';x.fillStyle='#5a3a12';x.textAlign='center';x.fillText('à la manière d’al-Idrisi, 1154 — le sud est en haut',cx,H-20);x.textAlign='left'},
  '1200':(x,W,H,t)=>{// une ravine du Sud : remparts, cultures en terrasses sans brûlis, des gens minuscules
   prl306Ciel(x,W,H*.4,'#8fbcd0','#d8e4d0');x.fillStyle='#3e5a34';x.beginPath();x.moveTo(0,H*.18);x.lineTo(W*.28,H*.5);x.lineTo(W*.34,H);x.lineTo(0,H);x.fill();x.beginPath();x.moveTo(W,H*.12);x.lineTo(W*.66,H*.48);x.lineTo(W*.6,H);x.lineTo(W,H);x.fill();
   x.fillStyle='#2e4a2a';for(let i=0;i<40;i++){const u=(i*.37)%1,s=i%2?0:1;const X=s?u*W*.28:W-u*W*.34,Y=H*.2+u*H*.4+((i*13)%9);x.beginPath();x.arc(X,Y,6+(i%4)*2,0,7);x.fill()}
