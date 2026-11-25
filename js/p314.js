@@ -38,3 +38,7 @@ rapace138=function(blanc){return rapace314(blanc)};
  // les plateaux de feuillage : larges, très plats, à hauteurs différentes, qui ne se recouvrent pas tout à fait
  [[.13,.36,.02,.11],[-.11,.37,-.03,.1],[.02,.42,.1,.09],[.0,.41,-.1,.09],[.06,.46,-.02,.08],[-.06,.45,.05,.07],[.17,.33,-.06,.06],[-.15,.34,.07,.06]].forEach(([x,y,z,r],i)=>{for(let k=0;k<4;k++){const a=k*1.7+i,d=r*.55*(k?1:0);P.push([new THREE.IcosahedronGeometry(r*(k?.62:.8),0),V[(i+k)%4],TR(x+Math.cos(a)*d,y+(k%2)*.012-.006,z+Math.sin(a)*d,0,a,0,1.3,.38,1.15)])}});
  return m0.call(this,nom,P,max)}catch(e){}}return m0.apply(this,arguments)}}
+// ----- le contour de la case choisie : fin et lisible de loin, il s'efface quand on est tout près (vue du camp, lieu ouvert) -----
+{let fait=0;const pas=()=>{try{if(!fait&&typeof terr!=='undefined'&&terr&&terr.material&&terr.material.uniforms){const m=terr.material,a='if(e>.86&&pat>.5)C=mix(C,mix(vec3(1.,.87,.5),vec3(1.,.36,.06)*(.88+.12*sin(t*5.)),pl),.9);';
+  if(m.fragmentShader.indexOf(a)>=0){m.uniforms.zr314={value:1};m.fragmentShader=m.fragmentShader.replace('uniform sampler2D st;','uniform sampler2D st;uniform float zr314;').replace(a,'if(e>.86+.08*(1.-zr314)&&pat>.5)C=mix(C,mix(vec3(1.,.87,.5),vec3(1.,.36,.06)*(.88+.12*sin(t*5.)),pl),.9*zr314);');m.needsUpdate=true}fait=1}
+ if(fait&&terr.material.uniforms.zr314){const d=typeof dist!=='undefined'?dist:20;terr.material.uniforms.zr314.value=Math.max(0,Math.min(1,(d-2.5)/6))}}catch(e){}requestAnimationFrame(pas)};requestAnimationFrame(pas)}

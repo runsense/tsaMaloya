@@ -15,7 +15,7 @@ const PAR217=new Map([
 // une traduction discrète sous les chants étrangers
 const TRAD217=new Map([[BENBOW213,'Venez, marins hardis, écoutez la gloire de l’amiral Benbow, qui se battit en mer.'],[LADIES213,'Adieu, belles dames d’Espagne : on nous rappelle en Angleterre.'],[KAAP213,'Ceux qui veulent partir en course doivent être des hommes à barbe.']]);
 function par217(N,M,dt,fini){const L=PAR217.get(N);if(!L)return;let el=document.getElementById('par217');if(!el){el=document.createElement('div');el.id='par217';
-  el.style.cssText='position:fixed;left:50%;bottom:13%;transform:translateX(-50%);max-width:86vw;text-align:center;font:italic 19px/1.35 Georgia,serif;color:#fff7e6;text-shadow:0 1px 3px #000,0 0 10px #000a;pointer-events:none;z-index:9999;transition:opacity .5s;opacity:0';document.body.appendChild(el)}
+  el.style.cssText='position:fixed;left:50%;top:64px;transform:translateX(-50%);max-width:70vw;text-align:center;font:italic 18px/1.35 Georgia,serif;color:#fff7e6;text-shadow:0 1px 3px #000,0 0 10px #000a;pointer-events:none;z-index:9999;transition:opacity .5s;opacity:0';document.body.appendChild(el)}
  const tot=N.reduce((a,[m,d])=>a+d*dt,0),jou=M.reduce((a,[m,d])=>a+d*dt,0),tr=TRAD217.get(N),n=L.length,id=Math.random();el.dataset.id=id;
  L.forEach((v,j)=>{const at=j/n*tot;if(at>jou-.3)return;setTimeout(()=>{if(fini()||el.dataset.id!=id)return;el.innerHTML=v+(tr&&j===n-1?'<br><small style="font-size:13px;opacity:.75">'+tr+'</small>':'');el.style.opacity=1},at*1000+150)});
  setTimeout(()=>{if(el.dataset.id==id)el.style.opacity=0},Math.min(jou,tot)*1000+600);
