@@ -14,9 +14,9 @@ function bio316(t){const a=t.alt||0;return a<250?0:a<700?1:a<1400?2:3}
 function voisin316(t,loin){let best=null,bd=-1;(t.nb||[]).map(i=>T[i]).filter(u=>u&&!u.bare).forEach(u=>{const d=loin?Math.hypot(u.x-t.x,u.z-t.z)+(u.alt||0)*.001:Math.random();if(d>bd){bd=d;best=u}});return best||t}
 function heros316(t){const P=(S.pp||[]).filter(p=>typeof adulte==='function'?adulte(p)&&!p.mort:!p.mort);const c=camps().find(c=>c.i===t.i)||camps()[0];const L=c&&typeof campDe==='function'?P.filter(p=>campDe(p)===c.i):P;const p=L[Math.floor(Math.random()*L.length)]||P[0];
  return {n:p?p.n:(S.voieC?'un habitant':'un marron'),m:p&&p.g==='f'?'femme_travail':'jeune_pagne'}}
-function incarner316(k,t){if(!S||S.fin||!t)return;const A=ACT316[k];if(!A)return;const u=voisin316(t,k==='explore'),w=voisin316(u,k==='explore');
+function incarner316(k,t,hx){if(!S||S.fin||!t)return;const A=ACT316[k];if(!A)return;const u=voisin316(t,k==='explore'),w=voisin316(u,k==='explore');
  const L=[t,u,w].map(x=>{const q=LL99(x);return [q.lon,q.lat]}).filter((p,i,a)=>!i||Math.hypot(p[0]-a[i-1][0],p[1]-a[i-1][1])>1e-4);if(L.length<2){const q=LL99(t);L.push([q.lon+.012,q.lat+.008])}
- const b=bio316(t),h=heros316(t),colon=!!S.t[t.i]&&S.t[t.i].c&&!S.voieC;
+ const b=bio316(t),h=hx||heros316(t),colon=!!S.t[t.i]&&S.t[t.i].c&&!S.voieC;
  INC287.libre316={n:A.t,sous:'',fin:{f:'libre'},ch:[{t:h.n,an:String(S.year),heros:h,comp:[],obj:A.obj,b0:b,b1:Math.max(b,bio316(w)),chas:k==='village'||colon?3:(S.voieC?0:1),faux:3,route:L,intro:A.intro,finT:A.finT,v:''}]};
  const e=$('ecran');if(e)e.hidden=true;try{if(CV.on)cvFermer()}catch(_){}let auto=0;try{const c=$('auto');if(c&&c.checked){auto=1;c.click()}}catch(_){}const reprise=()=>{try{const c=$('auto');if(auto&&c&&!c.checked)c.click()}catch(_){}};
  incOuvrir287('libre316',0);if(!INC)return;
@@ -28,10 +28,14 @@ function incarner316(k,t){if(!S||S.fin||!t)return;const A=ACT316[k];if(!A)return
  if(mien)B.push(['vie',S.voieC?'🏘 Entrer dans le village':'⛺ Entrer dans le camp','Vivre le camp à son rythme, puis revenir au conte']);
  if(colon)B.push(['village','👁 Approcher du village colon','Incarner celui qui va voir, de nuit']);
  else if(o&&o.c&&S.voieC&&!mien)B.push(['quartier','🏘 Faire le tour du quartier','Incarner un habitant']);
- if(!t.bare&&!colon){B.push(['chasse','🗡 Incarner la chasse',''],['cueil','🌿 Incarner la cueillette','']);if(t.riv||t.water||/riv/i.test(t.biome||''))B.push(['peche','🎣 Incarner la pêche',''])}
+ if(!t.bare&&!colon){if(!/Chasser en personne/.test(p.innerHTML))B.push(['fps','🗡 Chasser en personne','Sagaie, vent et silence : la chasse vue de ses yeux']);B.push(['cueil','🌿 Incarner la cueillette','']);if(t.riv||t.water||/riv/i.test(t.biome||''))B.push(['peche','🎣 Incarner la pêche',''])}
  if(!t.bare)B.push(['explore','🧭 Incarner l’exploration','Partir voir plus loin, depuis cette case']);
+ // un groupe en sortie sur cette case : on le rejoint, dans la peau de celui qui le mène
+ (S.grp||[]).filter(g=>g&&g.pos===t.i&&g.exp&&!g.fini).forEach(g=>{const m=(g.m||[]).map(ppId).filter(Boolean)[0];B.unshift(['g'+g.id,'👣 Incarner '+(m?m.n.split(' ')[0]:g.n)+' ('+({chasse:'chasse',cueil:'cueillette',peche:'pêche',explorer:'exploration',camp:'nouveau camp'}[g.exp.but]||'sortie')+')','Rejoindre le groupe en route'])});
  if(!B.length)return r;const d=document.createElement('div');d.id='inc316';d.style.cssText='margin:10px 0 4px;padding:8px;border:1px solid rgba(216,180,90,.45);border-radius:10px;background:rgba(216,180,90,.07)';
- d.innerHTML='<div style="font:600 12px system-ui;letter-spacing:.05em;text-transform:uppercase;color:#d8b45a;margin-bottom:6px">Incarner</div>'+B.map(([k,n,ti])=>'<button class="bt" data-i316="'+k+'" title="'+ti+'" style="display:block;width:100%;text-align:left;margin:4px 0">'+n+'</button>').join('');
- p.insertBefore(d,p.children[2]||null);d.querySelectorAll('[data-i316]').forEach(x=>x.onclick=()=>{const k=x.dataset.i316;if(k==='vie')entrer315(t.i);else incarner316(k,t)})}catch(e){console.warn(e)}return r}}
+ d.innerHTML='<div style="font:600 12px system-ui;letter-spacing:.05em;text-transform:uppercase;color:#d8b45a;margin-bottom:6px">Incarner</div>'+B.map(([k,n,ti])=>'<button class="bt" data-i316="'+k+'" title="'+ti+'" style="display:block;width:100%;text-align:left;margin:4px 0"><b>'+n+'</b>'+(ti?'<small style="display:block;opacity:.75;font-weight:400">'+ti+'</small>':'')+'</button>').join('');
+ p.insertBefore(d,p.children[2]||null);d.querySelectorAll('[data-i316]').forEach(x=>x.onclick=()=>{const k=x.dataset.i316;if(k==='vie')entrer315(t.i);else if(k==='fps'){if(typeof ouvrirFPS==='function')ouvrirFPS('chasse',t);else incarner316('chasse',t)}else if(k[0]==='g'){const g=S.grp.find(x=>x&&String(x.id)===k.slice(1));const m=g&&(g.m||[]).map(ppId).filter(Boolean)[0];incarner316({chasse:'chasse',cueil:'cueil',peche:'peche'}[g&&g.exp.but]||'explore',T[g?g.exp.cap:t.i]&&g.exp.etat==='aller'?t:t,m?{n:m.n,m:m.g==='f'?'femme_travail':'jeune_pagne'}:null)}else incarner316(k,t)})}catch(e){console.warn(e)}return r}}
 // quitter une incarnation libre ramène à la carte, la partie continue (jamais le menu)
 {const q=incQuitter287;incQuitter287=function(){if(INC&&INC.libre316){const r=INC.ret;INC.ret=null;INC.camp315=0;const x=q.apply(this,arguments);try{r&&r()}catch(e){}return x}return q.apply(this,arguments)}}
+// le menu de la case (clic droit) reprend aussi les choix « Incarner », même pendant le conte, et propose d'entrer dans son camp
+{const mc=menuCtx;menuCtx=function(x,y,titre,L){try{if(S&&!S.fin&&sel&&Array.isArray(L)&&!L.some(l=>/Entrer dans le (camp|village)/.test(l[0]))&&camps().some(c=>c.i===sel.i)){const t=sel;L.unshift([S.voieC?'🏘 Entrer dans le village':'⛺ Entrer dans le camp',()=>entrer315(t.i),'Vivre le camp à son rythme, puis revenir au conte'])}}catch(e){}return mc.call(this,x,y,titre,L)}}
