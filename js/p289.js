@@ -24,10 +24,10 @@ function fondCmd289(MP,RW,RH,cs,k){const cle=k+':'+cs+':'+RW+'x'+RH;if(F289[cle]
   // bord : une berge plus claire là où l'eau touche la terre
   [[0,-1],[0,1],[-1,0],[1,0]].forEach(([a,b])=>{if(T(i+a,j+b)!=='~'){x.fillStyle='rgba(180,170,130,.35)';if(b)x.fillRect(X,Y+(b>0?cs-3:0),cs,3);else x.fillRect(X+(a>0?cs-3:0),Y,3,cs)}})}
  // les ombres portées des murs et des caisses (vers le bas et la droite)
- x.fillStyle='rgba(0,0,0,.35)';for(let j=0;j<RH;j++)for(let i=0;i<RW;i++){const t=T(i,j);if(t==='#'||t==='='||t==='c')x.fillRect(i*cs+cs*.18,j*cs+cs*.22,cs,cs)}
+ x.fillStyle='rgba(0,0,0,.35)';for(let j=0;j<RH;j++)for(let i=0;i<RW;i++){const t=T(i,j);if((t==='#'&&!(vrai&&k!=='negrier'))||t==='='||t==='c')x.fillRect(i*cs+cs*.18,j*cs+cs*.22,cs,cs)}
  // les murs : pierres empilées, éclairées en haut à gauche
  for(let j=0;j<RH;j++)for(let i=0;i<RW;i++){const t=T(i,j),X=i*cs,Y=j*cs;
-  if(t==='#'){const bord=i===0||j===0||i===RW-1||j===RH-1;x.fillStyle=bord?'#2e2822':(k==='negrier'?'#5a4028':'#6a6052');x.fillRect(X,Y,cs,cs);
+  if(t==='#'){const bord=i===0||j===0||i===RW-1||j===RH-1;if(vrai&&k!=='negrier'&&!bord)continue;x.fillStyle=bord?'#2e2822':(k==='negrier'?'#5a4028':'#6a6052');x.fillRect(X,Y,cs,cs);
    if(k==='negrier'&&!bord){x.strokeStyle='rgba(30,18,10,.6)';for(let n=1;n<4;n++){x.beginPath();x.moveTo(X,Y+n*cs/4);x.lineTo(X+cs,Y+n*cs/4);x.stroke()}continue}
    const n=3;for(let a=0;a<n;a++)for(let b=0;b<n;b++){const px=X+b*cs/n+(a%2)*cs/(2*n),py=Y+a*cs/n,w=cs/n-1.5,h=cs/n-1.5,v=(bord?40:95)+Math.floor(r()*30);x.fillStyle='rgb('+v+','+(v-6)+','+(v-16)+')';x.beginPath();x.roundRect?x.roundRect(px,py,w,h,2):x.rect(px,py,w,h);x.fill();x.fillStyle='rgba(255,240,210,.12)';x.fillRect(px,py,w,1.5);x.fillStyle='rgba(0,0,0,.25)';x.fillRect(px,py+h-1.5,w,1.5)}}
   else if(t==='='||t==='c'){const pl=t==='=';x.fillStyle=pl?'#6e5236':'#7a5a34';const m=pl?0:cs*.1;x.fillRect(X+m,Y+m,cs-2*m,cs-2*m);x.strokeStyle='rgba(40,24,12,.7)';x.lineWidth=1;const nb=pl?4:3;for(let n=1;n<nb;n++){x.beginPath();if(pl){x.moveTo(X,Y+n*cs/nb);x.lineTo(X+cs,Y+n*cs/nb)}else{x.moveTo(X+m+n*(cs-2*m)/nb,Y+m);x.lineTo(X+m+n*(cs-2*m)/nb,Y+cs-m)}x.stroke()}

@@ -62,7 +62,7 @@ function vpDevant(){const V=VP,ch=V.chef;if(V.perche)return {k:'descendre',lab:'
  if(sg)return {k:'ramasser',o:sg,lab:'Ramasser la sagaie'};
  const c=V.cueil.find(c=>c.fr>0&&face(c.x,c.z,c.k==='palmiste'?1.8:2.6));if(c)return {k:'cueillir',o:c,lab:c.k==='palmiste'?'Couper le cœur du palmiste':c.k==='herbe'?'Cueillir les herbes':'Cueillir les baies'};
  const r=V.roc.find(r=>face(r.x,r.z,r.r+1.6));if(r)return {k:'grimper',o:r,ht:r.ht+.6,lab:'Grimper sur le rocher'};
- const a=V.arb.find(a=>a.r<1.2&&!a.palm&&face(a.x,a.z,a.r+1.4));if(a)return {k:'grimper',o:a,ht:4.2,lab:'Grimper à l’arbre'};return null}
+ const a=V.arb.find(a=>a.r<1.2&&!a.palm&&!a.bat&&face(a.x,a.z,a.r+1.4));if(a)return {k:'grimper',o:a,ht:4.2,lab:'Grimper à l’arbre'};return null}
 function vpInteragir(){const V=VP;if(!V||V.en2D)return;const d=vpDevant(),ch=V.chef;if(!d)return vpMsg('Rien à prendre ni où grimper devant vous.');
  if(d.k==='ramasser'){V.sc.remove(d.o.m);V.sol2=V.sol2.filter(s=>s!==d.o);V.sag++;vpMsg('Sagaie ramassée ('+V.sag+').')}
  else if(d.k==='cueillir')vpCueille(d.o,V.G.chef,true);
