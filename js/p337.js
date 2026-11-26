@@ -21,7 +21,7 @@ function vegetation337(I){if(I.veg337)return;I.veg337=1;const S3=I.S3,h=I.hAt,R=
  // l'herbe : des touffes (fataks à l'ouest, herbes vertes ailleurs) à la place des pics
  if(herbe.length){const sh=new THREE.Shape();sh.moveTo(-.03,0);sh.quadraticCurveTo(-.08,.5,0,1);sh.quadraticCurveTo(.08,.5,.03,0);const fg=new THREE.ShapeGeometry(sh,4);{const q=fg.attributes.position;for(let i=0;i<q.count;i++){const y=q.getY(i);q.setZ(i,-y*y*.35)}}
   const n=Math.min(herbe.length,2500),im=new THREE.InstancedMesh(fg,new THREE.MeshLambertMaterial({color:0xffffff,side:THREE.DoubleSide}),n*5),c=new THREE.Color(),E=new THREE.Euler();let k=0;
-  for(let i=0;i<n;i++){const [x,z]=herbe[i],y=h(x,z),s=(R.n==='ouest'?1.3:.9)*(.7+((i*13)%10)/20);for(let f=0;f<5;f++){E.set(-.25-((f*7+i)%5)*.06,f*1.26+i,0,'YXZ');Q.setFromEuler(E);M.compose(P.set(x,y,z),Q,Sc.set(s,s,s));im.setMatrixAt(k,M);c.setHex(R.herbe[(i+f)%3]);im.setColorAt(k,c);k++}}
+  let sd=91;const rr=()=>{sd=(sd*16807)%2147483647;return sd/2147483647};for(let i=0;i<n;i++){if(rr()<.35)continue;const x=herbe[i][0]+(rr()-.5)*3.4,z=herbe[i][1]+(rr()-.5)*3.4,y=h(x,z),s=(R.n==='ouest'?1.1:.8)*(.45+rr()*.7);for(let f=0;f<5;f++){E.set(-.25-((f*7+i)%5)*.06,f*1.26+i,0,'YXZ');Q.setFromEuler(E);M.compose(P.set(x,y,z),Q,Sc.set(s,s,s));im.setMatrixAt(k,M);c.setHex(R.herbe[(i+f)%3]);im.setColorAt(k,c);k++}}
   im.count=k;im.instanceMatrix.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true;S3.add(im)}
  // la teinte de l'air : sèche et dorée à l'ouest, humide ailleurs, fraîche dans les Hauts
  try{if(S3.fog){if(R.n==='ouest'){S3.fog.color.setHex(0xd8d0b0);I.R.setClearColor(0xc8d4d8)}else if(R.n==='hauts'){S3.fog.color.setHex(0xb8c6cc)}}}catch(e){}}

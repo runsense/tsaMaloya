@@ -1,0 +1,15 @@
+// ===== p342 : dans les marches incarnées — (1) un vrai bouton « ⇄ Changer de personnage » quand on marche à deux (Tab marche
+// toujours) ; (2) la petite carte se zoome : molette dessus, ou boutons + et −, centrée sur soi ; elle est dessinée plus fine ;
+// (3) les dernières couronnes en cône qui flottaient sans tronc disparaissent ; les caféiers sont des arbustes, pas des œufs. =====
+{const c0=incCarte287;incCarte287=function(){const c=$('incM');if(c&&!c.dataset.hd342){c.dataset.hd342=1;c.style.width=c.width+'px';c.style.height=c.height+'px';c.width*=3;c.height*=3}return c0.apply(this,arguments)}}
+incCarteMaj287=function(){const I=INC,m=I&&I.minimap;if(!m)return;const g=m.g,W=g.canvas.width,H=g.canvas.height,z=I.zoom342||1,X=I.o0[0]+I.h.x/I.sc,Z=I.o0[1]+I.h.z/I.sc,px=m.ox+(X-m.ax)*m.k,py=m.oz+(Z-m.az)*m.k;
+ g.clearRect(0,0,W,H);let sx=0,sy=0,sw=W,sh=H;if(z>1){sw=W/z;sh=H/z;sx=Math.max(0,Math.min(W-sw,px-sw/2));sy=Math.max(0,Math.min(H-sh,py-sh/2))}g.drawImage(m.bg,sx,sy,sw,sh,0,0,W,H);
+ const qx=(px-sx)*W/sw,qy=(py-sy)*H/sh,r=W/60;g.fillStyle='#ff4030';g.beginPath();g.arc(qx,qy,r,0,7);g.fill();g.strokeStyle='#fff';g.lineWidth=r/3;g.stroke();g.fillStyle='#fff';g.font='bold '+Math.round(W/16)+'px sans-serif';g.fillText('vous',qx+r*1.6,qy-r)};
+setInterval(()=>{try{if(typeof INC==='undefined'||!INC||!INC.el)return;const I=INC,el=I.el,c=$('incM');
+ if(c&&!c.dataset.z342){c.dataset.z342=1;c.style.cursor='zoom-in';c.title='Molette : zoomer la carte';c.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();I.zoom342=Math.max(1,Math.min(8,(I.zoom342||1)*(e.deltaY<0?1.4:1/1.4)))},{passive:false});
+  const b=document.createElement('div');b.style.cssText='position:absolute;z-index:3;display:flex;gap:4px';const R=c.getBoundingClientRect();b.style.left=(R.left+6)+'px';b.style.top=(R.bottom-30)+'px';
+  [['+',1.5],['−',1/1.5]].forEach(([t,f])=>{const x=document.createElement('button');x.textContent=t;x.style.cssText='width:24px;height:24px;border-radius:6px;border:1px solid #c8a45a;background:rgba(20,16,10,.85);color:#f4ead6;font:700 15px system-ui;cursor:pointer;padding:0';x.onclick=e=>{e.stopPropagation();I.zoom342=Math.max(1,Math.min(8,(I.zoom342||1)*f))};b.appendChild(x)});el.appendChild(b)}
+ // le changement de personnage, écrit en clair
+ const deux=I.cps&&I.cps.length;let t=$('chg342');if(deux&&!t){t=document.createElement('button');t.id='chg342';t.textContent='⇄ Changer de personnage (Tab)';t.style.cssText='position:absolute;right:12px;top:192px;z-index:3;font:600 12.5px Montserrat,system-ui;color:#efe9da;background:rgba(24,34,30,.92);border:1px solid rgba(232,190,90,.35);border-left:3px solid #e2bd74;border-radius:7px;padding:6px 11px;cursor:pointer';t.onclick=e=>{e.stopPropagation();try{change302()}catch(_){}};el.appendChild(t)}
+ // couronnes en cône restées sans tronc
+ if(!I.cone342){I.cone342=1;I.S3.children.forEach(o=>{if(o.isInstancedMesh&&o.count>10&&o.geometry&&o.geometry.type==='ConeGeometry'&&!(o.geometry.parameters&&o.geometry.parameters.radius<=.13))o.visible=false})}}catch(e){}},400);

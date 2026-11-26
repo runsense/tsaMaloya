@@ -14,8 +14,8 @@
   {t:'Dupleix, la Bastille',an:'1746 – 1753',b:'Il a promis Madras contre rançon ; Dupleix, gouverneur de Pondichéry, refuse et garde la ville. Rentré en France, La Bourdonnais est accusé et enfermé à la Bastille.',v:'Réel : emprisonné de 1748 à 1751, acquitté, il meurt à Paris en 1753.'}];}}
 // les marches : la plage de Saint-Denis, la place de Saint-Paul, le barachois, la nouvelle capitale
 if(typeof PAS327!=='undefined'){const D=PAS327.bourdonnais;D.c={
- 0:{h:{n:'un habitant de Saint-Denis',m:'homme_chemise'},r:[[55.458,-20.884],[55.453,-20.878],[55.449,-20.874]],b:[0,0],o:'Descendre sur la plage, d’où l’on voit les navires'},
- 1:{h:{n:'une femme de Saint-Paul',m:'femme_travail'},r:[[55.290,-21.006],[55.280,-21.008],[55.272,-21.009]],b:[0,0],o:'Aller sur la place, où l’on dresse la potence'},
+ 0:{h:{n:'un habitant de Saint-Denis, quatorze ans avant La Bourdonnais',m:'p7_colon'},r:[[55.458,-20.884],[55.453,-20.878],[55.449,-20.874]],b:[0,0],o:'Descendre sur la plage, d’où l’on voit les navires'},
+ 1:{h:{n:'une habitante de Saint-Paul, avant La Bourdonnais',m:'colone'},r:[[55.290,-21.006],[55.280,-21.008],[55.272,-21.009]],b:[0,0],o:'Aller sur la place, où l’on dresse la potence'},
  2:{r:[[55.449,-20.874],[55.452,-20.881],[55.455,-20.888]],b:[0,0],o:'Descendre du barachois jusqu’à la maison du gouvernement'},
  3:{r:[[55.455,-20.888],[55.450,-20.884],[55.446,-20.880]],b:[0,0],o:'Parcourir les chantiers de la nouvelle capitale'}};}
 // ----- trois utopies autour de lui (fiction) -----

@@ -107,9 +107,9 @@ function incOuvrir287(k,ci){const E=INC287[k];if(!E)return;ci=ci||0;const C=E.ch
  // le plus proche point du vrai chemin : indice et distance
  const proche=(x,z)=>{let bi=0,bd=1e9;for(let i=0;i<N;i++){const d=(P[i][0]-x)**2+(P[i][1]-z)**2;if(d<bd){bd=d;bi=i}}return [bi,Math.sqrt(bd)]};
  // le relief : la vraie altitude le long du chemin, une vallée qui se creuse autour de la rivière
- let X0=1e9,X1=-1e9,Z0=1e9,Z1=-1e9;P.forEach(p=>{X0=Math.min(X0,p[0]);X1=Math.max(X1,p[0]);Z0=Math.min(Z0,p[1]);Z1=Math.max(Z1,p[1])});X0-=70;X1+=70;Z0-=70;Z1+=70;
+ let X0=1e9,X1=-1e9,Z0=1e9,Z1=-1e9;P.forEach(p=>{X0=Math.min(X0,p[0]);X1=Math.max(X1,p[0]);Z0=Math.min(Z0,p[1]);Z1=Math.max(Z1,p[1])});X0-=110;X1+=110;Z0-=110;Z1+=110;
  const nGX=Math.min(220,Math.ceil((X1-X0)/2.6)),nGZ=Math.min(220,Math.ceil((Z1-Z0)/2.6));const HG=new Float32Array((nGX+1)*(nGZ+1)),IG=new Uint16Array((nGX+1)*(nGZ+1));
- for(let j=0;j<=nGZ;j++)for(let i=0;i<=nGX;i++){const x=X0+(X1-X0)*i/nGX,z=Z0+(Z1-Z0)*j/nGZ,[bi,d]=proche(x,z);IG[j*(nGX+1)+i]=bi;HG[j*(nGX+1)+i]=(altU(bi)-alt0)*.045+Math.max(0,d-14)*.42+Math.min(1,d/14)*1.2+.9*Math.sin(x*.09)*Math.cos(z*.07)+.4*Math.sin(x*.23+z*.17)}
+ for(let j=0;j<=nGZ;j++)for(let i=0;i<=nGX;i++){const x=X0+(X1-X0)*i/nGX,z=Z0+(Z1-Z0)*j/nGZ,[bi,d]=proche(x,z);IG[j*(nGX+1)+i]=bi;{const base=(altU(bi)-alt0)*.045+Math.min(1,d/14)*1.2,mur=base+Math.max(0,d-14)*.42,vrai=(()=>{const aa=alt(x/sc+o0[0],z/sc+o0[1]);return aa<=0?(0-alt0)*.045-3:(aa-alt0)*.045+.6})(),kk=Math.min(1,Math.max(0,(d-18)/28));HG[j*(nGX+1)+i]=mur*(1-kk)+vrai*kk+.9*Math.sin(x*.09)*Math.cos(z*.07)+.4*Math.sin(x*.23+z*.17)}}
  const hAt=(x,z)=>{const fi=(x-X0)/(X1-X0)*nGX,fj=(z-Z0)/(Z1-Z0)*nGZ,i=Math.max(0,Math.min(nGX-1,Math.floor(fi))),j=Math.max(0,Math.min(nGZ-1,Math.floor(fj))),u=Math.max(0,Math.min(1,fi-i)),v=Math.max(0,Math.min(1,fj-j)),w=nGX+1;return (HG[j*w+i]*(1-u)+HG[j*w+i+1]*u)*(1-v)+(HG[(j+1)*w+i]*(1-u)+HG[(j+1)*w+i+1]*u)*v};
  const bAt=bi=>C.b0+(C.b1-C.b0)*(bi/(N-1));
  const S3=new THREE.Scene(),sky=new THREE.Color(C.b1>=3?0xb8c6cc:0x9fbfc8);R.setClearColor(sky);S3.fog=new THREE.Fog(sky,18,C.b1>=2?70:110);
