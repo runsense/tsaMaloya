@@ -24,7 +24,8 @@ function vpArbres153(V,vivant){vivant=vivant||(()=>VP===V);try{const I=V.sc.chil
    L.forEach(o=>{const mat=Array.isArray(o.mat)?o.mat.map(m=>m.clone()):o.mat.clone();(Array.isArray(mat)?mat:[mat]).forEach(m=>{if(teinte&&m.color)m.color.multiply(new THREE.Color(teinte))});
     const im=new THREE.InstancedMesh(o.ge,mat,ids.length);ids.forEach((i,k)=>{const [x,y,z,s,hh]=pos[i],H=hh+1.6*s;M.compose(P.set(x,y-.05,z),Q.setFromAxisAngle(new THREE.Vector3(0,1,0),(i*2.39)%6.28),Sc.set(H*(.85+(i%5)*.06),H,H*(.85+(i%3)*.08)));im.setMatrixAt(k,M)});
     im.instanceMatrix.needsUpdate=true;V.sc.add(im)});ids.forEach(i=>{M.makeScale(0,0,0);tr.setMatrixAt(i,M);fe.setMatrixAt(i,M)});tr.instanceMatrix.needsUpdate=true;fe.instanceMatrix.needsUpdate=true}).catch(()=>{});
- if(haut){poser('plante_tamarin',i=>i%2===0,null);poser('sk_arbrelp',i=>i%2===1,0xb8c8a8)}else poser('sk_arbrelp',()=>true,null)}catch(e){}}
+ // plus d'arbre en cubes : des essences de l'île, mêlées selon l'altitude
+ if(haut){poser('plante_tamarin',i=>i%3!==2,null);poser('plante_fanjan',i=>i%3===2,null)}else{poser('plante_arbre',i=>i%4<2,null);poser('plante_palmiste',i=>i%4===2,null);poser('plante_fanjan',i=>i%4===3,null)}}catch(e){}}
 function vpCerfs153(V){try{if(!S||S.year<1755||!V.t)return;const t=V.t;if(!(t.forest||t.alt>700))return;let k=0;for(const a of V.an){if(k>=Math.min(3,Math.ceil(V.an.length/3)))break;a.cerf=1;k++}}catch(e){}}
 (function boucle153(){requestAnimationFrame(boucle153);try{if(typeof VP==='undefined'||!VP){ET153.vp=null;return}const V=VP;if(ET153.vp!==V){ET153.vp=V;vpCerfs153(V);setTimeout(()=>{if(VP===V)vpArbres153(V)},300)}
  for(const a of V.an){if(!a.cerf||!a.m||a.m.userData.c153)continue;a.m.userData.c153=1;a.m.scale.multiplyScalar(1.45);const f=new THREE.Color(.82,.56,.34);a.m.traverse(m=>{if(m.isMesh&&m.material){m.material=m.material.clone();if(m.material.color)m.material.color.multiply(f)}})}}catch(e){}})();
