@@ -2,7 +2,7 @@
 // suivent ce que l'histoire a déjà fait (attribués sans fenêtre), puis on choisit DANS LA PEAU DE QUI on se mêle au camp :
 // c'est cette personne qu'on incarne, et c'est elle qui chasse, cueille, puise. Sur la case du camp, le menu n'offre plus
 // que « Entrer dans le camp » ; ailleurs, la chasse en personne dit qui part chasser. =====
-function prep320(ci){if(!S)return;S.cons87=1;if(!S.exp1)S.exp1='fait';const A=(S.pp||[]).filter(p=>campDe(p)===ci&&adulte(p)&&!enGrp(p)&&!(S.voieC&&estColon(p)));
+function prep320(ci){if(!S)return;S.cons87=1;S.guideOff=1;try{const g=document.getElementById('guideJ');if(g)g.remove()}catch(e){}if(!S.exp1)S.exp1='fait';const A=(S.pp||[]).filter(p=>campDe(p)===ci&&adulte(p)&&!enGrp(p)&&!(S.voieC&&estColon(p)));
  if(A.length&&!A.some(p=>p.role)){const sk=(p,k)=>(p.sk||{})[k]||0,pr=(k,n)=>A.filter(p=>!p.role).sort((a,b)=>sk(b,k)-sk(a,k)).slice(0,n).forEach(p=>p.role=k);pr('cha',Math.max(1,Math.round(A.length*.3)));pr('cue',Math.max(1,Math.round(A.length*.3)));pr('mys',1)}
  if(!S.voieC&&!chefDe(ci)&&typeof conseilCandidats==='function'){const C=conseilCandidats(ci);if(C.length){const v=conseilVoix(ci,C);let k=0;v.forEach((x,i)=>{if(x>v[k])k=i});const w=C[k].p,tt=v.reduce((a,b)=>a+b,0)||1;
   (S.chefs=S.chefs||{})[ci]={id:w.id,an:S.year};S.dirCamp=dirDe(w);S.adh=Math.max(40,Math.round(v[k]/tt*100));S.chefSexe=w.g;S.chefVieux=ageP(w)>=50;try{log('🔥 Autour du feu, le camp a choisi de suivre '+w.n.split(' ')[0]+'.')}catch(e){}}}}
