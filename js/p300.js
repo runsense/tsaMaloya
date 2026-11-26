@@ -3,7 +3,7 @@
 // 1 boire · 2 manger · 3 se reposer / s'abriter · 4 puiser et garder l'eau · 5 faire du feu, cuire · 6 ramasser du bois · 0 jeter un bois.
 // Une barre de boutons en bas (cliquables, pour le doigt) rappelle tout. =====
 const TAL300={
- anchaing:[['peche','Pêcher les camarons'],['tangue','Attraper un tangue'],['grimpe','Grimper sans peine (10 s)']],
+ anchaing:[['peche','Pêcher les camarons'],['tangue','Prendre un marcassin'],['grimpe','Grimper sans peine (10 s)']],
  simang:[['sagaie','Lancer la sagaie'],['peche','Pêcher les camarons'],['guet','Guetter les chasseurs']],
  laverdure:[['sagaie','Lancer la sagaie'],['peche','Pêcher les camarons'],['ralli','Rallier les siens']],
  dimitile:[['guet','Guetter les chasseurs'],['peche','Pêcher les camarons'],['piege','Poser un piège']],
@@ -25,7 +25,7 @@ function talent300(i){const I=INC;if(!I||!I.st||I.pause||I.duel)return;const L=T
  const T=k=>inc290Touche(k,{});
  switch(t[0]){
   case 'peche':if(eau290(I,h.x,h.z)<1.6){if(st.soif<90)st.soif=89;T('e')}else incMsg287('Les camarons sont sous les galets de la rivière.');break;
-  case 'tangue':{const g=I.gib.find(g=>!g.mort&&g.k==='tangue'&&Math.hypot(g.x-h.x,g.z-h.z)<1.6);if(g)T('e');else incMsg287('Aucun tangue à portée de main. Ils fouillent la terre en forêt.');break}
+  case 'tangue':{const g=I.gib.find(g=>!g.mort&&g.k==='cochon'&&Math.hypot(g.x-h.x,g.z-h.z)<1.6);if(g)T('e');else incMsg287('Aucun marcassin à portée. Les cochons marrons fouillent la terre en forêt.');break}
   case 'sagaie':T('r');break;
   case 'grimpe':I.grimpeFacile=now+10000;incMsg287('Les mains connaissent la roche : vous grimpez sans peine.');break;
   case 'course':I.courseCretes=now+12000;incMsg287('La course des crêtes : vos jambes ne se fatiguent plus.');break;

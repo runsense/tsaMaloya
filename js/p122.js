@@ -84,7 +84,7 @@ if(typeof BETES!=='undefined'){BETES.cabri={f:'ani_cabri',h:.07,max:12};BETES.ta
   T.forEach(t=>{const dx=t.x-camT.x,dz=t.z-camT.z;if(dx*dx+dz*dz>R2*R2)return;const o=S.t[t.i];if(!o||!o.s||t.bare||t.alt<15)return;const h=q=>rndH(t.i*5.1+q);
    const tour=(r1,r2,sp,o0)=>{const u=now*sp+o0+.5*Math.sin(now*sp*2.3+o0);return [t.x+Math.cos(u)*r1,t.z+Math.sin(u)*r2]};const pr=((S.gibP||{})[t.i]||0);
    if(k==='cabri'&&!t.forest&&t.alt<1500&&!o.c&&h(1)<.22-pr*.15){const n=1+Math.floor(h(2)*3);for(let j=0;j<n;j++){const [x,z]=tour(.38+h(3)*.2,.3,.05+h(4)*.03,h(5)*6-j*.25);L.push({x,z,sc:j?.8:1})}}
-   if(k==='tangue'&&t.forest&&t.alt<1200&&!o.c&&h(6)<.12-pr*.1){const [x,z]=tour(.3+h(7)*.2,.25,.04+h(8)*.03,h(9)*6);L.push({x,z,sc:1})}
+   if(k==='tangue'&&S.year>=1801&&t.forest&&t.alt<1200&&!o.c&&h(6)<.12-pr*.1){const [x,z]=tour(.3+h(7)*.2,.25,.04+h(8)*.03,h(9)*6);L.push({x,z,sc:1})}
    if(k==='mouton'&&hauts122()&&t.alt>480&&!t.forest&&h(10)<.35){const n=2+Math.floor(h(11)*4);for(let j=0;j<n;j++){const [x,z]=tour(.4+(j%3)*.07,.3+(j%2)*.06,.025+h(12)*.015,h(13)*6-j*.18);L.push({x,z,sc:j>2?.75:1})}}});
  }catch(e){}return L}}
 

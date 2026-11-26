@@ -48,10 +48,10 @@ function init290(I){const C=I.C,S0=SAC290[C.t]||{};I.st={soif:100,faim:90,sac:Ob
  const pierres=[];if(C.b0<1)for(let k=0;k<2;k++)pierres.push(Math.floor(N*(.02+.04*k)));I.CH.forEach(o=>pierres.push(Math.max(0,Math.floor(o.i0)-8)));
  pierres.forEach(i=>{const p=I.P[i],x=p[0]+(r()-.5)*4,z=p[1]+(r()-.5)*4;const m=new THREE.Mesh(new THREE.OctahedronGeometry(.13,0),pm);m.position.set(x,hAt(x,z)+.12,z);S3.add(m);I.obj.push({k:'pierre',x,z,m})});
  // le gibier : tangues dans la forêt, cabris dans les espaces ouverts
- I.gib=[];const tm=new THREE.MeshLambertMaterial({color:0x6b5038}),cm=new THREE.MeshLambertMaterial({vertexColors:true});
+ I.gib=[];const tm=new THREE.MeshLambertMaterial({color:0x2e2620}),cm=new THREE.MeshLambertMaterial({vertexColors:true});
  for(let k=0;k<14;k++){const i=Math.floor((.06+.9*r())*(N-1)),p=P[i],b=bAt(i),a=r()*6.28,d=5+r()*12,x=p[0]+Math.cos(a)*d,z=p[1]+Math.sin(a)*d;const cab=b<1||b>=3.2;let m;
   if(cab){try{m=new THREE.Mesh(fpsGeo('cabri'),cm);m.scale.setScalar(.8)}catch(e){m=new THREE.Mesh(new THREE.BoxGeometry(.8,.5,.3),tm)}}else{m=new THREE.Mesh(new THREE.SphereGeometry(.18,7,5),tm);m.scale.set(1.3,.8,1)}
-  m.position.set(x,hAt(x,z),z);S3.add(m);I.gib.push({k:cab?'cabri':'tangue',x,z,m,dir:r()*6.28,fuit:0,mort:0})}
+  m.position.set(x,hAt(x,z),z);S3.add(m);I.gib.push({k:cab?'cabri':'cochon',x,z,m,dir:r()*6.28,fuit:0,mort:0})}
  incMsg287((SAC290[C.t]||{})._t||'');hud290()}
 function pres290(I,x,z){let best=null,bd=1.6;I.obj.forEach(o=>{if(o.pris)return;const d=Math.hypot(o.x-x,o.z-z);if(d<bd){bd=d;best=o}});return best}
 function eau290(I,x,z){let bd=99;I.riv.forEach(([rx,rz,w])=>{const d=Math.hypot(rx-x,rz-z)-w;if(d<bd)bd=d});return bd}
@@ -62,7 +62,7 @@ function hud290(){const I=INC;if(!I||!I.st)return;let d=$('incS');if(!d){d=docum
 function occ290(I,t,dur,fin){I.st.occ={t,fin:performance.now()+dur*1000,f:fin};hud290()}
 function inc290Touche(k,e){const I=INC;if(!I||!I.st||I.pause)return;const st=I.st,sac=st.sac,h=I.h,cap=sac.bertel?8:3,nb=()=>sac.bois+sac.viande+sac.camaron+sac.cuit;if(st.occ)return;
  if(k==='e'){const o=pres290(I,h.x,h.z);if(o){if(nb()>=cap&&o.k==='bois'){incMsg287(sac.bertel?'Le bertel est plein.':'Vos bras sont pleins — sans bertel, on porte peu.');return}o.pris=1;o.m.visible=false;if(o.k==='bois'){sac.bois++;incMsg287('Bois sec ramassé.')}else{sac.pierre=1;incMsg287('Une pierre à fusil : un silex venu d’Europe, perdu là. Avec le dos du couteau ou une pierre dure, elle donne l’étincelle.')}hud290();return}
-  const g=I.gib.find(g=>!g.mort&&g.k==='tangue'&&Math.hypot(g.x-h.x,g.z-h.z)<1.6);if(g){if(I.baisse||g.fuit<=0){g.mort=1;g.m.visible=false;sac.viande++;incMsg287('Un tangue attrapé à la main.');hud290()}else incMsg287('Il vous a entendu. Approchez baissé (C).');return}
+  const g=I.gib.find(g=>!g.mort&&g.k==='cochon'&&Math.hypot(g.x-h.x,g.z-h.z)<1.6);if(g){if(I.baisse||g.fuit<=0){g.mort=1;g.m.visible=false;sac.viande++;incMsg287('Un marcassin pris à la main.');hud290()}else incMsg287('Il vous a entendu. Approchez baissé (C).');return}
   const de=eau290(I,h.x,h.z);if(de<1.6){if(st.soif<90){st.soif=100;if(sac.calebasse)sac.eau=2;incMsg287(sac.calebasse?'Vous buvez à la rivière et remplissez la calebasse.':'Vous buvez à la rivière.')}else{occ290(I,'Vous cherchez des camarons sous les galets',4,()=>{if(Math.random()<Math.min(.95,(I.baisse?.75:.5)*(/Anchaing/.test(I.h.d&&I.h.d.n||'')?1.35:1))){sac.camaron++;incMsg287('Des camarons, pris à la main sous les galets.')}else incMsg287('Rien sous ces galets.')})}hud290();return}
   if(sac.calebasse&&sac.eau>0&&st.soif<80){sac.eau--;st.soif=Math.min(100,st.soif+45);incMsg287('Une gorgée à la calebasse.');hud290();return}
   if(sac.plantes&&I.souffle<3){sac.plantes--;I.souffle++;incMsg287('Une plante pilée sur la blessure : le souffle revient.');incHud287();hud290();return}
