@@ -21,7 +21,7 @@ function decor336(I,k,ci){const S3=I.S3,P=I.P,N=I.N,h=I.hAt,D=(DEC336[k]||{})[ci
   if(typeof mod104==='function')mod104('bat_port').then(T=>{if(INC!==I)return;const o=clone104(T,5);const x=x0+dz*9,z=z0-dx*9;o.position.set(x,h(x,z),z);o.rotation.y=Math.atan2(-dz,dx);S3.add(o)}).catch(()=>{})}
  // les caféiers en rangs, cerises rouges
  if(D.includes('cafe')){const n=Math.floor(N*.7),cnt=Math.min(900,n*6),fe=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.6,1),new THREE.MeshLambertMaterial({color:0x2c5a2a}),cnt),ce=new THREE.InstancedMesh(new THREE.SphereGeometry(.06,5,4),new THREE.MeshLambertMaterial({color:0xb02020}),cnt*6),M=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),Sc=new THREE.Vector3();let c=0,r=0;
-  for(let i=Math.floor(N*.25);i<N&&c<cnt;i+=2){const [dx,dz]=dir(i),nx=-dz,nz=dx;for(const s of [-1,1])for(let row=0;row<3&&c<cnt;row++){const d=3.2+row*2.4,x=P[i][0]+nx*d*s,z=P[i][1]+nz*d*s,y=h(x,z),hh=1.2+((i+row)%3)*.2;
+  const rg=I.C.cafe336||[.25,1];for(let i=Math.floor(N*rg[0]);i<Math.min(N,Math.floor(N*rg[1]))&&c<cnt;i+=2){const [dx,dz]=dir(i),nx=-dz,nz=dx;for(const s of [-1,1])for(let row=0;row<3&&c<cnt;row++){const d=3.2+row*2.4,x=P[i][0]+nx*d*s,z=P[i][1]+nz*d*s,y=h(x,z),hh=1.2+((i+row)%3)*.2;
     M.compose(V.set(x,y+hh*.55,z),Q,Sc.set(.9,hh,.9));fe.setMatrixAt(c++,M);for(let q=0;q<6;q++){const a=q*1.05+i,rr=.45;M.compose(V.set(x+Math.cos(a)*rr,y+hh*(.35+(q%3)*.2),z+Math.sin(a)*rr),Q,Sc.set(1,1,1));ce.setMatrixAt(r++,M)}}}
   fe.count=c;ce.count=r;fe.instanceMatrix.needsUpdate=true;ce.instanceMatrix.needsUpdate=true;S3.add(fe,ce)}
  // la nuit
