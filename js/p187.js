@@ -471,9 +471,11 @@ let rouge187=()=>0;function rallye187(fin){window.BTUON=1;window.FILM=1;
    let acc=0;if(peut){if(st.v>-.3)acc=st.gaz*(st.v<15?9*PV.d:st.v<35?6.5*PV.r:4.5)*PV.a*(P.pente>.02?PV.c:1);else if(K2.a)acc=12;if(K2.f){if(st.v>.3)acc-=14;else acc-=4.5}}
    const g=9.8*Math.sin(Math.atan(P.pente));st.v+=(acc-g-sgn*(st.v*st.v*(4.5*PV.a/(vmax*vmax))+(av>.1?.6:0)))*dt;if(!K2.a&&!K2.f&&av>.05)st.v-=sgn*1.2*dt;if(!K2.a&&!K2.f&&Math.abs(st.v)<1.5){st.v*=Math.pow(.02,dt);if(Math.abs(st.v)<.15)st.v=0}/* à l'arrêt sans toucher : le frein de parking, on ne recule pas tout seul */
    const w=larg()/2,braq=(K2.g?1:0)-(K2.d?1:0);st.dir+=(braq-st.dir)*Math.min(1,dt*6);
+   // le coup de balancier : braquer d'un côté puis aussitôt de l'autre (moins d'une demi-seconde) fait basculer le poids, l'arrière décroche — la dérive sans frein à main
+   {const nw=performance.now();if(braq!==0&&braq!==st.bq0){if(st.bq0&&nw-(st.bqT||0)<450&&Math.abs(st.v)>8){st.flick=.75;if(!st.flM||nw-st.flM>4000){st.flM=nw;dire('Coup de balancier !',900)}}st.bq0=braq}if(braq!==0)st.bqT=nw;if(st.flick>0)st.flick-=dt}
    // l'adhérence : asphalte sec 1 ; humide (forêt des Plaines, brume du volcan, aube sur les laves) ; gravier et pouzzolane en haut du volcan ; terre hors de la route ; frein à main = l'arrière décroche
-   const u=st.s/NP,mouil=(E.osm==='plaines'||E.osm==='laves'||(E.volcan&&u>.25&&u<.55)),grav=E.volcan&&u>.5;let mu=grav?.5:mouil?.72:1;if(st.air)mu=.05;if(st.hors)mu=Math.min(mu,.45);if(K2.m)mu*=.35;st.mu=mu;
-   const lacet=st.dir*Math.min(1.6,1.6*Math.max(-1,Math.min(1,st.v/6)))/(1+st.v*.035)*(K2.m?1.9:1)*(1+(1-mu)*.6);st.h+=lacet*dt;if(st.vh==null)st.vh=st.h;
+   const u=st.s/NP,mouil=(E.osm==='plaines'||E.osm==='laves'||(E.volcan&&u>.25&&u<.55)),grav=E.volcan&&u>.5;let mu=grav?.5:mouil?.72:1;if(st.air)mu=.05;if(st.hors)mu=Math.min(mu,.45);if(K2.m)mu*=.35;if(st.flick>0)mu*=.5;st.mu=mu;
+   const lacet=st.dir*Math.min(1.6,1.6*Math.max(-1,Math.min(1,st.v/6)))/(1+st.v*.035)*(K2.m?1.9:1)*(st.flick>0?1.45:1)*(1+(1-mu)*.6);st.h+=lacet*dt;if(st.vh==null)st.vh=st.h;
    // la trajectoire rattrape le nez de la voiture, mais pas plus vite que l'adhérence ne le permet : au-delà, ça glisse
    let gl=st.h-st.vh;while(gl>Math.PI)gl-=2*Math.PI;while(gl<-Math.PI)gl+=2*Math.PI;const lim=mu*9.5/Math.max(Math.abs(st.v),2),pas=Math.sign(gl)*Math.min(Math.abs(gl)*8,lim)*dt;st.vh+=Math.abs(pas)>Math.abs(gl)?gl:pas;
    gl=st.h-st.vh;while(gl>Math.PI)gl-=2*Math.PI;while(gl<-Math.PI)gl+=2*Math.PI;st.glisse=gl;st.v-=Math.abs(Math.sin(gl))*st.v*.55*dt+(K2.m?2.5*dt:0);
