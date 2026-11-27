@@ -41,3 +41,14 @@
  // 2) le comptoir du Mozambique s'ouvre sur la timbila
  try{const co=cpOuvrir;cpOuvrir=function(k){const r=co.apply(this,arguments);try{if(k==='mozamb'&&PRE72.timbila&&C())setTimeout(()=>PRE72.timbila.f(),400)}catch(e){}return r}}catch(e){}
 }
+// 3) la musique des combats : l'air électronique « Bossfight » ne colle pas au jeu. Les combats prennent le maloya enregistré :
+// moringue pour les duels, « roule » (la fuite) pour les batailles, maligasse pour les échecs ; le commando reste dans le silence de la nuit.
+{let J378='';[['ouvrirDuel','moring'],['ouvrirBataille','roule'],['ouvrirEchecs','maligasse'],['ouvrirCommando','']].forEach(([f,n])=>{try{const o=window[f];if(typeof o!=='function')return;window[f]=function(){J378=n;return o.apply(this,arguments)};try{eval(f+'=window[f]')}catch(e){}}catch(e){}});
+ try{const m0=mus237;mus237=function(k,boucle,vol){if(k!=='combat')return m0.apply(this,arguments);const nom=J378;J378='';try{musStop237(.6)}catch(e){}const c=typeof sndPret==='function'&&sndPret();
+   if(!nom||!c||typeof boucle194!=='function')return {stop(){}};const G=c.createGain();G.gain.value=1;G.connect(SND.out);const b=boucle194(c,G,nom,.75);if(!b){G.disconnect();return {stop(){}}}
+   MUS237.src={stop(){try{b.stop()}catch(e){}}};MUS237.g=G;MUS237.bcl=true;return {stop(){musStop237(.6)}}};try{window.mus237=mus237}catch(e){}}catch(e){}}
+// 4) deux clips de modèles abîmés, relevés dans la Forge :
+//  - la transe maloya de Raharianne fait monter ses hanches à 4-6 m (elle s'envole hors de l'écran) : on garde la danse, à hauteur d'homme ;
+//  - la mort de Ti Jean descend les hanches jusqu'au sol, ses pieds passent sous le terrain : on la pose sur le sol.
+{const FIX={raharianne:{transe_maloya:{max:1.15}},conte_tijean:{mort:{min:.07}}};
+ try{const pi=p3Instance;p3Instance=function(n){const r=pi.apply(this,arguments);if(!FIX[n]||!r||!r.then)return r;return r.then(R=>{try{(R.g.animations||[]).forEach(a=>{const f=FIX[n][a.name];if(!f||a.__fix378)return;a.__fix378=1;a.tracks.forEach(t=>{if(!/Hips\.position$/.test(t.name))return;const v=t.values;for(let i=1;i<v.length;i+=3){if(f.max!=null&&v[i]>f.max)v[i]=f.max-(v[i]-f.max)*.02;if(f.min!=null&&v[i]<f.min)v[i]=f.min}})})}catch(e){}return R})}}catch(e){}}

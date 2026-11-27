@@ -2,9 +2,10 @@
 // (et sa forme d'oiseau, Timize), Sitarane, Madame Desbassyns. Une nouvelle épopée de la voie mystique : « Contes et légendes
 // des Hauts ». On distingue toujours ce que disent les archives et ce que dit la tradition orale. =====
 const CONTE365={conte_tijean:1.55,conte_kal:1.55,conte_sitarane:1.72,conte_desbassayns:1.62};
-// leurs os « smartrig:Spine1 » prennent les noms Meshy (Spine01, neck, head_end…) : les vrais coups Mixamo du duel (p188)
+// leurs os « smartrig:Spine1 » prennent les noms Meshy (Spine01, neck, head_end…). Attention à l'ordre : chez Meshy Spine02 est la vertèbre du bas et Spine celle du haut,
+// à l'inverse du smartrig (v379 : la colonne était retournée, d'où les personnages des contes « accroupis » en combat) : les vrais coups Mixamo du duel (p188)
 // se recalent alors sur eux comme sur les combattants Meshy ; on donne aussi aux clips les noms du jeu
-function os365(g){const M={Spine1:'Spine01',Spine2:'Spine02',Neck:'neck',HeadTop_End:'head_end',LeftToe_End:'LeftToe_end',RightToe_End:'RightToe_end'};const nn=x=>{const b=x.replace(/^smartrig:?/,'');return M[b]||b};
+function os365(g){const M={Spine:'Spine02',Spine1:'Spine01',Spine2:'Spine',Neck:'neck',HeadTop_End:'head_end',LeftToe_End:'LeftToe_end',RightToe_End:'RightToe_end'};const nn=x=>{const b=x.replace(/^smartrig:?/,'');return M[b]||b};
  g.scene.traverse(o=>{if(/^smartrig/.test(o.name))o.name=nn(o.name)});
  (g.animations||[]).forEach(a=>a.tracks.forEach(t=>{const i=t.name.lastIndexOf('.');if(i>0)t.name=nn(t.name.slice(0,i))+t.name.slice(i)}));
  const A={repos_debout:'attente',garde:'attente',cacher:'poser',chute_mort:'mort',marche_blesse:'marche',cueillir_sol:'poser',assis:'poser'};const L=g.animations||[];

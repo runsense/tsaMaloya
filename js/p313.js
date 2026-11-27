@@ -14,7 +14,7 @@ function sol313(x,W,H,k,cs){const L=SOLK313[k]||SOLK313.morne,p=motif313(x,L[0],
  // la lumière de la carte : un peu plus chaude au centre, plus sombre vers la forêt
  const g=x.createRadialGradient(W/2,H/2,Math.min(W,H)*.2,W/2,H/2,Math.max(W,H)*.7);g.addColorStop(0,'rgba(255,230,180,.06)');g.addColorStop(1,'rgba(0,0,0,.28)');x.fillStyle=g;x.fillRect(0,0,W,H);return true}
 function peint313(c,MP,RW,RH,cs,k){const x=c.getContext('2d'),T=(i,j)=>(MP[j]&&MP[j][i])||'#';let s=91+k.length*13;const r=()=>{s=(s*16807)%2147483647;return s/2147483647};
- const pont=k==='negrier';const W=RW*cs,H=RH*cs;
+ const pont=k==='negrier';const mer=pont||k==='chantier'||k==='moka';// v379 : le port de Port-Louis et la rade de Moka sont la mer, pas une mare à nénupharsconst W=RW*cs,H=RH*cs;
  // feuilles mortes, cailloux, brindilles sur le sol
  if(!pont){for(let i=0;i<RW*RH*1.2;i++){const X=r()*W,Y=r()*H,ti=T(Math.floor(X/cs),Math.floor(Y/cs));if(ti!=='.'&&ti!==' '&&ti!=='X')continue;const q=r();
   if(q<.45){x.fillStyle=['#8a6a3a','#a07a40','#6a5a30','#7a8a40'][Math.floor(r()*4)];x.globalAlpha=.55;x.save();x.translate(X,Y);x.rotate(r()*6.28);x.beginPath();x.ellipse(0,0,cs*.07,cs*.035,0,0,7);x.fill();x.restore()}
@@ -41,11 +41,11 @@ function peint313(c,MP,RW,RH,cs,k){const x=c.getContext('2d'),T=(i,j)=>(MP[j]&&M
  for(let j=0;j<RH;j++)for(let i=0;i<RW;i++){if(T(i,j)!=='~')continue;const X=i*cs,Y=j*cs;
   [[0,-1],[0,1],[-1,0],[1,0]].forEach(([a,b])=>{if(T(i+a,j+b)==='~')return;for(let n=0;n<4;n++){const u=(n+r())/4,ex=b?X+u*cs:X+(a>0?cs:0),ey=a?Y+u*cs:Y+(b>0?cs:0);
     x.fillStyle='rgba(74,62,40,.85)';x.beginPath();x.ellipse(ex,ey,cs*(.1+r()*.12),cs*(.07+r()*.08),r()*3,0,7);x.fill();
-    if(r()<.6&&!pont){x.strokeStyle='rgba(110,140,60,.85)';x.lineWidth=1.2;for(let q=0;q<4;q++){x.beginPath();x.moveTo(ex+(r()-.5)*6,ey);x.lineTo(ex+(r()-.5)*10,ey-cs*(.12+r()*.15));x.stroke()}}}});
-  if(!pont&&r()<.35){const px=X+cs*(.25+r()*.5),py=Y+cs*(.25+r()*.5),R=cs*.12;x.fillStyle='#3f7a3a';x.beginPath();x.arc(px,py,R,.4,6.0);x.lineTo(px,py);x.fill();if(r()<.5){x.fillStyle='#e8d8e8';x.beginPath();x.arc(px+R*.2,py-R*.1,2.2,0,7);x.fill()}}}
+    if(r()<.6&&!mer){x.strokeStyle='rgba(110,140,60,.85)';x.lineWidth=1.2;for(let q=0;q<4;q++){x.beginPath();x.moveTo(ex+(r()-.5)*6,ey);x.lineTo(ex+(r()-.5)*10,ey-cs*(.12+r()*.15));x.stroke()}}}});
+  if(!mer&&r()<.35){const px=X+cs*(.25+r()*.5),py=Y+cs*(.25+r()*.5),R=cs*.12;x.fillStyle='#3f7a3a';x.beginPath();x.arc(px,py,R,.4,6.0);x.lineTo(px,py);x.fill();if(r()<.5){x.fillStyle='#e8d8e8';x.beginPath();x.arc(px+R*.2,py-R*.1,2.2,0,7);x.fill()}}}
  // les mares : un seul plan d'eau aux coins arrondis par bassin, avec la vraie terre autour, des reflets et une eau qui s'assombrit au centre
  const vu={};for(let j=0;j<RH;j++)for(let i=0;i<RW;i++){if(T(i,j)!=='~'||vu[i+','+j])continue;let a0=i,a1=i,b0=j,b1=j;const pile=[[i,j]];vu[i+','+j]=1;while(pile.length){const [p,q]=pile.pop();a0=Math.min(a0,p);a1=Math.max(a1,p);b0=Math.min(b0,q);b1=Math.max(b1,q);[[1,0],[-1,0],[0,1],[0,-1]].forEach(([u,v])=>{const K=(p+u)+','+(q+v);if(!vu[K]&&T(p+u,q+v)==='~'){vu[K]=1;pile.push([p+u,q+v])}})}
-  const X=a0*cs,Y=b0*cs,w=(a1-a0+1)*cs,h=(b1-b0+1)*cs,rr=Math.min(w,h)*.42,sol=motif313(x,(SOLK313[k]||SOLK313.morne)[0],cs,5.5);if(pont||!sol)continue;
+  const X=a0*cs,Y=b0*cs,w=(a1-a0+1)*cs,h=(b1-b0+1)*cs,rr=Math.min(w,h)*.42,sol=motif313(x,(SOLK313[k]||SOLK313.morne)[0],cs,5.5);if(mer||!sol)continue;
   x.save();x.beginPath();x.rect(X-2,Y-2,w+4,h+4);x.roundRect(X+2,Y+2,w-4,h-4,rr);x.clip('evenodd');x.fillStyle=sol;x.fillRect(X-2,Y-2,w+4,h+4);x.globalCompositeOperation='multiply';x.fillStyle='#7a6648';x.fillRect(X-2,Y-2,w+4,h+4);x.restore();
   x.save();x.beginPath();x.roundRect(X+2,Y+2,w-4,h-4,rr);x.clip();const g=x.createRadialGradient(X+w/2,Y+h/2,Math.min(w,h)*.1,X+w/2,Y+h/2,Math.max(w,h)*.6);g.addColorStop(0,'#173a4a');g.addColorStop(1,'#2f6272');x.fillStyle=g;x.fillRect(X,Y,w,h);
    x.strokeStyle='rgba(200,230,240,.18)';x.lineWidth=1;for(let n=0;n<Math.round(w*h/(cs*cs)*2);n++){const px=X+r()*w,py=Y+r()*h,L=cs*(.2+r()*.4);x.beginPath();x.moveTo(px,py);x.quadraticCurveTo(px+L/2,py-2,px+L,py);x.stroke()}
