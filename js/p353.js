@@ -6,8 +6,11 @@ function lisse353(g){const p=g.attributes.position;if(!p)return g;if(g.index)g=g
  for(let i=0;i<n;i+=3){a.fromBufferAttribute(P,i);b.fromBufferAttribute(P,i+1);c.fromBufferAttribute(P,i+2);f.subVectors(c,b).cross(b.clone().sub(a)).negate();// aire comprise
   for(let j=0;j<3;j++){const kk=k(i+j);let s=acc.get(kk);if(!s){s=[0,0,0];acc.set(kk,s)}s[0]+=f.x;s[1]+=f.y;s[2]+=f.z}}
  for(let i=0;i<n;i++){const s=acc.get(k(i)),l=Math.hypot(s[0],s[1],s[2])||1;N[i*3]=s[0]/l;N[i*3+1]=s[1]/l;N[i*3+2]=s[2]/l}
- g.setAttribute('normal',new THREE.BufferAttribute(N,3));return g}
-{const o=arbGeo153,W={};arbGeo153=function(n){if(W[n])return W[n];return W[n]=o(n).then(L=>{try{L.forEach(x=>{const ms=Array.isArray(x.mat)?x.mat:[x.mat];if(ms.some(m=>m.flatShading)){x.ge=lisse353(x.ge);ms.forEach(m=>{m.flatShading=false;m.needsUpdate=true})}})}catch(e){}return L})}}
+ g.setAttribute('normal',new THREE.BufferAttribute(N,3));
+ // les couleurs peintes face par face (taches polygonales) : moyennées elles aussi par sommet, le feuillage se fond
+ const C=g.attributes.color;if(C){const ca=new Map();for(let i=0;i<n;i++){const kk=k(i);let s=ca.get(kk);if(!s){s=[0,0,0,0];ca.set(kk,s)}s[0]+=C.getX(i);s[1]+=C.getY(i);s[2]+=C.getZ(i);s[3]++}for(let i=0;i<n;i++){const s=ca.get(k(i));C.setXYZ(i,s[0]/s[3],s[1]/s[3],s[2]/s[3])}C.needsUpdate=true}
+ return g}
+{const o=arbGeo153,W={};arbGeo153=function(n){if(W[n])return W[n];return W[n]=o(n).then(L=>{try{L.forEach(x=>{const ms=Array.isArray(x.mat)?x.mat:[x.mat];if(String(n).startsWith('plante_')||ms.some(m=>m.flatShading||m.vertexColors)){x.ge=lisse353(x.ge);ms.forEach(m=>{m.flatShading=false;m.needsUpdate=true})}})}catch(e){}return L})}}
 // Les arbres du kit (feuillage turquoise 2cd8b8 / 29c9ab, en cubes biseautés) : feuillage ramené aux verts de l'île,
 // normales lissées. Passé sur la scène du camp, des marches et de la chasse, plusieurs fois le temps que tout charge.
 function vert353(sc){if(!sc)return;const c=new THREE.Color(),hsl={};let n=0;sc.traverse(o=>{if(!o.isMesh||o.userData.v353||!o.material)return;const ms=Array.isArray(o.material)?o.material:[o.material];let ok=false;

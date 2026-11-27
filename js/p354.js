@@ -34,3 +34,9 @@ function formes354(sc){if(!sc)return;const hsl={};let n=0;sc.traverse(o=>{if(!o.
  if(typeof vpOuvrir==='function'){const o=vpOuvrir;vpOuvrir=function(){const r=o.apply(this,arguments);pass(()=>{if(typeof VP!=='undefined'&&VP&&VP.sc){vert353(VP.sc);formes354(VP.sc)}});return r}}
  {const o=incOuvrir287;incOuvrir287=function(){const r=o.apply(this,arguments);pass(()=>{if(INC&&INC.S3){vert353(INC.S3);formes354(INC.S3)}});return r}}
  if(typeof ouvrirFPS==='function'){const o=ouvrirFPS;ouvrirFPS=function(){const r=o.apply(this,arguments);pass(()=>{if(typeof F!=='undefined'&&F&&F.sc){vert353(F.sc);formes354(F.sc)}});return r}}}
+// Le duel : derrière les combattants, l'aquarelle du lieu au lieu du décor en aplats (montagne en triangle, arbres en piles)
+// — rempart de Mafate : le sentier du cirque ; champ de canne de Saint-Paul : la savane de l'Ouest ; Bébour : la rivière en forêt.
+{const IM={},src={mafate:AQ351.sentier,canne:AQ351.ouest,bebour:AQ351.riviere2};for(const k in src){const i=new Image();i.src=src[k];IM[k]=i}
+ const o=fondDuel184;fondDuel184=function(x,W,H,sol,lk,t){const r=o.apply(this,arguments);try{const sc=SCENE184[lk]||'mafate',im=IM[sc];if(!im||!im.complete||!im.naturalWidth)return r;
+  const hz=sol,iw=im.naturalWidth,ih=im.naturalHeight,k=Math.max(W/iw,hz/(ih*.86)),dw=iw*k,dh=ih*k,dx=(W-dw)/2,dy=hz-dh*.86;x.save();x.beginPath();x.rect(0,0,W,hz+2);x.clip();x.drawImage(im,dx,dy,dw,dh);
+  const g=x.createLinearGradient(0,hz-40,0,hz+2);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(70,52,30,.55)');x.fillStyle=g;x.fillRect(0,hz-40,W,42);const g2=x.createLinearGradient(0,0,0,130);g2.addColorStop(0,'rgba(28,20,12,.6)');g2.addColorStop(1,'rgba(28,20,12,0)');x.fillStyle=g2;x.fillRect(0,0,W,130);x.restore()}catch(e){}return r}}
