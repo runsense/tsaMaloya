@@ -17,9 +17,9 @@ const MOT357={ips:60,dt:16.7,lat:0,latN:0,echelle:1,aqua:2,vues:new Set(),voir:f
  const boucle=now=>{const d=Math.min(250,now-t0);t0=now;if(!document.hidden&&d>0){MOT357.dt=MOT357.dt*.92+d*.08;MOT357.ips=1000/MOT357.dt}
   if(evT!==null){const l=Math.max(0,now-evT)+MOT357.dt;MOT357.lat=MOT357.latN?MOT357.lat*.8+l*.2:l;MOT357.latN++;evT=null}
   // 4. l'ajustement, au plus une fois par demi-seconde
-  if(now-dern>500&&!document.hidden){dern=now;const ips=MOT357.ips;let e=MOT357.echelle;if(MOT357.force!=null)e=MOT357.force;else{if(ips<45){lent++;vite=0}else if(ips>57){vite++;lent=0}else{lent=0;vite=0}
-    if(lent>=2){e=Math.max(.6,e-.1);lent=0}if(vite>=6){e=Math.min(1,e+.05);vite=0}}
-   const aq=ips<40||e<.8?1:2;if(aq!==MOT357.aqua){MOT357.aqua=aq;try{if(window.AQMAT352)AQMAT352.uniforms.lite.value=aq<2?1:0;if(typeof AQ352!=='undefined'){if(aq===0&&AQ352.on){AQ352.coupe357=1;AQ352.on=false}else if(aq>0&&AQ352.coupe357){AQ352.coupe357=0;AQ352.on=true}}}catch(x){}}
+  if(now-dern>1000&&!document.hidden){dern=now;const ips=MOT357.ips;let e=MOT357.echelle;if(MOT357.force!=null)e=MOT357.force;else{if(ips<45){lent++;vite=0}else if(ips>57){vite++;lent=0}else{lent=0;vite=0}
+    if(lent>=5){e=Math.max(.75,e-.05);lent=0}if(vite>=8){e=Math.min(1,e+.05);vite=0}}
+   MOT357.lowT=(ips<35&&e<=.76)?(MOT357.lowT||0)+1:0;const aq=MOT357.lowT>=6?1:(MOT357.aqua===1&&ips<50?1:2);if(aq!==MOT357.aqua){MOT357.aqua=aq;try{MOT357.liteC=aq<2?1:0;if(typeof AQ352!=='undefined'){if(aq===0&&AQ352.on){AQ352.coupe357=1;AQ352.on=false}else if(aq>0&&AQ352.coupe357){AQ352.coupe357=0;AQ352.on=true}}}catch(x){}}
    if(Math.abs(e-MOT357.echelle)>.001){MOT357.echelle=e;MOT357.vues.forEach(r=>{try{if(!(r.domElement&&r.domElement.isConnected))MOT357.vues.delete(r)}catch(x){MOT357.vues.delete(r)}})}
    if(MOT357.voir)aff()}
   requestAnimationFrame(boucle)};requestAnimationFrame(boucle);
@@ -28,3 +28,6 @@ const MOT357={ips:60,dt:16.7,lat:0,latN:0,echelle:1,aqua:2,vues:new Set(),voir:f
   box.style.display=MOT357.voir?'block':'none';box.textContent='images/s '+MOT357.ips.toFixed(0)+'   image '+MOT357.dt.toFixed(1)+' ms\ntouche → image '+(MOT357.latN?MOT357.lat.toFixed(0)+' ms':'—')+'\nrésolution '+Math.round(MOT357.echelle*100)+' %   aquarelle '+['coupée','allégée','complète'][MOT357.aqua]+'\nvues 3D suivies '+MOT357.vues.size+'   (F9 : masquer)'}
  addEventListener('keydown',e=>{if(e.key==='F9'){MOT357.voir=!MOT357.voir;aff()}});
 })();
+// la pluie sur la carte et au camp, sous l'aquarelle : le trait d'encre et le lavis étiraient chaque goutte en traînée floue.
+// Moins de gouttes, plus lentes, plus pâles — l'averse se lit comme un lavis gris et non comme un brouillage.
+{const o=rideauMaj106;rideauMaj106=function(l,cx,cy,cz,R,H,f,dt,lg){if(typeof AQ352!=='undefined'&&AQ352.on){const r=o.call(this,l,cx,cy,cz,R,H,f*.45,dt*.55,lg*.7);l.material.opacity=.12+.2*f;return r}return o.apply(this,arguments)}}

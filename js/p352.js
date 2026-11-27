@@ -11,11 +11,11 @@ float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
 float L(vec3 c){return dot(c,vec3(.299,.587,.114));}
 vec3 T(vec2 u){vec4 t=texture2D(tD,u);return al>.5?t.rgb/max(t.a,.004):t.rgb;}
-void main(){vec2 q=gl_FragCoord.xy;vec2 w=vec2(n(q*.045),n(q*.045+17.))-.5;vec2 u=vU+w*px*2.2*(1.-lite);
+void main(){vec2 q=gl_FragCoord.xy;vec2 w=vec2(n(q*.045),n(q*.045+17.))-.5;vec2 u=vU+w*px*1.6*(1.-lite);
  vec3 c=T(u);vec3 b=(T(u+px*vec2(2.,0.))+T(u-px*vec2(2.,0.))+T(u+px*vec2(0.,2.))+T(u-px*vec2(0.,2.)))*.25;c=mix(c,b,.4*(1.-lite));
  float a=L(T(u+px*vec2(-1.,1.))),bb=L(T(u+px*vec2(0.,1.))),cc=L(T(u+px*vec2(1.,1.))),d=L(T(u+px*vec2(-1.,0.))),f=L(T(u+px*vec2(1.,0.))),g=L(T(u+px*vec2(-1.,-1.))),hh=L(T(u+px*vec2(0.,-1.))),ii=L(T(u+px*vec2(1.,-1.)));
  float gx=-a-2.*d-g+cc+2.*f+ii,gy=-a-2.*bb-cc+g+2.*hh+ii,e=length(vec2(gx,gy));
- vec3 p=floor(c*6.+.5)/6.;c=mix(c,p,.25);
+ 
  float l=L(c);c=mix(vec3(l),c,.85);
  float gr=n(q*.42)*.55+n(q*.09)*.45;vec3 paper=vec3(.98,.95,.88);
  c*=mix(.93,1.05,gr);c=pow(max(c,0.),vec3(.9));c=mix(c,c*paper,.35)+(paper-c)*.08;
@@ -24,11 +24,11 @@ void main(){vec2 q=gl_FragCoord.xy;vec2 w=vec2(n(q*.045),n(q*.045+17.))-.5;vec2 
  const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat);quad.frustumCulled=false;const qs=new THREE.Scene();qs.add(quad);const qc=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
  const patch=inst=>{if(!inst||inst.__p352)return inst;inst.__p352=1;const r0=inst.render;inst.render=function(sc,cam){try{if(!AQ352.on||this.__aq||this.getRenderTarget()!==null||!this.autoClear||(this.getScissorTest&&this.getScissorTest())||sc===qs)return r0.apply(this,arguments);
    if(this.__alpha===undefined){try{const at=this.getContext().getContextAttributes();this.__alpha=!!(at&&at.alpha)}catch(e){this.__alpha=true}}mat.uniforms.al.value=this.__alpha?1:0;
-   this.getDrawingBufferSize(V);const ec=(typeof MOT357!=='undefined'&&MOT357.echelle)||1,W=Math.max(1,V.x*ec|0),H=Math.max(1,V.y*ec|0);let rt=this.__rt352;
+   this.getDrawingBufferSize(V);const ec0=(typeof MOT357!=='undefined'&&MOT357.echelle)||1;this.__ec=this.__ec==null?ec0:this.__ec+(ec0-this.__ec)*.04;const ec=Math.round(this.__ec*40)/40,W=Math.max(1,V.x*ec|0),H=Math.max(1,V.y*ec|0);let rt=this.__rt352;
    if(!rt||rt.width!==W||rt.height!==H){if(rt)rt.dispose();rt=this.__rt352=new THREE.WebGLRenderTarget(W,H,{minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBAFormat});}
    rt.texture.encoding=this.outputEncoding;const vp=new THREE.Vector4();this.getViewport(vp);
    this.setRenderTarget(rt);r0.call(this,sc,cam);this.setRenderTarget(null);this.setViewport(vp);
-   mat.uniforms.tD.value=rt.texture;mat.uniforms.px.value.set(1/W,1/H);this.__aq=1;const ac=this.autoClear;r0.call(this,qs,qc);this.autoClear=ac;this.__aq=0}catch(e){this.__aq=0;window.__e352=String(e&&e.stack||e).slice(0,300);return r0.apply(this,arguments)}};return inst};
+   {const lc=(typeof MOT357!=='undefined'&&MOT357.liteC)||0,u=mat.uniforms.lite;u.value+=(lc-u.value)*.03}mat.uniforms.tD.value=rt.texture;mat.uniforms.px.value.set(1/W,1/H);this.__aq=1;const ac=this.autoClear;r0.call(this,qs,qc);this.autoClear=ac;this.__aq=0}catch(e){this.__aq=0;window.__e352=String(e&&e.stack||e).slice(0,300);return r0.apply(this,arguments)}};return inst};
  const W0=THREE.WebGLRenderer;try{const Wn=function(p){return patch(new W0(p))};Wn.prototype=W0.prototype;THREE.WebGLRenderer=Wn}catch(e){}
  try{if(typeof R!=='undefined'&&R&&R.render)patch(R)}catch(e){}window.aqPatch352=patch;window.AQMAT352=mat;
 })();

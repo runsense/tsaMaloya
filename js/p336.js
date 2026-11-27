@@ -25,7 +25,7 @@ function decor336(I,k,ci){const S3=I.S3,P=I.P,N=I.N,h=I.hAt,D=(DEC336[k]||{})[ci
     M.compose(V.set(x,y+hh*.5,z),Q.setFromAxisAngle(new THREE.Vector3(0,1,0),i+row),Sc.set(.8,hh*.95,.8));fe.setMatrixAt(c++,M);for(let q=0;q<6;q++){const a=q*1.05+i,rr=.32;M.compose(V.set(x+Math.cos(a)*rr,y+hh*(.35+(q%3)*.2),z+Math.sin(a)*rr),Q,Sc.set(1,1,1));ce.setMatrixAt(r++,M)}}}
   fe.count=c;ce.count=r;fe.instanceMatrix.needsUpdate=true;ce.instanceMatrix.needsUpdate=true;S3.add(fe,ce)}
  // la nuit
- if(D.includes('nuit')){I.R.setClearColor(0x0b1424);if(S3.fog){S3.fog.color.setHex(0x0b1424);S3.fog.far=55}S3.traverse(o=>{if(o.isLight&&!o.isPointLight)o.intensity*=.35});const l=new THREE.HemisphereLight(0x5070a0,0x101820,.35);S3.add(l)}}
+ if(D.includes('nuit')){I.R.setClearColor(0x0b1424);if(S3.fog){S3.fog.color.setHex(0x0b1424);S3.fog.near=Math.min(S3.fog.near,10);S3.fog.far=60}S3.traverse(o=>{if(o.isLight&&!o.isPointLight)o.intensity*=.35});const l=new THREE.HemisphereLight(0x5070a0,0x101820,.35);S3.add(l)}}
 // ----- les fiches du café de Bourbon (dans « Fiches de l'île », et à leur date dans le conte) -----
 {const A=(id,o)=>{if(!EV[id])EV[id]=Object.assign({o:[{n:'Continuer',d:'',fx:{},hist:1}]},o)};
  A('cafe336a',{y:1711,tag:'Nature',an:'vers 1711',t:'Le café marron de Bourbon',b:'Dans les bois de l’île pousse un caféier sauvage, qu’on appelle le café marron. Ses graines donnent une boisson amère, trop pauvre en caféine pour plaire en Europe.',h:'Le caféier indigène de La Réunion (Coffea mauritiana) est signalé au début du XVIIIᵉ siècle ; sa découverte pousse la Compagnie à faire venir le café de Moka.'});
