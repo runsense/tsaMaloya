@@ -4,9 +4,9 @@
 // (échecs, bataille, espion) reçoivent le grain du papier et le même adoucissement. Désactivable : touche F8. =====
 const AQ352={on:(()=>{try{return localStorage.getItem('tsa-aqua')!=='0'}catch(e){return true}})()};
 (function(){const V=new THREE.Vector2();
- const mat=new THREE.ShaderMaterial({uniforms:{tD:{value:null},al:{value:0},lite:{value:0},px:{value:new THREE.Vector2(1/800,1/600)}},depthTest:false,depthWrite:false,
+ const mat=new THREE.ShaderMaterial({uniforms:{tD:{value:null},mo:(AQ352.mo=AQ352.mo||{value:0}),al:{value:0},lite:{value:0},px:{value:new THREE.Vector2(1/800,1/600)}},depthTest:false,depthWrite:false,
   vertexShader:'varying vec2 vU;void main(){vU=uv;gl_Position=vec4(position.xy,0.,1.);}',
-  fragmentShader:`uniform sampler2D tD;uniform float al;uniform float lite;uniform vec2 px;varying vec2 vU;
+  fragmentShader:`uniform sampler2D tD;uniform float al;uniform float mo;uniform float lite;uniform vec2 px;varying vec2 vU;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
 float L(vec3 c){return dot(c,vec3(.299,.587,.114));}
@@ -20,7 +20,7 @@ void main(){vec2 q=gl_FragCoord.xy;vec2 w=vec2(n(q*.045),n(q*.045+17.))-.5;vec2 
  float gr=n(q*.42)*.55+n(q*.09)*.45;vec3 paper=vec3(.98,.95,.88);
  c*=mix(.93,1.05,gr);c=pow(max(c,0.),vec3(.9));c=mix(c,c*paper,.35)+(paper-c)*.08;
  float ink=smoothstep(.10,.36,e)*(.75+.25*n(q*.3));c=mix(c,c*vec3(.32,.27,.22),ink*.5);
- float A=al>.5?texture2D(tD,vU).a:1.;gl_FragColor=vec4(c*A,A);}`});
+ float A=al>.5?texture2D(tD,vU).a:1.;gl_FragColor=vec4(mix(c,texture2D(tD,vU).rgb,mo)*A,A);}`});
  const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat);quad.frustumCulled=false;const qs=new THREE.Scene();qs.add(quad);const qc=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
  const patch=inst=>{if(!inst||inst.__p352)return inst;inst.__p352=1;const r0=inst.render;inst.render=function(sc,cam){try{if(!AQ352.on||this.__aq||this.getRenderTarget()!==null||!this.autoClear||(this.getScissorTest&&this.getScissorTest())||sc===qs)return r0.apply(this,arguments);
    if(this.__alpha===undefined){try{const at=this.getContext().getContextAttributes();this.__alpha=!!(at&&at.alpha)}catch(e){this.__alpha=true}}mat.uniforms.al.value=this.__alpha?1:0;
