@@ -121,7 +121,7 @@ const LOOK={dimitile:{peau:'#6b4630',haut:'#6b4630',torseNu:1,jambeNue:1,pagne:'
  commandeur:{peau:'#7a4e34',haut:'#e2dccb',manche:1,bas:'#5a4a3a'},
  mussard:{peau:'#d0a080',haut:'#704830',manche:1,bas:'#4a3a2a'},
  anglais:{peau:'#e0b898',haut:'#b0242c',manche:1,bas:'#e8e2d4'},
- ombre:{peau:'#c8a088',haut:'#26262e',manche:1,robe:'#26262e',bas:'#26262e'},tijean:{peau:'#7a4a2a',haut:'#e0a040',manche:0,bas:'#6a3a20',jambeNue:1},grandiab:{peau:'#7a1e14',haut:'#3a1410',manche:1,bas:'#2a0e0a',echarpe:'#e04010'}};
+ ombre:{peau:'#c8a088',haut:'#26262e',manche:1,robe:'#26262e',bas:'#26262e'},tijean:{peau:'#7a4a2a',haut:'#e0a040',manche:0,bas:'#6a3a20',jambeNue:1},grandiab:{peau:'#7a1e14',haut:'#3a1410',manche:1,bas:'#2a0e0a',echarpe:'#e04010'},kal:{peau:'#7a5a40',haut:'#3a3048',manche:1,robe:'#3a3048',bas:'#3a3048'},sitarane:{peau:'#4a2e1e',haut:'#5a1a1a',manche:1,bas:'#2a2a2a'},desbassyns:{peau:'#e0c0a0',haut:'#c0501a',manche:1,robe:'#8a3a1a',bas:'#8a3a1a'}};
 function LOOKT(x,k,ap,X,Y,s){try{if(typeof trait2D==='function'&&typeof APP2!=='undefined'&&APP2[k]!=null){trait2D(x,k,X,Y,s,ap.haut);return}
  if(k==='gardien'){x.fillStyle='#e8c040';x.fillRect(X-15,Y-12,30,5);x.beginPath();x.moveTo(X-6,Y-12);x.lineTo(X,Y-24);x.lineTo(X+6,Y-12);x.fill()}
  if(k==='ombre'){x.fillStyle='#1a1a20';x.beginPath();x.arc(X,Y-2,17,Math.PI*.9,Math.PI*2.1);x.lineTo(X-s*16,Y+16);x.closePath();x.fill()}}catch(e){}}
