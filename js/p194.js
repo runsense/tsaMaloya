@@ -16,9 +16,9 @@ try{if(typeof PRE72!=='undefined'&&typeof SONCH!=='undefined'){let cur=null,curK
    if(cur&&curK===k){o.d=3600;return}if(cur){cur.stop();cur=null}const nom=choix();
    // le kabar d'un camp s'ouvre sur les 15 secondes composées par l’auteur dans l'Atelier, puis la boucle prend le relais
    if(k==='bclKabar'&&sons193(c)['boucle_intro_kabar']){const bus=c.createGain(),F=c.createBiquadFilter();F.type='lowpass';F.frequency.value=18000;bus.connect(F);F.connect(SND.out);
-    const intro=boucle194(c,bus,'intro_kabar',1.1,1);let suite=null;const h=setTimeout(()=>{suite=boucle194(c,bus,nom,.6)},14800);
+    const intro=boucle194(c,bus,'intro_kabar',1.1,1);let suite=null;const h=setTimeout(()=>{suite=boucle194(c,bus,nom,.85)},14800);
     cur={nom,sp:bus,F,ctx:c,stop(){clearTimeout(h);try{intro&&intro.stop()}catch(e){}try{suite&&suite.stop()}catch(e){}}}}
-   else cur=boucle194(c,SND.out,nom,.6);window.CUR194=cur;
+   else cur=boucle194(c,SND.out,nom,.85);window.CUR194=cur;
    if(cur){curK=k;o.d=3600}else{o.d=3.6;if(PRE72.maloya68)PRE72.maloya68.f()}}};PRE72[k]=o};
  const KB=['kabare','maligasse','kasse'];
  // le kabar selon l'époque : avant 1850, la « danse des Noirs » et le premier shéga, sans triangle (il n'arrive qu'au milieu du XIXᵉ) ;
