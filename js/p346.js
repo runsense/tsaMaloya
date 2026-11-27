@@ -5,7 +5,7 @@ function buisson346(r,seed){const P=[],N=[];let s=seed*7+13;const rn=()=>{s=(s*1
  for(let k=0;k<5;k++){const g=new THREE.IcosahedronGeometry(r*(.45+rn()*.25),2).toNonIndexed(),q=g.attributes.position,a=rn()*6.28,d=k?r*.42:0,ox=Math.cos(a)*d,oz=Math.sin(a)*d,oy=k?-r*.12+rn()*r*.2:r*.08,ph=rn()*6;
   for(let i=0;i<q.count;i++){const x=q.getX(i),y=q.getY(i),z=q.getZ(i),n=1+.12*Math.sin(x*7/r+ph)*Math.cos(z*6/r+ph)+.06*Math.sin(y*11/r);q.setXYZ(i,x*n+ox,y*n*.78+oy,z*n+oz)}parts.push(g)}
  let n=0;parts.forEach(g=>n+=g.attributes.position.count);const pos=new Float32Array(n*3);let o=0;parts.forEach(g=>{pos.set(g.attributes.position.array,o);o+=g.attributes.position.count*3});
- const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.BufferAttribute(pos,3));G.computeVertexNormals();G.computeBoundingSphere();return G}
+ const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.BufferAttribute(pos,3));G.computeVertexNormals();G.computeBoundingSphere();return typeof lisse353==='function'?lisse353(G):G}
 function decor346(I){if(!I||!I.S3||I.d346)return;I.d346=1;const S3=I.S3,h=I.hAt,M=new THREE.Matrix4(),V=new THREE.Vector3(),Q=new THREE.Quaternion(),Sc=new THREE.Vector3(),c=new THREE.Color();let sd=31+(I.k||'').length*7;const rn=()=>{sd=(sd*16807)%2147483647;return sd/2147483647};
  const ag=(x,z)=>Math.floor(x/4)+','+Math.floor(z/4),pose=(x,z,r)=>{if(I.dPiste(x,z)<r+.4)return;const a={x,z,r};(I.AG[ag(x,z)]||(I.AG[ag(x,z)]=[])).push(a)};
  const R=(typeof region337==='function')?region337(I.C):{n:'est',k:1};let nr=0;
