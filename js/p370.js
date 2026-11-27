@@ -15,6 +15,7 @@ function boss370(D3,A,B,G,W,H,sol,dt){if(!A||!B||!D3.S)return null;
  // les coups tournants (meia-lua…) : le combattant fait un tour complet sur lui-même
  [[A,D3.f&&D3.f.A],[B,D3.f&&D3.f.B]].forEach(([c,o])=>{if(c&&o&&o.grp&&c.tour372>0){c.tour372=Math.max(0,c.tour372-dt);o.grp.rotation.y+=Math.PI*2*(1-c.tour372/.5)}});
  if(G.sup372>0)G.sup372=Math.max(0,G.sup372-dt);
+ try{if(typeof chiens372==='function')chiens372(D3,G,sol,dt);if(typeof aura372==='function')aura372(D3,G);if(typeof arme372==='function')arme372(D3,G)}catch(e){}
  const fin=((G.ph==='coup'||G.ph==='grace'||G.ph==='choix')&&G.ok!==undefined)||G.sup372>0,boss=!!(B.f&&B.f.boss)||!!(A.f&&A.f.boss);
  if(!boss&&!fin){if(D3.ar370){D3.ar370.visible=false;D3.S.background=null;D3.S.fog=null;(D3.ar370.userData.pp||[]).forEach(m=>m.visible=false)}return null}
  const ar=arene370(D3,sol);ar.visible=true;ar.position.y=sol;if(!D3.S.background){D3.S.background=new THREE.Color(0x8fa3a8);D3.S.fog=new THREE.Fog(0x8fa3a8,1800,6000)}
@@ -30,7 +31,6 @@ function boss370(D3,A,B,G,W,H,sol,dt){if(!A||!B||!D3.S)return null;
  // les projectiles et les chiens, dessinés en 2D d'habitude, ont ici leur version en relief
  const T=THREE;ar.userData.pp=ar.userData.pp||[];const PP=ar.userData.pp;let n=0;
  (G.proj||[]).forEach(p=>{let m=PP[n];if(!m){m=new T.Mesh(new T.SphereGeometry(9,10,8),new T.MeshBasicMaterial({color:0xffd060}));D3.S.add(m);PP.push(m)}m.visible=true;m.material.color.setHex(p.k==='tir'?0xffe080:p.k==='feu'?0xff6020:0xd0a060);m.scale.set(p.k==='sagaie'?4:1,1,1);m.position.set(p.x,H-p.y,0);n++});
- (G.chiens||[]).forEach(c=>{let m=PP[n];if(!m){m=new T.Mesh(new T.SphereGeometry(9,10,8),new T.MeshBasicMaterial({color:0xffd060}));D3.S.add(m);PP.push(m)}m.visible=true;m.material.color.setHex(0x8a6a40);m.scale.set(5,3,2.4);m.position.set(c.x,sol+28,0);n++});
  for(let i=n;i<PP.length;i++)PP[i].visible=false;
  // le pas de côté (X : vers le fond, C : vers soi) — on sort de la ligne d'attaque, comme dans Tekken
  [A,B].forEach(c=>{const q=c.ss370;if(!q)return;q.t+=dt;const k=Math.min(1,q.t/.55);c.pz370=Math.sin(k*Math.PI)*170*q.d;if(k>=1){c.pz370=0;c.ss370=null}});
