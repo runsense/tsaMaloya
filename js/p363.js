@@ -8,7 +8,9 @@ function tr363(s){if(LANG363!=='en'||!s)return s;const t=s.trim();if(!t||t.lengt
  // phrase par phrase
  const P=t.split(/(?<=[.!?…»])\s+/);if(P.length>1){let n=0;const R=P.map(p=>{if(d[p]!=null){n++;return d[p]}return p});if(n)return s.replace(t,R.join(' '))}
  // préfixes d'icône (« 🔥 Vider »)
- const m=t.match(/^([^A-Za-zÀ-ÿ]+)\s*(.+)$/);if(m&&d[m[2]]!=null)return s.replace(t,m[1].trimEnd()+' '+d[m[2]]);return s}
+ const m=t.match(/^([^A-Za-zÀ-ÿ]+)\s*(.+)$/);if(m&&d[m[2]]!=null)return s.replace(t,m[1].trimEnd()+' '+d[m[2]]);
+ // v480 : phrases assemblées dans le code (« un détachement fouille les ravines autour de » + un nom) : on remplace les morceaux connus, du plus long au plus court
+ const F=window.FRAG363;if(F&&t.length>6){const c=tr363.c||(tr363.c=new Map());if(c.has(t)){const v=c.get(t);return v==null?s:s.replace(t,v)}let r=t,n=0;for(const [a,b] of F){if(a.length<=r.length&&r.includes(a)){r=r.split(a).join(b);n++}}if(c.size>4000)c.clear();c.set(t,n?r:null);if(n)return s.replace(t,r)}return s}
 if(LANG363==='en'){document.documentElement.lang='en';
  const fait=new WeakMap(),passe=n=>{if(n.nodeType===3){const v=n.nodeValue;if(fait.get(n)===v)return;const r=tr363(v);if(r!==v)n.nodeValue=r;fait.set(n,n.nodeValue);return}
   if(n.nodeType!==1||/^(SCRIPT|STYLE|CANVAS|TEXTAREA)$/.test(n.nodeName))return;for(const a of ['title','placeholder','aria-label']){const v=n.getAttribute&&n.getAttribute(a);if(v){const r=tr363(v);if(r!==v)n.setAttribute(a,r)}}
