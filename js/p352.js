@@ -24,11 +24,11 @@ void main(){vec2 q=gl_FragCoord.xy;vec2 w=vec2(n(q*.045),n(q*.045+17.))-.5;vec2 
  const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat);quad.frustumCulled=false;const qs=new THREE.Scene();qs.add(quad);const qc=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
  const patch=inst=>{if(!inst||inst.__p352)return inst;inst.__p352=1;const r0=inst.render;inst.render=function(sc,cam){try{if(!AQ352.on||this.__aq||this.getRenderTarget()!==null||!this.autoClear||(this.getScissorTest&&this.getScissorTest())||sc===qs)return r0.apply(this,arguments);
    if(this.__alpha===undefined){try{const at=this.getContext().getContextAttributes();this.__alpha=!!(at&&at.alpha)}catch(e){this.__alpha=true}}mat.uniforms.al.value=this.__alpha?1:0;
-   this.getDrawingBufferSize(V);const W=Math.max(1,V.x|0),H=Math.max(1,V.y|0);let rt=this.__rt352;
+   this.getDrawingBufferSize(V);const ec=(typeof MOT357!=='undefined'&&MOT357.echelle)||1,W=Math.max(1,V.x*ec|0),H=Math.max(1,V.y*ec|0);let rt=this.__rt352;
    if(!rt||rt.width!==W||rt.height!==H){if(rt)rt.dispose();rt=this.__rt352=new THREE.WebGLRenderTarget(W,H,{minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBAFormat});}
    rt.texture.encoding=this.outputEncoding;const vp=new THREE.Vector4();this.getViewport(vp);
    this.setRenderTarget(rt);r0.call(this,sc,cam);this.setRenderTarget(null);this.setViewport(vp);
-   mat.uniforms.tD.value=rt.texture;mat.uniforms.px.value.set(1/W,1/H);this.__aq=1;const ac=this.autoClear;r0.call(this,qs,qc);this.autoClear=ac;this.__aq=0}catch(e){this.__aq=0;return r0.apply(this,arguments)}};return inst};
+   mat.uniforms.tD.value=rt.texture;mat.uniforms.px.value.set(1/W,1/H);this.__aq=1;const ac=this.autoClear;r0.call(this,qs,qc);this.autoClear=ac;this.__aq=0}catch(e){this.__aq=0;window.__e352=String(e&&e.stack||e).slice(0,300);return r0.apply(this,arguments)}};return inst};
  const W0=THREE.WebGLRenderer;try{const Wn=function(p){return patch(new W0(p))};Wn.prototype=W0.prototype;THREE.WebGLRenderer=Wn}catch(e){}
  try{if(typeof R!=='undefined'&&R&&R.render)patch(R)}catch(e){}window.aqPatch352=patch;window.AQMAT352=mat;
 })();

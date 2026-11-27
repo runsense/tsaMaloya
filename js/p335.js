@@ -17,8 +17,8 @@ function habiller335(I,k,ci){const S3=I.S3,P=I.P,N=I.N,h=I.hAt;
  const dir=i=>{const p=P[Math.max(0,i-2)],q=P[Math.min(N-1,i+2)];const dx=q[0]-p[0],dz=q[1]-p[1],L=Math.hypot(dx,dz)||1;return [dx/L,dz/L]};
  // les maisons de la rue, des deux côtés
  const types=an<1760?['bat_case_paille','bat_case_paille','bat_magasin','bat_habitation']:['bat_habitation','bat_magasin','bat_case_paille','bat_habitation'];let n=0;
- for(let i=10;i<N-12;i+=9){const [dx,dz]=dir(i),nx=-dz,nz=dx;[1,-1].forEach(s=>{const d=8+((i*7+s*3)%4),x=P[i][0]+nx*d*s,z=P[i][1]+nz*d*s,t=types[(n++)%types.length];M(t,t==='bat_habitation'?4.2:2.8,x,z,Math.atan2(-nx*s,-nz*s),2.8)});
-  if(i%27===10){const s=i%2?1:-1;M('sk_cocotier',7,P[i][0]+nx*5*s,P[i][1]+nz*5*s,i,0)}}
+ for(let i=10;i<N-12;i+=9){const [dx,dz]=dir(i),nx=-dz,nz=dx;[1,-1].forEach(s=>{const d=8+((i*7+s*3)%4),x=P[i][0]+nx*d*s,z=P[i][1]+nz*d*s,t=types[(n++)%types.length];void 0/* p361 : les maisons de la rue sont désormais construites en front de rue */});
+  if(i%27===10){const s=i%2?1:-1;M('sk_cocotier',7,P[i][0]+nx*3.6*s,P[i][1]+nz*3.6*s,i,0)}}
  if(n>8)M('bat_chapelle',5,P[Math.floor(N/2)][0]+(-dir(Math.floor(N/2))[1])*13,P[Math.floor(N/2)][1]+dir(Math.floor(N/2))[0]*13,0,4);
  // la garnison en haie au départ (pour le gouverneur), ou des habitants qui regardent
  const gouv=k==='bourdonnais'&&ci===2;for(let i=0;i<6;i++){const j=4+i*2,[dx,dz]=dir(j),s=i%2?1:-1,x=P[j][0]-dz*2.6*s,z=P[j][1]+dx*2.6*s;M(gouv?'milicien':(i%2?'homme_chemise':'servante'),1.75,x,z,Math.atan2(dz*s,-dx*s),0)}
