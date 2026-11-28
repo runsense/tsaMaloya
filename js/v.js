@@ -44,14 +44,14 @@ const DUE=(()=>{
   function d3Jouer(o,cle,n,once,sp){if(o.cle===cle)return;const cl=THREE.AnimationClip.findByName(o.clips,n)||THREE.AnimationClip.findByName(o.clips,'garde');if(!cl)return;const ac=o.mx.clipAction(cl);ac.reset();ac.setLoop(once?THREE.LoopOnce:THREE.LoopRepeat,Infinity);ac.clampWhenFinished=!!once;ac.timeScale=sp||1;ac.enabled=true;ac.setEffectiveWeight(1);if(o.cur&&o.cur!==ac)ac.crossFadeFrom(o.cur,.12,false);ac.play();o.cur=ac;o.cle=cle}
   const MAR3=['dimitile','heva','cimendef','gardien','simangalove','raharianne'];
   function d3Etat(c,o){const dx=c.x-(c.p3==null?c.x:c.p3);c.p3=c.x;const vit=Math.abs(dx);c.vl=(c.vl||0)*.8+vit*.2;const dur=n=>{const cl=THREE.AnimationClip.findByName(o.clips,n);return cl?cl.duration:1};
-   if(G.fini){if(c===G.L&&!c.fuite)return o.mx188&&o.mx188.ko?d3Jouer(o,'ko','mx_ko',true,1.1):d3Jouer(o,'ko','chute_mort',true,1.3);if(c.fuite)return d3Jouer(o,'fuite','marche',false,2.2);if(c.win)return d3Jouer(o,'win',MAR3.includes(c.f.k)?'transe_maloya':'commandeur',false,1);if(c.act)return d3Jouer(o,'fin'+(c.nA||0),o.arme,true,dur(o.arme)/.7)}
+   if(G.fini){if(c===G.L&&!c.fuite)return o.mx188&&o.mx188.ko?d3Jouer(o,'ko','mx_ko',true,1.1):d3Jouer(o,'ko','chute_mort',true,1.3);if(c.fuite)return d3Jouer(o,'fuite','marche',false,2.2);if(c.win)return d3Jouer(o,'win',MAR3.includes(c.f.k)?'transe_maloya':(o.mx188&&o.mx188.win?'mx_win':'commandeur'),false,1);if(c.act)return d3Jouer(o,'fin'+(c.nA||0),o.arme,true,dur(o.arme)/.7)}
    if(c.down>0)return d3Jouer(o,'down'+(c.nD||0),'chute_mort',true,2.4);
    if(c.act&&c.mv372&&c.mv372.clip&&THREE.AnimationClip.findByName(o.clips,c.mv372.clip))return d3Jouer(o,'mv'+(c.nA||0),c.mv372.clip,true,dur(c.mv372.clip)/Math.max(.3,atk(c,c.act).dur+.3));
    if(c.pw>0)return d3Jouer(o,'pw'+(c.nA||0),c.pwc,true,dur(c.pwc)/.8);
    if(c.act&&o.mx188){const t=atk(c,c.act),k=(c.y>0&&/^k/.test(c.act)&&o.mx188.ka)?'ka':c.act,m=o.mx188[k];if(m)return d3Jouer(o,c.act+(c.nA||0),'mx_'+k,true,Math.min(3.2,Math.max(.6,m.pk/(Math.max(.1,t.dur)*.7))))}
    if(c.act){const t=atk(c,c.act),n=(c.act==='bal'||c.act==='var'&&c.cr)?'cacher':/^([pk]|up|ret|var)/.test(c.act)?'repos_debout':o.arme;return d3Jouer(o,c.act+(c.nA||0),n,true,dur(n)/(t.dur+.3))}
    if(c.touche>0&&!c.tchP&&!c.garde){c.rxT=performance.now()+600;c.nT=(c.nT||0)+1}c.tchP=c.touche>0;
-   if(o.mx188&&o.mx188.touche&&performance.now()<(c.rxT||0)&&!c.act&&!c.garde)return d3Jouer(o,'touche'+c.nT,'mx_touche',true,1.8);
+   if(o.mx188&&o.mx188.touche&&performance.now()<(c.rxT||0)&&!c.act&&!c.garde)return d3Jouer(o,'touche'+c.nT,(c.nT%2&&o.mx188.touche2)?'mx_touche2':'mx_touche',true,1.8);
    if(c.stun>0)return o.mx188&&o.mx188.stun?d3Jouer(o,'stun','mx_stun',true,.9):d3Jouer(o,'stun','marche_blesse',false,1);
    if(c.garde)return o.mx188&&o.mx188.bloc?d3Jouer(o,'garde','mx_bloc',true,2.2):d3Jouer(o,'garde','garde',true,1.6);
    if(c.cr)return o.mx188&&o.mx188.cr?d3Jouer(o,'cr','mx_cr',true,.5):d3Jouer(o,'cr','cacher',true,2.2);
