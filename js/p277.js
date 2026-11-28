@@ -21,7 +21,7 @@ const PERS277=[
  {k:'kabar',v:'roikaf',songe:'gramoun',dem:'Le songe du gramoun : finir la course des Hauts (vision du roi cafre)',
   f:{n:'Le roulèr du kabar',d:'Le joueur de rouleur des kabars de maloya, qui fait trembler la nuit. Ses coups suivent le rythme (personnage inventé).',col:'#c8102e',pv:108,vit:225,arme:{n:'Baguettes de rouleur',po:105,d:10},arm:0,sp:'vent',spn:'Le roulèr gronde',sp2:'bond',sp2n:'Le séga des pieds',sp3:'soin',sp3n:'Le kayamb',st:'moraingy'},m:['p1a_chasseur','baton_coup']}];
 window.MOD3X=window.MOD3X||{};PERS277.forEach(p=>{window.MOD3X[p.k]=p.m;try{DUE.F[p.k]=p.f}catch(e){}});
-const debloque277=k=>{const p=PERS277.find(x=>x.k===k),o=DEB277.lire();return !!(p&&o.v&&o.v[p.v])};
+const debloque277=k=>{const p=PERS277.find(x=>x.k===k),o=DEB277.lire();return !!(p&&((o.v&&o.v[p.v])||precedents389(['sud','ville'])))};
 const V276o=vision276;
 // une vision vue : on la note, et l'on annonce le combattant débloqué
 {const v0=vision276;vision276=function(k,fin){const neuf=DEB277.vu(k);const p=PERS277.find(x=>x.v===k);return v0(k,()=>{if(neuf&&p){const d=document.createElement('div');d.style.cssText='position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:9500;background:#1e1912;color:#f0e6d0;border:1px solid #e8be5a;border-left:5px solid #e8be5a;border-radius:8px;padding:10px 16px;font:14px system-ui;box-shadow:0 8px 30px #000a;max-width:90vw';d.innerHTML='🥋 <b>Nouveau combattant débloqué</b> pour le Tournoi de l’océan Indien : <b>'+p.f.n+'</b>.<br><small>Il vous attend dans « La galerie des songes » et dans le tournoi.</small>';document.body.appendChild(d);setTimeout(()=>d.remove(),7000)}if(fin)fin()})}}

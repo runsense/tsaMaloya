@@ -19,7 +19,7 @@ const BOSS278=[
 BOSS278.forEach(b=>{window.MOD3X[b.k]=b.m;DUE.F[b.k]=b.f;DUE.F[b.k].k=b.k});
 try{TOURN186.boss={n:'Tournoi des boss de l’île',t:'Cinq boss, cinq pouvoirs. On les débloque en gagnant ce tournoi.',L:BOSS278.map(b=>b.k).concat(['mussard','ombre'])}}catch(e){}
 const bossW278=()=>{try{const P=PALM186.lire().boss||{};let n=0;for(const k in P)n+=P[k];return n}catch(e){return 0}};
-const bossOk278=b=>{const v=VIS278[b.k];if(v){try{const o=DEB277.lire();return !!(o.v&&o.v[v])}catch(e){return false}}return bossW278()>=b.n};
+const bossOk278=b=>{if(precedents389(['sud','ville','ocean','champ']))return true;const v=VIS278[b.k];if(v){try{const o=DEB277.lire();return !!(o.v&&o.v[v])}catch(e){return false}}return bossW278()>=b.n};
 // chaque cliché se débloque par le songe qui y mène ; le gros zozo, en le battant
 const VIS278={bagarreur:'scub',pepete:'lafosse',yabbas:'napo',delacour:'roi',gonflette:'sarda',rhum:'roikaf'};
 const DEMV278={scub:'le songe du curé, en pleurant (vision du frère Scubilion)',lafosse:'le songe du curé, en doutant (vision du père Lafosse)',napo:'le songe du gouverneur, en homme d’ordre (vision du 18 brumaire)',roi:'le songe du gouverneur, inquiet (vision du roi)',sarda:'le songe du gouverneur, en commençant à voir (vision du 20 décembre)',roikaf:'le songe du gramoun, course finie (vision du roi cafre)'};

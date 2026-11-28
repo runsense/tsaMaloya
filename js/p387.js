@@ -22,4 +22,4 @@ function grotteDessin387(t){if(typeof scene==='undefined')return;
   const v=r%3;hutC.setRGB(v===0?.55:v===1?.42:.6,v===0?.85:v===1?.7:.75,v===0?.3:v===1?.25:.35);poseM(MOD.herbe,x,alt(x,z)*VX+.02,z,rndH(r*13+k)*6.28,0,0,v===0?1.25:.8,hutC)}
 }
 // à chaque nouvelle peinture, les bouches d'ombre des grottes qui ne sont plus habitées disparaissent
-{const p0=peindre;peindre=function(){if(G387.g){G387.g.children.slice().forEach(m=>{const i=+m.name.split('_')[0];const o=S&&S.t[i];if(!o||o.b!=='camp'||!grotte387(T[i],o)){G387.g.remove(m);m.geometry.dispose()}})}return p0.apply(this,arguments)}}
+{const p0=peindre;peindre=function(){if(G387.g){G387.g.children.slice().forEach(m=>{if(!m.isMesh||!/^\d/.test(m.name))return;const i=+m.name.split('_')[0];const o=S&&S.t[i];if(!o||o.b!=='camp'||!grotte387(T[i],o)){G387.g.remove(m);m.geometry.dispose()}})}return p0.apply(this,arguments)}}
