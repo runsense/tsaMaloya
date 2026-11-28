@@ -58,7 +58,7 @@ function boss370(D3,A,B,G,W,H,sol,dt){if(!A||!B||!D3.S)return null;window.D3_370
  if(ar.userData.lu.intensity>0)ar.userData.lu.intensity=Math.max(0,ar.userData.lu.intensity-dt*1.2);
  // les projectiles et les chiens, dessinés en 2D d'habitude, ont ici leur version en relief
  const T=THREE;ar.userData.pp=ar.userData.pp||[];const PP=ar.userData.pp;let n=0;
- (G.proj||[]).forEach(p=>{let m=PP[n];if(!m){m=new T.Mesh(new T.SphereGeometry(9,10,8),new T.MeshBasicMaterial({color:0xffd060}));D3.S.add(m);PP.push(m)}m.visible=true;m.material.color.setHex(p.k==='tir'?0xffe080:p.k==='feu'?0xff6020:0xd0a060);m.scale.set(p.k==='sagaie'?4:1,1,1);m.position.set(p.x,H-p.y,0);n++});
+ (G.proj||[]).forEach(p=>{let m=PP[n];if(!m){m=new T.Mesh(new T.SphereGeometry(9,10,8),new T.MeshBasicMaterial({color:0xffd060}));D3.S.add(m);PP.push(m)}m.visible=true;{const L=typeof LOOK395!=='undefined'&&LOOK395[p.k];if(L){m.material.color.setHex(L.c);m.scale.set(L.s[0],L.s[1],L.s[2])}else{m.material.color.setHex(p.k==='tir'?0xffe080:p.k==='feu'?0xff6020:0xd0a060);m.scale.set(p.k==='sagaie'?4:1,1,1)}}m.position.set(p.x,H-p.y,0);n++});
  for(let i=n;i<PP.length;i++)PP[i].visible=false;
  // le coup latéral du boss : il attrape celui qui fait un pas de côté (le pas de côté évite les coups droits, pas celui-là)
  if(!G.ph&&B.f&&B.f.boss&&A.ss370&&A.ss370.t>.12&&!A.lat370&&Math.abs(A.x-B.x)<240&&(B.latCd370||0)<=0&&Math.random()<.55){A.lat370=1;B.latCd370=4;B.pw=.55;B.pwc='baton_coup';setTimeout(()=>{if(Math.abs(A.x-B.x)<260&&A.pv>0){A.pv-=11*(1-(A.f.arm||0));A.stun=Math.max(A.stun||0,.6);A.ss370=null;A.pz370=0;bandeau370('Coup latéral !',0xffb060)}A.lat370=0},260)}if(B.latCd370>0)B.latCd370-=dt;
