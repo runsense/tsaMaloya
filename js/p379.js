@@ -24,7 +24,7 @@ function cmbListe379(f){return (f&&f.st&&CMB379[f.st])||CMB379._}
 // le joueur ou l'adversaire vient de lancer le coup k : l'historique dit si un enchaînement se termine
 function cmb379(a,k,now,dire,moi){let H=a.h379||[];const last=H.length?H[H.length-1]:null;if(last&&now-last.t>1000)H=[];H=a.h379=H.slice(-3);H.push({k,t:now});a.cmbK379=null;
  for(const c of cmbListe379(a.f)){const s=c.seq;if(H.length<s.length)continue;const fin=H.slice(-s.length);
-  if(fin.every((x,i)=>x.k===s[i])){a.cmbK379=k;a.h379=[];if(dire)dire((moi?'Enchaînement : ':a.f.n+' enchaîne : ')+c.n+' !',1100);break}}}
+  if(fin.every((x,i)=>x.k===s[i])){a.cmbK379=k;a.h379=[];if(dire)dire((moi?'Enchaînement : ':a.f.n+' enchaîne : ')+c.n+' !',1100);try{if(typeof flash381==='function')flash381(c,moi)}catch(e){}break}}}
 // l'adversaire : continuer l'enchaînement commencé, ou en commencer un selon son rang
 function iaCmb379(b){const R=RANG379[rang379(b.f)];if(b.q379&&b.q379.length)return b.q379.shift();
  if(Math.random()<R.cmb){const L=cmbListe379(b.f),c=L[Math.floor(Math.random()*L.length)];b.q379=c.seq.slice(1);setTimeout(()=>{b.q379=[]},2200);return c.seq[0]}return null}

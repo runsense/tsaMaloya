@@ -50,7 +50,7 @@ function mystique300(i){const I=INC;if(!I||I.pause||I.duel)return;const niv=niv3
  try{if(I&&!I.pause&&I.guet>now&&I.minimap){const m=I.minimap;I.CH.forEach(o=>{if(o.hs)return;const X=I.o0[0]+o.x/I.sc,Z=I.o0[1]+o.z/I.sc;m.g.fillStyle='#ffd040';m.g.fillRect(m.ox+(X-m.ax)*m.k-2,m.oz+(Z-m.az)*m.k-2,4,4)})}}catch(e){}
  return r}}
 // les touches : pavé numérique (ou chiffres du haut), Alt + 1/2/3 pour la mystique
-addEventListener('keydown',e=>{const I=INC;if(!I||I.duel||I.pause)return;let n=null;const m=(e.code||'').match(/^(Numpad|Digit)(\d)$/);if(m)n=+m[2];if(n==null)return;
+addEventListener('keydown',e=>{const I=INC;if(!I||I.duel||I.pause)return;let n=null;const m=(e.code||'').match(/^(Numpad|Digit)(\d)$/);if(m)n=+m[2];if(n==null||e.shiftKey)return;
  if(e.altKey){if(n>=1&&n<=3){e.preventDefault();e.stopPropagation();mystique300(n-1)}return}
  e.preventDefault();if(n>=7&&n<=9)talent300(n-7);else geste300(n)},true);
 // la barre de boutons
