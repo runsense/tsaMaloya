@@ -31,3 +31,9 @@ function iaCmb379(b){const R=RANG379[rang379(b.f)];if(b.q379&&b.q379.length)retu
 // appliquer les rangs aux combattants (après p370, qui marque les boss)
 (function(){try{if(typeof DUE==='undefined')return;Object.keys(DUE.F).forEach(k=>{const f=DUE.F[k];if(!f||f.rang379)return;f.k=f.k||k;const r=rang379(f),R=RANG379[r];
   f.rang379=r;f.pv0_379=f.pv;f.pv=Math.round(Math.min(f.pv,r==='simple'?f.pv:115)*R.pv);f.dm379=R.dm;f.ia379=R.ia})}catch(e){console.warn('p379',e)}})();
+
+// v494 : les mouvements Mixamo reçus le 27/11, posés sur les combattants qui les avaient demandés dans la Forge
+// (canne en biais de Dimitile, marmite à deux mains d'Héva, balayette → uppercut → pied au sol de Simangalove, jabs et prise de Cimendef…)
+const MX382={dimitile:{p3:'Great_Sword_Slash'},heva:{p3:'Two_Hand_Club_Combo'},simangalove:{bal:'Leg_Sweep_1',up:'Knee_Jabs_To_Uppercut',k3:'Stomping'},
+ cimendef:{p1:'Body_Jab_Cross',ka:'Grab_And_Slam'},malabar:{p3:'Grab_And_Slam'},grandiab:{k3:'Stomping'}};
+(function(){try{if(typeof DUE==='undefined')return;Object.keys(MX382).forEach(k=>{const f=DUE.F[k];if(f)f.mx={...MX382[k],...(f.mx||{})}})}catch(e){}})();
