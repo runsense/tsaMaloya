@@ -78,8 +78,12 @@ function legende407(ph,k){const c=cvs407();c.style.opacity=1;const W=c.width=inn
  // au départ, soudées à la terre du sud (décalées vers elle) ; quand l'eau monte, elles se détachent et remontent à leur place
  const sur=[['arabie',PL407.arabie.p,[2,-9]],['ethiopie',ETH,[1,-2.5]],['inde',PL407.inde.p,[0,-4.5]]],dp=d=>[d[0]*(1-det),d[1]*(1-det)];
  const vert='rgba(150,150,80,.8)';
- sur.forEach(([n,L,d0])=>{const d=dp(d0);trace(L.map(p=>P([p[0]+d[0],p[1]+d[1]])));x.closePath();x.fillStyle=vert;x.fill();x.strokeStyle='rgba(120,80,30,.7)';x.lineWidth=1.6;x.stroke()});
- x.save();trace(KK.map(P));x.closePath();x.fillStyle=vert;x.fill();x.strokeStyle='rgba(120,80,30,.7)';x.lineWidth=2;x.stroke();x.clip();
+ // un seul bloc : on trace d'abord tous les contours, épais, puis on remplit tout par-dessus — il ne reste que le bord extérieur ;
+ // quand les terres se détachent, leurs bords réapparaissent d'eux-mêmes
+ const formes=[...sur.map(([n,L,d0])=>{const d=dp(d0);return L.map(p=>P([p[0]+d[0],p[1]+d[1]]))}),KK.map(P)];
+ x.strokeStyle='rgba(120,80,30,.75)';x.lineWidth=3.6;formes.forEach(F=>{trace(F);x.closePath();x.stroke()});
+ x.fillStyle='rgb(166,163,98)';formes.forEach(F=>{trace(F);x.closePath();x.fill()});
+ x.save();trace(KK.map(P));x.closePath();x.clip();
  // monts de Kumari, rivière Pahruli
  x.fillStyle='rgba(110,80,50,.8)';[[70,-12],[74,-14],[78,-13],[82,-15],[76,-18]].forEach(p=>{const [X,Y]=P(p);x.beginPath();x.moveTo(X-s*1.4,Y+s);x.lineTo(X,Y-s*1.6);x.lineTo(X+s*1.4,Y+s);x.fill()});
  x.strokeStyle='rgba(40,90,150,.8)';x.lineWidth=2.5;trace([[76,-15],[77,-8],[78,-2],[78,4],[77.5,7.5]].map(P));x.stroke();
